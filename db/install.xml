@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<XMLDB PATH="blocks/eduvidual/db" VERSION="20191102" COMMENT="XMLDB file for Moodle blocks/eduvidual"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
+>
+  <TABLES>
+    <TABLE NAME="block_eduvidual" COMMENT="Default comment for block_eduvidual, please edit me">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+    </TABLE>
+    <TABLE NAME="block_eduvidual_basements" COMMENT="Basements for the creation of new courses">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="courseid" TYPE="int" LENGTH="20" NOTNULL="true" SEQUENCE="false" COMMENT="Source course to be duplicated"/>
+        <FIELD NAME="type" TYPE="char" LENGTH="50" NOTNULL="true" SEQUENCE="false" COMMENT="Type of basement (e.g. course template, scenario, topic, ...)"/>
+        <FIELD NAME="name" TYPE="char" LENGTH="100" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="description" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="imageurl" TYPE="char" LENGTH="250" NOTNULL="false" SEQUENCE="false" COMMENT="URL to an image"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+    </TABLE>
+    <TABLE NAME="block_eduvidual_courseshow" COMMENT="Triggers if a certain course is shown in the app-mode course list. If an entry exists, it is NOT shown">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="userid" TYPE="int" LENGTH="20" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="courseid" TYPE="int" LENGTH="20" NOTNULL="true" SEQUENCE="false"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+    </TABLE>
+    <TABLE NAME="block_eduvidual_org" COMMENT="Organizations">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="orgid" TYPE="int" LENGTH="20" NOTNULL="true" SEQUENCE="false" COMMENT="ID of Organization"/>
+        <FIELD NAME="name" TYPE="char" LENGTH="250" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="mail" TYPE="char" LENGTH="250" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="phone" TYPE="char" LENGTH="50" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="street" TYPE="char" LENGTH="250" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="zip" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="city" TYPE="char" LENGTH="100" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="district" TYPE="char" LENGTH="100" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="country" TYPE="char" LENGTH="100" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="authenticated" TYPE="int" LENGTH="1" NOTNULL="false" DEFAULT="0" SEQUENCE="false" COMMENT="All Organizations are not authenticated by default (e.g. when they are registered). After the registration tan was entered, authenticated is changed to 1"/>
+        <FIELD NAME="authtan" TYPE="char" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="TAN for Authentication - normally sent to an official mailaddress"/>
+        <FIELD NAME="cap_type" TYPE="char" LENGTH="20" NOTNULL="false" SEQUENCE="false" COMMENT="Type of cap (schools, higher education, partners, companies, ....)"/>
+        <FIELD NAME="cap_users" TYPE="int" LENGTH="20" NOTNULL="true" DEFAULT="-1" SEQUENCE="false" COMMENT="Maximum amount of users that this organization can have, -1 means unlimited"/>
+        <FIELD NAME="cap_courses" TYPE="int" LENGTH="20" NOTNULL="true" DEFAULT="-1" SEQUENCE="false" COMMENT="Maximum amount of courses this organization can have, -1 means unlimited"/>
+        <FIELD NAME="cap_space" TYPE="int" LENGTH="20" NOTNULL="true" DEFAULT="-1" SEQUENCE="false" COMMENT="Maximum data volume this organization can consume, -1 means unlimited"/>
+        <FIELD NAME="categoryid" TYPE="int" LENGTH="20" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Category where this Organisation resides"/>
+        <FIELD NAME="courseid" TYPE="int" LENGTH="20" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="CourseID where all members of this orga are enrolled to"/>
+        <FIELD NAME="customcss" TYPE="text" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="mnetid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="ID of MNet Connection"/>
+        <FIELD NAME="banner" TYPE="char" LENGTH="250" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="maildomain" TYPE="char" LENGTH="50" NOTNULL="false" DEFAULT="" SEQUENCE="false" COMMENT="Maildomain for auto assign to organization as student"/>
+        <FIELD NAME="maildomainteacher" TYPE="char" LENGTH="50" NOTNULL="false" DEFAULT="" SEQUENCE="false" COMMENT="Maildomain for auto assign to organization as teacher"/>
+        <FIELD NAME="subcats1" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="List of subcategories in first layer for this org for the purpose of creating courses"/>
+        <FIELD NAME="subcats2" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="List of subcategories in second layer for this org for the purpose of creating courses"/>
+        <FIELD NAME="subcats3" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="List of options in third layer for this org for the purpose of creating courses"/>
+        <FIELD NAME="subcats1lbl" TYPE="char" LENGTH="30" NOTNULL="true" DEFAULT="Schoolyear" SEQUENCE="false"/>
+        <FIELD NAME="subcats2lbl" TYPE="char" LENGTH="30" NOTNULL="true" DEFAULT="Class" SEQUENCE="false"/>
+        <FIELD NAME="subcats3lbl" TYPE="char" LENGTH="30" NOTNULL="true" DEFAULT="Topic" SEQUENCE="false"/>
+        <FIELD NAME="subcats4lbl" TYPE="char" LENGTH="30" NOTNULL="false" DEFAULT="Zusatzinfo" SEQUENCE="false" COMMENT="Label for the 4th layer"/>
+        <FIELD NAME="lpf" TYPE="char" LENGTH="30" NOTNULL="false" SEQUENCE="false" COMMENT="Instance on lernplattform.schule.at in format www3|instancename or www4|instancename"/>
+        <FIELD NAME="lpfgroup" TYPE="char" LENGTH="1" NOTNULL="false" SEQUENCE="false" COMMENT="Migrationgroup from lernplattform.schule.at, A,B or C"/>
+        <FIELD NAME="orgsize" TYPE="int" LENGTH="20" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Estimated filesystem usage of org"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+    </TABLE>
+    <TABLE NAME="block_eduvidual_org_codes" COMMENT="Organizations' Accesscodes">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="orgid" TYPE="int" LENGTH="20" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="userid" TYPE="int" LENGTH="20" NOTNULL="true" SEQUENCE="false" COMMENT="User who issued this access code"/>
+        <FIELD NAME="code" TYPE="char" LENGTH="50" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="maturity" TYPE="int" LENGTH="20" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="role" TYPE="char" LENGTH="10" NOTNULL="true" DEFAULT="Student" SEQUENCE="false" COMMENT="student, teacher, parent or manager"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+    </TABLE>
+    <TABLE NAME="block_eduvidual_org_gps" COMMENT="GPS Data for orgs.">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="orgid" TYPE="int" LENGTH="20" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="lat" TYPE="number" LENGTH="10" NOTNULL="true" SEQUENCE="false" DECIMALS="4" COMMENT="the latitude"/>
+        <FIELD NAME="lon" TYPE="number" LENGTH="10" NOTNULL="true" SEQUENCE="false" DECIMALS="4" COMMENT="the longitude"/>
+        <FIELD NAME="modified" TYPE="int" LENGTH="20" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="timestamp when it was updated"/>
+        <FIELD NAME="failed" TYPE="int" LENGTH="20" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="timestamp when a query failed"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+    </TABLE>
+    <TABLE NAME="block_eduvidual_orgid_userid" COMMENT="Default comment for the table, please edit me">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="orgid" TYPE="int" LENGTH="20" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="userid" TYPE="int" LENGTH="20" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="role" TYPE="char" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="student, teacher, legalguardian or manager"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+    </TABLE>
+    <TABLE NAME="block_eduvidual_modules" COMMENT="Modules that can be created on the fly">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="categoryid" TYPE="int" LENGTH="20" NOTNULL="false" SEQUENCE="false" COMMENT="ID of category based on block_eduvidual_modulescat"/>
+        <FIELD NAME="name" TYPE="char" LENGTH="250" NOTNULL="true" SEQUENCE="false" COMMENT="Name of Module"/>
+        <FIELD NAME="description" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="type" TYPE="char" LENGTH="20" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="payload" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="Object in JSON containing information about the module"/>
+        <FIELD NAME="lticartridge" TYPE="char" LENGTH="250" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="ltilaunch" TYPE="char" LENGTH="250" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="ltisecret" TYPE="char" LENGTH="250" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="touched" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="1" SEQUENCE="false" COMMENT="if set to 1 payload is recalculated"/>
+        <FIELD NAME="active" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="1" SEQUENCE="false" COMMENT="if set to 0 module will not be shown for creation"/>
+        <FIELD NAME="amountused" TYPE="int" LENGTH="20" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+    </TABLE>
+    <TABLE NAME="block_eduvidual_modulescat" COMMENT="Categories for modules">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="parentid" TYPE="int" LENGTH="20" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="ID of parent category"/>
+        <FIELD NAME="name" TYPE="char" LENGTH="250" NOTNULL="true" SEQUENCE="false" COMMENT="Name of category"/>
+        <FIELD NAME="description" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="active" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="1" SEQUENCE="false" COMMENT="triggers between active state (=1) an inactive state (=0)"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+    </TABLE>
+    <TABLE NAME="block_eduvidual_terms" COMMENT="Manage terms of use">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="orgid_pattern" TYPE="char" LENGTH="20" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="role_pattern" TYPE="char" LENGTH="100" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="termsofuse" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="active" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="created" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+    </TABLE>
+    <TABLE NAME="block_eduvidual_userextra" COMMENT="Extra information extending the users table">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="userid" TYPE="int" LENGTH="20" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="tan" TYPE="char" LENGTH="20" NOTNULL="true" SEQUENCE="false" COMMENT="The tan this user has - used for QR Codes and to add User to other organizations or courses without name search"/>
+        <FIELD NAME="avatar" TYPE="int" LENGTH="2" NOTNULL="true" DEFAULT="1" SEQUENCE="false" COMMENT="Avatar as appears on the access card"/>
+        <FIELD NAME="background" TYPE="char" LENGTH="250" NOTNULL="false" SEQUENCE="false" COMMENT="Personal background"/>
+        <FIELD NAME="backgroundcard" TYPE="char" LENGTH="250" NOTNULL="false" SEQUENCE="false" COMMENT="Background Image for Accesscard"/>
+        <FIELD NAME="bunch" TYPE="char" LENGTH="50" NOTNULL="true" DEFAULT="Default" SEQUENCE="false" COMMENT="Allows a grouping of access cards before printing for managers of organizations"/>
+        <FIELD NAME="moolevel" TYPE="int" LENGTH="2" NOTNULL="false" DEFAULT="-1" SEQUENCE="false" COMMENT="Personal moodle experience level - the more experience a user is, the more he can see, -1 means: there has been no choice for the moment"/>
+        <FIELD NAME="defaultorg" TYPE="int" LENGTH="20" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="landingpage" TYPE="char" LENGTH="250" NOTNULL="false" DEFAULT="" SEQUENCE="false" COMMENT="Personal landing page after login"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+    </TABLE>
+    <TABLE NAME="block_eduvidual_userbunches" COMMENT="List of bunches when users are created manually">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="orgid" TYPE="int" LENGTH="20" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="bunch" TYPE="char" LENGTH="50" NOTNULL="true" DEFAULT="default" SEQUENCE="false"/>
+        <FIELD NAME="userid" TYPE="int" LENGTH="20" NOTNULL="true" SEQUENCE="false"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+    </TABLE>
+    <TABLE NAME="block_eduvidual_userqcats" COMMENT="Users activated core question categories">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="userid" TYPE="int" LENGTH="20" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="categoryid" TYPE="int" LENGTH="20" NOTNULL="true" SEQUENCE="false" COMMENT="Question Category ID the user wants to see"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+    </TABLE>
+    <TABLE NAME="block_eduvidual_usertoken" COMMENT="Usertokens for auto login feature">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="userid" TYPE="int" LENGTH="20" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="token" TYPE="char" LENGTH="50" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="created" TYPE="int" LENGTH="20" NOTNULL="true" SEQUENCE="false" COMMENT="timestamp when it was created"/>
+        <FIELD NAME="used" TYPE="int" LENGTH="20" NOTNULL="true" SEQUENCE="false" COMMENT="timestamp when it was last time used"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+    </TABLE>
+  </TABLES>
+</XMLDB>

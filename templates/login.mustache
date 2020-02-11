@@ -1,0 +1,110 @@
+ {{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+    /**
+     * THIS WAS AN ATTEMPT TO USE A CUSTOM LOGIN PAGE.
+     * UNFORTUNATELY IT DOES NOT WORK WELL WITH GUEST LOGIN etc.
+     * THEREFORE WE DROPPED THIS SCRIPT.
+     */
+  }}
+<div style="position: fixed; top: 0; right: 0; bottom: 0; left: 0; z-index: -1; background-image: url({{wwwroot}}/blocks/eduvidual/pix/bg-default.jpg) !important;"></div>
+
+<div class="row justify-content-center">
+    <div class="col-xl-6 col-sm-8 ">
+        <div class="card" style="background-color: rgba(255,255,255,0.4);">
+            <div class="card-block">
+                <h2 class="card-header text-center" style="background-color: rgba(255,255,255,0.4);color: rgba(27,137,218,1); text-shadow: 2px 2px 4px rgb(100,100,100);">
+                    <img src="{{wwwroot}}/pluginfile.php/1/core_admin/logo/0x200/1568357669/icon-1280.png" class="img-fluid" title="eduvidual" alt="eduvidual"><br />
+                    eduvidual.at
+                </h2>
+            <div class="card-body">
+                <div class="row justify-content-md-center">
+                    <div class="col-md-5">
+                        <div class="potentialidp" style="margin-bottom: 3px; padding-bottom: 3px; border-bottom: 1px dashed darkgray;">
+                            <a href="{{wwwroot}}/auth/oauth2/login.php?id=1&amp;wantsurl={{wantsurl}}&amp;sesskey={{sesskey}}" title="Microsoft" class="btn btn-secondary btn-block" id="eduvidual-btn-sso-microsoft" data-ajax="false">
+                                <img src="https://www.microsoft.com/favicon.ico" alt="" width="24" height="24">
+                                Microsoft
+                            </a>
+                        </div>
+                        <div class="potentialidp" style="margin-bottom: 3px; padding-bottom: 3px; border-bottom: 1px dashed darkgray;">
+                            <a class="btn btn-secondary btn-block" id="eduvidual-btn-sso-verbund" href="{{wwwroot}}/blocks/eduvidual/pages/login_mnet.php?wantsurl=" data-ajax="false">
+                                <img src="{{wwwroot}}/pix/i/mnethost.svg" alt="" width="24" height="24">
+                                <span> {{#str}} login:network_btn, block_eduvidual {{/str}}</span>
+                            </a>
+                        </div>
+                        <div style="margin-bottom: 3px; padding-bottom: 3px; border-bottom: 1px dashed darkgray;">
+                            <form action="https://eduvidual.dibig.at/login/index.php" method="post" id="guestlogin" data-ajax="false">
+                                <!-- <input type="hidden" name="logintoken" value="11G3ExwFjMV6AkKlSKZSfKxkUJEf55e7"> -->
+                                <input type="hidden" name="username" value="guest">
+                                <input type="hidden" name="password" value="guest">
+                                <button class="btn btn-secondary btn-block" type="submit">
+                                    {{#str}} loginguest {{/str}}
+                                </button>
+                            </form>
+                        </div>
+                        <div style="margin-bottom: 3px; padding-bottom: 3px; border-bottom: 1px dashed darkgray;">
+                            <form class="mt-3" action="{{wwwroot}}/login/index.php" method="post" id="login" data-ajax="false">
+                                <p>{{#str}} or, block_eduvidual {{/str}}</p>
+                                <input id="anchor" type="hidden" name="anchor" value="">
+                                <script>document.getElementById('anchor').value = location.hash;</script>
+                                <!-- <input type="hidden" name="logintoken" value="11G3ExwFjMV6AkKlSKZSfKxkUJEf55e7"> -->
+                                <div class="form-group">
+                                    <label for="username" class="sr-only">
+                                        {{#str}} username {{/str}}
+                                    </label>
+                                    <input type="text" name="username" id="username" class="form-control" value="" placeholder="{{#str}} username {{/str}}" autocomplete="username">
+                                </div>
+                                <div class="form-group">
+                                    <label for="password" class="sr-only">
+                                        {{#str}} password {{/str}}
+                                    </label>
+                                    <input type="password" name="password" id="password" value="" class="form-control" placeholder="{{#str}} password {{/str}}" autocomplete="current-password">
+                                </div>
+                                <div class="rememberpass mt-3">
+                                    <input type="checkbox" name="rememberusername" id="rememberusername" value="1">
+                                    <label for="rememberusername">{{#str}} rememberusername, admin {{/str}}</label>
+                                </div>
+
+                                <button type="submit" class="btn btn-primary btn-block mt-3" id="loginbtn">{{#str}} login {{/str}}</button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="col-md-5">
+                        <div>
+                            <a href="{{wwwroot}}/login/verify_age_location.php" class="btn btn-secondary btn-block" style="margin-bottom: 3px; padding-bottom: 3px; border-bottom: 1px dashed darkgray;" data-ajax="false">
+                                {{#str}} register:individual, block_eduvidual {{/str}}
+                            </a>
+                        </div>
+                        <div>
+                            <a href="{{wwwroot}}/blocks/eduvidual/pages/register.php" class="btn btn-secondary btn-block" style="margin-bottom: 3px; padding-bottom: 3px; border-bottom: 1px dashed darkgray;" data-ajax="false">
+                                {{#str}} register:org, block_eduvidual {{/str}}
+                            </a>
+                        </div>
+                        {{#uses_edusupport}}
+                        <div>
+                            <a href="{{wwwroot}}{{relativeurlsupportarea}}" class="btn btn-secondary btn-block" style="margin-bottom: 3px; padding-bottom: 3px; border-bottom: 1px dashed darkgray;" data-ajax="false">
+                                {{#str}} goto_tutorials, block_edusupport {{/str}}
+                            </a>
+                        </div>
+                        {{/uses_edusupport}}
+                    </div>
+                </div>
+            </div>
+            </div>
+        </div>
+    </div>
+</div>

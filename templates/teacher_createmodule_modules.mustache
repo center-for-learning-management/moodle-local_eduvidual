@@ -1,0 +1,68 @@
+ {{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+
+
+{{#__publisherexists}}{{#publishercanuse}}
+<!-- Disabled by renaming parameter publisherexists to __publisherexists -->
+<a href="{{wwwroot}}/blocks/edupublisher/pages/search.php?courseid={{courseid}}&sectionid={{sectionid}}" class="ui-btn btn btn-primary">New catalogue</a>
+{{/publishercanuse}}{{/__publisherexists}}
+
+
+<div id="{{uniqid}}-tab-0">
+    <h3>{{#str}} teacher:createmodule:selectmodule, block_eduvidual {{/str}}</h3>
+    <div id="block_eduvidual_teacher_createmodule" data-orgid="{{orgid}}" data-courseid="{{courseid}}" data-sectionid="{{sectionid}}">
+        {{#str}} loading {{/str}}
+    </div>
+</div>
+{{#publisherexists}}{{#publishercanuse}}
+<div id="{{uniqid}}-tab-1" style="display: none;">
+    <form id="{{uniqid}}-createmoduleform">
+        <input type="hidden" name="orgid" value="{{orgid}}" />
+        <input type="hidden" name="courseid" value="{{courseid}}" />
+        <input type="hidden" name="sectionid" value="{{sectionid}}" />
+        <input type="hidden" name="packageid" value="0" {{! if this is set to a number and form is sent, content will be added to course}} />
+        <input type="text" name="searchkeys" />
+        <!--
+        <label>
+            Combine search keys via<br />
+            <input type="radio" name="combine" value="AND" checked="checked" /> AND<br />
+            <input type="radio" name="combine" value="OR" /> OR
+        </label>
+        <label>
+            <input type="checkbox" checked="checked" name="channels[]" value="etapas" />
+            {{#str}} etapas_header, block_edupublisher{{/str}}
+        </label>
+        <label>
+            <input type="checkbox" checked="checked" name="channels[]" value="eduthek" />
+            {{#str}} eduthek_header, block_edupublisher{{/str}}
+        </label>
+        -->
+        <input type="button" value="{{#str}} search {{/str}}" onclick="require(['block_eduvidual/teacher'], function(TEACHER) { TEACHER.createModuleSearch('{{uniqid}}'); });" />
+    </form>
+
+    <div id="block_eduvidual_teacher_createmodule_publisher" data-orgid="{{orgid}}" data-courseid="{{courseid}}" data-sectionid="{{sectionid}}">
+        {{#str}} loading {{/str}}
+    </div>
+</div>
+{{/publishercanuse}}{{/publisherexists}}
+
+{{#js}}
+    require(["block_eduvidual/teacher"], function(TEACHER) { TEACHER.loadCategory(0); });
+    {{#showpublisher}}
+    require(["block_eduvidual/teacher"], function(TEACHER) { TEACHER.createModuleSearch('{{uniqid}}'); });
+    {{/showpublisher}}
+{{/js}}

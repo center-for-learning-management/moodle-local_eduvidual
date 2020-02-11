@@ -1,0 +1,63 @@
+ {{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+  }}
+
+{{#isadmin}}
+<div class="grid-eq-2">
+    <a href="{{wwwroot}}/blocks/eduvidual/pages/categories.php?showall=1" class="btn btn-primary">
+        {{#str}} user:categories:adminshowall, block_eduvidual {{/str}}
+    </a>
+    <a href="{{wwwroot}}/blocks/eduvidual/pages/categories.php?showall=0" class="btn btn-secondary">
+        {{#str}} user:categories:adminshowmine, block_eduvidual {{/str}}
+    </a>
+</div>
+{{/isadmin}}
+
+<table class="generaltable">
+    {{#memberships}}
+    <tr>
+        <td width="30">
+            <a href="{{wwwroot}}/course/index.php?categoryid={{categoryid}}">
+                {{orgid}}
+            </a>
+            {{!
+            <a href="{{wwwroot} }/blocks/eduvidual/pages/categories.php?orgid={{orgid} }">
+                {{orgid} }
+            </a>
+            }}
+        </td>
+        <td>
+            <a href="{{wwwroot}}/course/index.php?categoryid={{categoryid}}">
+                {{name}}
+            </a>
+            {{#hasactions}}
+                <div id="{{uniqid}}-manage-{{orgid}}" style="display: none;" class="grid-eq-3">
+                    {{#actions}}
+                        <a href="{{url}}&orgid={{orgid}}" class="btn btn-secondary" style="margin: 4px 2px !important;">{{name}}</a>
+                    {{/actions}}
+                </div>
+            {{/hasactions}}
+        </td>
+        <td align="right" width="140">
+            {{#canmanage}}
+                <a href="#" onclick="require(['jquery'], function($) { $('#{{uniqid}}-manage-{{orgid}}').css('display', ($('#{{uniqid}}-manage-{{orgid}}').css('display') == 'none') ? '' : 'none')}); return false;">{{#pix}} i/settings, core {{/pix}}</a>
+            {{/canmanage}}
+            {{role}}
+            {{#filesize}}<br /><i>{{filesize}}</i>{{/filesize}}
+        </td>
+    </tr>
+    {{/memberships}}
+</table>

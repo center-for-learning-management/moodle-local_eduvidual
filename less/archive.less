@@ -1,0 +1,39 @@
+// out: ../style/archive.css, sourcemap: false, compress: true
+div.eduvidual-courses-progress {
+	margin-bottom: 10px;
+	border-bottom: 1px solid black;
+    display: block; /* prevent .card from being interpreted as display: flex */
+}
+div.eduvidual-courses-progress>div {
+	display: inline-block !important;
+	padding: 5px 0px;
+	text-align: center;
+}
+div.eduvidual-courses-progress>div:not(:last-child)::after {
+	position: relative; right: 0px;
+	content: " >> ";
+}
+div.eduvidual-courses-progress>div.active {
+	font-weight: bold;
+}
+
+.ul-eduvidual-courses {
+	list-style-type: none;
+}
+.ul-eduvidual-courses>li li, .ul-eduvidual-courses li:not(.shown)>ul {
+	display: none;
+}
+.ul-eduvidual-courses li.shown, .ul-eduvidual-courses li.shown>ul>li {
+	display: block;
+}
+.ul-eduvidual-courses a {
+	position: relative;
+}
+.ul-eduvidual-courses a img {
+	max-width: 15px !important;
+	transform: rotate(0deg);
+	transition: all 1s ease;
+}
+.ul-eduvidual-courses li.shown>label>a:first-child>img {
+	transform: rotate(90deg);
+}

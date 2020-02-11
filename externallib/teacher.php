@@ -1,0 +1,71 @@
+<?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+/**
+ * @package    block_edusupport
+ * @copyright  2018 Digital Education Society (http://www.dibig.at)
+ * @author     Robert Schrenk
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
+defined('MOODLE_INTERNAL') || die;
+
+require_once($CFG->libdir . "/externallib.php");
+
+class block_eduvidual_external_teacher extends external_api {
+    public static function createcourse_selections_parameters() {
+        return new external_function_parameters(array(
+            'orgid' => new external_value(PARAM_INT, 'orgid'),
+            'subcat1' => new external_value(PARAM_RAW, 'subcat1 - value'),
+            'subcat2' => new external_value(PARAM_RAW, 'subcat2 - value'),
+            'subcat3' => new external_value(PARAM_RAW, 'subcat3 - value'),
+        ));
+    }
+    public static function createcourse_selections($orgid, $subcat1, $subcat2, $subcat3) {
+        global $CFG, $DB;
+        $params = self::validate_parameters(self::createcourse_selections_parameters(), array('orgid' => $orgid, 'subcat1' => $subcat1, 'subcat2' => $subcat2, 'subcat3' => $subcat3));
+        require_once($CFG->dirroot . '/blocks/eduvidual/block_eduvidual.php');
+
+        block_eduvidual::set_org($params['orgid']);
+        $orgas = block_eduvidual::get_organisations('Teacher');
+        $org = $DB->get_record('block_eduvidual_org', array('orgid' => $params['orgid']));
+        $seltree = array(
+            'orgids' => $orgas,
+            'subcats1' => block_eduvidual::get('subcats1'),
+            'subcats1lbl' => $org->subcats1lbl,
+            'subcats2lbl' => $org->subcats2lbl,
+            'subcats3lbl' => $org->subcats3lbl,
+            'subcats4lbl' => $org->subcats4lbl,
+        );
+        if (!empty($params['subcat1'])) {
+            $seltree['subcats2'] = block_eduvidual::get('subcats2', $params['subcat1']);
+        }
+        if (!empty($params['subcat2'])) {
+            $seltree['subcats3'] = block_eduvidual::get('subcats3', $params['subcat2']);
+        }
+
+        for ($a = 1; $a <= 3; $a++) {
+            $seltree['subcat' . $a] = $params['subcat' . $a];
+            if ($a > 1 && empty($seltree['subcat' . ($a-1)])) $seltree['subcat' . $a] = '';
+            if (is_array($seltree['subcats' . $a]) && !in_array($params['subcat' . $a], $seltree['subcats' . $a])) $seltree['subcat' . $a] = '';
+        }
+
+        return json_encode($seltree, JSON_NUMERIC_CHECK);
+    }
+    public static function createcourse_selections_returns() {
+        return new external_value(PARAM_RAW, 'Returns information about possible values at every subcat.');
+    }
+}

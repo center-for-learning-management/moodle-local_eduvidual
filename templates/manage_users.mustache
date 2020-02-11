@@ -1,0 +1,195 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+
+<div class="ui-eduvidual block_eduvidual_manage_user-wrapper">
+    <p>
+        <a class="btn btn-primary btn-block" target="_blank"
+            href="{{wwwroot}}/blocks/eduvidual/pages/manage_bunch.php?orgid={{orgid}}">
+            {{#str}} manage:users:printcards, block_eduvidual {{/str}}
+        </a>
+    </p>
+    <div class="grid-eq-2">
+        <div class="card">
+            <h3>{{#str}} manage:users:title, block_eduvidual {{/str}}</h3>
+            <p>{{#str}} manage:users:description, block_eduvidual {{/str}}</p>
+
+            <fieldset>
+            	<legend>{{#str}} manage:users:searchforuser, block_eduvidual {{/str}}</legend>
+            	<input type="text" id="block_eduvidual_manage_setuserrole_search" class="btn-block"
+                    onkeyup="require(['block_eduvidual/manager'], function(MANAGER) { MANAGER.setuserrole_search(); } );" />
+            	<select id="block_eduvidual_manage_setuserrole_user" style="width: 100%;"
+                    onchange_="document.getElementById('block_eduvidual_manage_setuserrole_lbl').innerHTML = this.options[this.selectedIndex].innerHTML;document.getElementById('block_eduvidual_manage_setuserrole').value = this.value;"
+                    size="10" data-role="none" multiple="multiple">
+            		<option value="">{{#str}} manage:users:searchforuser, block_eduvidual {{/str}}</option>
+            	</select>
+            </fieldset>
+            <fieldset>
+            	<!-- <legend>{{#str}} manage:users:setrole, block_eduvidual {{/str}}</legend> -->
+            	<select id="block_eduvidual_manage_setuserrole_role" style="width: 100%;">
+                    <option value="remove">{{#str}} remove {{/str}}</option>
+                    <option value="Parent">{{#str}} role:Parent, block_eduvidual {{/str}}</option>
+            		<option value="Student" selected="selected">{{#str}} role:Student, block_eduvidual {{/str}}</option>
+            		<option value="Teacher">{{#str}} role:Teacher, block_eduvidual {{/str}}</option>
+            		<option value="Manager">{{#str}} role:Manager, block_eduvidual {{/str}}</option>
+            	</select>
+            	<input type="button" value="{{#str}} manage:users:setrole, block_eduvidual {{/str}}" class="btn btn-primary btn-block"
+                    onclick="require(['block_eduvidual/manager'], function(MANAGER) { MANAGER.setuserrole(); });" />
+                <hr />
+                <p>{{#str}} manage:users:setpwreset:description, block_eduvidual {{/str}}</p>
+                <input type="button" value="{{#str}} manage:users:setpwreset, block_eduvidual {{/str}}" class="btn btn-primary btn-block"
+                    onclick="require(['block_eduvidual/manager'], function(MANAGER) { MANAGER.setpwreset(); });" />
+            </fieldset>
+        </div>
+
+        <div class="card">
+            <h3>{{#str}} manage:createuserspreadsheet, block_eduvidual {{/str}}</h3>
+            <p>{{#str}} manage:createuserspreadsheet:import:description, block_eduvidual {{/str}}</p>
+            <ul>
+                <li>id:<br />{{#str}} manage:createuserspreadsheet:import:description:id, block_eduvidual {{/str}}</li>
+                <li>firstname:<br />{{#str}} manage:createuserspreadsheet:import:description:firstname, block_eduvidual {{/str}}</li>
+                <li>lastname:<br />{{#str}} manage:createuserspreadsheet:import:description:lastname, block_eduvidual {{/str}}</li>
+                <li>email:<br />{{#str}} manage:createuserspreadsheet:import:description:email, block_eduvidual {{/str}}</li>
+                <li>role:<br />{{#str}} manage:createuserspreadsheet:import:description:role, block_eduvidual {{/str}}</li>
+                <li>bunch:<br />{{#str}} manage:createuserspreadsheet:import:description:bunch, block_eduvidual {{/str}}</li>
+            </ul>
+            <form action="" method="post" enctype="multipart/form-data">
+                <input type="hidden" name="act" value="users" />
+                <input type="hidden" name="orgid" value="{{orgid}}" />
+                <input type="hidden" name="import" value="1" />
+                <input type="file" name="block_eduvidual_manage_usersimport" class="btn" />
+                <input type="submit" value="{{#str}} upload {{/str}}"  class="btn btn-primary" />
+            </form>
+        </div>
+
+        <div class="card">
+            <h3>{{#str}} manage:adduser, block_eduvidual {{/str}}</h3>
+            <p>{{#str}} manage:adduser:description, block_eduvidual {{/str}}</p>
+            <select id="block_eduvidual_manage_adduser_role" style="width: 100%;">
+                <option value="Parent">{{#str}} role:Parent, block_eduvidual {{/str}}</option>
+                <option value="Student">{{#str}} role:Student, block_eduvidual {{/str}}</option>
+                <option value="Teacher">{{#str}} role:Teacher, block_eduvidual {{/str}}</option>
+                <option value="Manager">{{#str}} role:Manager, block_eduvidual {{/str}}</option>
+            </select>
+            <input type="text" id="block_eduvidual_manage_adduser" data-orgid="{{orgid}}" />
+            <input type="button" value="{{#str}} manage:adduser, block_eduvidual {{/str}}" class="btn btn-primary btn-block"
+                onclick="require(['block_eduvidual/manager'], function(MANAGER) { MANAGER.addUser(); });"/>
+        </div>
+        <div class="card">
+            <h3>{{#str}} manage:createuseranonymous, block_eduvidual {{/str}}</h3>
+            <p>{{#str}} manage:createuseranonymous:description, block_eduvidual {{/str}}</p>
+            <input type="hidden" id="block_eduvidual_manage_createuseranonymous_orgid" value="{{orgid}}" />
+            <label for="block_eduvidual_manage_createuseranonymous_role">{{#str}} manage:createuseranonymous:role, block_eduvidual {{/str}}</label>
+            <select id="block_eduvidual_manage_createuseranonymous_role" style="width: 100%;">
+                <option value="Parent">{{#str}} role:Parent, block_eduvidual {{/str}}</option>
+                <option value="Student">{{#str}} role:Student, block_eduvidual {{/str}}</option>
+                <option value="Teacher">{{#str}} role:Teacher, block_eduvidual {{/str}}</option>
+                <option value="Manager">{{#str}} role:Manager, block_eduvidual {{/str}}</option>
+            </select>
+            <label for="block_eduvidual_manage_createuseranonymous_bunch">{{#str}} manage:createuseranonymous:bunch, block_eduvidual {{/str}}</label>
+            <input type="text" id="block_eduvidual_manage_createuseranonymous_bunch" />
+            <label for="block_eduvidual_manage_createuseranonymous_amount">{{#str}} manage:createuseranonymous:amount, block_eduvidual {{/str}}</label>
+            <input type="number" id="block_eduvidual_manage_createuseranonymous_amount" min="1" max="99" />
+            <input type="button" id="block_eduvidual_manage_createuseranonymous_btn" value="{{#str}} manage:createuseranonymous, block_eduvidual {{/str}}" class="btn btn-primary"
+                onclick="require(['block_eduvidual/manager'], function(MANAGER) { MANAGER.addUserAnonymous(); });"/>
+            <p id="block_eduvidual_manage_createuseranonymous_success" class="alert alert-success" style="display: none;">
+                <span></span>{{#str}} manage:createuseranonymous:success, block_eduvidual {{/str}}
+                <input type="button" class="btn btn-primary" data-bunch=""
+                    onclick="var bunch = $(this).attr('data-bunch'); window.open('{{wwwroot}}/blocks/eduvidual/pages/manage_bunch.php?orgid={{orgid}}&bunch=' + bunch, 'system');"
+                    value="{{#str}} manage:users:printcards, block_eduvidual {{/str}}" />
+            </p>
+            <p id="block_eduvidual_manage_createuseranonymous_failed" class="alert alert-danger" style="display: none;">
+                <span></span>{{#str}} manage:createuseranonymous:failed, block_eduvidual {{/str}}
+            </p>
+        </div>
+        <div class="card">
+            <h3>{{#str}} manage:addparent, block_eduvidual {{/str}}</h3>
+            <p>{{#str}} manage:addparent:description, block_eduvidual {{/str}}</p>
+            <p class="alert alert-info">{{#str}} manage:addparent:warning, block_eduvidual {{/str}}</p>
+            <input type="text" id="block_eduvidual_manage_addparent_studentfilter"
+                data-orgid="{{orgid}}"
+                placeholder="{{#str}} manage:addparent:studentfilter, block_eduvidual {{/str}}"
+                onkeyup="var inp = this; require(['block_eduvidual/manager'], function(MANAGER) { MANAGER.addParentFilter('student', inp); });"
+                 />
+            <select id="block_eduvidual_manage_addparent_student" style="width: 100%;"
+                onchange="require(['block_eduvidual/manager'], function(MANAGER) { MANAGER.addParentSelectStudent(); });">
+                <option value="">{{#str}} manage:addparent:studentfilter:init, block_eduvidual {{/str}}</option>
+            </select>
+            <input type="text" id="block_eduvidual_manage_addparent_parentfilter"
+                placeholder="{{#str}} manage:addparent:parentfilter, block_eduvidual {{/str}}"
+                onkeyup="var inp = this; require(['block_eduvidual/manager'], function(MANAGER) { MANAGER.addParentFilter('parent', inp); });" />
+            <select id="block_eduvidual_manage_addparent_parent" style="width: 100%;">
+                <option value="">{{#str}} manage:addparent:parentfilter:init, block_eduvidual {{/str}}</option>
+            </select>
+            <input type="button" value="{{#str}} manage:addparent:changestate, block_eduvidual {{/str}}" class="btn btn-primary btn-block"
+                onclick="var inp = this; require(['block_eduvidual/manager'], function(MANAGER) { MANAGER.addParent(inp); });" />
+        </div>
+        <div class="card block_eduvidual_accesscodes">
+            <h3>{{#str}} manage:accesscodes, block_eduvidual {{/str}}</h3>
+            <p>{{#str}} manage:accesscodes:description, block_eduvidual, { "wwwroot": "{{{wwwroot}}}"} {{/str}}</p>
+
+            <fieldset>
+                <legend>{{#str}} manage:accesscodes:create, block_eduvidual {{/str}}</legend>
+                <label for="block_eduvidual_manage_accesscode_code">{{#str}} manage:accesscodes:code, block_eduvidual {{/str}}</label>
+                <input type="text" id="block_eduvidual_manage_accesscode_code" placeholder="{{#str}} manage:accesscodes:code, block_eduvidual {{/str}}" />
+
+                <label for="block_eduvidual_manage_accesscode_maturity">{{#str}} manage:accesscodes:maturity, block_eduvidual {{/str}}</label>
+                <input type="text" id="block_eduvidual_manage_accesscode_maturity" placeholder="YYYY-mm-dd HH:ii:ss" value="{{yyyymmddhhiiss}}" />
+
+                <label for="block_eduvidual_manage_accesscode_role">{{#str}} manage:accesscodes:role, block_eduvidual {{/str}}</label>
+                <select id="block_eduvidual_manage_accesscode_role">
+                    <option value="Student">{{#str}} role:Student, block_eduvidual {{/str}}</option>
+                    <option value="Teacher">{{#str}} role:Teacher, block_eduvidual {{/str}}</option>
+                    <option value="Manager">{{#str}} role:Manager, block_eduvidual {{/str}}</option>
+                    <option value="Parent">{{#str}} role:Parent, block_eduvidual {{/str}}</option>
+                </select>
+
+                <input type="button" id="block_eduvidual_manage_accesscode_btn" class="btn ui-btn btn-primary" value="{{#str}} save {{/str}}"
+                    onclick="require(['block_eduvidual/manager'], function(MANAGER) { MANAGER.createAccesscode(); });" />
+            </fieldset>
+
+
+            {{#codes_amount}}
+                <table border="0">
+                    <tr>
+                        <th width="30">{{#str}} manage:accesscodes:issuer:short, block_eduvidual {{/str}}</th>
+                        <th>{{#str}} manage:accesscodes:code, block_eduvidual {{/str}}</th>
+                        <th>{{#str}} manage:accesscodes:role, block_eduvidual {{/str}}</th>
+                        <th>{{#str}} manage:accesscodes:maturity:short, block_eduvidual {{/str}}</th>
+                        <th width="30">{{#str}} manage:accesscodes:revoke, block_eduvidual {{/str}}</th>
+                    </tr>
+                    {{#codes}}
+                        <tr{{^isvalid}} class="mature" {{/isvalid}}>
+                            <td>
+                                {{{issuerpicture}}}
+                            </td>
+                            <td>{{code}}</td>
+                            <td>{{role_localized}}</td>
+                            <td>{{#userdate}} {{maturity}}, %Y-%m-%d %H:%M {{/userdate}}</td>
+                            <td align="center">
+                                {{#isvalid}}
+                                <a href="#" onclick="require(['block_eduvidual/manager'], function(MANAGER) { MANAGER.revokeAccesscode({{id}}); }); return false;">
+                                    <img src="/pix/i/delete.svg" alt="{{#str}} manage:accesscodes:revoke, block_eduvidual {{/str}}" width="30" />
+                                </a>
+                                {{/isvalid}}
+                            </td>
+                        </tr>
+                    {{/codes}}
+                </table>
+            {{/codes_amount}}
+        </div>
+    </div>
+</div>

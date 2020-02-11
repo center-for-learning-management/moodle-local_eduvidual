@@ -1,0 +1,195 @@
+ {{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+
+{{#ismanager}}
+    <p class="info">{{#str}} createcourse:hint_orgclasses, block_eduvidual {{/str}}</p>
+{{/ismanager}}
+
+<form id="{{uniqid}}-form" action="{{wwwroot}}" method="POST" enctype="multipart/form-data">
+    <input type="hidden" id="{{uniqid}}-formsent" name="formsent" value="1" />
+    {{^multipleorgs}}
+        <input type="hidden" id="{{uniqid}}-orgid" name="orgid" value="{{orgfirst}}" />
+    {{/multipleorgs}}
+    <table border="0" class="generaltable">
+        {{#multipleorgs}}
+        <tr>
+            <td width="200">
+                {{#str}} createcourse:org, block_eduvidual {{/str}}
+            </td>
+            <td width="20" class="requirement">
+                <span class="float-sm-right text-nowrap">
+                    <abbr class="initialism text-danger" title="{{#str}} required {{/str}}">
+                        <i class="icon fa fa-exclamation-circle text-danger fa-fw " title="{{#str}} required {{/str}}" aria-label="{{#str}} required {{/str}}"></i>
+                    </abbr>
+                </span>
+            </td>
+            <td>
+                <select id="{{uniqid}}-orgid" name="orgid" style="width: 100%;"
+                    {{! onchange="require(['jquery'], function($) { $('#{{uniqid} }-formsent').val('0'); $('#{{uniqid} }-form').submit(); });"> }}
+                    onchange="require(['block_eduvidual/teacher'], function(T) { T.createCourseSelections('{{uniqid}}'); });">
+                    {{#orgs}}
+                    <option value="{{orgid}}" {{#isselected}} selected="selected" {{/isselected}}>({{orgid}}) {{name}}</option>
+                    {{/orgs}}
+                </select>
+            </td>
+        </tr>
+        {{/multipleorgs}}
+        {{^multipleorgs}}
+        <tr>
+            <td colspan="2">
+                {{#str}} createcourse:org, block_eduvidual {{/str}}
+            </td>
+            <td>
+                {{#orgs}}
+                ({{orgid}}) {{name}}
+                {{/orgs}}
+            </td>
+        </tr>
+        {{/multipleorgs}}
+        <tr class="{{uniqid}}-subcat1">
+            <td class="{{uniqid}}-subcats1lbl">
+                {{subcats1lbl}}
+            </td>
+            <td class="requirement">
+                <span class="float-sm-right text-nowrap">
+                    <abbr class="initialism text-danger" title="{{#str}} required {{/str}}">
+                        <i class="icon fa fa-exclamation-circle text-danger fa-fw " title="{{#str}} required {{/str}}" aria-label="{{#str}} required {{/str}}"></i>
+                    </abbr>
+                </span>
+            </td>
+            <td>
+                {{#has_subcats1}}
+                    <select id="{{uniqid}}-subcat1" name="subcat1" style="width: 100%;"
+                        onchange="require(['block_eduvidual/teacher'], function(T) { T.createCourseSelections('{{uniqid}}'); });">
+                        {{#subcats1}}
+                        <option>{{.}}</option>
+                        {{/subcats1}}
+                    </select>
+                {{/has_subcats1}}
+                {{^has_subcats1}}
+                    <input id="{{uniqid}}-subcat1" name="subcat1" size="5" style="width: 100%;"
+                        onkeyup="var i = this; require(['block_eduvidual/main', 'block_eduvidual/teacher'], function(M, TEACHER) { M.watchValue({ target: $(i), run: function() { TEACHER.createCourseSelections('{{uniqid}}'); } }); });"/>
+                {{/has_subcats1}}
+            </td>
+        </tr>
+
+        <tr class="{{uniqid}}-subcat2">
+            <td class="{{uniqid}}-subcats2lbl">
+                {{subcats2lbl}}
+            </td>
+            <td class="requirement">
+                <span class="float-sm-right text-nowrap">
+                    <abbr class="initialism text-danger" title="{{#str}} required {{/str}}">
+                        <i class="icon fa fa-exclamation-circle text-danger fa-fw " title="{{#str}} required {{/str}}" aria-label="{{#str}} required {{/str}}"></i>
+                    </abbr>
+                </span>
+            </td>
+            <td>
+                {{#has_subcats2}}
+                    <select id="{{uniqid}}-subcat2" name="subcat2" style="width: 100%;"
+                        onchange="require(['block_eduvidual/teacher'], function(T) { T.createCourseSelections('{{uniqid}}'); });">
+                        {{#subcats2}}
+                        <option>{{.}}</option>
+                        {{/subcats2}}
+                    </select>
+                {{/has_subcats2}}
+                {{^has_subcats2}}
+                    <input id="{{uniqid}}-subcat2" name="subcat2" size="5" style="width: 100%;"
+                        onkeyup="var i = this; require(['block_eduvidual/main', 'block_eduvidual/teacher'], function(M, TEACHER) { M.watchValue({ target: $(i), run: function() { TEACHER.createCourseSelections('{{uniqid}}'); } }); });"/>
+                {{/has_subcats2}}
+            </td>
+        </tr>
+
+        <tr class="{{uniqid}}-subcat3">
+            <td class="{{uniqid}}-subcats3lbl">
+                {{subcats3lbl}}
+            </td>
+            <td class="requirement"></td>
+            <td>
+                {{#has_subcats3}}
+                    <select id="{{uniqid}}-subcat3" name="subcat3" style="width: 100%;"
+                        onchange="require(['block_eduvidual/teacher'], function(T) { T.createCourseSelections('{{uniqid}}'); });">
+                        {{#subcats3}}
+                        <option>{{.}}</option>
+                        {{/subcats3}}
+                    </select>
+                {{/has_subcats3}}
+                {{^has_subcats3}}
+                    <input id="{{uniqid}}-subcat3" name="subcat3" size="5" style="width: 100%;"
+                        onkeyup="var i = this; require(['block_eduvidual/main', 'block_eduvidual/teacher'], function(M, TEACHER) { M.watchValue({ target: $(i), run: function() { TEACHER.createCourseSelections('{{uniqid}}'); } }); });"/>
+                {{/has_subcats3}}
+            </td>
+        </tr>
+
+        <tr class="{{uniqid}}-subcat4">
+            <td class="{{uniqid}}-subcats4lbl">
+                {{subcats4lbl}}
+            </td>
+            <td class="requirement"></td>
+            <td>
+                <input id="{{uniqid}}-subcat4" name="subcat4" size="5" placeholder="{{subcats4lbl}}" style="width: 100%;"
+                    onkeyup="var i = this; require(['block_eduvidual/main', 'block_eduvidual/teacher'], function(M, TEACHER) { M.watchValue({ target: $(i), run: function() { TEACHER.createCourseSelections('{{uniqid}}'); } }); });"/>
+            </td>
+        </tr>
+
+        <tr class="{{uniqid}}-basement">
+            <td colspan="2">
+                {{#str}} createcourse:basement, block_eduvidual {{/str}}
+            </td>
+            <td>
+                <select id="{{uniqid}}-basement" name="basement" style="width: 100%;"
+                    onchange="var s = this; require(['jquery'], function($) { $('.summary-{{uniqid}}').css('display', 'none'); $('#summary-{{uniqid}}-' + $(s).val()).css('display', 'block'); });">
+                    {{#basements}}
+                        <optgroup label="{{name}}">
+                        {{#templates}}
+                            <option value="{{id}}">{{fullname}}</option>
+                        {{/templates}}
+                        </optgroup>
+                    {{/basements}}
+                </select>
+            </td>
+        </tr>
+        <tr class="{{uniqid}}-basement-summary">
+            <td colspan="3" id="{{uniqid}}-basement-summary">
+                {{#basements}}
+                    {{#templates}}
+                        <div id="summary-{{uniqid}}-{{id}}" class="summary-{{uniqid}}" style="display: none;">{{{summary}}}</div>
+                    {{/templates}}
+                    </optgroup>
+                {{/basements}}
+            </td>
+        </tr>
+        <tr class="{{uniqid}}-create">
+            <td colspan="3">
+                <a href="#" id="{{uniqid}}-submit" class="btn btn-primary btn-block disabled"
+                    onclick="require(['jquery'], function($) { $('#{{uniqid}}-form').submit(); });">
+                    {{#str}} create {{/str}}
+                </a>
+            </td>
+        </tr>
+    </table>
+</form>
+
+{{#js}}
+    require(['jquery'], function($) {
+        $('.summary-{{uniqid}}').css('display', 'none');
+        $('#summary-{{uniqid}}-' + $('#{{uniqid}}-basement').val()).css('display', 'block');
+    });
+    require(['block_eduvidual/teacher'], function(TEACHER) {
+        TEACHER.createCourseSelections('{{uniqid}}');
+    });
+{{/js}}

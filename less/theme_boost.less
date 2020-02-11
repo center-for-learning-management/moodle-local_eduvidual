@@ -1,0 +1,77 @@
+// out: ../style/theme_boost.css, sourcemap: false, compress: true
+/* THEME BOOST FIXES */
+/* Remove Label "eduvidual" */
+.navbar-brand .site-name {
+    display: none !important;
+}
+body.theme-boost_campus {
+    #page-header {
+        .context-header-settings-menu {
+            position: absolute; top: 0; right: 0;
+        }
+        #page-navbar + .ml-auto.d-flex {
+            position: absolute; top: 0; right: 40px;
+        }
+    }
+
+}
+body.theme-boost, body.theme-boost_campus {
+    /* Shadow for edit-icon */
+    div[data-role="page"]:not(.card) {
+        background-color: rgba(255, 255, 255, 0.0);
+    }
+    header .site-name {
+        display: none;
+    }
+    #page-header {
+        padding: 5px;
+        .btn.pull-xs-left {
+            margin-top: 3px; margin-right: 0px !important;
+        }
+        .card {
+            background-size: cover;
+            background-image: url("../pix/banner-curve.jpg");
+            background-position: center center;
+            .card-body {
+                padding: 20px 0px 0px 0px;
+                .page-context-header {
+                    padding: 0px 20px;
+                }
+                #page-navbar {
+                    background-color: rgba(255, 255, 255, 0.7);
+                    padding: 0px 20px;
+                    width: 100%;
+                    margin-top: 10px;
+                }
+            }
+        }
+        .container-fluid {
+            padding-left: 0px; padding-right: 0px;
+        }
+        i.fa.fa-cog.fa-fw {
+            text-shadow: 2px 2px 3px #333;
+        }
+        .navbar-brand.has-logo {
+            margin-right: 5px !important;
+            margin-left: 5px !important;
+            margin-top: -1px;
+            padding-right: 0px !important;
+        }
+        nav.nav {
+            height: 40px;
+            .nav-item, .nav-item a {
+                float: none;
+                display: inline-block !important;
+                line-height: 30px;
+                margin-left: 5px;
+            }
+        }
+        /* FIX APPEARANCE OF BLOCKS */
+        #page .card {
+            background-color: rgba(255, 255, 255, 0.7) !important;
+        }
+
+    }
+}
+
+/* END THEME BOOST FIXES */

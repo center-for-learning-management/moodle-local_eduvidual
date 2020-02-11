@@ -1,0 +1,75 @@
+ {{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+  }}
+<div class="block_eduvidual_admin_orgs">
+    <h4>{{#str}} admin:orgs:title, block_eduvidual {{/str}}</h4>
+    <p>{{#str}} admin:orgs:description, block_eduvidual {{/str}}</p>
+
+    <div class="grid-eq-2">
+        <div>
+            <input type="text" onkeyup="require(['block_eduvidual/admin'], function(ADMIN) { ADMIN.manageorgs_search('{{uniqid}}') });" id="{{uniqid}}-search" style="width: 100%;" />
+            <ul id="{{uniqid}}-list" data-role="listview"></ul>
+        </div>
+        <div><form id="{{uniqid}}-form">
+            <div class="grid-eq-2">
+                <a href="#" onclick="require(['block_eduvidual/admin'], function(ADMIN) { ADMIN.manageorgs_store('{{uniqid}}') }); return false;"
+                   class="btn btn-primary" id="{{uniqid}}-store">
+                    {{#pix}} t/approve, core {{/pix}}
+                    {{#str}} store, block_eduvidual {{/str}}
+                </a>
+                <a href="#" onclick="require(['block_eduvidual/admin'], function(ADMIN) { ADMIN.manageorgs_reset('{{uniqid}}') }); return false;"
+                   class="btn btn-primary" id="{{uniqid}}-reset">
+                    {{#pix}} t/add, core {{/pix}}
+                    {{#str}} new {{/str}}
+                </a>
+            </div>
+            <a href="{{wwwroot}}/course/index.php?categoryid=" class="btn btn-primary" style="display: none;"
+                onclick="window.open(this.href + this.getAttribute('data-orig'), '_system'); return false;" id="{{uniqid}}-field-categoryid">
+                {{#pix}} i/course, core {{/pix}}
+                {{#str}} admin:orgs:fields:categoryid, block_eduvidual {{/str}}
+            </a>
+            <input type="hidden" id="{{uniqid}}-field-id" />
+            <label for="{{uniqid}}-field-orgid">{{#str}} admin:orgs:fields:orgid, block_eduvidual {{/str}}</label>
+            <input type="text" id="{{uniqid}}-field-orgid" style="width: 100%;" />
+            <label for="{{uniqid}}-field-name">{{#str}} admin:orgs:fields:name, block_eduvidual {{/str}}</label>
+            <input type="text" id="{{uniqid}}-field-name" style="width: 100%;" />
+            <label for="{{uniqid}}-field-mail">{{#str}} admin:orgs:fields:mail, block_eduvidual {{/str}}</label>
+            <input type="text" id="{{uniqid}}-field-mail" style="width: 100%;" />
+            <label for="{{uniqid}}-field-phone">{{#str}} admin:orgs:fields:phone, block_eduvidual {{/str}}</label>
+            <input type="text" id="{{uniqid}}-field-phone" style="width: 100%;" />
+            <label for="{{uniqid}}-field-street">{{#str}} admin:orgs:fields:street, block_eduvidual {{/str}}</label>
+            <input type="text" id="{{uniqid}}-field-street" style="width: 100%;" />
+            <label for="{{uniqid}}-field-zip">{{#str}} admin:orgs:fields:zip, block_eduvidual {{/str}}</label>
+            <input type="text" id="{{uniqid}}-field-zip" style="width: 100%;" />
+            <label for="{{uniqid}}-field-city">{{#str}} admin:orgs:fields:city, block_eduvidual {{/str}}</label>
+            <input type="text" id="{{uniqid}}-field-city" style="width: 100%;" />
+            <label for="{{uniqid}}-field-country">{{#str}} admin:orgs:fields:country, block_eduvidual {{/str}}</label>
+            <input type="text" id="{{uniqid}}-field-country" style="width: 100%;" />
+            <label for="{{uniqid}}-field-lon">{{#str}} admin:orgs:fields:lon, block_eduvidual {{/str}}</label>
+            <input type="text" id="{{uniqid}}-field-lon" style="width: 100%;" />
+            <label for="{{uniqid}}-field-lat">{{#str}} admin:orgs:fields:lat, block_eduvidual {{/str}}</label>
+            <input type="text" id="{{uniqid}}-field-lat" style="width: 100%;" />
+            <div>
+                <a href="#"
+                    onclick="require(['jquery'], function($) { var w = window.open('https://www.google.com/maps/place/' + [$('#{{uniqid}}-field-street').val(),$('#{{uniqid}}-field-zip').val(),$('#{{uniqid}}-field-city').val()].join(' ')); }); return false;">
+                    {{#pix}} i/publish, core {{/pix}}
+                </a>
+                <input type="text" placeholder="input-url-from-google-maps-search" style="width: 100%;"
+                    onchange="var i = this; require(['jquery'], function($) { var u = $(i).val().split('@'); u = u[1].split(','); $('#{{uniqid}}-field-lat').val(u[0]); $('#{{uniqid}}-field-lon').val(u[1]); $(i).val(''); });"/>
+            </div>
+        </form></div>
+    </div>
+</div>
