@@ -110,7 +110,7 @@ function block_eduvidual_before_standard_html_head() {
         switch ($coursectx->contextlevel) {
             case CONTEXT_COURSE:
                 $ctx = context_course::instance($coursectx->instanceid);
-                $canaccess = has_capability('moodle/course:view', $ctx);
+                $canaccess = require_login($coursectx->instanceid, true, NULL, true, true);
             break;
             case CONTEXT_COURSECAT:
                 $ctx = \context_coursecat::instance($coursectx->instanceid);
