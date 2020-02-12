@@ -776,13 +776,9 @@ class block_eduvidual extends block_base /* was block_list */ {
      * If user is not logged in redirect to login.
     **/
     public static function redirect_privacy_issue($camefrom) {
-        global $CFG, $USER;
-        if (isloggedin() && !isguestuser($USER)) {
-            header('Location: ' . $CFG->wwwroot . '/blocks/eduvidual/pages/restricted.php?camefrom=' . $camefrom);
-            die();
-        } else {
-            redirect($CFG->wwwroot . '/login/index.php');
-        }
+        global $CFG, $PAGE, $SESSION, $USER;
+        $SESSION->wantsurl = $PAGE->url->__toString();
+        header('Location: ' . $CFG->wwwroot . '/blocks/eduvidual/pages/restricted.php?camefrom=' . $camefrom);
     }
     /**
      * Automatically sets the context based on the PAGE or current org
