@@ -128,7 +128,7 @@ function block_eduvidual_before_standard_html_head() {
                     $html .= '</a></p>';
                     $injects[] = $html;
                 }
-            } elseif ($PAGE->context->contextlevel == CONTEXT_COURSECAT) {
+            } else {
                 block_eduvidual::redirect_privacy_issue('context-' . $PAGE->context->id);
             }
         }
