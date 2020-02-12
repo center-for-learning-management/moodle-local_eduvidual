@@ -97,30 +97,20 @@ function block_eduvidual_before_standard_html_head() {
         // This is an org and it does not belong to protectedorgs.
         // Perhaps user can access particular courses, but never coursecategories!
 
-        // IF we are accessing anything else we have to determine the course first.
-        // contextlevel of targetctx must be course, which is 50.
-        $coursectx = $targetctx;
-        while(!$coursectx->contextlevel >= CONTEXT_COURSE) {
-            $path = explode('/'. $coursectx->path);
-            $parentid = $path[count($path) - 2];
-            $coursectx = $DB->get_record('context', array('id' => $parentid));
-        }
-        $canaccess = true;
-        switch ($coursectx->contextlevel) {
-            case CONTEXT_COURSE:
-                $ctx = context_course::instance($coursectx->instanceid);
-                $canaccess = is_enrolled($ctx, $USER, '', true);
-            break;
-            case CONTEXT_COURSECAT:
-                $ctx = \context_coursecat::instance($coursectx->instanceid);
-                $canaccess = has_capability('block/eduvidual:canaccess', $ctx);
-            break;
-            case CONTEXT_USER:
-                // Is managed by block_eduvidual_control_view_profile.
-            break;
-            case CONTEXT_SYSTEM:
-                // Is always allowed.
-            break;
+        $canaccess = false;
+        $ctx = \context_coursecat::instance($orgctx->instanceid);
+        if (has_capability('block/eduvidual:canaccess', $ctx)) {
+            $canaccess = true;
+        } elseif ($coursectx->contextlevel >= CONTEXT_COURSE) {
+            // You have a second chance. Is that a course for guests or are you enrolled?
+            $coursectx = $targetctx;
+            while(!$coursectx->contextlevel >= CONTEXT_COURSE) {
+                $path = explode('/'. $coursectx->path);
+                $parentid = $path[count($path) - 2];
+                $coursectx = $DB->get_record('context', array('id' => $parentid));
+            }
+            $ctx = \context_course::instance($coursectx->instanceid);
+            $canaccess = is_enrolled($ctx, $USER, '', true);
         }
 
         if (!$canaccess) {
