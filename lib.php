@@ -101,7 +101,6 @@ function block_eduvidual_before_standard_html_head() {
         // contextlevel of targetctx must be course, which is 50.
         $coursectx = $targetctx;
         while(!$coursectx->contextlevel >= CONTEXT_COURSE) {
-            print_r($coursectx);
             $path = explode('/'. $coursectx->path);
             $parentid = $path[count($path) - 2];
             $coursectx = $DB->get_record('context', array('id' => $parentid));
@@ -110,7 +109,7 @@ function block_eduvidual_before_standard_html_head() {
         switch ($coursectx->contextlevel) {
             case CONTEXT_COURSE:
                 $ctx = context_course::instance($coursectx->instanceid);
-                $canaccess = require_login($coursectx->instanceid, true, NULL, true, true);
+                $canaccess = is_enrolled($ctx, $USER, '', true);
             break;
             case CONTEXT_COURSECAT:
                 $ctx = \context_coursecat::instance($coursectx->instanceid);
