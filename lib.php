@@ -37,7 +37,10 @@ function block_eduvidual_before_standard_html_head() {
 
     $data = array(
         'context' => $CONTEXT,
-        'course' => $COURSE,
+        'course' => (object) array(
+            'id' => $COURSE->id,
+            'contextid' => $PAGE->context->id,
+        ),
     );
     $PAGE->requires->js_call_amd("block_eduvidual/jsinjector", "run", array($data));
     // General boost-modifications.
