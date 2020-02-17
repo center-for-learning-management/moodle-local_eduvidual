@@ -89,9 +89,11 @@ function block_eduvidual_before_standard_html_head() {
     // Check if we are allowed to access this page.
     $targetctx = $DB->get_record('context', array('id' => $PAGE->context->id));
     $path = explode('/', $targetctx->path);
-    $orgctx = $DB->get_record('context', array('id' => $path[2]));
-    $org = $DB->get_record('block_eduvidual_org', array('categoryid' => $orgctx->instanceid));
-    $protectedorgs = explode(',', get_config('block_eduvidual', 'protectedorgs'));
+    if (count($path) > 1) {
+        $orgctx = $DB->get_record('context', array('id' => $path[2]));
+        $org = $DB->get_record('block_eduvidual_org', array('categoryid' => $orgctx->instanceid));
+        $protectedorgs = explode(',', get_config('block_eduvidual', 'protectedorgs'));
+    }
 
     if (!empty($org->orgid) && !in_array($org->orgid, $protectedorgs)) {
         // This is an org and it does not belong to protectedorgs.
