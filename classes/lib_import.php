@@ -90,7 +90,7 @@ class block_eduvidual_lib_import {
                 $sheet = $spreadsheet->getSheet(0);
 
                 // Get fields from first row and let maxcols grow.
-                $row = 1;
+                $row = 1; $maxcols = 0;
                 while (!empty($value = $sheet->getCellByColumnAndRow($maxcols, $row, false)->getCalculatedValue())) {
                     $colids[$maxcols] = strtolower($value);
                     $maxcols++;
@@ -104,8 +104,11 @@ class block_eduvidual_lib_import {
                     $foundany = false;
                     $obj = new stdClass();
                     for($col = 0; $col < $maxcols; $col++) {
-                        $obj->{$colids[$col]} = $sheet->getCellByColumnAndRow($col, $row, false)->getCalculatedValue();
-                        if (!empty($obj->{$colids[$col]})) $foundany = true;
+                        $cell = $sheet->getCellByColumnAndRow($col, $row, false);
+                        if (!empty($cell)) {
+                            $obj->{$colids[$col]} = $cell->getCalculatedValue();
+                            if (!empty($obj->{$colids[$col]})) $foundany = true;
+                        }
                     }
                     if (!empty($obj->role)) {
                         $obj = $this->compile($obj);
