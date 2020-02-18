@@ -264,7 +264,7 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'blo
             $('#' + uniqid + '-legend td.none').parent().css('display', includenonegroup ? 'table-row' : 'none');
 
             if (ADMIN.debug_gps) console.log('Sending to ' + method, data);
-            MAIN.spinnerGrid(true);
+            //MAIN.spinnerGrid(true);
             AJAX.call([{
                 methodname: method,
                 args: data,
@@ -272,7 +272,7 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'blo
                     if (ADMIN.refresh_identifier != refresh_identifier) return; // Immediately abort!
                     try { data = JSON.parse(data); } catch (e) {}
                     if (ADMIN.debug_gps) console.log('Got response', data);
-                    MAIN.spinnerGrid(false);
+                    //MAIN.spinnerGrid(false);
 
                     var orgs = data;
 
