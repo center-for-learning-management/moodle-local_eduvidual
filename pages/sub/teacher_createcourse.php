@@ -168,10 +168,10 @@ if ($formsent) {
                             $coursedata->category = $categoryid;
                             $coursedata->startdate = (date("m") < 6)?strtotime((date("Y")-1) . '0901000000'):strtotime(date("Y") . '0901000000');
                             $coursedata->summary = "";
-                            if (!empty($subcat1)) $coursedata->summary .= block_eduvidual::get('subcats1lbl') . ': ' . $subcat1 . "<br />\n";
-                            if (!empty($subcat2)) $coursedata->summary .= block_eduvidual::get('subcats2lbl') . ': ' . $subcat2 . "<br />\n";
-                            if (!empty($subcat3)) $coursedata->summary .= block_eduvidual::get('subcats3lbl') . ': ' . $subcat3 . "<br />\n";
-                            if (!empty($subcat4)) $coursedata->summary .= block_eduvidual::get('subcats4lbl') . ': ' . $subcat4 . "<br />\n";
+                            if (!empty($subcat1)) $coursedata->summary .= $org->subcats1lbl . ': ' . $subcat1 . "<br />\n";
+                            if (!empty($subcat2)) $coursedata->summary .= $org->subcats2lbl . ': ' . $subcat2 . "<br />\n";
+                            if (!empty($subcat3)) $coursedata->summary .= $org->subcats3lbl . ': ' . $subcat3 . "<br />\n";
+                            if (!empty($subcat4)) $coursedata->summary .= $org->subcats4lbl . ': ' . $subcat4 . "<br />\n";
                             //print_r($coursedata);
                             $course = create_course($coursedata);
 
