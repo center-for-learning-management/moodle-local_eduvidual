@@ -14,6 +14,25 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'blo
                             ])
                 );
             });
+            var shortpathname = window.location.pathname.substring(window.location.pathname.length-"/course/modedit.php".length);
+            if (shortpathname == "/course/modedit.php") {
+                var params = window.location.search.substr(1).split('&');
+                var type = '';
+                params.forEach(function(item)) {
+                    var tmp = item.split('=');
+                    if (tmp[0] === 'add' && typeof tmp[1] !== 'undefined') {
+                        type = tmp[1];
+                    }
+                }
+                if (type !== '') {
+                    this.modifyResourceForm(data.explevel, type);
+                }
+            }
+        },
+        modifyResourceForm: function(explevel, type) {
+            // @todo modify form for all types here.
+            // Perhaps retrieve code via ajax, so that we can make this behaviour configurable?
+
         },
         modifyRedirectUrl: function(type) {
             if (this.debug) console.log('block_eduvidual/jsinjector:modifyRedirectUrl(type)', type);

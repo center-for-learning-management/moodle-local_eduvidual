@@ -25,11 +25,33 @@
         <label>
             <input type="checkbox" name="moolevels[]" value="{{roleid}}"{{checked}}
                    onclick="var inp = this; require(['block_eduvidual/admin'], function(ADMIN) { ADMIN.moolevels(inp); });">
-           {{name}}
+           {{name}} ({{roleid}})
        </label>
    </li>
 {{/moolevels}}
 </ul>
+<p>{{#str}} explevel:formmodificator:description, block_eduvidual {{/str}}</p>
+<form method="POST" action="" enctype="multipart/form-data">
+<table width="100%" class="generaltable">
+    <tr>
+        <th width="80">{{#str}} admin:formmodificator:type, block_eduvidual {{/str}}</th>
+        <th width="80">{{#str}} admin:formmodificator:roleid, block_eduvidual {{/str}}</th>
+        <th>{{#str}} admin:formmodificator:ids_to_hide, block_eduvidual {{/str}}</th>
+        <th>{{#str}} admin:formmodificator:ids_to_set, block_eduvidual {{/str}}</th>
+    </tr>
+{{#formmodificators}}
+    <tr>
+        <td valign="top"><input type="text" name="formmodificator_type[{{id}}]" value="{{type}}" /></td>
+        <td valign="top"><input type="text" name="formmodificator_roleid[{{id}}]" value="{{roleid}}" /></td>
+        <td valign="top"><textarea name="formmodificator_ids_to_hide[{{id}}]">{{ids_to_hide}}</textarea></td>
+        <td valign="top"><textarea name="formmodificator_ids_to_set[{{id}}]">{{ids_to_set}}</textarea></td>
+    </tr>
+{{/formmodificators}}
+    <tr>
+        <td colspan="4"><input type="submit" value="{{#str}} send {{/str}}" /></td>
+    </tr>
+</table>
+</form>
 
 <h4>{{#str}} admin:questioncategories:title, block_eduvidual {{/str}}</h4>
 <p>{{#str}} admin:questioncategories:description, block_eduvidual {{/str}}</p>
