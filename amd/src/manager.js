@@ -211,7 +211,7 @@ define(['jquery', 'core/ajax', 'core/modal_events', 'core/modal_factory', 'core/
                     var method = 'block_eduvidual_manager_user_form';
                     var data = { orgid: orgid, userid: userid };
                     //console.log('Sending to ', method, data);
-                    MAIN.spinnerGrid(true);
+                    //MAIN.spinnerGrid(true);
                     AJAX.call([{
                         methodname: method,
                         args: data,
@@ -253,7 +253,7 @@ define(['jquery', 'core/ajax', 'core/modal_events', 'core/modal_factory', 'core/
                                         fail: NOTIFICATION.exception
                                     }]);
                                 });
-                                MAIN.spinnerGrid(false);
+                                //MAIN.spinnerGrid(false);
                                 modal.show();
                             });
                         },

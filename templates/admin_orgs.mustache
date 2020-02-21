@@ -36,8 +36,8 @@
                     {{#str}} new {{/str}}
                 </a>
             </div>
-            <a href="{{wwwroot}}/course/index.php?categoryid=" class="btn btn-primary" style="display: none;"
-                onclick="window.open(this.href + this.getAttribute('data-orig'), '_system'); return false;" id="{{uniqid}}-field-categoryid">
+            <a href="#" class="btn btn-primary" style="display: none;"
+                onclick="window.location.href = '{{wwwroot}}/course/index.php?categoryid=' + $(this).attr('data-orig'); return false;" id="{{uniqid}}-field-categoryid">
                 {{#pix}} i/course, core {{/pix}}
                 {{#str}} admin:orgs:fields:categoryid, block_eduvidual {{/str}}
             </a>
