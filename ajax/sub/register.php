@@ -77,7 +77,6 @@ if ($USER->id > 1) {
                         'email' => $USER->email,
                         'orgid' => $org->orgid,
                         'registrationurl' => $CFG->wwwroot . '/blocks/eduvidual/pages/register.php',
-                        'wwwroot' => $CFG->sitename,
                         'subject' => get_string('mailregister:header', 'block_eduvidual'),
                         'userfullname' => $USER->firstname . ' ' . $USER->lastname,
                         'userid' => $USER->id,
@@ -129,13 +128,6 @@ if ($USER->id > 1) {
                     require_once($CFG->dirroot . '/lib/coursecatlib.php');
                     require_once($CFG->dirroot . '/course/externallib.php');
 
-                    // Make this user manager of this org
-                    $membership = new \stdClass;
-                    $membership->orgid = $org->orgid;
-                    $membership->userid = $USER->id;
-                    $membership->role = 'Manager';
-                    $DB->insert_record('block_eduvidual_orgid_userid', $membership);
-
                     // Create a course category for this org
                     $data = new \stdClass();
                     $data->name = $org->name;
@@ -147,7 +139,6 @@ if ($USER->id > 1) {
                     $reply["name"] = $org->name;
                     $reply["categoryid"] = $org->categoryid;
 
-                    require_once($CFG->dirroot . '/blocks/eduvidual/classes/lib_enrol.php');
                     // Create an org-course for this org
                     $orgcoursebasement = get_config('block_eduvidual', 'orgcoursebasement');
                     $basement = $DB->get_record('block_eduvidual_basements', array('courseid' => $orgcoursebasement));
@@ -194,16 +185,9 @@ if ($USER->id > 1) {
                             role_unassign($roletoassign, $USER->id, $targetcontext->id);
                             $reply['msgs'][] = 'Revoke role from target';
                         }
-
-                        // Enrol the current user as teacher in the org-course
-                        $defaultroleteacher = get_config('block_eduvidual', 'defaultroleteacher');
-                        block_eduvidual_lib_enrol::course_manual_enrolments($org->courseid, array($USER->id), $defaultroleteacher);
                     }
-
-                    $allmanagerscourses = explode(',', get_config('block_eduvidual', 'allmanagerscourses'));
-                    $defaultrolestudent = get_config('block_eduvidual', 'defaultrolestudent');
-                    // Enrol the current user in the all-managers-course as student
-                    block_eduvidual_lib_enrol::course_manual_enrolments($allmanagerscourses, array($USER->id), $defaultrolestudent);
+                    require_once($CFG->dirroot . '/blocks/eduvidual/classes/lib_enrol.php');
+                    $reply['roleset'] = block_eduvidual_lib_enrol::role_set($USER->id, $org, 'Manager');
 
                     $DB->update_record('block_eduvidual_org', $org);
 
