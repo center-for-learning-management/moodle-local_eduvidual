@@ -30,25 +30,25 @@
    </li>
 {{/moolevels}}
 </ul>
-<p>{{#str}} explevel:formmodificator:description, block_eduvidual {{/str}}</p>
+<p>{{#str}} admin:formmodificator:description, block_eduvidual {{/str}}</p>
 <form method="POST" action="" enctype="multipart/form-data">
 <table width="100%" class="generaltable">
     <tr>
-        <th width="80">{{#str}} admin:formmodificator:type, block_eduvidual {{/str}}</th>
-        <th width="80">{{#str}} admin:formmodificator:roleid, block_eduvidual {{/str}}</th>
+        <th width="80">{{#str}} admin:formmodificator:types, block_eduvidual {{/str}}</th>
+        <th width="80">{{#str}} admin:formmodificator:roleids, block_eduvidual {{/str}}</th>
         <th>{{#str}} admin:formmodificator:ids_to_hide, block_eduvidual {{/str}}</th>
         <th>{{#str}} admin:formmodificator:ids_to_set, block_eduvidual {{/str}}</th>
     </tr>
 {{#formmodificators}}
     <tr>
-        <td valign="top"><input type="text" name="formmodificator_type[{{id}}]" value="{{type}}" /></td>
-        <td valign="top"><input type="text" name="formmodificator_roleid[{{id}}]" value="{{roleid}}" /></td>
+        <td valign="top"><input type="text" name="formmodificator_types[{{id}}]" value="{{types}}" /></td>
+        <td valign="top"><input type="text" name="formmodificator_roleids[{{id}}]" value="{{roleids}}" /></td>
         <td valign="top"><textarea name="formmodificator_ids_to_hide[{{id}}]">{{ids_to_hide}}</textarea></td>
         <td valign="top"><textarea name="formmodificator_ids_to_set[{{id}}]">{{ids_to_set}}</textarea></td>
     </tr>
 {{/formmodificators}}
     <tr>
-        <td colspan="4"><input type="submit" value="{{#str}} send {{/str}}" /></td>
+        <td colspan="4"><input type="submit" value="{{#str}} store {{/str}}" /></td>
     </tr>
 </table>
 </form>

@@ -159,6 +159,54 @@ if (block_eduvidual::get('role') !== 'Administrator' && strpos($_SERVER["SCRIPT_
     // Create hidden elements instead
 }
 
+/**
+ * Check if we are creating/updating a module.
+**/
+if (strpos($_SERVER["SCRIPT_FILENAME"], '/course/modedit.php') > 0) {
+    $type = optional_param('type', '', PARAM_ALPHANUM);
+    if (empty($type)) {
+        $update = optional_param('update', 0, PARAM_INT);
+        global $DB;
+        $mod = $DB->get_record('course_modules', array('id' => $update), 'id,module', IGNORE_MISSING);
+        if (!empty($mod->module)) {
+            echo "MOD $mod->module";
+            $module = $DB->get_record('modules', array('id' => $mod->module), 'id,name', IGNORE_MISSING);
+            $type = $module->name;
+        }
+    }
+    if (!empty($type)) {
+        require_once($CFG->dirroot . '/blocks/eduvidual/locallib.php');
+        $explevels = \block_eduvidual\lib::get_explevels();
+        $formmodificators = json_decode(get_config('block_eduvidual', 'formmodificators'));
+
+        foreach ($formmodificators AS $formmodificator) {
+            $types = explode(",", $formmodificator->types);
+            if (in_array($type, $types)) {
+                $roleids = explode(",", $formmodificator->roleids);
+                foreach ($explevels AS $explevel) {
+                    if (in_array($explevel, $roleids)) {
+                        $hideids = explode("\n", $formmodificator->ids_to_hide);
+                        foreach ($hideids AS $hideid) {
+                            pq("$hideid")->addClass('hide');
+                        }
+                        $tohide = array_merge($hideids, $tohide);
+                        $setids = explode("\n", $formmodificator->ids_to_set);
+                        foreach ($setids AS $setid) {
+                            $set = explode("=", $setid);
+                            // invalid entries are omitted.
+                            if (count($set) == 2) {
+                                $selector = $set[0]; $value = $set[1];
+                                pq("$selector")->val("$value");
+                            }
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+    }
+}
+
 // If we enter a course we are not enrolled in
 if (strpos($_SERVER["SCRIPT_FILENAME"], '/enrol/index.php') > 0) {
     $courseid = optional_param('id', 0, PARAM_INT);

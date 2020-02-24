@@ -52,22 +52,45 @@ foreach($result AS $cat) {
     );
 }
 
-$params->formmodificators = json_decode(get_config('block_eduvidual', 'formmodificators'), JSON_NUMERIC_CHECK);
+// @TODO MAKE NAMES MULTPLE
+$types = optional_param_array('formmodificator_types', array(), PARAM_ALPHANUM);
+$roleids = optional_param_array('formmodificator_roleids', array(), PARAM_ALPHANUM);
+$ids_to_hide = optional_param_array('formmodificator_ids_to_hide', array(), PARAM_TEXT);
+$ids_to_set = optional_param_array('formmodificator_ids_to_set', array(), PARAM_TEXT);
+
+if (count($types) > 0) {
+    $formmodificators = array();
+    for ($a = 0; $a < count($types); $a++) {
+        $formmodificators[$a] = array(
+            'types' => $types[$a],
+            'roleids' => $roleids[$a],
+            'ids_to_hide' => $ids_to_hide[$a],
+            'ids_to_set' => $ids_to_set[$a],
+        );
+    }
+    set_config('formmodificators', json_encode($formmodificators, JSON_NUMERIC_CHECK), 'block_eduvidual');
+    echo $OUTPUT->render_from_template('block_eduvidual/alert', array(
+        'content' => get_string('store:success', 'block_eduvidual'),
+        'type' => 'success',
+    ));
+}
+
+$params->formmodificators = json_decode(get_config('block_eduvidual', 'formmodificators'));
 if (empty($params->formmodificators)) {
     // Set a default value.
-    $params->formmodificators = array(
-        array(
-            'type' => 'quiz',
-            'roleid' => 16,
+    $params->formmodificators = (object)array(
+        (object) array(
+            'types' => 'quiz',
+            'roleids' => 16,
             'ids_to_hide' => '',
             'ids_to_set' => '',
         ),
     );
 }
-for ($a = 0; $a < count($params->formmodificators); $a++) {
-    $params->formmodificators[$a]['id'] = $a;
+$a = 0;
+foreach ($params->formmodificators AS &$formmodificator) {
+    $formmodificator->id = $a;
 }
-
 echo $OUTPUT->render_from_template(
     'block_eduvidual/admin_explevel',
     $params
