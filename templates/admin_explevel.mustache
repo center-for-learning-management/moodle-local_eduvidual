@@ -31,6 +31,7 @@
 {{/moolevels}}
 </ul>
 <p>{{#str}} admin:formmodificator:description, block_eduvidual {{/str}}</p>
+<p>{{#str}} admin:formmodificator:removenotice, block_eduvidual {{/str}}</p>
 <form method="POST" action="" enctype="multipart/form-data">
 <table width="100%" class="generaltable">
     <tr>
@@ -47,6 +48,12 @@
         <td valign="top"><textarea name="formmodificator_ids_to_set[{{id}}]">{{ids_to_set}}</textarea></td>
     </tr>
 {{/formmodificators}}
+    <tr>
+        <td valign="top"><input type="text" name="formmodificator_types[{{idnext}}]" value="" /></td>
+        <td valign="top"><input type="text" name="formmodificator_roleids[{{idnext}}]" value="" /></td>
+        <td valign="top"><textarea name="formmodificator_ids_to_hide[{{idnext}}]"></textarea></td>
+        <td valign="top"><textarea name="formmodificator_ids_to_set[{{idnext}}]"></textarea></td>
+    </tr>
     <tr>
         <td colspan="4"><input type="submit" value="{{#str}} submit {{/str}}" /></td>
     </tr>
