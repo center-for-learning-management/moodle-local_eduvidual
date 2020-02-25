@@ -181,7 +181,7 @@ if (strpos($_SERVER["SCRIPT_FILENAME"], '/course/modedit.php') > 0) {
 
         foreach ($formmodificators AS $formmodificator) {
             $types = explode(",", $formmodificator->types);
-            if (in_array($type, $types)) {
+            if (in_array('*', $types) || in_array($type, $types)) {
                 $roleids = explode(",", $formmodificator->roleids);
                 foreach ($explevels AS $explevel) {
                     if (in_array($explevel, $roleids)) {
