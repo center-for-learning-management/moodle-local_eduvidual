@@ -80,31 +80,6 @@ if ($embed || $act == 'backgrounds') {
     } // count bgdivs > 0
 }
 
-/*
-$orgas = block_eduvidual::get_organisations('*');
-if (count($orgas) > 1) {
-    ?>
-    <div class="card">
-        <h3><?php echo get_string('preferences:defaultorg:title', 'block_eduvidual'); ?></h3>
-        <?php
-        $extra = $DB->get_record('block_eduvidual_userextra', array('userid' => $USER->id));
-        $defaultorg = 0;
-        if (isset($extra)) {
-            $defaultorg = $extra->defaultorg;
-        }
-        $options = array();
-        foreach($orgas AS $org) {
-        	$options[] = "\t<option value=\"" . $org->orgid . "\"" . (($org->orgid == $defaultorg)?" selected":"") . ">" . $org->name . "</option>";
-        }
-
-        ?>
-        <select id="block_eduvidual_user_defaultorg" onchange="var sel = this; require(['block_eduvidual/user'], function(USER) {USER.defaultorg(sel.value); });">
-        <?php echo implode("\n", $options); ?>
-        </select>
-    </div>
-    <?php
-}
-*/
 
 if (in_array(block_eduvidual::get('role'), array('Administrator', 'Manager', 'Teacher'))) {
     require_once($CFG->dirroot . '/blocks/eduvidual/pages/preferences_teacher.php');
