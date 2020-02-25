@@ -98,7 +98,9 @@ if (strpos($_SERVER["SCRIPT_FILENAME"], '/login/index.php') > 0 && ($USER->id <=
             $buttons[$b['FORGOTPW']] = '';
         } else {
             $buttons[$b['GUEST_FORM']] = pq('<div class="btn-eduviduallogin">')->append(pq('form#guestlogin')->clone());
-            pq($buttons[$b['GUEST_FORM']])->find('form#guestlogin')->attr('action', $wwwroot . '/login/index.php');
+            //pq($buttons[$b['GUEST_FORM']])->find('form#guestlogin')->attr('action', $wwwroot . '/login/index.php');
+            // Using the former form-action always redirected guests to login instead of the dashboard.
+            pq($buttons[$b['GUEST_FORM']])->find('form#guestlogin')->attr('action', $wwwroot . '/my');
             $buttons[$b['LOGIN_FORM']] = pq('<div>')->append(pq('form#login')->clone());
             pq($buttons[$b['LOGIN_FORM']])->find('form#login')->attr('action', $wwwroot . '/login/index.php');
         }
