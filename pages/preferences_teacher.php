@@ -45,6 +45,8 @@ if (in_array(block_eduvidual::get('role'), array('Administrator', 'Manager', 'Te
             <div class="card">
                 <h3><?php echo get_string('preferences:explevel', 'block_eduvidual'); ?></h3>
                 <p><?php echo get_string('preferences:explevel:description', 'block_eduvidual'); ?></p>
+
+                <div class="grid-eq-3">
                 <?php
                 if (!isset($userextra->moolevels)) {
                     $extra->moolevels = array();
@@ -60,20 +62,24 @@ if (in_array(block_eduvidual::get('role'), array('Administrator', 'Manager', 'Te
                 foreach($moolevels AS $moolevel) {
                     $role = $DB->get_record('role', array('id' => $moolevel));
                     ?>
-                    <label>
-                        <input type="checkbox" name="preferences_moolevels[]"
-                               value="<?php echo $role->id; ?>" onclick="var inp = this; require(['block_eduvidual/teacher'], function(TEACHER) { TEACHER.moolevels(inp); });"
-                               <?php if(in_array($role->id, $hasroles)){ echo ' checked="checked"'; } ?> />
-                        <strong><?php echo (($role->name != "")?$role->name:$role->shortname); ?></strong><br />
-                        <?php
-                        if ($role->description != '') {
-                            echo "<p style='font-weight: normal;'>" . $role->description . "</p>";
-                        }
-                        ?>
-                    </label>
+                    <div>
+                        <label>
+                            <input type="radio" name="preferences_moolevels[]"
+                                   value="<?php echo $role->id; ?>" onclick="var inp = this; require(['block_eduvidual/teacher'], function(TEACHER) { TEACHER.moolevels(inp); });"
+                                   <?php if(in_array($role->id, $hasroles)){ echo ' checked="checked"'; } ?> />
+                            <strong><?php echo (($role->name != "")?$role->name:$role->shortname); ?></strong><br />
+                        </label>
+                        <p style="margin-left: 25px;">
+                            <?php
+                            if ($role->description != '') {
+                                echo get_string($role->description, 'block_eduvidual');
+                            }
+                            ?>
+                        </p>
+                    </div>
                     <?php
                 }
-            ?></div><?php
+            ?></div></div><?php
         } // has moolevels
     }
     if ($embed || $act == 'qcats' || $act == 'moolevelinit') {

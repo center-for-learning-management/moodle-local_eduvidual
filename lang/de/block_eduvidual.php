@@ -235,6 +235,9 @@ $string['eduvidual:useinstance'] = 'eduvidual Block verwenden';
 
 $string['explevel:title'] = 'Erfahrungslevel';
 $string['explevel:description'] = 'Erfahrungslevel-Rollen können verwendet werden, um bspw. das Moodle-Userinterface zu vereinfachen.';
+$string['explevel:role_1:description'] = 'Die Basisrolle ist ideal für Anfänger/innen. Ihnen werden in Kursen die wichtigsten Aktivitäten, Blöcke und Ressourcen angeboten, und die Eingabeformulare werden auf das Wesentliche reduziert!';
+$string['explevel:role_2:description'] = 'Die erweiterte Rolle bietet mehr Aktivitäten, Blöcke und Ressourcen. Außerdem können Sie in den Formularen schon mehr Einstellungen vornehmen!';
+$string['explevel:role_3:description'] = 'Die Stufe für die Moodle-Experts ermöglicht die Nutzung aller Aktivitäten und Blöcke, die wir in eduvidual zur Verfügung haben!';
 $string['explevel:select'] = 'Wählen Sie jene Rollen aus, die Nutzer/innen sich im Systemkontext selbst zuweisen dürfen, um das Verhalten von Moodle zu personalisieren.';
 $string['export'] = 'Export';
 
@@ -448,7 +451,7 @@ $string['login:qrscan:description'] = 'Falls Sie Ihr Passwort noch nicht geände
 
 $string['preferences:defaultorg:title'] = 'Bevorzugte Schule';
 $string['preferences:explevel'] = 'Moodle Erfahrungslevels';
-$string['preferences:explevel:description'] = 'Sie können Moodle personalisieren, indem Sie aus den folgenden Erfahrungslevel auswählen.';
+$string['preferences:explevel:description'] = 'Sie können Moodle personalisieren, indem Sie aus den folgenden Erfahrungslevel auswählen. Als Folge Ihrer Auswahl wird die Menge an Funktionen für Sie reduziert.';
 $string['preferences:questioncategories'] = 'Kernsystem-Fragenkategorien';
 $string['preferences:questioncategories:description'] = 'Sie werden nur Fragen des zentralen Fragenpools aus jenen Kategorien sehen, die Sie hier gewählt haben!';
 $string['preferences:request:moolevel'] = '<strong>Einstiegsfrage für Lehrer/innen</strong><br /><br />Bitte schätzen Sie Ihre Moodle-Kenntnisse ein. Auf Basis dieser Einschätzung versuchen wir die Moodle-Oberfläche für Sie zu optimieren. Je höher Sie Ihre Kenntnisse einschätzen, desto mehr Funktionen von Moodle werden Sie sehen. Bitte wählen Sie aus den "Moodle Erfahrungslevels" das für Sie Passendste aus! <br /><br />Ihre Auswahl wird sofort gespeichert. <strong>Nachdem Sie Ihre Auswahl getroffen haben</strong> kommen Sie mit einem Klick auf den "ok"-Button direkt zu Ihrem Dashboard.';

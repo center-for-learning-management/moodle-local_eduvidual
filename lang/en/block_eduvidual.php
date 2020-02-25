@@ -234,7 +234,10 @@ $string['eduvidual:myaddinstance'] = 'Add eduvidual_block to course view';
 $string['eduvidual:useinstance'] = 'Use the eduvidual_block';
 
 $string['explevel:title'] = 'Experience Levels';
-$string['explevel:description'] = 'Experience Level Roles can be chosen to simplify the UI of Moodle';
+$string['explevel:description'] = 'Experience Level Roles can be chosen to simplify the UI of Moodle. Consequently the amount of functions will be shorted, so that can focus better on what you want to achieve!';
+$string['explevel:role_1:description'] = 'This role is perfectly for beginners. The most important activity types and resources will be available in courses, and forms will be reduced as much as possible!';
+$string['explevel:role_2:description'] = 'The extended role for advanced users offers more activities, blocks and resource types. The forms will allow you to individualize the behaviour of the site better.';
+$string['explevel:role_3:description'] = 'This role is for expert users. You will have access to everything that is possible on our site!';
 $string['explevel:select'] = 'Please select the roles that can be chosen by users in system context to modify the user experience.';
 $string['export'] = 'Export';
 
