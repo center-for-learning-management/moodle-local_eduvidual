@@ -104,6 +104,23 @@ function xmldb_block_eduvidual_upgrade($oldversion) {
 
         upgrade_block_savepoint(true, 2020021100, 'eduvidual');
     }
+    if ($oldversion < 2020022500) {
+        // We need to check all experience-levels. Only keep the highest one!
+        $moolevels = explode(',', get_config('block_eduvidual', 'moolevels'));
+        rsort($moolevels);
+        // We now loop through moolevels, which are in reversed order.
+        // Get all userids that have that level and remove any moolevels that are below.
+        for ($a = 0; $a < count($moolevels);$a++) {
+            $userids = $DB->get_records('role_assignments', array('contextid' => 1, 'roleid' => $moolevels[$a]));
+            foreach ($userids AS $userid) {
+                for ($b = $a+1; $b < count($moolevels); $b++) {
+                    role_unassign($moolevels[$b], $userid->userid, 1);
+                }
+            }
+        }
+
+        upgrade_block_savepoint(true, 2020022500, 'eduvidual');
+    }
 
 
 
