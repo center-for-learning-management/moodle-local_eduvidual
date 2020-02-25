@@ -183,7 +183,7 @@ if (strpos($_SERVER["SCRIPT_FILENAME"], '/course/modedit.php') > 0) {
             if (in_array('*', $types) || in_array($type, $types)) {
                 $roleids = explode(",", $formmodificator->roleids);
                 foreach ($explevels AS $explevel) {
-                    if (in_array($explevel, $roleids)) {
+                    if (in_array('*', $roleids) || in_array($explevel, $roleids)) {
                         $hideids = explode("\n", $formmodificator->ids_to_hide);
                         foreach ($hideids AS $hideid) {
                             pq("$hideid")->addClass('hide');
