@@ -169,7 +169,6 @@ if (strpos($_SERVER["SCRIPT_FILENAME"], '/course/modedit.php') > 0) {
         global $DB;
         $mod = $DB->get_record('course_modules', array('id' => $update), 'id,module', IGNORE_MISSING);
         if (!empty($mod->module)) {
-            echo "MOD $mod->module";
             $module = $DB->get_record('modules', array('id' => $mod->module), 'id,name', IGNORE_MISSING);
             $type = $module->name;
         }
