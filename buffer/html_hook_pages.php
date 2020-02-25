@@ -189,13 +189,16 @@ if (strpos($_SERVER["SCRIPT_FILENAME"], '/course/modedit.php') > 0) {
                             pq("$hideid")->addClass('hide');
                         }
                         $tohide = array_merge($hideids, $tohide);
-                        $setids = explode("\n", $formmodificator->ids_to_set);
-                        foreach ($setids AS $setid) {
-                            $set = explode("=", $setid);
-                            // invalid entries are omitted.
-                            if (count($set) == 2) {
-                                $selector = $set[0]; $value = $set[1];
-                                pq("$selector")->val("$value");
+                        // we MUST NOT modify form values if we update a resource!
+                        if (empty($update)) {
+                            $setids = explode("\n", $formmodificator->ids_to_set);
+                            foreach ($setids AS $setid) {
+                                $set = explode("=", $setid);
+                                // invalid entries are omitted.
+                                if (count($set) == 2) {
+                                    $selector = $set[0]; $value = $set[1];
+                                    pq("$selector")->val("$value");
+                                }
                             }
                         }
                         break;
