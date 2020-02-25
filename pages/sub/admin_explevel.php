@@ -52,41 +52,46 @@ foreach($result AS $cat) {
     );
 }
 
+// @TODO MAKE NAMES MULTPLE
+$types = optional_param_array('formmodificator_types', array(), PARAM_ALPHANUM);
+$roleids = optional_param_array('formmodificator_roleids', array(), PARAM_ALPHANUM);
+$ids_to_hide = optional_param_array('formmodificator_ids_to_hide', array(), PARAM_TEXT);
+$ids_to_set = optional_param_array('formmodificator_ids_to_set', array(), PARAM_TEXT);
+
+if (count($types) > 0) {
+    $formmodificators = array();
+    for ($a = 0; $a < count($types); $a++) {
+        $formmodificators[$a] = array(
+            'types' => $types[$a],
+            'roleids' => $roleids[$a],
+            'ids_to_hide' => $ids_to_hide[$a],
+            'ids_to_set' => $ids_to_set[$a],
+        );
+    }
+    set_config('formmodificators', json_encode($formmodificators, JSON_NUMERIC_CHECK), 'block_eduvidual');
+    echo $OUTPUT->render_from_template('block_eduvidual/alert', array(
+        'content' => get_string('store:success', 'block_eduvidual'),
+        'type' => 'success',
+    ));
+}
+
+$params->formmodificators = json_decode(get_config('block_eduvidual', 'formmodificators'));
+if (empty($params->formmodificators)) {
+    // Set a default value.
+    $params->formmodificators = (object)array(
+        (object) array(
+            'types' => 'quiz',
+            'roleids' => 16,
+            'ids_to_hide' => '',
+            'ids_to_set' => '',
+        ),
+    );
+}
+$a = 0;
+foreach ($params->formmodificators AS &$formmodificator) {
+    $formmodificator->id = $a;
+}
 echo $OUTPUT->render_from_template(
     'block_eduvidual/admin_explevel',
     $params
 );
-/*
-?>
-<h4><?php echo get_string('explevel:title', 'block_eduvidual'); ?></h4>
-<p><?php echo get_string('explevel:description', 'block_eduvidual'); ?></p>
-<p><?php echo get_string('explevel:select', 'block_eduvidual'); ?></p>
-<?php
-$moolevels = explode(",", get_config('block_eduvidual', 'moolevels'));
-$options = array(); //"<option value=\"\">" . get_string('none') . "</option>");
-$result = $DB->get_records_sql('SELECT r.* FROM {role} AS r, {role_context_levels} AS rcl WHERE r.id=rcl.roleid  AND rcl.contextlevel = 10 ORDER BY name ASC', array());
-foreach($result AS $role) {
-	$options[] = "\t<li><label><input type=\"checkbox\" name=\"moolevels[]\" value=\"" . $role->id . "\"" . ((in_array($role->id, $moolevels))?" checked":"") . " onclick=\"var inp = this; require(['block_eduvidual/admin'], function(ADMIN) { ADMIN.moolevels(inp); });\">" . (($role->name != "")?$role->name:$role->shortname) . "</label></li>";
-}
-?>
-<ul>
-<!--<select id="block_eduvidual_admin_moolevels" name="moolevels[]" multiple="multiple" size="<?php echo count($options); ?>" onclick="BLOCK_EDUVIDUAL_ADMIN.moolevels();"> -->
-<?php echo implode("\n", $options); ?>
-<!--</select>-->
-</ul>
-
-<h4><?php echo get_string('admin:questioncategories:title', 'block_eduvidual'); ?></h4>
-<p><?php echo get_string('admin:questioncategories:description', 'block_eduvidual'); ?></p>
-<?php
-$questioncategories = explode(",", get_config('block_eduvidual', 'questioncategories'));
-$options = array(); //"<option value=\"\">" . get_string('none') . "</option>");
-$top = $DB->get_record('question_categories', array('contextid' => 1, 'parent' => 0));
-$result = $DB->get_records_sql('SELECT id,name FROM {question_categories} WHERE contextid=? AND parent=? ORDER BY name ASC', array(1, $top->id));
-
-foreach($result AS $cat) {
-	$options[] = "\t<li><label><input type=\"checkbox\" name=\"questioncategories[]\" value=\"" . $cat->id . "\"" . ((in_array($cat->id, $questioncategories))?" checked":"") . " onclick=\"var inp = this; require(['block_eduvidual/admin'], function(ADMIN) { ADMIN.questioncategories(inp); });\">" . $cat->name . "</label></li>";
-}
-?>
-<ul>
-<?php echo implode("\n", $options); ?>
-</ul>
