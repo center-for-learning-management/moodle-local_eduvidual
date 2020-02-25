@@ -26,9 +26,14 @@ require_login();
 require_once($CFG->libdir . '/adminlib.php');
 require_once($CFG->dirroot . '/blocks/eduvidual/block_eduvidual.php');
 
+$act = optional_param('act', '', PARAM_TEXT);
+if (empty($act)) {
+    $act = 'backgrounds';
+}
+
 block_eduvidual::set_context_auto();
 $PAGE->set_pagelayout('admin');
-$PAGE->set_url('/blocks/eduvidual/pages/admin.php', array());
+$PAGE->set_url('/blocks/eduvidual/pages/admin.php', array('act' => $act));
 $PAGE->set_title(get_string('Administration', 'block_eduvidual'));
 $PAGE->set_heading(get_string('Administration', 'block_eduvidual'));
 //$PAGE->set_cacheable(false);
@@ -45,10 +50,6 @@ if (block_eduvidual::get('role') != "Administrator") {
 	die();
 }
 
-$act = optional_param('act', '', PARAM_TEXT);
-if (empty($act)) {
-    $act = 'backgrounds';
-}
 echo "<div class=\"grid-eq-2\">\n";
 $actions = block_eduvidual::get_actions('admin');
 block_eduvidual::print_act_selector($actions);

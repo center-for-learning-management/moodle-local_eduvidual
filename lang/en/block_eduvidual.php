@@ -80,6 +80,7 @@ $string['admin:dropzone:title'] = 'Dropzone';
 $string['admin:formmodificator:description'] = 'Here you can specify how the activity-creation-form should be modified according to certain experience levels. Enter the type of activity/resource and the role-id (you see it above within the brackets). Name all elements that should be hidden line by line. Do the same for default values, but use the syntax my_css_selector1=my_default_value1\n my_css_selector2=my_default_value2 and so on.';
 $string['admin:formmodificator:ids_to_hide'] = 'Hide Elements';
 $string['admin:formmodificator:ids_to_set'] = 'Default values';
+$string['admin:formmodificator:removenotice'] = 'Remove a line by clearing the type(s) and save changes.';
 $string['admin:formmodificator:roleids'] = 'Role-IDs';
 $string['admin:formmodificator:types'] = 'Types';
 $string['admin:globalfiles:title'] = 'Global Files';

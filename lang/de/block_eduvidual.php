@@ -80,6 +80,7 @@ $string['admin:dropzone:title'] = 'Dropzone';
 $string['admin:formmodificator:description'] = 'Hier können Sie angeben, inwiefern Formular zur Erstellung von Aktivitäten/Ressourcen entsprechend dem Erfahrungslevel angepasst werden sollen. Geben Sie den Typ der Ressource und die Rollen-ID an. In der Spalte "Verstecke" können Sie nun zeilenweise die CSS-Selektoren angeben, die ausgeblendet werden sollen. In der Spalte "Default Werte" geben Sie Wertepaare an, welche Standardwerte im Formular gesetzt werden sollen, bspw. css_selektor1=default_wert1\n css_selektor2=default_wert2 usw.';
 $string['admin:formmodificator:ids_to_hide'] = 'Verstecke';
 $string['admin:formmodificator:ids_to_set'] = 'Default Werte';
+$string['admin:formmodificator:removenotice'] = 'Sie können eine Zeile entfernen, indem Sie das Feld "Typen" leeren und dann speichern!';
 $string['admin:formmodificator:roleids'] = 'Rollen-IDs';
 $string['admin:formmodificator:types'] = 'Typen';
 $string['admin:globalfiles:title'] = 'Globale Dateien';

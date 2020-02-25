@@ -52,15 +52,17 @@ foreach($result AS $cat) {
     );
 }
 
-// @TODO MAKE NAMES MULTPLE
-$types = optional_param_array('formmodificator_types', array(), PARAM_ALPHANUM);
-$roleids = optional_param_array('formmodificator_roleids', array(), PARAM_ALPHANUM);
+// Note for reviewers: we need PARAM_TEXT for types and roleids, as also an asterisk is allowed.
+$types = optional_param_array('formmodificator_types', array(), PARAM_TEXT);
+$roleids = optional_param_array('formmodificator_roleids', array(), PARAM_TEXT);
 $ids_to_hide = optional_param_array('formmodificator_ids_to_hide', array(), PARAM_TEXT);
 $ids_to_set = optional_param_array('formmodificator_ids_to_set', array(), PARAM_TEXT);
 
 if (count($types) > 0) {
     $formmodificators = array();
+    print_r($types);
     for ($a = 0; $a < count($types); $a++) {
+        if (empty($types[$a])) continue;
         $formmodificators[$a] = array(
             'types' => $types[$a],
             'roleids' => $roleids[$a],
@@ -87,10 +89,11 @@ if (empty($params->formmodificators)) {
         ),
     );
 }
-$a = 0;
+$params->idnext = 0;
 foreach ($params->formmodificators AS &$formmodificator) {
-    $formmodificator->id = $a;
+    $formmodificator->id = $params->idnext++;
 }
+
 echo $OUTPUT->render_from_template(
     'block_eduvidual/admin_explevel',
     $params
