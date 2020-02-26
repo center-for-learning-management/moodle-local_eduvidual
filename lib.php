@@ -148,9 +148,11 @@ function block_eduvidual_before_standard_html_head() {
     }
 
     $inject_styles[] = "</style>";
-    $inject_styles[] = "<style type=\"text/css\" id=\"block_eduvidual_style_userextra\">
-                    body { background-image: url(" . $extra->background . "); background-position: center; background-size: cover; }
-                  </style>";
+    if (!empty($extra->background)) {
+        $inject_styles[] = "<style type=\"text/css\" id=\"block_eduvidual_style_userextra\">
+                        body { background-image: url(" . $extra->background . "); background-position: center; background-size: cover; }
+                      </style>";
+    }
     $injects = array_merge($injects, $inject_styles);
     //$PAGE->requires->js_call_amd('block_eduvidual/ajax_observer', 'observe');
     return implode("\n", $injects);
