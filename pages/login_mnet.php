@@ -33,7 +33,7 @@ $PAGE->set_heading(get_string('Login', 'block_eduvidual'));
 //$PAGE->set_cacheable(false);
 $PAGE->requires->css('/blocks/eduvidual/style/login_mnet.css');
 
-$wantsurl = str_replace($CFG->wwwroot, "", $SESSION->wantsurl);
+if (!empty($SESSION->wantsurl)) $wantsurl = str_replace($CFG->wwwroot, "", $SESSION->wantsurl);
 if (empty($wantsurl)) $wantsurl = '/my';
 
 block_eduvidual::print_app_header();

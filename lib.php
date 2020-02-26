@@ -101,7 +101,7 @@ function block_eduvidual_before_standard_html_head() {
         $protectedorgs = explode(',', get_config('block_eduvidual', 'protectedorgs'));
     }
 
-    if (!empty($org->orgid) && !in_array($org->orgid, $protectedorgs)) {
+    if (!empty($org->orgid) && !in_array($org->orgid, $protectedorgs) && !empty($orgctx->instanceid)) {
         // This is an org and it does not belong to protectedorgs.
         // Perhaps user can access particular courses, but never coursecategories!
 

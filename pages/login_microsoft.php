@@ -24,6 +24,6 @@
 
 require_once('../../../config.php');
 
-$wantsurl = str_replace($CFG->wwwroot, "", $SESSION->wantsurl);
+if (!empty($SESSION->wantsurl)) $wantsurl = str_replace($CFG->wwwroot, "", $SESSION->wantsurl);
 if (empty($wantsurl)) $wantsurl = '/my';
 redirect($CFG->wwwroot . '/auth/oauth2/login.php?id=1&wantsurl=' . rawurlencode($wantsurl) . '&sesskey=' . sesskey());
