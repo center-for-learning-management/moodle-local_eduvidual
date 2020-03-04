@@ -578,7 +578,7 @@ class block_eduvidual extends block_base /* was block_list */ {
             );
         }
         $context = $context || (isset($PAGE->context->id)) ? $PAGE->context : context_system::instance();
-        if (!has_capability('block/edupublisher:canuse', $context)) {
+        if (has_capability('block/edupublisher:canuse', $context)) {
             $options[] = array(
                 "title" => get_string('teacher:addfromcatalogue', 'block_eduvidual'),
                 "href" => '/blocks/edupublisher/pages/search.php',
