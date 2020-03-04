@@ -569,41 +569,16 @@ class block_eduvidual extends block_base /* was block_list */ {
                 "icon" => '/pix/i/withsubcat.svg', //'/blocks/eduvidual/pix/user_courses.svg',
             );
         }
-
         if (in_array(block_eduvidual::get('role'), array('Administrator', 'Manager', 'Teacher'))) {
-            /*
-            if (isset($COURSE) && $COURSE->id > 1) {
-                //$courseid = ($context->contextlevel == CONTEXT_COURSE && isset($COURSE->id) && $COURSE->id > 0)?$COURSE->id:0;
-                // Showing create module only in a course where I am teacher
-                $context = context_course::instance($COURSE->id);
-                $canedit = has_capability('moodle/course:update', $context);
-                if ($COURSE->id > 1 && $canedit) {
-                    $options[] = array(
-                        "title" => get_string('teacher:createmodule:here', 'block_eduvidual'),
-                        "href" => '/blocks/eduvidual/pages/teacher.php?act=createmodule&orgid=' . $ORG->orgid. '&courseid=' . $COURSE->id,
-                        "icon" => '/pix/t/add.svg', //'/blocks/eduvidual/pix/teacher_createmodule.svg',
-                    );
-                    // Show publish-option only if edupublisher is installed.
-                    if (file_exists($CFG->dirroot . '/blocks/edupublisher/block_edupublisher.php')) {
-                        require_once($CFG->dirroot . '/blocks/edupublisher/block_edupublisher.php');
-                        if (block_edupublisher::check_requirements(false, $context)) {
-                            $options[] = array(
-                                "title" => get_string('publish_new_package', 'block_edupublisher'),
-                                "href" => '/blocks/edupublisher/pages/publish.php?sourcecourse=' . $COURSE->id,
-                                "icon" => '/pix/i/publish.svg', //'/blocks/eduvidual/pix/teacher_createmodule.svg',
-                            );
-                        }
-                    }
-                }
-            }
-            */
-
             $options[] = array(
                 "title" => get_string('teacher:createcourse', 'block_eduvidual'),
                 "href" => '/blocks/eduvidual/pages/teacher.php?act=createcourse&orgid=' . $ORGID .
                           '&categoryid=' . $CATEGORYID,
                 "icon" => '/pix/t/cohort.svg', //'/blocks/eduvidual/pix/teacher_createcourse.svg',
             );
+        }
+        $context = $context || (isset($PAGE->context->id)) ? $PAGE->context : context_system::instance();
+        if (!has_capability('block/edupublisher:canuse', $context)) {
             $options[] = array(
                 "title" => get_string('teacher:addfromcatalogue', 'block_eduvidual'),
                 "href" => '/blocks/edupublisher/pages/search.php',
@@ -617,66 +592,6 @@ class block_eduvidual extends block_base /* was block_list */ {
                 "icon" => '/pix/i/backup.svg', //'/blocks/eduvidual/pix/manage_archive.svg',
             );
         }
-        /*
-        if (block_eduvidual::get('role') == 'Administrator') {
-            $options[] = array(
-                "title" => get_string('Administration', 'block_eduvidual'),
-                "href" => '/admin/settings.php?section=blocksettingeduvidual',
-                // "href" => '/blocks/eduvidual/pages/admin.php',
-                "icon" => '/pix/i/configlock.svg', //'/blocks/eduvidual/pix/administration.svg',
-            );
-        }
-        */
-        /*
-        if ($USER->id > 0) {
-            $options[] = array(
-                "title" => get_string('Preferences', 'block_eduvidual'),
-                "href" => '/blocks/eduvidual/pages/preferences.php',
-                "icon" => '/pix/i/settings.svg', //'/blocks/eduvidual/pix/user_preferences.svg',
-            );
-            $options[] = array(
-                "title" => get_string('Accesscard', 'block_eduvidual'),
-                "href" => '/blocks/eduvidual/pages/accesscard.php',
-                "icon" => '/pix/i/permissions.svg',
-            );
-        }
-
-        $options[] = array(
-            "title" => get_string('user:landingpage:title', 'block_eduvidual'),
-            "href" => '#',
-            "onclick" => "require(['block_eduvidual/user'], function(USER) { USER.setLandingPage(); }); return false;",
-            "icon" => "/pix/i/marked.svg",
-        );
-
-        if (file_exists($CFG->dirroot . '/blocks/edusupport/block_edusupport.php')) {
-            $targetforum = get_config('block_edusupport', 'targetforum');
-            if ($targetforum > 0) {
-                $cm = $DB->get_record('course_modules', array('instance' => $targetforum, 'module' => 9)); // module 9 = forum
-                $options[] = array(
-                    "title" => get_string('user:support:showbox', 'block_eduvidual'),
-                    "href" => '#',
-                    "onclick" => "require(['block_edusupport/main'], function(MAIN) { MAIN.showBox(" . $targetforum . "); }); return false;",
-                    "icon" => "/pix/t/messages.svg",
-                );
-            }
-        }
-        */
-
-        // Check here if this mailaddress is used multiple times and redirect to user_merge_page
-        /*
-        if ($USER->id > 0) {
-            $users = $DB->get_records('user', array('email' => $USER->email, 'suspended' => 0));
-            if (count(array_keys($users)) > 1) {
-                // The same email address is used multiple times - redirect to merge_users-page
-                //redirect($CFG->wwwroot . '/blocks/eduvidual/pages/user_merge.php');
-                $options[] = array(
-                    "title" => get_string('user:merge_accounts', 'block_eduvidual'),
-                    "href" => '/blocks/eduvidual/pages/user_merge.php',
-                    "icon" => "/pix/i/group.svg",
-                );
-            }
-        }
-        */
 
         $navbar = explode("\n", get_config('block_eduvidual', 'navbar'));
         foreach($navbar as $__option) {
