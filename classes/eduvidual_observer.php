@@ -185,6 +185,17 @@ class eduvidual_observer {
         // CODE BELOW HERE IS OUTSIDE OF LOGIN AND IS EXECUTED EACH TIME A TRACKED EVENT OCCURS
         // Force redirect to profile if name is empty!
         if (empty($USER->firstname) || empty($USER->lastname)) {
+            // This caused an issue with oauth providers (redirect loop).
+            // Therefore, if auth is oauth2 we will set dummy names.
+            if ($USER->auth == 'oauth2') {
+                $colors = file($CFG->dirroot . '/blocks/eduvidual/templates/names.colors', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+                $animals = file($CFG->dirroot . '/blocks/eduvidual/templates/names.animals', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+                $color_key = array_rand($colors, 1);
+                $animal_key = array_rand($animals, 1);
+                $USER->firstname = $colors[$color_key];
+                $USER->lastname = $animals[$animal_key];
+                $DB->update_record('user', $USER);
+            }
             redirect($CFG->wwwroot . '/user/profile.php?id=' . $USER->id);
         }
 
