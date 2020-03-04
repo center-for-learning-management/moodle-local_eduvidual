@@ -195,8 +195,9 @@ class eduvidual_observer {
                 $USER->firstname = $colors[$color_key];
                 $USER->lastname = $animals[$animal_key];
                 $DB->update_record('user', $USER);
+            } else {
+                redirect($CFG->wwwroot . '/user/profile.php?id=' . $USER->id);
             }
-            redirect($CFG->wwwroot . '/user/profile.php?id=' . $USER->id);
         }
 
         // This is the $data object
