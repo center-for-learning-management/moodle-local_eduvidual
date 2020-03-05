@@ -51,11 +51,9 @@ try {
     require($CFG->dirroot . '/blocks/eduvidual/buffer/html_hook_userextra.php');
     require($CFG->dirroot . '/blocks/eduvidual/buffer/html_hook_pages.php');
 
-    /*
     if ($PAGE->context->contextlevel == CONTEXT_COURSE && $PAGE->course->id > 1 && count(pq('.section-modchooser')) > 0) {
         require($CFG->dirroot . '/blocks/eduvidual/buffer/html_hook_enhance_courseedit.php');
     }
-    */
 
     require($CFG->dirroot . '/blocks/eduvidual/buffer/html_theme_boost.php');
 

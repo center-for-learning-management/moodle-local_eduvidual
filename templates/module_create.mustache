@@ -15,16 +15,18 @@
     along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 }}
 
-{{#modulecanuse}}
+{{!
+{{#modulecanuse} }
 <span class="section-modchooser-link">
-    <a href="{{wwwroot}}/blocks/eduvidual/pages/teacher.php?act=createmodule&orgid={{orgid}}&courseid={{courseid}}&sectionid={{section}}">
+    <a href="{{wwwroot} }/blocks/eduvidual/pages/teacher.php?act=createmodule&orgid={{orgid} }&courseid={{courseid} }&sectionid={{section} }">
         <img class="icon " alt="" src="/pix/t/add.svg">
         <span class="section-modchooser-text">
-            {{#str}} teacher:createmodule:here, block_eduvidual{{/str}}
+            {{#str} } teacher:createmodule:here, block_eduvidual{{/str} }
         </span>
     </a>
 </span>
-{{/modulecanuse}}
+{{/modulecanuse} }
+}}
 {{#publishercanuse}}
 <span class="section-modchooser-link">
     <a href="{{wwwroot}}/blocks/edupublisher/pages/search.php?courseid={{courseid}}"> {{! &sectionnr={ {section} } }}

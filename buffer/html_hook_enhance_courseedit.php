@@ -23,8 +23,6 @@
 
 defined('MOODLE_INTERNAL') || die;
 
-/* NOT USED ANYMORE!
-
 global $CFG, $COURSE, $OUTPUT;
 if (empty($COURSE->id)) return;
 
@@ -65,4 +63,3 @@ if (count(pq('.section-modchooser')) == 1 && $optional_section > -1) {
         $addresource_o->section++;
     }
 }
-*/
