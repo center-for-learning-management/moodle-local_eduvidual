@@ -443,6 +443,7 @@ $string['orgsizes:title'] = 'Filesystem Size';
 $string['login:direct'] = 'Direct login';
 $string['login:default'] = 'Default Login Page';
 $string['login:external'] = 'External';
+$string['login:external:description'] = 'Some schools are using the MNet-protocol to use their external Moodle system as authentication mechanism. These schools are listed here. If your school is not listed here, you do not need this page.';
 $string['login:failed'] = 'Login failed';
 $string['login:internal'] = 'Internal';
 $string['login:network_btn'] = 'Other Moodle (Network)';
