@@ -723,7 +723,7 @@ class block_eduvidual extends block_base /* was block_list */ {
             $PAGE->set_context(context_coursecat::instance($categoryid));
             $PAGE->set_pagelayout('coursecategory');
             try { $PAGE->set_category_by_id($categoryid); } catch(Exception $e) {}
-            $PAGE->navbar->add($myorg->name, new moodle_url('/course/index.php', array('id' => $myorg->categoryid)));
+            $PAGE->navbar->add($myorg->name, new moodle_url('/course/index.php', array('categoryid' => $myorg->categoryid)));
             if ($myorg->categoryid != $categoryid) {
                 $category = $DB->get_record('course_categories', array('id' => $categoryid));
                 $PAGE->navbar->add($category->name, new moodle_url('/course/index.php', array('categoryid' => $categoryid)));
