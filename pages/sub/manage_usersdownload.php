@@ -55,8 +55,8 @@ $columns = array(
 );
 
 list($insql, $params) = $DB->get_in_or_equal($userids);
-$sql = "SELECT u.id,u.username,u.email,u.firstname,u.lastname,ou.role,ub.bunch
-            FROM {user} u, {block_eduvidual_orgid_userid} ou, {block_eduvidual_userbunches} ub
+$sql = "SELECT u.id,u.username,u.email,u.firstname,u.lastname,ou.role
+            FROM {user} u, {block_eduvidual_orgid_userid} ou
             WHERE u.id=ou.userid
                 AND u.id=ub.userid
                 AND ou.role IS NOT NULL
@@ -69,8 +69,15 @@ array_unshift($params, $orgid);
 $rs = $DB->get_recordset_sql($sql, $params);
 
 download_as_dataformat('users_' . date("Ymd-His"), $dataformat, $columns, $rs, function($record) {
+    global $DB, $orgid;
     $r = (object) array('id' => $record->id);
     profile_load_data($r);
+    $bunch = $DB->get_record('block_eduvidual_userbunches', array('orgid' => $record->orgid, 'userid' => $r->id));
+    if (!empty($r->bunch)) {
+        $record->bunch = $bunch->bunch;
+    } else {
+        $record->bunch = '-';
+    }
     $record->secret = $record->id . '#' . $r->profile_field_secret;
     return $record;
 });
