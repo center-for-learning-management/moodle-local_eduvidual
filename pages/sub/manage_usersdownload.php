@@ -58,7 +58,6 @@ list($insql, $params) = $DB->get_in_or_equal($userids);
 $sql = "SELECT u.id,u.username,u.email,u.firstname,u.lastname,ou.role
             FROM {user} u, {block_eduvidual_orgid_userid} ou
             WHERE u.id=ou.userid
-                AND u.id=ub.userid
                 AND ou.role IS NOT NULL
                 AND ou.orgid = ?
                 AND u.id $insql
