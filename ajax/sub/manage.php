@@ -414,8 +414,11 @@ if (!$org) {
                     foreach ($domains AS $domain) {
                         $users = $DB->get_records_sql($sql, array('%' . $domain));
                         foreach ($users AS $user) {
-                            $reply['updated'][$role]++;
-                            \block_eduvidual_lib_enrol::role_set($user->id, $org, $role);
+                            $hasrole = $DB->get_record('block_eduvidual_orgid_userid', array('orgid' => $org->orgid, 'userid' => $user->id));
+                            if (empty($hasrole->id)) {
+                                $reply['updated'][$role]++;
+                                \block_eduvidual_lib_enrol::role_set($user->id, $org, $role);
+                            }
                         }
                     }
                 }
