@@ -75,7 +75,7 @@ download_as_dataformat('users_' . date("Ymd-His"), $dataformat, $columns, $rs, f
     if (!empty($r->bunch)) {
         $record->bunch = $bunch->bunch;
     } else {
-        $record->bunch = '-';
+        $record->bunch = '';
     }
     $record->secret = $record->id . '#' . $r->profile_field_secret;
     return $record;

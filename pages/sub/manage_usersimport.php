@@ -44,12 +44,12 @@ if (optional_param('datavalidated', 0, PARAM_INT) == 1) {
     echo $OUTPUT->download_dataformat_selector(get_string('userbulkdownload', 'admin'), $CFG->wwwroot . '/blocks/eduvidual/pages/sub/manage_usersdownload.php', 'dataformat', array('orgid' => $orgid, 'userids' => implode(',', $userids)));
     ?>
     <form action="<?php echo $CFG->wwwroot; ?>/blocks/eduvidual/pages/sub/manage_usersdownload.php" method="post" enctype="multipart/form-data" class="no-spinner">
-        <div class="grid-eq-2">
-            <input type="submit" value="<?php echo get_string('download'); ?>" />
+        <!-- <div class="grid-eq-2">
+            <input type="submit" value="<?php echo get_string('download'); ?>" /> -->
             <input type="button" class="btn ui-btn"
                     onclick="window.open('<?php echo $CFG->wwwroot . '/blocks/eduvidual/pages/manage_bunch.php?orgid=' . $org->orgid; ?>', 'system');"
                     value="<?php echo get_string('manage:users:printcards', 'block_eduvidual'); ?>" />
-        </div>
+        <!-- </div> -->
         <input type="hidden" name="orgid" value="<?php echo $org->orgid; ?>" />
         <input type="hidden" name="act" value="users" />
         <table border="1" width="100%">
@@ -63,8 +63,6 @@ if (optional_param('datavalidated', 0, PARAM_INT) == 1) {
                 <th>secret</th>
             </tr>
     <?php
-    $userbunch = new stdClass();
-    $userbunch->orgid = $org->orgid;
     for ($a = 0; $a < count($users); $a++) {
         $user = $users[$a];
         ?>
@@ -79,10 +77,11 @@ if (optional_param('datavalidated', 0, PARAM_INT) == 1) {
         if ($user->payload->processed) {
             // Pack the object before database-query
             $user->payload = json_encode($user->payload, JSON_NUMERIC_CHECK);
-            if (isset($user->id) && $user->id > 0) {
+            if (!empty($user->id)) {
                 $u = $DB->get_record('user', array('id' => $user->id));
                 $u->firstname = $user->firstname;
                 $u->lastname = $user->lastname;
+                $u->email = $user->email;
                 $u->confirmed = 1;
                 $u->mnethostid = 1;
                 user_update_user($u, false);
@@ -95,13 +94,17 @@ if (optional_param('datavalidated', 0, PARAM_INT) == 1) {
                 $chk = $DB->get_record('block_eduvidual_userbunches', array('orgid' => $org->orgid, 'userid' => $u->id));
                 if ($chk && $chk->userid == $u->id) {
                     if (!empty($user->bunch)) {
+                        $chk->bunch = $user->bunch;
                         $DB->update_record('block_eduvidual_userbunches', $chk);
                     } else {
                         $DB->delete_records('block_eduvidual_userbunches', (array)$chk);
                     }
                 } elseif(!empty($user->bunch)) {
-                    $userbunch->bunch = $user->bunch;
-                    $userbunch->userid = $u->id;
+                    $userbunch = (object) array(
+                        'orgid' => $org->orgid,
+                        'userid' => $u->id,
+                        'bunch' => $user->bunch,
+                    );
                     $DB->insert_record('block_eduvidual_userbunches', $userbunch);
                 }
                 echo 'Updated #' . $u->id;
@@ -125,8 +128,11 @@ if (optional_param('datavalidated', 0, PARAM_INT) == 1) {
                 $user->id = $u->id;
 
                 if (!empty($user->bunch)) {
-                    $userbunch->bunch = $user->bunch;
-                    $userbunch->userid = $user->id;
+                    $userbunch = (object) array(
+                        'orgid' => $org->orgid,
+                        'userid' => $u->id,
+                        'bunch' => $user->bunch,
+                    );
                     $DB->insert_record('block_eduvidual_userbunches', $userbunch);
                 }
 
@@ -161,12 +167,12 @@ if (optional_param('datavalidated', 0, PARAM_INT) == 1) {
     $helper->set_rowobjects($users);
     ?>
         </table>
-        <div class="grid-eq-2">
-            <input type="submit" value="<?php echo get_string('download'); ?>" />
+        <!-- <div class="grid-eq-2">
+            <input type="submit" value="<?php echo get_string('download'); ?>" /> -->
             <input type="button" class="btn ui-btn"
                     onclick="window.open('<?php echo $CFG->wwwroot . '/blocks/eduvidual/pages/manage_bunch.php?orgid=' . $org->orgid; ?>', 'system');"
                     value="<?php echo get_string('manage:users:printcards', 'block_eduvidual'); ?>" />
-        </div>
+        <!-- </div> -->
         <?php echo $helper->print_hidden_form(); ?>
     </form>
     <?php

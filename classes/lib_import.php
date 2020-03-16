@@ -324,13 +324,13 @@ class block_eduvidual_lib_import_compiler_user extends block_eduvidual_lib_impor
             $payload->processed = false;
             $payload->action = 'Invalid role';
         }
-        if ($obj->id > 0) {
+        if (!empty($obj->id)) {
             $ismember = $DB->get_record('block_eduvidual_orgid_userid', array('orgid' => $org->orgid, 'userid' => $obj->id));
             if ($ismember->userid != $obj->id) {
                 $payload->processed = false;
                 $payload->action = 'Not in your organisation!';
             }
-            $obj->email = 'can not be updated';
+            //$obj->email = 'can not be updated';
         } else {
             // Test if username or email already taken.
             $chk = $DB->get_records_sql('SELECT id FROM {user} WHERE username LIKE ? OR email LIKE ?', array($obj->username, $obj->email));
