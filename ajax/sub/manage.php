@@ -368,27 +368,59 @@ if (!$org) {
             }
         break;
         case 'maildomain':
-            $maildomain = strtolower(optional_param('maildomain', '', PARAM_TEXT));
-            $type = optional_param('type', '', PARAM_TEXT);
-            if ($maildomain == '' || strlen($maildomain) > 2) {
-                if ($maildomain == '' || substr($maildomain, 0, 1) == '@') {
-                    if (true) { // Disabled check for invalid characters
-                        if (block_eduvidual::get('role') == 'Administrator') {
-                            $field = 'maildomain' . $type;
-                            $org->{$field} = $maildomain;
-                            $reply['org'] = $org;
-                            $DB->update_record('block_eduvidual_org', $org);
-                            $reply['status'] = 'ok';
+            if (is_siteadmin()) {
+                $maildomain = strtolower(optional_param('maildomain', '', PARAM_TEXT));
+                $type = optional_param('type', '', PARAM_TEXT);
+                if ($maildomain == '' || strlen($maildomain) > 2) {
+                    if ($maildomain == '' || substr($maildomain, 0, 1) == '@') {
+                        if (true) { // Disabled check for invalid characters
+                            if (block_eduvidual::get('role') == 'Administrator') {
+                                $field = 'maildomain' . $type;
+                                $org->{$field} = $maildomain;
+                                $reply['org'] = $org;
+                                $DB->update_record('block_eduvidual_org', $org);
+                                $reply['status'] = 'ok';
+                            } else {
+                                $reply['error'] = get_string('access_denied', 'block_eduvidual');
+                            }
                         } else {
-                            $reply['error'] = get_string('access_denied', 'block_eduvidual');
+                            $reply['error'] = 'invalid_character';
                         }
-                    } else {
-                        $reply['error'] = 'invalid_character';
-                    }
 
-                } else {
-                    $reply['error'] = 'start_with_at';
+                    } else {
+                        $reply['error'] = 'start_with_at';
+                    }
                 }
+            } else {
+                $reply['error'] = 'not_siteadmin';
+            }
+        break;
+        case 'maildomain_apply':
+            if (is_siteadmin()) {
+                require_once($CFG->dirroot . '/blocks/eduvidual/classes/lib_enrol.php');
+                $types = array('maildomain', 'maildomainteacher');
+                $reply['updated'] = array(
+                    'Student' => 0,
+                    'Teacher' => 0,
+                );
+                foreach ($types AS $type) {
+                    // Now we look for all users of that domain.
+                    if (empty($org->{$type})) continue;
+                    $domains = explode(',', $org->{$type});
+                    $role = ($type == 'maildomainteacher') ? 'Teacher' : 'Student';
+                    $sql = "SELECT id
+                                FROM {user}
+                                WHERE email LIKE ?";
+                    foreach ($domains AS $domain) {
+                        $users = $DB->get_records_sql($sql, array('%' . $domain));
+                        foreach ($users AS $user) {
+                            $reply['updated'][$role]++;
+                            \block_eduvidual_lib_enrol::role_set($user->id, $org, $role);
+                        }
+                    }
+                }
+            } else {
+                $reply['error'] = 'not_siteadmin';
             }
         break;
         case 'setpwreset':

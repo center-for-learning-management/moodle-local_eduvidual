@@ -320,6 +320,15 @@ define(['jquery', 'core/ajax', 'core/modal_events', 'core/modal_factory', 'core/
             });
         },
         /**
+        * Searches for users matching the maildomain(s) and assigns them to the organization.
+        **/
+        maildomain_apply: function(orgid, btn) {
+            if (this.debug > 0) console.log('MANAGER.maildomain_apply(orgid, btn)', orgid, btn);
+            require(['block_eduvidual/main'], function(MAIN) {
+                MAIN.connect({ module: 'manage', act: 'maildomain_apply', orgid: orgid }, { signalItem: $(btn) });
+            });
+        },
+        /**
          * Reset the password of users.
          */
         setpwreset: function(){
@@ -428,6 +437,11 @@ define(['jquery', 'core/ajax', 'core/modal_events', 'core/modal_factory', 'core/
             if (o.data.act == 'force_enrol') {
                 if (o.result.status == 'ok') {
                     top.location.href = URL.fileUrl("/course/view.php", "") + '?id=' + o.data.courseid;
+                }
+            }
+            if (o.data.act == 'maildomain_apply') {
+                if (typeof o.result.updated !== 'undefined') {
+                    alert('Updated ' + o.result.updated.Teacher + ' Teachers and ' + o.result.updated.Student + ' Students');
                 }
             }
             if (o.data.act == 'removecategory' || o.data.act == 'editcategory') {

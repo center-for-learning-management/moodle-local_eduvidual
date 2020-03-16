@@ -388,6 +388,7 @@ $string['manage:maildomain:description'] = 'Wenn dieser Wert gesetzt wird, werde
 $string['manage:mnet:action'] = 'Logineinstellungen';
 $string['manage:mnet'] = 'MNet Host';
 $string['manage:mnet:adminonly'] = 'Nur Administrator/innen können hier Änderungen vornehmen!';
+$string['manage:mnet:enrol'] = 'Alle Nutzer/innen zuordnen, die diesen Maildomains entsprechen!';
 $string['manage:mnet:send'] = 'speichern';
 $string['manage:mnet:selectnone'] = 'Keine';
 $string['manage:mnet:selectorg'] = 'Zuerst Schule wählen!';

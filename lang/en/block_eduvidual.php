@@ -388,6 +388,7 @@ $string['manage:maildomain:description'] = 'If this is set users with a mailaddr
 $string['manage:mnet:action'] = 'Loginsettings';
 $string['manage:mnet'] = 'MNet Host';
 $string['manage:mnet:adminonly'] = 'Only Admins can modify settings on this page!';
+$string['manage:mnet:enrol'] = 'Enrol users that match the underneath domains';
 $string['manage:mnet:send'] = 'Store';
 $string['manage:mnet:selectnone'] = 'none';
 $string['manage:mnet:selectorg'] = 'Select organization first!';
