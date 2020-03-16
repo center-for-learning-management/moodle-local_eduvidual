@@ -135,6 +135,7 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'blo
                     var field = fields[a];
                     $('#' + uniqid + '-field-' + field).attr('data-orig', org[field]).val(org[field]);
                 }
+                $('#' + uniqid + '-field-manage').attr('data-orig', org['orgid']);
             } else {
                 container.find('input').val('').attr('data-orig', '');
             }
@@ -142,9 +143,11 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'blo
             if (typeof org !== 'undefined' && typeof org['categoryid'] !== 'undefined' && org['categoryid'] > 0) {
                 $('#' + uniqid + '-field-orgid').attr('readonly', 'readonly');
                 $('#' + uniqid + '-field-categoryid').css('display', 'block');
+                $('#' + uniqid + '-field-manage').css('display', 'block');
             } else {
                 $('#' + uniqid + '-field-orgid').removeAttr('readonly');
                 $('#' + uniqid + '-field-categoryid').css('display', 'none');
+                $('#' + uniqid + '-field-manage').css('display', 'none');
             }
 
         },

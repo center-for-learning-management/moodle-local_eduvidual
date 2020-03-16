@@ -36,11 +36,18 @@
                     {{#str}} new {{/str}}
                 </a>
             </div>
-            <a href="#" class="btn btn-primary" style="display: none;"
-                onclick="window.location.href = '{{wwwroot}}/course/index.php?categoryid=' + $(this).attr('data-orig'); return false;" id="{{uniqid}}-field-categoryid">
-                {{#pix}} i/course, core {{/pix}}
-                {{#str}} admin:orgs:fields:categoryid, block_eduvidual {{/str}}
-            </a>
+            <div class="grid-eq-2">
+                <a href="#" class="btn btn-primary" style="display: none;"
+                    onclick="window.location.href = '{{wwwroot}}/course/index.php?categoryid=' + $(this).attr('data-orig'); return false;" id="{{uniqid}}-field-categoryid">
+                    {{#pix}} i/course, core {{/pix}}
+                    {{#str}} admin:orgs:fields:categoryid, block_eduvidual {{/str}}
+                </a>
+                <a href="#" class="btn btn-primary" style="display: none;"
+                    onclick="window.location.href = '{{wwwroot}}/blocks/eduvidual/pages/manage.php?orgid=' + $(this).attr('data-orig'); return false;" id="{{uniqid}}-field-manage">
+                    {{#pix}} i/course, core {{/pix}}
+                    {{#str}} manage, block_eduvidual {{/str}}
+                </a>
+            </div>
             <input type="hidden" id="{{uniqid}}-field-id" />
             <label for="{{uniqid}}-field-orgid">{{#str}} admin:orgs:fields:orgid, block_eduvidual {{/str}}</label>
             <input type="text" id="{{uniqid}}-field-orgid" style="width: 100%;" />
