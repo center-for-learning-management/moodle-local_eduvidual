@@ -170,6 +170,9 @@ if (optional_param('datavalidated', 0, PARAM_INT) == 1) {
                 <?php echo get_string('manage:users:printcards', 'block_eduvidual'); ?>
             </a>
         </div>
+        <a href="<?php echo $CFG->wwwroot; ?>/blocks/eduvidual/pages/manage.php?orgid=<?php echo $org->orgid; ?>" class="btn btn-primary">
+            <?php echo get_string('back'); ?>
+        </a>
         <?php echo $helper->print_hidden_form(); ?>
     </form>
     <?php
