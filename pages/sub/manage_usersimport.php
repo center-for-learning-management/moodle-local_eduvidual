@@ -38,18 +38,10 @@ if (optional_param('datavalidated', 0, PARAM_INT) == 1) {
     $helper->load_post();
     $users = $helper->get_rowobjects();
     $nextusers = array();
+    $exportuserids = array();
     ?>
     <p class="alert alert-info"><?php echo get_string('manage:createuserspreadsheet:import:downloadfile', 'block_eduvidual'); ?></p>
-    <?php
-    echo $OUTPUT->download_dataformat_selector(get_string('userbulkdownload', 'admin'), $CFG->wwwroot . '/blocks/eduvidual/pages/sub/manage_usersdownload.php', 'dataformat', array('orgid' => $orgid, 'userids' => implode(',', $userids)));
-    ?>
     <form action="<?php echo $CFG->wwwroot; ?>/blocks/eduvidual/pages/sub/manage_usersdownload.php" method="post" enctype="multipart/form-data" class="no-spinner">
-        <!-- <div class="grid-eq-2">
-            <input type="submit" value="<?php echo get_string('download'); ?>" /> -->
-            <input type="button" class="btn ui-btn"
-                    onclick="window.open('<?php echo $CFG->wwwroot . '/blocks/eduvidual/pages/manage_bunch.php?orgid=' . $org->orgid; ?>', 'system');"
-                    value="<?php echo get_string('manage:users:printcards', 'block_eduvidual'); ?>" />
-        <!-- </div> -->
         <input type="hidden" name="orgid" value="<?php echo $org->orgid; ?>" />
         <input type="hidden" name="act" value="users" />
         <table border="1" width="100%">
@@ -160,19 +152,24 @@ if (optional_param('datavalidated', 0, PARAM_INT) == 1) {
             </tr>
         </tr>
         <?php
-        if (!empty($user->id) && $user->id > 0) {
+        if (!empty($user->id)) {
+            $exportuserids[] = $user->id;
             $nextusers[] = $user;
         }
     }
     $helper->set_rowobjects($users);
     ?>
         </table>
-        <!-- <div class="grid-eq-2">
-            <input type="submit" value="<?php echo get_string('download'); ?>" /> -->
-            <input type="button" class="btn ui-btn"
-                    onclick="window.open('<?php echo $CFG->wwwroot . '/blocks/eduvidual/pages/manage_bunch.php?orgid=' . $org->orgid; ?>', 'system');"
-                    value="<?php echo get_string('manage:users:printcards', 'block_eduvidual'); ?>" />
-        <!-- </div> -->
+        <div class="grid-eq-2">
+            <a href="#" onclick="require(['block_eduvidual/manager'], function(M) { M.exportUserPopup('<?php echo $org->orgid; ?>', '<?php echo implode(',', $exportuserids); ?>'); }); return false;" class="btn btn-primary">
+                <img src="<?php echo $CFG->wwwroot; ?>/pix/i/export.svg" alt="export" />
+                <?php echo get_string('export', 'block_eduvidual'); ?>
+            </a>
+            <a href="<?php echo $CFG->wwwroot . '/blocks/eduvidual/pages/manage_bunch.php?orgid=' . $org->orgid; ?>" target="_blank" class="btn ui-btn">
+                <img src="<?php echo $CFG->wwwroot; ?>/pix/t/print.svg" alt="print" />
+                <?php echo get_string('manage:users:printcards', 'block_eduvidual'); ?>
+            </a>
+        </div>
         <?php echo $helper->print_hidden_form(); ?>
     </form>
     <?php

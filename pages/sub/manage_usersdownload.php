@@ -71,7 +71,7 @@ download_as_dataformat('users_' . date("Ymd-His"), $dataformat, $columns, $rs, f
     global $DB, $orgid;
     $r = (object) array('id' => $record->id);
     profile_load_data($r);
-    $bunch = $DB->get_record('block_eduvidual_userbunches', array('orgid' => $record->orgid, 'userid' => $r->id));
+    $bunch = $DB->get_record('block_eduvidual_userbunches', array('orgid' => $orgid, 'userid' => $record->id));
     if (!empty($r->bunch)) {
         $record->bunch = $bunch->bunch;
     } else {
