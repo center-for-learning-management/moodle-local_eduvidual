@@ -53,6 +53,7 @@ if (strpos($_SERVER["SCRIPT_FILENAME"], '/login/index.php') > 0 && ($USER->id <=
             'FORGOTPW' => 8,
             'EDUIDAM' => 9,
             'PORTAL' => 10,
+            'IMPRINT' => 11,
         );
         foreach ($b AS $x) {
             $buttons[$x] = false;
@@ -70,8 +71,8 @@ if (strpos($_SERVER["SCRIPT_FILENAME"], '/login/index.php') > 0 && ($USER->id <=
             pq($buttons[$b['MICROSOFT']])->find('a')->attr('href', $href);
             //pq($buttons[$b['MICROSOFT']])->find('a')->attr('href', $wwwroot . '/blocks/eduvidual/pages/login_microsoft.php');
         }
-        $googledomains = array("https://www.eduvidual.org", "https://eduvidual.dibig.at");
-        if (in_array($CFG->wwwroot, $googledomains) && count(pq('.potentialidp a[title="Google"]')) > 0) {
+
+        if (count(pq('.potentialidp a[title="Google"]')) > 0) {
             $buttons[$b['GOOGLE']] = pq('<div class="btn-eduviduallogin">')->addClass('potentialidp')->append(
                 pq('.potentialidp a[title="Google"]')->clone()->attr('id', 'eduvidual-btn-sso-google')
             );
@@ -136,7 +137,11 @@ if (strpos($_SERVER["SCRIPT_FILENAME"], '/login/index.php') > 0 && ($USER->id <=
                     ->append(pq('<img>')->attr('src', $CFG->wwwroot . '/blocks/eduvidual/pix/logo_portalat.png')->attr('height', '24')->attr('alt', 'eduIDAM'))
                     ->append(pq('<span>')->html('&nbsp;Portal.at')->attr('style', 'height: 24px;'))
             );
-
+        $buttons[$b['IMPRINT']] = pq('<div class="btn-eduviduallogin">')
+            ->append(pq('<a>')->attr('href', $wwwroot . '/static/imprint.html')
+                    ->addClass('btn btn-secondary btn-block')
+                    ->append(pq('<span>')->html('Impressum')->attr('style', 'height: 24px;'))
+            );
 
         // Remove elements from role="main" that are no row.
         pq('div#page-content div[role="main"]>*:not(.row)')->remove();
@@ -157,6 +162,7 @@ if (strpos($_SERVER["SCRIPT_FILENAME"], '/login/index.php') > 0 && ($USER->id <=
             $containerright->append($buttons[$b['REGISTERORG']]);
             $containerright->append($buttons[$b['HELP']]);
             $containerright->append($buttons[$b['GUEST_FORM']]);
+            $containerright->append($buttons[$b['IMPRINT']]);
         } else {
             $containerleft->append($buttons[$b['EDUIDAM']]);
             $containerleft->append($buttons[$b['PORTAL']]);
@@ -168,8 +174,8 @@ if (strpos($_SERVER["SCRIPT_FILENAME"], '/login/index.php') > 0 && ($USER->id <=
             $containerright->append($buttons[$b['REGISTER']]);
             $containerright->append($buttons[$b['REGISTERORG']]);
             $containerright->append($buttons[$b['HELP']]);
+            $containerright->append($buttons[$b['IMPRINT']]);
         }
-
 
 
         $containerbelow->append($buttons[$b['LOGIN_FORM']]);
