@@ -41,12 +41,12 @@ class block_eduvidual_external_manager extends external_api {
         $context = context_coursecat::instance($org->categoryid);
         $PAGE->set_context($context);
 
-        return $OUTPUT->download_dataformat_selector(
+        return str_replace('method="get"', 'method="post"', $OUTPUT->download_dataformat_selector(
             get_string('userbulkdownload', 'admin'),
             $CFG->wwwroot . '/blocks/eduvidual/pages/sub/manage_usersdownload.php',
             'dataformat',
             array('orgid' => $params['orgid'], 'userids' => $params['userids'])
-        );
+        ));
     }
     public static function user_exportform_returns() {
         return new external_value(PARAM_RAW, 'Returns the form as html.');
