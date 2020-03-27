@@ -163,7 +163,7 @@ for ($z = 0; $z < 2; $z++) {
         } else {
             $ratemig = 'n/a';
         }
-        $neweduv = number_format($registered[$a]->cnt - $lpfeduv[$a]->cnt, 0, ",", ".");
+        $neweduv = number_format($registered[$a]->cnt, 0, ",", ".");
         $lpf_and_eduv = $lpf[$a]->cnt + $registered[$a]->cnt - $lpfeduv[$a]->cnt;
 
         $STATS[$z]['states'][] = array(
