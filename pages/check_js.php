@@ -23,6 +23,7 @@
 // Just redirect to the google login provider
 
 require_once('../../../config.php');
+require_once($CFG->dirroot . '/blocks/eduvidual/block_eduvidual.php');
 $forwardto = urldecode(optional_param('forwardto', '/my', PARAM_TEXT));
 
 $PAGE->set_heading(get_string('check_js:title', 'block_eduvidual'));
