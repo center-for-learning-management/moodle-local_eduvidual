@@ -40,6 +40,17 @@ if ($_SERVER['SCRIPT_FILENAME'] == $CFG->dirroot . '/index.php') {
 }
 
 /**
+ * Use email as username upon self registration.
+**/
+if (strpos($_SERVER["SCRIPT_FILENAME"], '/login/signup.php') > 0) {
+  pq('#fitem_id_username label[for="id_username"]')->html(get_string('email'));
+  pq('#fitem_id_username #id_username')->attr('onkeyup', "document.getElementById('id_email').value = document.getElementById('id_username').value;");
+  pq('#fitem_id_email')->attr('style', 'display: none;');
+  pq('form[action*="/login/signup.php"]')->attr("onsubmit", "document.getElementById('id_email').value = document.getElementById('id_username').value;");
+}
+
+
+/**
  * Insert a fake breadcrumb.
  **/
 
