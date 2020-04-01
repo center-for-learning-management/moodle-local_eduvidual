@@ -130,7 +130,7 @@ switch($bunch) {
         $entries = $DB->get_records_sql('SELECT u.* FROM {block_eduvidual_orgid_userid} AS ou, {user} AS u WHERE u.deleted=0 AND ou.userid=u.id AND ou.orgid=? ORDER BY u.lastname ASC, u.firstname ASC', array($orgid));
     break;
     case '___allwithout':
-        $entries = $DB->get_records_sql('SELECT u.* FROM {block_eduvidual_userbunches} AS ub, {block_eduvidual_orgid_userid} AS ou, {user} AS u WHERE u.deleted=0 ou.userid=ub.userid AND ou.userid=u.id AND ou.orgid=? AND ub.bunch IS NULL ORDER BY u.lastname ASC, u.firstname ASC', array($orgid));
+        $entries = $DB->get_records_sql('SELECT u.* FROM {block_eduvidual_userbunches} AS ub, {block_eduvidual_orgid_userid} AS ou, {user} AS u WHERE u.deleted=0 AND ou.userid=ub.userid AND ou.userid=u.id AND ou.orgid=? AND ub.bunch IS NULL ORDER BY u.lastname ASC, u.firstname ASC', array($orgid));
     break;
     case '___allparents':
         $entries = $DB->get_records_sql('SELECT u.* FROM {block_eduvidual_orgid_userid} AS ou, {user} AS u WHERE u.deleted=0 AND ou.userid=u.id AND ou.orgid=? AND ou.role=? ORDER BY u.lastname ASC, u.firstname ASC', array($orgid, 'Parent'));
