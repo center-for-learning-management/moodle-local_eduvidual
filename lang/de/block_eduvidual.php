@@ -508,6 +508,7 @@ $string['restricted:description'] = '<p>Wir nehmen die Privatsphäre unserer Sch
 $string['role:Administrator'] = 'Administrator/in';
 $string['role:Manager'] = 'Manager/in';
 $string['role:Parent'] = 'Erziehungsberechtige/r';
+$string['role:Remove'] = 'Von Schule entfernen';
 $string['role:Student'] = 'Schüler/in';
 $string['role:Teacher'] = 'Lehrer/in';
 
