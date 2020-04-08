@@ -509,7 +509,7 @@ $string['restricted:description'] = '<p>We take privacy serious and therefore pr
 $string['role:Administrator'] = 'Administrator';
 $string['role:Manager'] = 'Manager';
 $string['role:Parent'] = 'Parent';
-$string['role:Remove'] = 'Remove from organization';
+$string['role:Remove'] = 'Unenrol from organization';
 $string['role:Student'] = 'Student';
 $string['role:Teacher'] = 'Teacher';
 
