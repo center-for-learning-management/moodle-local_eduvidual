@@ -156,10 +156,11 @@ class block_eduvidual_lib_enrol {
                 if ($role === 'remove') {
                     // Remove roles that were be given in coursecat.
                     $catroles = array();
-                    $catroles = array_merge($catroles, explode(",", get_config('block_eduvidual', 'managersroles')));
-                    $catroles = array_merge($catroles, explode(",", get_config('block_eduvidual', 'parentsroles')));
-                    $catroles = array_merge($catroles, explode(",", get_config('block_eduvidual', 'studentsroles')));
-                    $catroles = array_merge($catroles, explode(",", get_config('block_eduvidual', 'teachersroles')));
+                    $catroles = array_merge($catroles, explode(",", get_config('block_eduvidual', 'defaultorgrolemanager')));
+                    $catroles = array_merge($catroles, explode(",", get_config('block_eduvidual', 'defaultorgoleparent')));
+                    $catroles = array_merge($catroles, explode(",", get_config('block_eduvidual', 'defaultorgrolestudent')));
+                    $catroles = array_merge($catroles, explode(",", get_config('block_eduvidual', 'defaultorgroleteacher')));
+
                     foreach($catroles AS $catrole) {
                         if (!empty($catrole)) {
                             role_unassign($catrole, $userid, $orgcatcontext->id);
@@ -170,10 +171,10 @@ class block_eduvidual_lib_enrol {
                     // Assign new roles that should be given in coursecat.
                     $catroles = array();
                     switch ($role) {
-                        case 'Manager': $catroles = array_merge($catroles, explode(",", get_config('block_eduvidual', 'managersroles'))); break;
-                        case 'Parent': $catroles = array_merge($catroles, explode(",", get_config('block_eduvidual', 'parentsroles'))); break;
-                        case 'Student': $catroles = array_merge($catroles, explode(",", get_config('block_eduvidual', 'studentsroles'))); break;
-                        case 'Teacher': $catroles = array_merge($catroles, explode(",", get_config('block_eduvidual', 'teachersroles'))); break;
+                        case 'Manager': $catroles = array_merge($catroles, explode(",", get_config('block_eduvidual', 'defaultorgrolemanager'))); break;
+                        case 'Parent': $catroles = array_merge($catroles, explode(",", get_config('block_eduvidual', 'defaultorgroleparent'))); break;
+                        case 'Student': $catroles = array_merge($catroles, explode(",", get_config('block_eduvidual', 'defaultorgrolestudent'))); break;
+                        case 'Teacher': $catroles = array_merge($catroles, explode(",", get_config('block_eduvidual', 'defaultorgroleteacher'))); break;
                     }
                     foreach($catroles AS $catrole) {
                         if (!empty($catrole)) {
