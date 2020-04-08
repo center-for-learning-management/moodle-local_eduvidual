@@ -37,6 +37,8 @@ function block_eduvidual_before_standard_html_head() {
         require_once($CFG->dirroot . '/blocks/eduvidual/buffered_mode.php');
     }
 
+    $PAGE->requires->css('/blocks/eduvidual/style/main.css');
+
     $data = array(
         'context' => $CONTEXT,
         'course' => (object) array(
@@ -62,7 +64,7 @@ function block_eduvidual_before_standard_html_head() {
     }
 
     if (!empty(block_eduvidual::get('orgbanner'))) {
-        $inject_styles[] = "body #page-header .card { background-image: url(" . block_eduvidual::get('orgbanner') . ") !important; background-size: cover; background-position: center center; }";
+        $inject_styles[] = "body #page-header .card { background-image: url(" . block_eduvidual::get('orgbanner') . ") !important; }";
     }
 
     // @TODO echo goes here into the head of the page, not the body!!!
