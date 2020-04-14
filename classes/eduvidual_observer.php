@@ -128,21 +128,24 @@ class eduvidual_observer {
             // For all users - check maildomain
             $maildomain = explode('@', strtolower($user->email));
             $maildomain = '@' . $maildomain[1];
-            //error_log('SELECT * FROM oer_block_eduvidual_org WHERE maildomain="' . $maildomain . '" OR maildomainteacher="' . $maildomain . '"');
-            $chkorgs = $DB->get_records_sql('SELECT * FROM {block_eduvidual_org} WHERE maildomain LIKE ? OR maildomainteacher LIKE ?', array('%' . $maildomain . '%', '%' . $maildomain . '%'));
-            foreach($chkorgs AS $chkorg) {
-                $member = $DB->get_record('block_eduvidual_orgid_userid', array('orgid' => $chkorg->orgid, 'userid' => $user->id));
-                if (!isset($member->role) || empty($member->role)) {
-                    require_once($CFG->dirroot . '/blocks/eduvidual/classes/lib_enrol.php');
-                    $setrole = (strpos($chkorg->maildomainteacher, $maildomain) !== false) ? 'Teacher': 'Student';
-                    if (!isset($reply['enrolments'])) {
-                        $reply['enrolments'] = array();
+            if (!empty($maildomain)) {
+                //error_log('SELECT * FROM oer_block_eduvidual_org WHERE maildomain="' . $maildomain . '" OR maildomainteacher="' . $maildomain . '"');
+                $chkorgs = $DB->get_records_sql('SELECT * FROM {block_eduvidual_org} WHERE maildomain LIKE ? OR maildomainteacher LIKE ?', array('%' . $maildomain . '%', '%' . $maildomain . '%'));
+                foreach($chkorgs AS $chkorg) {
+                    $member = $DB->get_record('block_eduvidual_orgid_userid', array('orgid' => $chkorg->orgid, 'userid' => $user->id));
+                    if (!isset($member->role) || empty($member->role)) {
+                        require_once($CFG->dirroot . '/blocks/eduvidual/classes/lib_enrol.php');
+                        $setrole = (strpos($chkorg->maildomainteacher, $maildomain) !== false) ? 'Teacher': 'Student';
+                        if (!isset($reply['enrolments'])) {
+                            $reply['enrolments'] = array();
+                        }
+                        if ($member->role == 'Manager') $setrole = 'Manager';
+                        if ($debug) error_log('Set role from maildomain ' . $maildomain . ': ' . $setrole . ' on user ' . $user->id . ' for org ' . $chkorg->orgid);
+                        $reply['enrolments'][] = \block_eduvidual_lib_enrol::role_set($user->id, $chkorg, $setrole);
                     }
-                    if ($member->role == 'Manager') $setrole = 'Manager';
-                    if ($debug) error_log('Set role from maildomain ' . $maildomain . ': ' . $setrole . ' on user ' . $user->id . ' for org ' . $chkorg->orgid);
-                    $reply['enrolments'][] = \block_eduvidual_lib_enrol::role_set($user->id, $chkorg, $setrole);
                 }
             }
+
 
             /*
             // We do not want every user to be enrolled in eduvidual organisation anymore!
