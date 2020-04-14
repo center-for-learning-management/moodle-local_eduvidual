@@ -129,12 +129,12 @@ class eduvidual_observer {
             $maildomain = explode('@', strtolower($user->email));
             $maildomain = '@' . $maildomain[1];
             //error_log('SELECT * FROM oer_block_eduvidual_org WHERE maildomain="' . $maildomain . '" OR maildomainteacher="' . $maildomain . '"');
-            $chkorgs = $DB->get_records_sql('SELECT * FROM {block_eduvidual_org} WHERE maildomain LIKE ? OR maildomainteacher LIKE ? OR maildomain LIKE ? OR maildomainteacher LIKE ?', array($maildomain, $maildomain, '%' . $maildomain, '%' . $maildomain));
+            $chkorgs = $DB->get_records_sql('SELECT * FROM {block_eduvidual_org} WHERE maildomain LIKE ? OR maildomainteacher LIKE ?', array('%' . $maildomain . '%', '%' . $maildomain . '%'));
             foreach($chkorgs AS $chkorg) {
                 $member = $DB->get_record('block_eduvidual_orgid_userid', array('orgid' => $chkorg->orgid, 'userid' => $user->id));
                 if (!isset($member->role) || empty($member->role)) {
                     require_once($CFG->dirroot . '/blocks/eduvidual/classes/lib_enrol.php');
-                    $setrole = ($chkorg->maildomainteacher == $maildomain) ? 'Teacher': 'Student';
+                    $setrole = (strpos($chkorg->maildomainteacher, $maildomain) !== false) ? 'Teacher': 'Student';
                     if (!isset($reply['enrolments'])) {
                         $reply['enrolments'] = array();
                     }
