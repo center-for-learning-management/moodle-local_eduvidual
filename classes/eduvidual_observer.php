@@ -128,7 +128,7 @@ class eduvidual_observer {
             // For all users - check maildomain
             $maildomain = explode('@', strtolower($user->email));
             $maildomain = '@' . $maildomain[1];
-            if (!empty($maildomain)) {
+            if (strlen($maildomain) > 3) {
                 //error_log('SELECT * FROM oer_block_eduvidual_org WHERE maildomain="' . $maildomain . '" OR maildomainteacher="' . $maildomain . '"');
                 $chkorgs = $DB->get_records_sql('SELECT * FROM {block_eduvidual_org} WHERE maildomain LIKE ? OR maildomainteacher LIKE ?', array('%' . $maildomain . '%', '%' . $maildomain . '%'));
                 foreach($chkorgs AS $chkorg) {
