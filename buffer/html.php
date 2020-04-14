@@ -55,6 +55,7 @@ try {
         require($CFG->dirroot . '/blocks/eduvidual/buffer/html_hook_enhance_courseedit.php');
     }
 
+    pq('body')->addClass('theme-' . $CFG->theme);
     require($CFG->dirroot . '/blocks/eduvidual/buffer/html_theme_boost.php');
 
     /**
