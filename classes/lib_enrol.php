@@ -67,6 +67,9 @@ class block_eduvidual_lib_enrol {
         $enrol = false;
         $reply = array();
 
+        // Remove could be written in various cases.
+        if (strtolower($role) == 'remove') $role = 'remove';
+
         $user = $DB->get_record('user', array('id' => $userid), '*', IGNORE_MISSING);
         if (empty($user->id) || $user->deleted == 1) {
             $reply['error'] = 'User ' . $userid . ' does not exist anymore';
@@ -78,116 +81,125 @@ class block_eduvidual_lib_enrol {
         if (is_numeric($org)) {
             $org =  $DB->get_record('block_eduvidual_org', array('orgid' => $org));
         }
+        // We can only proceed if this is a valid org.
+        if (!empty($org->orgid)) {
+            $current = $DB->get_record('block_eduvidual_orgid_userid', array('orgid' => $org->orgid, 'userid' => $userid));
 
-        $current = $DB->get_record('block_eduvidual_orgid_userid', array('orgid' => $org->orgid, 'userid' => $userid));
-        $bunch = $DB->get_record('block_eduvidual_userbunches', array('orgid' => $org->orgid, 'userid' => $userid));
-        if (!empty($bunch->bunch) && $role !== 'remove') {
-            //$reply['bunch'] = $bunch;
-            self::bunch_set($userid, $org, $bunch->bunch);
-        }
-        if (!empty($current->orgid) && $current->role == $role && !$force) {
-            // Nothing to do
-            $reply['nothing_to_do'] = true;
-        } else {
-            // We need to change something for this user.
-            $orgcatcontext = context_coursecat::instance($org->categoryid, IGNORE_MISSING);
-            if (!empty($orgcatcontext->id)) {
-                // Remove old roles that were given in coursecat.
-                $catrole = get_config('block_eduvidual', 'defaultorgrole' . strtolower($current->role));
-                if (!empty($catrole)) {
-                    $reply['role_unassign'][] = 'orgcat: user ' . $userid . ' roleid ' . $catrole . ' categoryid ' . $org->categoryid;
-                    role_unassign($catrole, $userid, $orgcatcontext->id);
-                }
-            }
-
-            // We can now safely remove the user from this org, or assign new roles.
-
-            if ($role === 'remove') {
-                // Unenrol from orgcourse.
-                $reply['unenrolments'][] = 'orgcourse: user ' . $userid . ' roleid -1 courseid ' . $org->courseid;
-                self::course_manual_enrolments($org->courseid, array($userid), -1);
-                $reply['removed_user'] = $org->orgid . ' / ' . $userid;
-                $DB->delete_records('block_eduvidual_orgid_userid', array('orgid' => $org->orgid, 'userid' => $userid));
+            // If we are removing the user, we have to remove a bunch and cohorts as well.
+            if ($role == 'remove') {
                 $DB->delete_records('block_eduvidual_userbunches', array('orgid' => $org->orgid, 'userid' => $userid));
-                if (!empty($current->role) && $current->role === 'Manager') {
-                    // This person was a manager. If we are not manager in any organization we should be unenrolled from managers-course.
-                    $managerroles = array_keys($DB->get_records_sql('SELECT id FROM {block_eduvidual_orgid_userid} WHERE userid=? AND role=?', array($userid, 'Manager')));
-                    if (count($managerroles) == 0) {
-                        // Unenrol from system wide courses for managers to
-                        $allmanagerscourses = explode(',', get_config('block_eduvidual', 'allmanagerscourses'));
-                        self::course_manual_enrolments($allmanagerscourses, array($userid), -1);
+                // Check if we are enrolled in cohorts and remove us.
+                $coursecatcontext = \context_coursecat::instance($org->categoryid, IGNORE_MISSING);
+                if (!empty($coursecatcontext->id)) {
+                    $cohorts = $DB->get_records('cohort', array('contextid' => $coursecatcontext->id));
+                    foreach ($cohorts AS $cohort) {
+                        $DB->delete_records('cohort_members', array('cohortid' => $cohort->id, 'userid' => $userid));
                     }
                 }
+            }
+
+            if (!empty($current->orgid) && $current->role == $role && !$force) {
+                // Nothing to do
+                $reply['nothing_to_do'] = true;
             } else {
-                if (!empty($current->role)) {
-                    $current->role = $role;
-                    $DB->update_record('block_eduvidual_orgid_userid', $current);
-                    $reply['update_user'] = $org->orgid . ' / ' . $userid . ' / ' . $role;
-                } else {
-                    $obj = new \stdClass;
-                    $obj->orgid = $org->orgid;
-                    $obj->userid = $userid;
-                    $obj->role = $role;
-                    $DB->insert_record('block_eduvidual_orgid_userid', $obj);
-                    $reply['insert_user'] = $org->orgid . ' / ' . $userid . ' / ' . $role;
-                }
-                if (!empty($org->courseid)) {
-                    // Enrol into organization course as student or teacher (if it is a manager!!)
-                    switch($role) {
-                        case 'Manager': $_role = get_config('block_eduvidual', 'defaultroleteacher'); break;
-                        case 'Parent': $_role = get_config('block_eduvidual', 'defaultrolestudent'); break;
-                        case 'Student': $_role = get_config('block_eduvidual', 'defaultrolestudent'); break;
-                        case 'Teacher': $_role = get_config('block_eduvidual', 'defaultrolestudent'); break;
-                        default: $_role = 0;
-                    }
-                    if ($_role > 0) {
-                        $reply['enrolments'][] = 'allmanagerscourse: user ' . $userid . ' roleid ' . $_role . ' courseid ' . $org->courseid;
-                        self::course_manual_enrolments($org->courseid, array($userid), $_role);
-                    }
-                    if ($role == 'Manager') {
-                        // Enrol into system wide courses for managers to
-                        $allmanagerscourses = explode(',', get_config('block_eduvidual', 'allmanagerscourses'));
-                        $_role = get_config('block_eduvidual', 'defaultrolestudent');
-                        self::course_manual_enrolments($allmanagerscourses, array($userid), $_role);
+                // We need to change something for this user.
+                $orgcatcontext = \context_coursecat::instance($org->categoryid, IGNORE_MISSING);
+                if (!empty($orgcatcontext->id)) {
+                    // Remove old roles that were given in coursecat.
+                    $catrole = get_config('block_eduvidual', 'defaultorgrole' . strtolower($current->role));
+                    if (!empty($catrole)) {
+                        $reply['role_unassign'][] = 'orgcat: user ' . $userid . ' roleid ' . $catrole . ' categoryid ' . $org->categoryid;
+                        role_unassign($catrole, $userid, $orgcatcontext->id);
                     }
                 }
-            }
-            if (!empty($orgcatcontext->id)) {
+
+                // We can now safely remove the user from this org, or assign new roles.
                 if ($role === 'remove') {
-                    // Remove roles that were be given in coursecat.
-                    $catroles = array();
-                    $catroles = array_merge($catroles, explode(",", get_config('block_eduvidual', 'defaultorgrolemanager')));
-                    $catroles = array_merge($catroles, explode(",", get_config('block_eduvidual', 'defaultorgoleparent')));
-                    $catroles = array_merge($catroles, explode(",", get_config('block_eduvidual', 'defaultorgrolestudent')));
-                    $catroles = array_merge($catroles, explode(",", get_config('block_eduvidual', 'defaultorgroleteacher')));
-
-                    foreach($catroles AS $catrole) {
-                        if (!empty($catrole)) {
-                            role_unassign($catrole, $userid, $orgcatcontext->id);
-                            $reply['role_unassign'][] = 'orgcat: user ' . $userid . ' roleid ' . $catrole . ' categoryid ' . $org->categoryid;
+                    // Unenrol from orgcourse.
+                    $reply['unenrolments'][] = 'orgcourse: user ' . $userid . ' roleid -1 courseid ' . $org->courseid;
+                    self::course_manual_enrolments($org->courseid, array($userid), -1);
+                    $reply['removed_user'] = $org->orgid . ' / ' . $userid;
+                    $DB->delete_records('block_eduvidual_orgid_userid', array('orgid' => $org->orgid, 'userid' => $userid));
+                    if (!empty($current->role) && $current->role === 'Manager') {
+                        // This person was a manager. If we are not manager in any organization we should be unenrolled from managers-course.
+                        $managerroles = array_keys($DB->get_records_sql('SELECT id FROM {block_eduvidual_orgid_userid} WHERE userid=? AND role=?', array($userid, 'Manager')));
+                        if (count($managerroles) == 0) {
+                            // Unenrol from system wide courses for managers to
+                            $allmanagerscourses = explode(',', get_config('block_eduvidual', 'allmanagerscourses'));
+                            self::course_manual_enrolments($allmanagerscourses, array($userid), -1);
                         }
                     }
                 } else {
-                    // Assign new roles that should be given in coursecat.
-                    $catroles = array();
-                    switch ($role) {
-                        case 'Manager': $catroles = array_merge($catroles, explode(",", get_config('block_eduvidual', 'defaultorgrolemanager'))); break;
-                        case 'Parent': $catroles = array_merge($catroles, explode(",", get_config('block_eduvidual', 'defaultorgroleparent'))); break;
-                        case 'Student': $catroles = array_merge($catroles, explode(",", get_config('block_eduvidual', 'defaultorgrolestudent'))); break;
-                        case 'Teacher': $catroles = array_merge($catroles, explode(",", get_config('block_eduvidual', 'defaultorgroleteacher'))); break;
+                    if (!empty($current->role)) {
+                        $current->role = $role;
+                        $DB->update_record('block_eduvidual_orgid_userid', $current);
+                        $reply['update_user'] = $org->orgid . ' / ' . $userid . ' / ' . $role;
+                    } else {
+                        $obj = new \stdClass;
+                        $obj->orgid = $org->orgid;
+                        $obj->userid = $userid;
+                        $obj->role = $role;
+                        $DB->insert_record('block_eduvidual_orgid_userid', $obj);
+                        $reply['insert_user'] = $org->orgid . ' / ' . $userid . ' / ' . $role;
                     }
-                    foreach($catroles AS $catrole) {
-                        if (!empty($catrole)) {
-                            role_assign($catrole, $userid, $orgcatcontext->id);
-                            $reply['role_assign'][] = 'orgcat: user ' . $userid . ' roleid ' . $catrole . ' categoryid ' . $org->categoryid;
+                    if (!empty($org->courseid)) {
+                        // Enrol into organization course as student or teacher (if it is a manager!!)
+                        switch($role) {
+                            case 'Manager': $_role = get_config('block_eduvidual', 'defaultroleteacher'); break;
+                            case 'Parent': $_role = get_config('block_eduvidual', 'defaultrolestudent'); break;
+                            case 'Student': $_role = get_config('block_eduvidual', 'defaultrolestudent'); break;
+                            case 'Teacher': $_role = get_config('block_eduvidual', 'defaultrolestudent'); break;
+                            default: $_role = 0;
+                        }
+                        if ($_role > 0) {
+                            $reply['enrolments'][] = 'allmanagerscourse: user ' . $userid . ' roleid ' . $_role . ' courseid ' . $org->courseid;
+                            self::course_manual_enrolments($org->courseid, array($userid), $_role);
+                        }
+                        if ($role == 'Manager') {
+                            // Enrol into system wide courses for managers to
+                            $allmanagerscourses = explode(',', get_config('block_eduvidual', 'allmanagerscourses'));
+                            $_role = get_config('block_eduvidual', 'defaultrolestudent');
+                            self::course_manual_enrolments($allmanagerscourses, array($userid), $_role);
                         }
                     }
                 }
+                if (!empty($orgcatcontext->id)) {
+                    if ($role === 'remove') {
+                        // Remove roles that were be given in coursecat.
+                        $catroles = array();
+                        $catroles = array_merge($catroles, explode(",", get_config('block_eduvidual', 'defaultorgrolemanager')));
+                        $catroles = array_merge($catroles, explode(",", get_config('block_eduvidual', 'defaultorgoleparent')));
+                        $catroles = array_merge($catroles, explode(",", get_config('block_eduvidual', 'defaultorgrolestudent')));
+                        $catroles = array_merge($catroles, explode(",", get_config('block_eduvidual', 'defaultorgroleteacher')));
+
+                        foreach($catroles AS $catrole) {
+                            if (!empty($catrole)) {
+                                role_unassign($catrole, $userid, $orgcatcontext->id);
+                                $reply['role_unassign'][] = 'orgcat: user ' . $userid . ' roleid ' . $catrole . ' categoryid ' . $org->categoryid;
+                            }
+                        }
+                    } else {
+                        // Assign new roles that should be given in coursecat.
+                        $catroles = array();
+                        switch ($role) {
+                            case 'Manager': $catroles = array_merge($catroles, explode(",", get_config('block_eduvidual', 'defaultorgrolemanager'))); break;
+                            case 'Parent': $catroles = array_merge($catroles, explode(",", get_config('block_eduvidual', 'defaultorgroleparent'))); break;
+                            case 'Student': $catroles = array_merge($catroles, explode(",", get_config('block_eduvidual', 'defaultorgrolestudent'))); break;
+                            case 'Teacher': $catroles = array_merge($catroles, explode(",", get_config('block_eduvidual', 'defaultorgroleteacher'))); break;
+                        }
+                        foreach($catroles AS $catrole) {
+                            if (!empty($catrole)) {
+                                role_assign($catrole, $userid, $orgcatcontext->id);
+                                $reply['role_assign'][] = 'orgcat: user ' . $userid . ' roleid ' . $catrole . ' categoryid ' . $org->categoryid;
+                            }
+                        }
+                    }
 
 
-                /** remove role from orgcat */
+                    /** remove role from orgcat */
+                }
+                $reply['status'] = 'ok';
             }
-            $reply['status'] = 'ok';
         }
 
         require_once($CFG->dirroot . '/blocks/eduvidual/classes/lib_phplist.php');
