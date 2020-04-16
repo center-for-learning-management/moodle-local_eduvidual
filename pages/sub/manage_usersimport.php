@@ -58,7 +58,7 @@ if (optional_param('datavalidated', 0, PARAM_INT) == 1) {
     for ($a = 0; $a < count($users); $a++) {
         $user = $users[$a];
         ?>
-        <tr>
+        <tr<?php if(strtolower($user->role) == 'remove') { echo " style=\"text-decoration: line-through;\""; } ?>>
             <td><img src="/pix/i/<?php echo ((isset($user->payload->processed) && $user->payload->processed)?'completion-auto-pass':'completion-auto-fail'); ?>.svg" /></td>
             <td><?php echo @$user->firstname; ?></td>
             <td><?php echo @$user->lastname; ?></td>
@@ -77,29 +77,20 @@ if (optional_param('datavalidated', 0, PARAM_INT) == 1) {
                 $u->confirmed = 1;
                 $u->mnethostid = 1;
                 user_update_user($u, false);
+                if (!empty($user->password)) {
+                    update_internal_user_password($u, $user->password, false);
+                }
 
                 require_once($CFG->dirroot . '/blocks/eduvidual/classes/lib_enrol.php');
                 block_eduvidual_lib_enrol::role_set($u->id, $org, $user->role);
-                if (!empty($user->bunch)) {
+                if (!empty($user->bunch) && strtolower($user->role) != 'remove') {
                     block_eduvidual_lib_enrol::bunch_set($u->id, $org, $user->bunch);
                 }
-                $chk = $DB->get_record('block_eduvidual_userbunches', array('orgid' => $org->orgid, 'userid' => $u->id));
-                if ($chk && $chk->userid == $u->id) {
-                    if (!empty($user->bunch)) {
-                        $chk->bunch = $user->bunch;
-                        $DB->update_record('block_eduvidual_userbunches', $chk);
-                    } else {
-                        $DB->delete_records('block_eduvidual_userbunches', (array)$chk);
-                    }
-                } elseif(!empty($user->bunch)) {
-                    $userbunch = (object) array(
-                        'orgid' => $org->orgid,
-                        'userid' => $u->id,
-                        'bunch' => $user->bunch,
-                    );
-                    $DB->insert_record('block_eduvidual_userbunches', $userbunch);
+                if (strtolower($user->role) == 'remove') {
+                    echo 'Removed #' . $u->id;
+                } else {
+                    echo 'Updated #' . $u->id;
                 }
-                echo 'Updated #' . $u->id;
             } else {
                 // Create new user and store id
                 $u = new stdClass();
@@ -115,7 +106,10 @@ if (optional_param('datavalidated', 0, PARAM_INT) == 1) {
 
                 $u->id = user_create_user($u, false, false);
                 $user->secret = block_eduvidual::get_user_secret($u->id);
-                update_internal_user_password($u, $user->secret, false);
+                if (empty($user->password)) {
+                    $user->password = $user->secret;
+                }
+                update_internal_user_password($u, $user->password, false);
 
                 $user->id = $u->id;
 

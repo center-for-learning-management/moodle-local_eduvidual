@@ -320,7 +320,7 @@ class block_eduvidual_lib_import_compiler_user extends block_eduvidual_lib_impor
         $obj->username = trim($obj->username);
 
         // Revoke processed flag if required information is missing!
-        if (!in_array($obj->role, array('Manager', 'Teacher', 'Student', 'Parent'))) {
+        if (!in_array($obj->role, array('Manager', 'Teacher', 'Student', 'Parent', 'Remove'))) {
             $payload->processed = false;
             $payload->action = 'Invalid role';
         }
