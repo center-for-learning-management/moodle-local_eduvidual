@@ -66,6 +66,8 @@ function block_eduvidual_before_standard_html_head() {
 
     if (!empty(block_eduvidual::get('orgbanner'))) {
         $inject_styles[] = "body #page-header .card { background-image: url(" . block_eduvidual::get('orgbanner') . ") !important; }";
+    } else {
+        $inject_styles[] = "body #page-header .card { background-image: url(" . $CFG->wwwroot . "/blocks/eduvidual/pix/banner-curve.jpg) !important; }";
     }
 
     // @TODO echo goes here into the head of the page, not the body!!!
