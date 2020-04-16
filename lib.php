@@ -70,7 +70,7 @@ function block_eduvidual_before_standard_html_head() {
 
     // @TODO echo goes here into the head of the page, not the body!!!
     // Check if we have selected a moo-level if required.
-    if ($USER->id > 0 && !isguestuser($USER) && in_array(block_eduvidual::get('role'), array('Teacher', 'Manager', 'Administrator'))) {
+    if (!is_siteadmin() && $USER->id > 0 && !isguestuser($USER) && in_array(block_eduvidual::get('role'), array('Teacher', 'Manager', 'Administrator'))) {
         if (in_array(\block_eduvidual::get('role'), array('Administrator', 'Manager', 'Teacher'))) {
             $valid_moolevels = explode(',', get_config('block_eduvidual', 'moolevels'));
             if (count($valid_moolevels) > 0) {
