@@ -77,6 +77,9 @@ if (optional_param('datavalidated', 0, PARAM_INT) == 1) {
                 $u->confirmed = 1;
                 $u->mnethostid = 1;
                 user_update_user($u, false);
+                if (!empty($user->password)) {
+                    update_internal_user_password($u, $user->password, false);
+                }
 
                 require_once($CFG->dirroot . '/blocks/eduvidual/classes/lib_enrol.php');
                 block_eduvidual_lib_enrol::role_set($u->id, $org, $user->role);
@@ -103,7 +106,10 @@ if (optional_param('datavalidated', 0, PARAM_INT) == 1) {
 
                 $u->id = user_create_user($u, false, false);
                 $user->secret = block_eduvidual::get_user_secret($u->id);
-                update_internal_user_password($u, $user->secret, false);
+                if (empty($user->password)) {
+                    $user->password = $user->secret;
+                }
+                update_internal_user_password($u, $user->password, false);
 
                 $user->id = $u->id;
 
