@@ -21,7 +21,7 @@
 
 <h4>{{#str}} admin:orgcoursebasement:title, block_eduvidual {{/str}}</h4>
 <p>{{#str}} admin:orgcoursebasement:description, block_eduvidual {{/str}}</p>
-<select id="block_eduvidual_admin_orgcoursebasement" onchange="var sel = this; require(['block_eduvidual/admin'], function(ADMIN) { ADMIN.orgcoursebasement(this.value); });">
+<select id="block_eduvidual_admin_orgcoursebasement" onchange="var sel = this; require(['block_eduvidual/admin'], function(ADMIN) { ADMIN.orgcoursebasement(sel.value); });">
 {{#orgcoursebasements}}
     <optgroup label="{{key}}">
         {{#basements}}
