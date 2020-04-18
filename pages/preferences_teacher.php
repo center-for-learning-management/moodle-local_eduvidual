@@ -48,6 +48,9 @@ if (in_array(block_eduvidual::get('role'), array('Administrator', 'Manager', 'Te
 
                 <div class="grid-eq-3">
                 <?php
+                if (!isset($userextra)) {
+                    $userextra = (object) array();
+                }
                 if (!isset($userextra->moolevels)) {
                     $userextra->moolevels = array();
                 }
