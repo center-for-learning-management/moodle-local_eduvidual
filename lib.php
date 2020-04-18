@@ -39,7 +39,8 @@ function block_eduvidual_before_standard_html_head() {
     }
 
     // Deployggb.js is required for certain stack questions.
-    $PAGE->requires->js('/blocks/eduvidual/js/deployggb.js');
+    // Disabled
+    //$PAGE->requires->js('/blocks/eduvidual/js/deployggb.js');
     // Main.css changes some styles for eduvidual.
     $PAGE->requires->css('/blocks/eduvidual/style/main.css');
 
