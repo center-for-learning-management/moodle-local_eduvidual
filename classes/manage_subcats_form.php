@@ -31,7 +31,7 @@ class block_eduvidual_manage_subcats_form extends moodleform {
     var $maxfiles = 1;
     var $subdirs = 0;
     function definition() {
-        global $DB;
+        global $DB, $org;
         $mform = $this->_form;
         $mform->addElement('hidden', 'orgid', 0);
         $mform->setType('orgid', PARAM_INT);
