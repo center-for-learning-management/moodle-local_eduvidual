@@ -68,6 +68,7 @@ function block_eduvidual_before_standard_html_head() {
     if ($_SERVER['SCRIPT_FILENAME'] == $CFG->dirroot . '/index.php') {
     }
 
+    block_eduvidual::determine_org();
     if (!empty(block_eduvidual::get('orgbanner'))) {
         $inject_styles[] = "body #page-header .card { background-image: url(" . block_eduvidual::get('orgbanner') . ") !important; }";
     } else {

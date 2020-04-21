@@ -114,20 +114,28 @@ class block_eduvidual extends block_base /* was block_list */ {
     public static function determine_org() {
         global $DB, $PAGE;
         // Determine current organization
-        if (isset($PAGE->course->category) && $PAGE->course->category > 0) {
-            // Determine the organization this course is member of
-            //print_r($PAGE->course);
-            $category = $DB->get_record('course_categories', array('id' => $PAGE->course->category));
+        $categoryid = 0;
+        // This must be in a try catch block, otherwise we risk moodle errors
+        // that we access course category before it is set up.
+        try {
+            if (!empty($PAGE->course->category)) $categoryid = $PAGE->course->category;
+            if (!empty($PAGE->category->id)) $categoryid = $PAGE->category->id;
+        } catch(Exception $e) {}
+
+
+        if (!empty($categoryid)) {
+            $category = $DB->get_record('course_categories', array('id' => $categoryid));
             if (isset($category->path)) {
                 $path = explode("/", $category->path);
                 $main = $DB->get_record('course_categories', array('id' => $path[1]));
                 // Check if this category belongs to an organization
                 $org = $DB->get_record('block_eduvidual_org', array('categoryid' => $main->id));
-                if ($org && $org->categoryid == $main->id) {
-                    block_eduvidual::set_org($main->idnumber);
+                if (!empty($org->orgid)) {
+                    block_eduvidual::set_org($org->orgid);
                 }
             }
         }
+
         return block_eduvidual::$orgrole;
     }
     /**
