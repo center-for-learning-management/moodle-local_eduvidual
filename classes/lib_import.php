@@ -313,7 +313,7 @@ class block_eduvidual_lib_import_compiler_user extends block_eduvidual_lib_impor
                 $obj->username = str_replace($dummydomain, '', $obj->email);
             }
         }
-        $obj->email = str_replace("+", "_", $obj->email);
+        $obj->email = trim(str_replace("+", "_", $obj->email));
         $obj->firstname = trim($obj->firstname);
         $obj->lastname = trim($obj->lastname);
         $obj->role = trim(ucfirst(strtolower($obj->role)));
