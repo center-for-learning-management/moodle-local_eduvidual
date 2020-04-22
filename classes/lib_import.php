@@ -319,6 +319,11 @@ class block_eduvidual_lib_import_compiler_user extends block_eduvidual_lib_impor
         $obj->role = trim(ucfirst(strtolower($obj->role)));
         $obj->username = trim($obj->username);
 
+        if (!filter_var($obj->email, FILTER_VALIDATE_EMAIL)) {
+            $payload->processed = false;
+            $payload->action = 'Invalid email';
+        }
+
         // Revoke processed flag if required information is missing!
         if (!in_array($obj->role, array('Manager', 'Teacher', 'Student', 'Parent', 'Remove'))) {
             $payload->processed = false;
