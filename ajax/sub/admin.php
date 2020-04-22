@@ -138,6 +138,7 @@ if (!block_eduvidual::get('role') == "Administrator") {
                     $params['subcats1'] = get_string('createcourse:subcat1:defaults', 'block_eduvidual');
                     $params['subcats2'] = '';
                     $params['subcats3'] = '';
+                    $params['customcss'] = '';
 
                     $id = $DB->insert_record('block_eduvidual_org', $params, true);
                     if ($id > 0) {
@@ -163,7 +164,7 @@ if (!block_eduvidual::get('role') == "Administrator") {
                         $DB->insert_record('block_eduvidual_org_gps', $gps);
                     }
                 } else {
-                    $DB->delete_records('block_eduvidual_org_gps', array('orgid' => $org->orgid));
+                    $DB->delete_records('block_eduvidual_org_gps', array('orgid' => $params['orgid']));
                 }
             } else {
                 $reply['status'] = 'error';

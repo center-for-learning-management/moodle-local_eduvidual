@@ -48,8 +48,11 @@ if (in_array(block_eduvidual::get('role'), array('Administrator', 'Manager', 'Te
 
                 <div class="grid-eq-3">
                 <?php
+                if (!isset($userextra)) {
+                    $userextra = (object) array();
+                }
                 if (!isset($userextra->moolevels)) {
-                    $extra->moolevels = array();
+                    $userextra->moolevels = array();
                 }
                 $context = context_system::instance();
                 $roles = get_user_roles($context, $USER->id, true);

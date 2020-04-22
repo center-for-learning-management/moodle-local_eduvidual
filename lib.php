@@ -38,6 +38,10 @@ function block_eduvidual_before_standard_html_head() {
         require_once($CFG->dirroot . '/blocks/eduvidual/buffered_mode.php');
     }
 
+    // Deployggb.js is required for certain stack questions.
+    // Disabled
+    //$PAGE->requires->js('/blocks/eduvidual/js/deployggb.js');
+    // Main.css changes some styles for eduvidual.
     $PAGE->requires->css('/blocks/eduvidual/style/main.css');
 
     $data = array(
@@ -64,6 +68,7 @@ function block_eduvidual_before_standard_html_head() {
     if ($_SERVER['SCRIPT_FILENAME'] == $CFG->dirroot . '/index.php') {
     }
 
+    block_eduvidual::determine_org();
     if (!empty(block_eduvidual::get('orgbanner'))) {
         $inject_styles[] = "body #page-header .card { background-image: url(" . block_eduvidual::get('orgbanner') . ") !important; }";
     } else {
@@ -85,7 +90,7 @@ function block_eduvidual_before_standard_html_head() {
                     }
                 }
                 if (!$found && strpos($_SERVER["SCRIPT_FILENAME"], '/blocks/eduvidual/pages/preferences.php') <= 0) {
-                    redirect($CFG->wwroot . '/blocks/eduvidual/pages/preferences.php?act=moolevelinit');
+                    redirect($CFG->wwwroot . '/blocks/eduvidual/pages/preferences.php?act=moolevelinit');
                 }
             }
         }

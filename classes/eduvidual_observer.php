@@ -39,10 +39,13 @@ class eduvidual_observer {
             profile_load_data($user);
             //error_log(json_encode($user, JSON_NUMERIC_CHECK));
 
-            // Check for phplist-lists.
-            require_once($CFG->dirroot . '/blocks/eduvidual/classes/lib_phplist.php');
-            \block_eduvidual_lib_phplist::check_users_authtype(array($USER));
-            \block_eduvidual_lib_phplist::check_user_role($USER->id);
+            if (!empty(get_config('block_eduvidual', 'phplist_dbhost'))) {
+                // Check for phplist-lists.
+                require_once($CFG->dirroot . '/blocks/eduvidual/classes/lib_phplist.php');
+                \block_eduvidual_lib_phplist::check_users_authtype(array($USER));
+                \block_eduvidual_lib_phplist::check_user_role($USER->id);
+            }
+
 
             // We only check for roles managed by profile for mnet accounts
             if ($user->auth == 'mnet') {
