@@ -333,7 +333,7 @@ class block_eduvidual_lib_import_compiler_user extends block_eduvidual_lib_impor
             //$obj->email = 'can not be updated';
         } else {
             // Test if username or email already taken.
-            $chk = $DB->get_records_sql('SELECT id FROM {user} WHERE username LIKE ? OR email LIKE ?', array($obj->username, $obj->email));
+            $chk = $DB->get_records_sql('SELECT id FROM {user} WHERE username LIKE ? OR username LIKE ? OR email LIKE ? OR email LIKE ?', array($obj->username, $obj->email, $obj->username, $obj->email));
             $ids = array_keys($chk);
             if (count($ids) > 0) {
                 $payload->processed = false;
