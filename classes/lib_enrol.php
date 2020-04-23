@@ -28,8 +28,20 @@ class block_eduvidual_lib_enrol {
      * Adds a user to the cohort for a bunch of an org.
      */
     public static function bunch_set($userid, $org, $bunch) {
+        global $DB;
         //echo $userid . "/" . $org->orgid . "/" . $bunch . "<br />\n";
         if (empty($bunch)) return;
+
+        // Store bunch in eduvidual-plugin
+        $curbunch = $DB->get_record('block_eduvidual_userbunches', array('orgid' => $org->orgid, 'userid' => $userid));
+        if (!empty($curbunch->id)) {
+            $DB->set_field('block_eduvidual_userbunches', 'bunch', $bunch, array('orgid' => $org->orgid, 'userid' => $userid));
+        } else {
+            $curbunch = (object) array('orgid' => $org->orgid, 'bunch' => $bunch, 'userid' => $userid);
+            $DB->insert_record('block_eduvidual_userbunches', $curbunch);
+        }
+
+        // Sync bunch to cohorts
         if (empty($org->categoryid)) return;
         $context = context_coursecat::instance($org->categoryid);
         if (empty($context->id)) return;
