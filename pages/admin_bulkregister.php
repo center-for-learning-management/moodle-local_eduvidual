@@ -34,8 +34,9 @@ $orgids = optional_param('orgids', '', PARAM_TEXT);
 echo $OUTPUT->header();
 
 if (!empty($orgids) && !empty($manageruserid)) {
-    $orgs = explode(' ', $orgids);
+    $orgs = explode("\n", $orgids);
     foreach ($orgs AS $orgid) {
+        $orgid = trim($orgid);
         $org = $DB->get_record('block_eduvidual_org', array('orgid' => $orgid));
 
         if (!empty($org->orgid)) {
