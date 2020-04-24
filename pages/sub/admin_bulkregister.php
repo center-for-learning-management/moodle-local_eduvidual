@@ -109,6 +109,7 @@ if (!empty($orgids) && !empty($manageruserid)) {
                 $DB->set_field('block_eduvidual_org', 'authenticated', 1, array('orgid' => $org->orgid));
                 $DB->set_field('block_eduvidual_org', 'authtan', '', array('orgid' => $org->orgid));
             }
+        }
     }
 
 }
