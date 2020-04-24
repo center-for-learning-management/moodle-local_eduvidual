@@ -46,9 +46,7 @@ if (!empty($orgids) && !empty($manageruserid)) {
         $org = $DB->get_record('block_eduvidual_org', array('orgid' => $orgid));
 
         if (!empty($org->orgid)) {
-            $org->name = $name;
-            $DB->set_field('block_eduvidual_org', 'name', $name, array('orgid' => $org->orgid));
-            $msgs[] = "Registering $org->orgid with name $name<br />";
+            $msgs[] = "Registering $org->orgid with name $org->name<br />";
 
             require_once($CFG->dirroot . '/lib/coursecatlib.php');
             require_once($CFG->dirroot . '/course/externallib.php');
