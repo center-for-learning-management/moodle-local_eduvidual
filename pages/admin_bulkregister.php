@@ -22,16 +22,22 @@
 
 
 require_once('../../../config.php');
-require_login();
-
 require_once($CFG->dirroot . '/blocks/eduvidual/block_eduvidual.php');
-
-if (!block_eduvidual::get('role') == "Administrator") die;
 
 $manageruserid = optional_param('manageruserid', 0, PARAM_INT);
 $orgids = optional_param('orgids', '', PARAM_TEXT);
 
-echo $OUTPUT->header();
+$PAGE->set_context(context_system::instance());
+$PAGE->set_pagelayout('admin');
+$PAGE->set_url('/blocks/eduvidual/pages/admin.php', array());
+$PAGE->set_title(get_string('Administration', 'block_eduvidual'));
+$PAGE->set_heading(get_string('Administration', 'block_eduvidual'));
+
+require_login();
+
+if (!block_eduvidual::get('role') == "Administrator") die;
+
+$msgs = array();
 
 if (!empty($orgids) && !empty($manageruserid)) {
     $orgs = explode("\n", $orgids);
@@ -42,7 +48,7 @@ if (!empty($orgids) && !empty($manageruserid)) {
         if (!empty($org->orgid)) {
             $org->name = $name;
             $DB->set_field('block_eduvidual_org', 'name', $name, array('orgid' => $org->orgid));
-            echo "Registering $org->orgid with name $name<br />";
+            $msgs[] = "Registering $org->orgid with name $name<br />";
 
             require_once($CFG->dirroot . '/lib/coursecatlib.php');
             require_once($CFG->dirroot . '/course/externallib.php');
@@ -55,7 +61,7 @@ if (!empty($orgids) && !empty($manageruserid)) {
                 $data->idnumber = $org->orgid;
                 $category = coursecat::create($data);
                 $org->categoryid = $category->id;
-                echo "=> Created category $org->categoryid<br />";
+                $msgs[] = "=> Created category $org->categoryid<br />";
                 $DB->set_field('block_eduvidual_org', 'categoryid', $org->categoryid, array('orgid' => $org->orgid));
             }
 
@@ -103,14 +109,14 @@ if (!empty($orgids) && !empty($manageruserid)) {
                         role_unassign($roletoassign, $manageruserid, $targetcontext->id);
                     }
                 }
-                echo "=> Created course $org->courseid<br />";
+                $msgs[] = "=> Created course $org->courseid<br />";
             }
 
             if (!empty($org->courseid)) {
                 require_once($CFG->dirroot . '/blocks/eduvidual/classes/lib_enrol.php');
-                echo "=> Setting up roles";
-                print_r(block_eduvidual_lib_enrol::role_set($manageruserid, $org, 'Manager'));
-                echo "<br />";
+                $msgs[] = "=> Setting up roles";
+                //$msgs[] = implode('<br />', block_eduvidual_lib_enrol::role_set($manageruserid, $org, 'Manager'));
+                $msgs[] = "<br />";
 
                 $org->authenticated = 1;
                 $org->authtan = '';
@@ -121,7 +127,10 @@ if (!empty($orgids) && !empty($manageruserid)) {
     }
 }
 
+
+echo $OUTPUT->header();
+if (count($msgs) > 0) {
+    echo $OUTPUT->render_from_template('block_eduvidual/alert', array('content' => implode('', $msgs)));
+}
 echo $OUTPUT->render_from_template('block_eduvidual/admin_bulkregister', array('manageruserid' => $manageruserid, 'orgids' => $orgids));
-
-
 echo $OUTPUT->footer();
