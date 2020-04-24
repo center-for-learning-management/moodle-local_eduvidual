@@ -20,7 +20,12 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die;
+
+require_once('../../../config.php');
+require_login();
+
+require_once($CFG->dirroot . '/blocks/eduvidual/block_eduvidual.php');
+
 if (!block_eduvidual::get('role') == "Administrator") die;
 
 $manageruserid = optional_param('manageruserid', 0, PARAM_INT);
@@ -111,7 +116,6 @@ if (!empty($orgids) && !empty($manageruserid)) {
             }
         }
     }
-
 }
 
-echo $OUTPUT->render_from_template('block_eduvidual/admin_bulkregister', array('manageruserid' = $manageruserid, 'orgids' => $orgids));
+echo $OUTPUT->render_from_template('block_eduvidual/admin_bulkregister', array('manageruserid' => $manageruserid, 'orgids' => $orgids));
