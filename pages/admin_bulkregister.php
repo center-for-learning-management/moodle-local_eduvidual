@@ -69,43 +69,12 @@ if (!empty($orgids) && !empty($manageruserid)) {
                 $basement = $DB->get_record('course', array('id' => $orgcoursebasement));
 
                 if (!empty($basement->id)) {
-                    // Grant a role that allows course duplication in source and target category
-                    $sourcecontext = context_coursecat::instance($basement->category);
-                    $targetcontext = context_coursecat::instance($org->categoryid);
-                    $roletoassign = 1; // Manager
-                    $revokesourcerole = true;
-                    $revoketargetrole = true;
-                    $roles = get_user_roles($sourcecontext, $manageruserid, false);
-                    foreach($roles AS $role) {
-                        if ($role->roleid == $roletoassign) {
-                            // User had this role before - we do not revoke!
-                            $revokesourcerole = false;
-                        }
-                    }
-                    $roles = get_user_roles($targetcontext, $manageruserid, false);
-                    foreach($roles AS $role) {
-                        if ($role->roleid == $roletoassign) {
-                            // User had this role before - we do not revoke!
-                            $revoketargetrole = false;
-                        }
-                    }
-                    role_assign($roletoassign, $manageruserid, $sourcecontext->id);
-                    role_assign($roletoassign, $manageruserid, $targetcontext->id);
-
                     // Duplicate course
                     $course = core_course_external::duplicate_course($basement->id, 'Digitaler Schulhof (' . $org->orgid . ')', $org->orgid, $org->categoryid, true);
                     $org->courseid = $course["id"];
                     $DB->set_field('block_eduvidual_org', 'courseid', $org->courseid, array('orgid' => $org->orgid));
                     $course['summary'] = '<p>Digitaler Schulhof der Schule ' . $org->name . '</p>';
                     $DB->update_record('course', $course);
-
-                    // Revoke role that allows course duplication in source and target category
-                    if ($revokesourcerole) {
-                        role_unassign($roletoassign, $manageruserid, $sourcecontext->id);
-                    }
-                    if ($revoketargetrole) {
-                        role_unassign($roletoassign, $manageruserid, $targetcontext->id);
-                    }
                 }
                 $msgs[] = "=> Created course $org->courseid<br />";
             }
