@@ -81,9 +81,8 @@ if (!empty($orgids) && !empty($manageruserid)) {
 
             if (!empty($org->courseid)) {
                 require_once($CFG->dirroot . '/blocks/eduvidual/classes/lib_enrol.php');
-                $msgs[] = "=> Setting up roles";
-                //$msgs[] = implode('<br />', block_eduvidual_lib_enrol::role_set($manageruserid, $org, 'Manager'));
-                $msgs[] = "<br />";
+                $msgs[] = "=> Setting up roles<br />";
+                block_eduvidual_lib_enrol::role_set($manageruserid, $org, 'Manager');
 
                 $org->authenticated = 1;
                 $org->authtan = '';
