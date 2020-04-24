@@ -31,6 +31,8 @@ if (!block_eduvidual::get('role') == "Administrator") die;
 $manageruserid = optional_param('manageruserid', 0, PARAM_INT);
 $orgids = optional_param('orgids', '', PARAM_TEXT);
 
+echo $OUTPUT->header();
+
 if (!empty($orgids) && !empty($manageruserid)) {
     $orgs = explode(' ', $orgids);
     foreach ($orgs AS $orgid) {
@@ -119,3 +121,6 @@ if (!empty($orgids) && !empty($manageruserid)) {
 }
 
 echo $OUTPUT->render_from_template('block_eduvidual/admin_bulkregister', array('manageruserid' => $manageruserid, 'orgids' => $orgids));
+
+
+echo $OUTPUT->footer();
