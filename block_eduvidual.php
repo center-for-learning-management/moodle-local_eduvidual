@@ -570,7 +570,7 @@ class block_eduvidual extends block_base /* was block_list */ {
         $context = $PAGE->context;
 
         $options = array();
-        if (isset($USER->id) && $USER->id > 0 && !isguestuser($USER) && count($ORGS) > 0) {
+        if (isset($USER->id) && $USER->id > 0 && !isguestuser($USER)) {
             $options[] = array(
                 "title" => get_string('Browse_org', 'block_eduvidual'),
                 "href" => '/blocks/eduvidual/pages/categories.php',
