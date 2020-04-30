@@ -86,6 +86,7 @@ if (empty($authurl) || empty($authtoken)) {
             }
         }
     } else {
+        $SESSION->wantsurl = $PAGE->url->__toString();
         redirect($CFG->wwwroot . '/login/index.php');
     }
 
