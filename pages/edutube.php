@@ -44,45 +44,49 @@ if (empty($authurl) || empty($authtoken)) {
     ));
     echo $OUTPUT->footer();
 } else {
-    $sql = "SELECT orgid
-                FROM {block_eduvidual_orgid_userid}
-                WHERE userid=?
-                    AND orgid LIKE '______'
-                    AND role IN ('Student', 'Teacher', 'Manager')";
-    $memberships = $DB->get_records_sql($sql, array($USER->id));
-    if (count($memberships) == 0) {
-        echo $OUTPUT->header();
-        echo $OUTPUT->render_from_template('block_eduvidual/alert', array(
-            'content' => get_string('edutube:no_org', 'block_eduvidual', array('wwwroot' => $CFG->wwwroot)),
-            'type' => 'warning',
-            'url' => '/blocks/eduvidual/pages/register.php',
-        ));
-        echo $OUTPUT->footer();
-    } else {
-        $fields = array(
-            'email' => $USER->email,
-            'secret' => $authtoken,
-        );
-        $fields_string = http_build_query($fields);
-
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $authurl);
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $fields_string);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        $url = curl_exec($ch);
-        if (filter_var($url, FILTER_VALIDATE_URL)) {
-            header("Location: $url");
-            exit();
-        } else {
+    if ($USER->id > 0 && !isguestuser($USER)) {
+        $sql = "SELECT orgid
+                    FROM {block_eduvidual_orgid_userid}
+                    WHERE userid=?
+                        AND orgid LIKE '______'
+                        AND role IN ('Student', 'Teacher', 'Manager')";
+        $memberships = $DB->get_records_sql($sql, array($USER->id));
+        if (count($memberships) == 0) {
             echo $OUTPUT->header();
             echo $OUTPUT->render_from_template('block_eduvidual/alert', array(
-                'content' => get_string('edutube:invalid_url', 'block_eduvidual', array('url' => $url)),
-                'type' => 'danger',
-                'url' => '/myp',
+                'content' => get_string('edutube:no_org', 'block_eduvidual', array('wwwroot' => $CFG->wwwroot)),
+                'type' => 'warning',
+                'url' => '/blocks/eduvidual/pages/register.php',
             ));
             echo $OUTPUT->footer();
-        }
+        } else {
+            $fields = array(
+                'email' => $USER->email,
+                'secret' => $authtoken,
+            );
+            $fields_string = http_build_query($fields);
 
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, $authurl);
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $fields_string);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            $url = curl_exec($ch);
+            if (filter_var($url, FILTER_VALIDATE_URL)) {
+                header("Location: $url");
+                exit();
+            } else {
+                echo $OUTPUT->header();
+                echo $OUTPUT->render_from_template('block_eduvidual/alert', array(
+                    'content' => get_string('edutube:invalid_url', 'block_eduvidual', array('url' => $url)),
+                    'type' => 'danger',
+                    'url' => '/myp',
+                ));
+                echo $OUTPUT->footer();
+            }
+        }
+    } else {
+        redirect($CFG->wwwroot . '/login/index.php');
     }
+
 }
