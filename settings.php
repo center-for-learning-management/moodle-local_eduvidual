@@ -56,8 +56,8 @@ if ($ADMIN->fulltree) {
     );
     $settings->add(
         new admin_setting_configtext(
-            'block_eduvidual/kalturamediaspaceurl',
-            get_string('edutube:kalturamediaspaceurl', 'block_eduvidual'),
+            'block_eduvidual/edutubeauthurl',
+            get_string('edutube:edutubeauthurl', 'block_eduvidual'),
             '',
             '',
             PARAM_TEXT
@@ -65,8 +65,8 @@ if ($ADMIN->fulltree) {
     );
     $settings->add(
         new admin_setting_configtext(
-            'block_eduvidual/kalturamediaspacesecret',
-            get_string('edutube:kalturamediaspacesecret', 'block_eduvidual'),
+            'block_eduvidual/edutubeauthtoken',
+            get_string('edutube:edutubeauthtoken', 'block_eduvidual'),
             '',
             '',
             PARAM_TEXT

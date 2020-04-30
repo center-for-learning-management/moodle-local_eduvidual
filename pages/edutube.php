@@ -31,16 +31,18 @@ $PAGE->set_url('/blocks/eduvidual/pages/edutube.php', array());
 $PAGE->set_title(get_string('edutube:title', 'block_eduvidual'));
 $PAGE->set_heading(get_string('edutube:title', 'block_eduvidual'));
 
-$mediaspaceurl = get_config('block_eduvidual', 'kalturamediaspaceurl');
-$mediaspacesecret = get_config('block_eduvidual', 'kalturamediaspacesecret');
+$authurl= get_config('block_eduvidual', 'edutubeauthurl');
+$authtoken = get_config('block_eduvidual', 'edutubeauthtoken');
 
-echo $OUTPUT->header();
-if (empty($mediaspaceurl) || empty($mediaspacesecret)) {
+
+if (empty($authurl) || empty($authtoken)) {
+    echo $OUTPUT->header();
     echo $OUTPUT->render_from_template('block_eduvidual/alert', array(
         'content' => get_string('edutube:missing_configuration', 'block_eduvidual'),
         'type' => 'danger',
         'url' => '/my',
     ));
+    echo $OUTPUT->footer();
 } else {
     $sql = "SELECT orgid
                 FROM {block_eduvidual_orgid_userid}
@@ -49,20 +51,38 @@ if (empty($mediaspaceurl) || empty($mediaspacesecret)) {
                     AND role IN ('Student', 'Teacher', 'Manager')";
     $memberships = $DB->get_records_sql($sql, array($USER->id));
     if (count($memberships) == 0) {
+        echo $OUTPUT->header();
         echo $OUTPUT->render_from_template('block_eduvidual/alert', array(
             'content' => get_string('edutube:no_org', 'block_eduvidual', array('wwwroot' => $CFG->wwwroot)),
             'type' => 'warning',
             'url' => '/blocks/eduvidual/pages/register.php',
         ));
+        echo $OUTPUT->footer();
     } else {
-        require_once($CFG->dirroot . '/blocks/eduvidual/classes/KMSSessionKey.class.php');
-        // generate SSO login hash
-        $hash = KMSSessionKey::createSessionKey($USER->id, 'viewerOnly', $mediaspacesecret, $expiry = 5, $extraUserInfo = array());
-        // build mediaSpace SSO login URL
-        $url = $mediaspaceurl . '/user/authenticate/sessionKey/' . $hash;
-        // redirect
-        header("Location: $url");
-        exit();
+        $fields = array(
+            'email' => $USER->email,
+            'token' => $authtoken,
+        );
+        $fields_string = http_build_query($fields);
+
+        $ch = curl_init();
+        curl_set_opt($ch, CURLOPT_URL, $authurl);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $fields_string);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $url = curl_exec($ch);
+        if (filter_var($url, FILTER_VALIDATE_URL)) {
+            header("Location: $url");
+            exit();
+        } else {
+            echo $OUTPUT->header();
+            echo $OUTPUT->render_from_template('block_eduvidual/alert', array(
+                'content' => get_string('edutube:invalid_url', 'block_eduvidual'),
+                'type' => 'danger',
+                'url' => '/myp',
+            ));
+            echo $OUTPUT->footer();
+        }
+
     }
 }
-echo $OUTPUT->footer();

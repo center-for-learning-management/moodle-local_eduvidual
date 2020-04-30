@@ -228,8 +228,9 @@ $string['defaultroles:orgcategory:teacher'] = 'Teacher';
 
 $string['defaultroles:refreshroles'] = 'Re-Assign Roles in course categories';
 
-$string['edutube:kalturamediaspaceurl'] = 'eduTube Media Space URL';
-$string['edutube:kalturamediaspacesecret'] = 'eduTube SSO Secret';
+$string['edutube:edutubeauthurl'] = 'eduTube Auth URL';
+$string['edutube:edutubeauthtoken'] = 'eduTube Auth Token';
+$string['edutube:invalid_url'] = 'Invalid URL received. Redirect to edutube.at not possible.';
 $string['edutube:no_org'] = 'Sorry, you are not assigned to any organization as student or teacher. Please contact the eduvidual-Manager of your organization, so that a role is assigned to you.<br /><br />If your organization is not yet registered in eduvidual.at, you can do this on the <a href="{$a->wwwroot}/blocks/eduvidual/pages/register.php">registration page</a> and start using edutube.at immediately!';
 $string['edutube:title'] = 'eduTube';
 $string['edutube:missing_configuration'] = 'eduTube was not yet configured';
