@@ -230,7 +230,7 @@ $string['defaultroles:refreshroles'] = 'Rollen in Kurskategorien neu setzen';
 
 $string['edutube:edutubeauthurl'] = 'eduTube Auth URL';
 $string['edutube:edutubeauthtoken'] = 'eduTube Auth Token';
-$string['edutube:invalid_url'] = 'Ungültige URL erhalten. Weiterleitung zu edutube.at leider nicht möglich!';
+$string['edutube:invalid_url'] = 'Ungültige URL erhalten ({$a->url}). Weiterleitung zu edutube.at leider nicht möglich!';
 $string['edutube:no_org'] = 'Entschuldigung, leider wurde Ihnen an keiner Schule eine Rolle als Schüler/in oder Lehrer/in zugewiesen. Bitte kontaktieren Sie die Ansprechpersonen Ihrer Schule, damit man Ihnen die notwendigen Rechte zuweist!<br /><br />Falls Ihre Schule noch nicht in eduvidual.at registriert wurde, können Sie diesen Schritt über die <a href="{$a->wwwroot}/blocks/eduvidual/pages/register.php">Registrierung</a> nachholen und sofort auch edutube.at nutzen!';
 $string['edutube:title'] = 'eduTube';
 $string['edutube:missing_configuration'] = 'eduTube wurde noch nicht konfiguriert';

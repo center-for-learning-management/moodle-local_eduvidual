@@ -77,7 +77,7 @@ if (empty($authurl) || empty($authtoken)) {
         } else {
             echo $OUTPUT->header();
             echo $OUTPUT->render_from_template('block_eduvidual/alert', array(
-                'content' => get_string('edutube:invalid_url', 'block_eduvidual'),
+                'content' => get_string('edutube:invalid_url', 'block_eduvidual', array('url' => $url)),
                 'type' => 'danger',
                 'url' => '/myp',
             ));
