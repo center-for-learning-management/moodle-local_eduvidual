@@ -66,10 +66,10 @@ if (empty($authurl) || empty($authtoken)) {
         $fields_string = http_build_query($fields);
 
         $ch = curl_init();
-        curl_set_opt($ch, CURLOPT_URL, $authurl);
-        curl_set_opt($ch, CURLOPT_POST, true);
-        curl_set_opt($ch, CURLOPT_POSTFIELDS, $fields_string);
-        curl_set_opt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_URL, $authurl);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $fields_string);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         $url = curl_exec($ch);
         if (filter_var($url, FILTER_VALIDATE_URL)) {
             header("Location: $url");
