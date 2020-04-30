@@ -26,7 +26,7 @@ require_once('../../../config.php');
 require_login();
 
 $PAGE->set_context(context_system::instance());
-$PAGE->set_pagelayout('popup');
+$PAGE->set_pagelayout('dashboard');
 $PAGE->set_url('/blocks/eduvidual/pages/edutube.php', array());
 $PAGE->set_title(get_string('edutube:title', 'block_eduvidual'));
 $PAGE->set_heading(get_string('edutube:title', 'block_eduvidual'));
