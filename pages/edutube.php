@@ -61,7 +61,7 @@ if (empty($authurl) || empty($authtoken)) {
     } else {
         $fields = array(
             'email' => $USER->email,
-            'token' => $authtoken,
+            'secret' => $authtoken,
         );
         $fields_string = http_build_query($fields);
 
