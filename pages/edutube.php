@@ -80,7 +80,7 @@ if (empty($authurl) || empty($authtoken)) {
                 echo $OUTPUT->render_from_template('block_eduvidual/alert', array(
                     'content' => get_string('edutube:invalid_url', 'block_eduvidual', array('url' => $url)),
                     'type' => 'danger',
-                    'url' => '/myp',
+                    'url' => '/my',
                 ));
                 echo $OUTPUT->footer();
             }
