@@ -299,7 +299,7 @@ $string['mailregister:footer'] = 'Kind regards';
 $string['mailregister:footer:signature'] = '<img src="https://www.eduvidual.at/pluginfile.php/1/block_eduvidual/globalfiles/0/_sys/register/signature.png" width="200" alt="" /><br />Robert Schrenk';
 $string['mailregister:header'] = 'Registration';
 $string['mailregister:proceed'] = 'To proceed with your registration procedure please click this <a href="{$a->registrationurl}" target="_blank">link</a>!';
-$string['mailregister:text'] = '<a href="{$a->wwwroot}/user/profile.php?id={$a->userid}">{$a->userfullname}</a> registered your organisation with the ID <b>{$a->orgid}</b> in our moodle instance. If you do not know whats going on please just ignore this mail. If you are the person in charge for registration please use the forward this token to the person that started the registration process:';
+$string['mailregister:text'] = '<a href="{$a->wwwroot}/user/profile.php?id={$a->userid}">{$a->userfullname}</a> registered your organisation with the ID <b>{$a->orgid}</b> in our moodle instance. If you do not know whats going on please just ignore this mail. If you are the person in charge for registration please forward this token to the person that started the registration process:';
 $string['mailregister:subject'] = 'Registration';
 $string['mailregister:2:gotocategory'] = 'The area of your organisation resides at <b><a href="{$a->categoryurl}" target="_blank">{$a->orgname}</a></b>.';
 $string['mailregister:2:header'] = 'Registration completed';
