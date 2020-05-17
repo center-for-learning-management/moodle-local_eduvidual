@@ -48,8 +48,11 @@ if (empty($authurl) || empty($authtoken)) {
         $sql = "SELECT orgid
                     FROM {block_eduvidual_orgid_userid}
                     WHERE userid=?
-                        AND orgid LIKE '______'
-                        AND role IN ('Student', 'Teacher', 'Manager')";
+                        AND (
+                            orgid LIKE '______'
+                            OR
+                            orgid LIKE '322__'
+                        ) AND role IN ('Student', 'Teacher', 'Manager')";
         $memberships = $DB->get_records_sql($sql, array($USER->id));
         if (count($memberships) == 0) {
             echo $OUTPUT->header();
