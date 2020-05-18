@@ -51,6 +51,15 @@ if (empty($service->id)) {
         $user = \core_user::get_user(optional_param('userid', 0, PARAM_INT));
     }
     $tokens = array_values($DB->get_records('external_tokens', array('externalserviceid' => $service->id, 'userid' => $user->id)));
+    if (count($tokens) == 0) {
+        $svc = $DB->get_record('external_services', array('component' => 'local_o365'));
+        if (!empty($svc->id)) {
+            $validuntil = 0;
+            external_generate_token(EXTERNAL_TOKEN_PERMANENT, $svc->id,
+                            $user->id, context_system::instance(), $validuntil);
+        }
+        $tokens = array_values($DB->get_records('external_tokens', array('externalserviceid' => $service->id, 'userid' => $user->id)));
+    }
     echo $OUTPUT->render_from_template('block_eduvidual/token_mso365', array(
         'user' => $user,
         'tokens' => $tokens,
