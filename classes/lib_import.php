@@ -17,6 +17,7 @@
 /**
  * @package    block_eduvidual
  * @copyright  2017 Digital Education Society (http://www.dibig.at)
+ *             2020 onwards Center for Learning Management (http://www.lernmanagement.at)
  * @author     Robert Schrenk
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
 **/
@@ -25,29 +26,19 @@ defined('MOODLE_INTERNAL') || die;
 
 // use \Box\Spout\Common\Type;
 
-use \PhpOffice\PhpSpreadsheet\Spreadsheet;
-use \PhpOffice\PhpSpreadsheet\IOFactory;
-use \PhpOffice\PhpSpreadsheet\Cell\Coordinate;
-use \PhpOffice\PhpSpreadsheet\Cell\DataType;
-use \PhpOffice\PhpSpreadsheet\Shared\Date;
-use \PhpOffice\PhpSpreadsheet\Style\Alignment;
-use \PhpOffice\PhpSpreadsheet\Style\Border;
-use \PhpOffice\PhpSpreadsheet\Style\Fill;
-use \PhpOffice\PhpSpreadsheet\Style\Font;
-use \PhpOffice\PhpSpreadsheet\Style\NumberFormat;
-use \PhpOffice\PhpSpreadsheet\Worksheet\Drawing;
-use \PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
-
 if (file_exists("$CFG->libdir/phpspreadsheet/vendor/autoload.php")) {
     require_once("$CFG->libdir/phpspreadsheet/vendor/autoload.php");
     block_eduvidual_lib_import::$variant = 'phpspreadsheet';
+    /**
+     * ATTENTION, by default we got an error that Reader\Xls could not be loaded.
+     * We had to change the reader for type "Xls" to Reader\Xlsx in IOFactory.php
+     **/
 } else {
     // Fall back to PHPExcel, that was used prior to Moodle 3.8
     // This is obsolete soon.
     require_once("$CFG->libdir/phpexcel/PHPExcel.php");
     block_eduvidual_lib_import::$variant = 'phpexcel';
 }
-
 
 class block_eduvidual_lib_import {
     var $fields = array();
@@ -122,14 +113,18 @@ class block_eduvidual_lib_import {
             break;
             default:
                 // The default is phpspreadsheet.
+                //$spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::createReaderForFile($filepath);
+                //$spreadsheet->setReadDataOnly(true);
+                //$spreadsheet->load($filepath);
                 $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($filepath);
                 $sheet = $spreadsheet->getSheet(0);
 
                 // Get fields from first row.
+                // ATTENTION: In phpspreadsheet the first cell is 1:1
                 $stop = false;
-                $maxcols = 0;
+                $maxcols = 1;
                 while (!$stop) {
-                    $value = $sheet->getCellByColumnAndRow($maxcols, 0, false);
+                    $value = $sheet->getCellByColumnAndRow($maxcols, 1, false);
                     if (!empty($value)) {
                         $colids[$maxcols] = strtolower($value);
                         $maxcols++;
@@ -138,24 +133,28 @@ class block_eduvidual_lib_import {
                     }
                 }
 
-                $col = 0; $row = 1;
+                $row = 2;
                 $stop = false;
 
-                while(!$stop) {
+                while(empty($stop)) {
                     // Create object from row-data.
+                    $foundany = false;
                     $obj = new stdClass();
-                    for($col = 0; $col < $maxcols; $col++) {
-                        $obj->{$colids[$col]} = $sheet->getCellByColumnAndRow($col, $row, false);
-                        if (!empty($obj->{$colids[$col]})) $foundany = true;
+                    for($col = 1; $col < $maxcols; $col++) {
+                        if (!empty($colids[$col])) {
+                            // Concat with empty string to force string conversion.
+                            $obj->{$colids[$col]} = "" . $sheet->getCellByColumnAndRow($col, $row, false);
+                            if (!empty($obj->{$colids[$col]})) $foundany = true;
+                        }
                     }
                     if (!empty($obj->role)) {
-                        $obj = $this->compile($obj);
-                        $this->rowobjects[] = $obj;
+                        $this->rowobjects[] = $this->compile($obj);
                     }
-                    if (!$foundany) {
+                    if ($foundany) {
+                        $row++;
+                    } else {
                         $stop = true;
                     }
-                    $row++;
                 }
         }
     }
