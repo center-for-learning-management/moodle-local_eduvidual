@@ -48,36 +48,7 @@ switch ($requestscript) {
             $obj->children = array_values($obj->children);
         }
     break;
-    case 'search.php': // Assignment of Roles (at least in course category context)
-        $orgids = \block_eduvidual\locallib::is_connected_orglist();
-        $referer = parse_url($_SERVER['HTTP_REFERER'], PHP_URL_QUERY);
-        $parameters = array();
-        $courseid = 0;
-        parse_str($referer, $parameters);
-        if (array_key_exists('contextid', $parameters)) {
-            $contextid = $parameters['contextid'];
-            $context = $DB->get_record('context', array('id' => $contextid));
-            if (!empty($context->level) && $context->level == CONTEXT_COURSE) {
-                $courseid = $context->instance;
-            }
-        } elseif(array_key_exists('enrolid', $parameters)) {
-            $enrolid = $parameters['enrolid'];
-            $enrolment = $DB->get_record('enrol', array('id' => $enrolid));
-            if (!empty($enrolment->courseid)) {
-                $courseid = $enrolment->courseid;
-            }
-        }
-        $orgids = array();
-        $org = block_eduvidual::get_org_by_courseid($courseid);
-        if (!empty($org->orgid)) {
-            $orgids[] = $org->orgid;
-        }
-        // If there is no org for now use all the user is member of.
-        if (count($orgids) == 0) {
-            $orgids = \block_eduvidual\locallib::is_connected_orglist($USER->id);
-        }
-        $obj->results[0]->users = \block_eduvidual\locallib::is_connected_filter($obj->results[0]->users, $orgids);
-    break;
+
     case 'service.php':
         switch(optional_param('info', '', PARAM_TEXT)) {
             case 'core_get_fragment':
@@ -169,69 +140,10 @@ switch ($requestscript) {
                     $obj[0]->data->courses = $courses;
                 }
             break;
-            case 'core_enrol_get_potential_users':
-                $orgids = array();
-                $request = json_decode(file_get_contents('php://input'));
-                if (isset($request[0]->args) && isset($request[0]->args->courseid)) {
-                    $courseid = $request[0]->args->courseid;
-                    $course = $DB->get_record('course', array('id' => $courseid), 'id,category');
-                    if ($course->id == $courseid) {
-                        $category = $DB->get_record('course_categories', array('id' => $course->category));
-                        $path = explode('/', $category->path);
-                        $orgcategory = $path[1];
-                        $org = $DB->get_record('block_eduvidual_org', array('categoryid' => $orgcategory));
-                        if (!empty($org->orgid)) {
-                            $orgids[] = $org->orgid;
-                        }
-                    }
-                }
-                // If orgid could not be determined by course we allow all orgs the user is member of.
-                if (count($orgids) == 0) {
-                    $orgids = block_eduvidual::is_connected_orglist($USER->id);
-                }
 
-                // Loading a list of users via ajax
-                $orgpattern = implode(',', $orgids);
-                $unfiltered = $obj[0]->data;
-                $filtered = array();
-                for ($a = 0; $a < count($unfiltered); $a++) {
-                    $user = $unfiltered[$a];
-                    $inorg = false;
-                    if (block_eduvidual::is_connected($user->id, $orgids)) {
-                        $user->fullname = $user->fullname;
-                        $filtered[] = $user;
-                    } elseif(block_eduvidual::get('role') == 'Administrator') {
-                        $user->fullname = '! ' . $user->fullname;
-                        $filtered[] = $user;
-                    }
-                }
-                $obj[0]->data = $filtered;
-            break;
         }
     break;
-    case 'server.php': // Webservice functions (/webservice/rest/server.php)
-        /*
-        Unfortunately this does not work as we access this function with edumessenger bot and not the user himself.
-        $wsfunction = optional_param('wsfunction', '', PARAM_TEXT);
-        switch($wsfunction) {
-            case 'core_user_get_users':
-                if (isset($obj->users)) {
-                    $users = array();
-                    $orgids = block_eduvidual::is_connected_orglist();
-                    foreach($obj->users AS $user) {
-                        if (block_eduvidual::is_connected($user->id, $orgids)) {
-                            $users[] = $user;
-                        } elseif(block_eduvidual::get('role') == 'Administrator') {
-                            $user->fullname = '! ' . $user->fullname;
-                            $users[] = $user;
-                        }
-                    }
-                    $obj->users = $users;
-                }
-            break;
-        }
-        */
-    break;
+
 }
 
 $buffer = json_encode($obj, JSON_NUMERIC_CHECK);

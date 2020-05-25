@@ -113,31 +113,6 @@ class locallib {
         return false;
     }
     /**
-     * Filters a list of users if they are connected to a list of orgs.
-     * If called by admin all users will be listed, but filtered users
-     * are appended by a strut before their fullname.
-     * @param users array of users.
-     * @param orgids orgids to check if they are member of.
-     * @return list of filtered users.
-     */
-    public static function is_connected_filter($users, $orgids) {
-        $filtered = array();
-        foreach ($users AS $user) {
-            if (self::is_connected($user->id, $orgids)) {
-                $filtered[] = $user;
-            } elseif (self::get('role') == 'Administrator') {
-                if (!empty($user->name)) {
-                    $user->name = '! ' . $user->name;
-                    $user->fullname = $user->name;
-                } elseif (!empty($user->fullname)) {
-                    $user->fullname = '! ' . $user->fullname;
-                }
-                $filtered[] = $user;
-            }
-        }
-        return $filtered;
-    }
-    /**
      * Makes a list of all orgs of a user without the "protectedorgs"
      * @param userid (optional) if not given use the current logged in user.
      * @return array containing all orgids the user is member of.

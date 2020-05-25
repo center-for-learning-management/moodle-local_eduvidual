@@ -625,13 +625,7 @@ class block_eduvidual extends block_base /* was block_list */ {
         error_log('A script is using a deprecated call to block_eduvidual::is_connected');
         return \block_eduvidual\is_connected($touserid, $orgids, $srcuserid);
     }
-    /**
-     * DEPRECATED, now in classes\locallib.php.
-    **/
-    public static function is_connected_filter($users, $orgids) {
-        error_log('A script is using a deprecated call to block_eduvidual::is_connected_filter');
-        return \block_eduvidual\is_connected_filter($users, $orgids);
-    }
+
     /**
      * DEPRECATED, now in classes\locallib.php.
     **/
