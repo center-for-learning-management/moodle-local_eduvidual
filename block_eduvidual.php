@@ -38,7 +38,7 @@ class block_eduvidual extends block_base /* was block_list */ {
     static $qcats;
     static $scripts_on_load = array();
     static $pagelayout = ''; // Stores a force pagelayout (embedded prevents background image)
-    static $userextra;
+
     /**
      * Initializes data if none is there
     **/
@@ -60,24 +60,6 @@ class block_eduvidual extends block_base /* was block_list */ {
         if(has_capability('moodle/site:config', $sysctx)) {
             // Has capability site:config and is Administrator
             block_eduvidual::$role = "Administrator";
-        }
-
-        if ($USER->id > 1 && !isguestuser($USER)) {
-            // Check if User has a secret
-            block_eduvidual::$field_secret = block_eduvidual::get_user_secret($USER->id);
-
-            // Check if User has a extrasettings
-            $userextra = $DB->get_record('block_eduvidual_userextra', array('userid' => $USER->id));
-            if (!isset($userextra->userid) || $userextra->userid != $USER->id) {
-                $DB->insert_record('block_eduvidual_userextra', (object) array('userid' => $USER->id));
-                self::$userextra = $DB->get_record('block_eduvidual_userextra', array('userid' => $USER->id));
-            }
-            if (empty($userextra->backgroundcard)) {
-                require_once($CFG->dirroot . '/blocks/eduvidual/classes/lib_enrol.php');
-                block_eduvidual_lib_enrol::choose_background($USER->id);
-                $userextra = $DB->get_record('block_eduvidual_userextra', array('userid' => $USER->id));
-            }
-            self::$userextra = $userextra;
         }
 
         $qcats = $DB->get_records('block_eduvidual_userqcats', array('userid' => $USER->id));
@@ -296,21 +278,10 @@ class block_eduvidual extends block_base /* was block_list */ {
             block_eduvidual::initData();
         }
         if ($key == "defaultorg") {
-            if (isset(block_eduvidual::$userextra->defaultorg)) {
-                return block_eduvidual::$userextra->defaultorg;
-            } else {
-                return 0;
-            }
-
+            return get_user_preferences('block_eduvidual_defaultorg');
         }
         if ($key == "role") {
             return block_eduvidual::$role;
-        }
-        if ($key == "userextra") {
-            if (!isset(self::$userextra)) {
-                self::$userextra = $DB->get_record('block_eduvidual_userextra', array('userid' => $USER->id));
-            }
-            return self::$userextra;
         }
         if ($key == "orgs") {
             return block_eduvidual::$orgs;

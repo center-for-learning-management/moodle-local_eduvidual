@@ -13,7 +13,7 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'blo
                 if (o.result.status == 'ok') {
                     $('#block_eduvidual_preferences_background a').parent().removeClass('active');
                     $(o.payload.sender).parent().addClass('active');
-                    $('#block_eduvidual_background').css('background-image', 'url(' + o.data.background + ')');
+                    $('body').css('background-image', 'url(' + o.data.background + ')');
                 }
             }
         },

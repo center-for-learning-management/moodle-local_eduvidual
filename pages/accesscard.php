@@ -38,7 +38,7 @@ block_eduvidual::print_app_header();
 //print_r($USER);
 
 if ($USER->id > 1 && !isguestuser($USER)) {
-    $extra = $DB->get_record('block_eduvidual_userextra', array('userid' => $USER->id));
+    $backgroundcard = get_user_preferences('block_eduvidual_backgroundcard', $USER->id);
 
     ?>
     <div class="card" style="margin-bottom: 20px;">
@@ -46,7 +46,7 @@ if ($USER->id > 1 && !isguestuser($USER)) {
         <div class="grid-eq-2">
             <div style="text-align: center;">
                 <h4><?php echo get_string('accesscard:card_access', 'block_eduvidual'); ?></h4>
-                <div class="item" style="background-image: url(<?php echo $extra->backgroundcard; ?>)">
+                <div class="item" style="background-image: url(<?php echo $backgroundcard; ?>)">
                     <div class="name">
                         <div class="firstname"><?php echo $USER->firstname; ?></div>
                         <div class="lastname"><?php echo $USER->lastname; ?></div>

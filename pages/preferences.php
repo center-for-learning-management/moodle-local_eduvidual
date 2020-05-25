@@ -51,18 +51,18 @@ if (optional_param('request', '', PARAM_TEXT) == 'moolevel') {
 
 
 if ($embed || $act == 'backgrounds') {
-    $extra = block_eduvidual::get('userextra');
+    $background = get_user_preferences('block_eduvidual_background');
+
     $context = context_system::instance();
     $fs = get_file_storage();
     $files = $fs->get_area_files($context->id, 'block_eduvidual', 'backgrounds', 0);
     $bgdivs = array();
-    //$bgdivs[] = "<div" . (empty($extra->background)?" class=\"active\"":""). "><a style=\"background-image: url();background-color: gray;\" onclick=\"BLOCK_EDUVIDUAL_PREFERENCES.setBackground(this);\" href=\"#\">&nbsp;</a></div>";
-    // @todo amd
-    $bgdivs[] = "<span" . (empty($extra->background)?" class=\"active\"":""). "><a style=\"background-image: none;background-color: gray;\" onclick=\"var a = this; require(['block_eduvidual/preferences'], function(PREFERENCES) { PREFERENCES.setBackground(a); });\" href=\"#\">&nbsp;</a></span>";
+
+    $bgdivs[] = "<span" . (empty($background)?" class=\"active\"":""). "><a style=\"background-image: none;background-color: gray;\" onclick=\"var a = this; require(['block_eduvidual/preferences'], function(PREFERENCES) { PREFERENCES.setBackground(a); });\" href=\"#\">&nbsp;</a></span>";
     foreach ($files as $file) {
         if (str_replace('.', '', $file->get_filename()) != ""){
             $url = moodle_url::make_pluginfile_url($file->get_contextid(), $file->get_component(), $file->get_filearea(), $file->get_itemid(), $file->get_filepath(), $file->get_filename());
-            $bgdivs[] = "<span" . ((isset($extra->background) && $url == $extra->background)?" class=\"active\"":""). "><a style=\"background-image: url(" . $url . ");\" onclick=\"var a = this; require(['block_eduvidual/preferences'], function(PREFERENCES) { PREFERENCES.setBackground(a); });\" href=\"#\">&nbsp;</a></span>";
+            $bgdivs[] = "<span" . ((!empty($background) && $url == $background)?" class=\"active\"":""). "><a style=\"background-image: url(" . $url . ");\" onclick=\"var a = this; require(['block_eduvidual/preferences'], function(PREFERENCES) { PREFERENCES.setBackground(a); });\" href=\"#\">&nbsp;</a></span>";
         }
     }
 

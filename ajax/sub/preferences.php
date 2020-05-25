@@ -30,13 +30,7 @@ switch ($act) {
             $reply['error'] = 'guestuser:nopermission';
         } else {
             $background = str_replace('none', '', str_replace($CFG->wwwroot, '', optional_param('background', '', PARAM_TEXT)));
-            $extra = $DB->get_record('block_eduvidual_userextra', array('userid' => $USER->id));
-            if (isset($extra->userid) && $extra->userid == $USER->id) {
-                $extra->background = $background;
-                $chk = $DB->update_record('block_eduvidual_userextra', $extra);
-            } else {
-                $chk = $DB->execute('INSERT INTO {block_eduvidual_userextra} (userid,background) VALUES (?,?)', array($USER->id, $background));
-            }
+			$chk = set_user_preference('block_eduvidual_background', $background);
             if ($chk) {
                 $reply['status'] = 'ok';
             } else {

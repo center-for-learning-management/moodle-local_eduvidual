@@ -25,8 +25,6 @@ namespace block_eduvidual\task;
 
 defined('MOODLE_INTERNAL') || die;
 
-require_once($CFG->dirroot . '/blocks/eduvidual/lib_manage.php');
-
 class block_eduvidual_orgsizes extends \core\task\scheduled_task {
     public function get_name() {
         // Shown in admin screens.

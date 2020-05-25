@@ -48,7 +48,7 @@ try {
 
     require($CFG->dirroot . '/blocks/eduvidual/buffer/html_hook_login.php');
     require($CFG->dirroot . '/blocks/eduvidual/buffer/html_hook_head.php');
-    require($CFG->dirroot . '/blocks/eduvidual/buffer/html_hook_userextra.php');
+
     require($CFG->dirroot . '/blocks/eduvidual/buffer/html_hook_pages.php');
 
     if ($PAGE->context->contextlevel == CONTEXT_COURSE && $PAGE->course->id > 1 && count(pq('.section-modchooser')) > 0) {

@@ -120,14 +120,6 @@ class eduvidual_observer {
                 }
             }
 
-            // For debugging.
-            /*
-            if ($user->email == 'robert.schrenk@dibig.at') {
-                error_log('Faking mail robert.schrenk@dibig.at as tester@eurogym.info');
-                $user->email = 'tester@eurogym.info';
-            }
-            */
-
             // For all users - check maildomain
             $maildomain = explode('@', strtolower($user->email));
             $maildomain = '@' . $maildomain[1];
@@ -148,44 +140,6 @@ class eduvidual_observer {
                     }
                 }
             }
-
-
-            /*
-            // We do not want every user to be enrolled in eduvidual organisation anymore!
-            $eduvidualorg = 1;
-            $isineduvidual = $DB->get_record('block_eduvidual_orgid_userid', array('orgid' => $eduvidualorg, 'userid' => $USER->id));
-            if (empty($isineduvidual->role)) {
-                require_once($CFG->dirroot . '/blocks/eduvidual/classes/lib_enrol.php');
-                \block_eduvidual_lib_enrol::role_set($USER->id, $eduvidualorg, 'Student');
-            }
-            */
-
-            /* NOW DONE WITH POPUP.
-            if (in_array(\block_eduvidual::get('role'), array('Manager', 'Teacher'))) {
-                $valid_moolevels = explode(',', get_config('block_eduvidual', 'moolevels'));
-                if (count($valid_moolevels) > 0) {
-                    $context = \context_system::instance();
-                    $roles = get_user_roles($context, $USER->id, true);
-                    $found = false;
-                    foreach ($roles AS $role) {
-                        if (in_array($role->roleid, $valid_moolevels)) {
-                            $found = true;
-                        }
-                    }
-                    if (!$found && !empty($PAGE->name)) {
-                        redirect($CFG->wwwroot . '/blocks/eduvidual/pages/preferences.php?request=moolevel');
-                    }
-                }
-            }
-            */
-
-            /*
-             // Feature was disabled.
-            $extra = $DB->get_record('block_eduvidual_userextra', array('userid' => $USER->id));
-            if (empty($SESSION->wantsurl) && empty(optional_param('wantsurl', '', PARAM_TEXT)) && !empty($extra->landingpage) && strpos($extra->landingpage, $CFG->wwwroot) > -1 && !empty($PAGE->name)) {
-                redirect($extra->landingpage);
-            }
-            */
         }
 
         // CODE BELOW HERE IS OUTSIDE OF LOGIN AND IS EXECUTED EACH TIME A TRACKED EVENT OCCURS

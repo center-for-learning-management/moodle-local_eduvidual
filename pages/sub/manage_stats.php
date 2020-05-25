@@ -24,7 +24,6 @@ namespace block_eduvidual;
 
 defined('MOODLE_INTERNAL') || die;
 
-require_once($CFG->dirroot . '/blocks/eduvidual/lib_manage.php');
 $size = lib_manage::readable_filesize(lib_manage::get_category_filesize($org->categoryid));
 
 echo $OUTPUT->render_from_template('block_eduvidual/manage_stats', array(

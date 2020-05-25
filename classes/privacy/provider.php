@@ -47,15 +47,6 @@ class provider implements \core_privacy\local\metadata\provider {
             'privacy:metadata:privacy:metadata:block_eduvidual_userbunch'
         );
         $collection->add_database_table(
-            'block_eduvidual_userextra',
-             array(
-                'background' => 'privacy:metadata:block_eduvidual_userextra:background',
-                'backgroundcard' => 'privacy:metadata:block_eduvidual_userextra:backgroundcard',
-                'defaultorg' => 'privacy:metadata:block_eduvidual_userextra:defaultorg',
-            ),
-            'privacy:metadata:privacy:metadata:block_eduvidual_userextra'
-        );
-        $collection->add_database_table(
             'block_eduvidual_userqcats',
              array(),
             'privacy:metadata:privacy:metadata:block_eduvidual_userqcats'
@@ -89,10 +80,6 @@ class provider implements \core_privacy\local\metadata\provider {
         $contextlist->add_from_sql($sql, $params);
 
         $sql = "SELECT * FROM {block_eduvidual_userbunch} WHERE userid=?";
-        $params = ['userid' => $userid ];
-        $contextlist->add_from_sql($sql, $params);
-
-        $sql = "SELECT * FROM {block_eduvidual_userextra} WHERE userid=?";
         $params = ['userid' => $userid ];
         $contextlist->add_from_sql($sql, $params);
 

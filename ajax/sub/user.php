@@ -178,28 +178,11 @@ switch ($act) {
             $org = block_eduvidual::get_organisations_check($validorgas, $orgid);
 
             if (isset($org) && $org->orgid == $orgid) {
-                $extra = $DB->get_record('block_eduvidual_userextra', array('userid' => $USER->id));
-                if (empty($extra->userid) || $extra->userid != $USER->id) {
-                    $chk = $DB->execute('INSERT INTO {block_eduvidual_userextra} (userid,defaultorg) VALUES (?,?)', array($USER->id, $orgid));
-                }  else {
-                    $extra->defaultorg = $orgid;
-                    $chk = $DB->update_record('block_eduvidual_userextra', $extra);
-                }
+				$chk = set_user_preference('block_eduvidual_defaultorg', $orgid);
                 $reply['status'] = ($chk) ? 'ok' : 'error';
             } else {
                 $reply['error'] = 'invalid_org';
             }
-        }
-    break;
-    case 'landingpage_set':
-        if (isguestuser($USER)) {
-            $reply['error'] = 'guestuser:nopermission';
-        } else {
-            $url = str_replace($CFG->wwwroot, '', optional_param('url', '', PARAM_TEXT));
-            $entry = $DB->get_record('block_eduvidual_userextra', array('userid' => $USER->id));
-            $entry->landingpage = $url;
-            $DB->update_record('block_eduvidual_userextra', $entry);
-            $reply['status'] = 'ok';
         }
     break;
     case 'login':

@@ -154,11 +154,7 @@ $cnt = 0;
 foreach($entries AS $user) {
     profile_load_data($user);
     $role = $DB->get_record('block_eduvidual_orgid_userid', array('orgid' => $orgid, 'userid' => $user->id));
-    $extra = $DB->get_record('block_eduvidual_userextra', array('userid' => $user->id));
-    if (!isset($extra->backgroundcard)) {
-        $extra = (object) array('userid' => $user->id, 'backgroundcard' => '');
-    }
-    $user->backgroundcard = $extra->backgroundcard;
+    $user->backgroundcard = get_user_preferences('block_eduvidual_backgroundcard', $user->id);
     $user->role = $role->role;
     $user->userpicture = $OUTPUT->user_picture($user, array('size' => 200));
     $user->secret_encoded = rawurlencode($user->id . '#' . $user->profile_field_secret);

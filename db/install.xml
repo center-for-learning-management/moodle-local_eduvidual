@@ -156,23 +156,6 @@
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
       </KEYS>
     </TABLE>
-    <TABLE NAME="block_eduvidual_userextra" COMMENT="Extra information extending the users table">
-      <FIELDS>
-        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
-        <FIELD NAME="userid" TYPE="int" LENGTH="20" NOTNULL="true" SEQUENCE="false"/>
-        <FIELD NAME="tan" TYPE="char" LENGTH="20" NOTNULL="true" SEQUENCE="false" COMMENT="The tan this user has - used for QR Codes and to add User to other organizations or courses without name search"/>
-        <FIELD NAME="avatar" TYPE="int" LENGTH="2" NOTNULL="true" DEFAULT="1" SEQUENCE="false" COMMENT="Avatar as appears on the access card"/>
-        <FIELD NAME="background" TYPE="char" LENGTH="250" NOTNULL="false" SEQUENCE="false" COMMENT="Personal background"/>
-        <FIELD NAME="backgroundcard" TYPE="char" LENGTH="250" NOTNULL="false" SEQUENCE="false" COMMENT="Background Image for Accesscard"/>
-        <FIELD NAME="bunch" TYPE="char" LENGTH="50" NOTNULL="true" DEFAULT="Default" SEQUENCE="false" COMMENT="Allows a grouping of access cards before printing for managers of organizations"/>
-        <FIELD NAME="moolevel" TYPE="int" LENGTH="2" NOTNULL="false" DEFAULT="-1" SEQUENCE="false" COMMENT="Personal moodle experience level - the more experience a user is, the more he can see, -1 means: there has been no choice for the moment"/>
-        <FIELD NAME="defaultorg" TYPE="int" LENGTH="20" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
-        <FIELD NAME="landingpage" TYPE="char" LENGTH="250" NOTNULL="false" DEFAULT="" SEQUENCE="false" COMMENT="Personal landing page after login"/>
-      </FIELDS>
-      <KEYS>
-        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
-      </KEYS>
-    </TABLE>
     <TABLE NAME="block_eduvidual_userbunches" COMMENT="List of bunches when users are created manually">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>

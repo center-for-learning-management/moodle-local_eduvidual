@@ -83,33 +83,9 @@ function block_eduvidual_before_standard_html_head() {
         $inject_styles[] = "body #page-header .card { background-image: url(" . $CFG->wwwroot . "/blocks/eduvidual/pix/banner-curve.jpg) !important; }";
     }
 
-    // @TODO WE STOPPED USING THE EXP-LEVELS
-    // Check if we have selected a moo-level if required.
-    /*
-    if (!is_siteadmin() && $USER->id > 0 && !isguestuser($USER) && in_array(block_eduvidual::get('role'), array('Teacher', 'Manager', 'Administrator'))) {
-        if (in_array(\block_eduvidual::get('role'), array('Administrator', 'Manager', 'Teacher'))) {
-            $valid_moolevels = explode(',', get_config('block_eduvidual', 'moolevels'));
-            if (count($valid_moolevels) > 0) {
-                $context = \context_system::instance();
-                $roles = get_user_roles($context, $USER->id, true);
-                $found = false;
-                foreach ($roles AS $role) {
-                    if (in_array($role->roleid, $valid_moolevels)) {
-                        $found = true;
-                    }
-                }
-                if (!$found && strpos($_SERVER["SCRIPT_FILENAME"], '/blocks/eduvidual/pages/preferences.php') <= 0) {
-                    redirect($CFG->wwwroot . '/blocks/eduvidual/pages/preferences.php?act=moolevelinit');
-                }
-            }
-        }
-    }
-    */
-
-    // Insert user-extra.
-    $extra = block_eduvidual::get('userextra');
-    if (!isguestuser($USER) && isset($extra->background) && !empty($extra->background)) {
-        $inject_styles[] = "html { background: url(" . $extra->background . ") no-repeat center center fixed !important; background-size: cover !important; }";
+    $background = get_user_preferences('block_eduvidual_background');
+    if (!isguestuser($USER) && !empty($background)) {
+        $inject_styles[] = "body { background: url(" . $background . ") no-repeat center center fixed; background-size: cover !important; }";
     }
 
     // Check if we are allowed to access this page.
@@ -177,6 +153,7 @@ function block_eduvidual_before_standard_html_head() {
     //$PAGE->requires->js_call_amd('block_eduvidual/ajax_observer', 'observe');
     return implode("\n", $injects);
 }
+
 
 // Will work since Moodle 3.6
 function block_eduvidual_control_view_profile($user, $course = null, $usercontext = null) {

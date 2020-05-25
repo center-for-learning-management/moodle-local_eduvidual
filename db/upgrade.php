@@ -121,6 +121,27 @@ function xmldb_block_eduvidual_upgrade($oldversion) {
 
         upgrade_block_savepoint(true, 2020022500, 'eduvidual');
     }
+    if ($oldversion < 2020052502) {
+        $sql = "SELECT userid,background,backgroundcard
+                    FROM {block_eduvidual_userextra}";
+        $extras = $DB->get_records_sql($sql, array());
+        foreach ($extras AS $extra) {
+            error_log("Setting $extra->background / $extra->backgroundcard for User #$extra->userid");
+            if (!empty($extra->background)) {
+                set_user_preference('block_eduvidual_background', $extra->background, $extra->userid);
+            }
+            if (!empty($extra->backgroundcard)) {
+                set_user_preference('block_eduvidual_backgroundcard', $extra->backgroundcard, $extra->userid);
+            }
+        }
+        $table = new xmldb_table('block_eduvidual_userextra');
+
+        if ($dbman->table_exists($table)) {
+            $dbman->drop_table($table);
+        }
+
+        upgrade_block_savepoint(true, 2020052502, 'eduvidual');
+    }
 
 
 

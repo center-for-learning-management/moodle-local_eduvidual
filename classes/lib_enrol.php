@@ -240,18 +240,8 @@ class block_eduvidual_lib_enrol {
         if (count($urls) > 0) {
             $bgurl = $urls[array_rand($urls, 1)];
         }
-        if ($userid > 0) {
-            $userextra = $DB->get_record('block_eduvidual_userextra', array('userid' => $userid));
-            if (isset($userextra->userid)) {
-                $userextra->backgroundcard = $bgurl;
-                $DB->update_record('block_eduvidual_userextra', $userextra);
-            } else {
-                $userextra = new stdClass();
-                $userextra->userid = $userid;
-                $userextra->backgroundcard = $bgurl;
-                //echo "insert userextra";
-                $DB->insert_record('block_eduvidual_userextra', $userextra);
-            }
+        if ($userid > 0 && !isguestuser($userid)) {
+            set_user_preference('block_eduvidual_backgroundcard', $bgurl, $userid);
         }
         return $bgurl;
     }
@@ -421,7 +411,6 @@ class block_eduvidual_lib_enrol {
             $DB->delete_records('block_eduvidual_courseshow', array('userid' => $userid));
             $DB->delete_records('block_eduvidual_orgid_userid', array('userid' => $userid));
             $DB->delete_records('block_eduvidual_userbunches', array('userid' => $userid));
-            $DB->delete_records('block_eduvidual_userextra', array('userid' => $userid));
             $DB->delete_records('block_eduvidual_userqcats', array('userid' => $userid));
             $DB->delete_records('block_eduvidual_usertoken', array('userid' => $userid));
             return false;
