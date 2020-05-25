@@ -47,16 +47,11 @@ try {
     $org = block_eduvidual::get('org');
 
     require($CFG->dirroot . '/blocks/eduvidual/buffer/html_hook_login.php');
-    require($CFG->dirroot . '/blocks/eduvidual/buffer/html_hook_head.php');
-
     require($CFG->dirroot . '/blocks/eduvidual/buffer/html_hook_pages.php');
 
     if ($PAGE->context->contextlevel == CONTEXT_COURSE && $PAGE->course->id > 1 && count(pq('.section-modchooser')) > 0) {
         require($CFG->dirroot . '/blocks/eduvidual/buffer/html_hook_enhance_courseedit.php');
     }
-
-    pq('body')->addClass('theme-' . $CFG->theme);
-    require($CFG->dirroot . '/blocks/eduvidual/buffer/html_theme_boost.php');
 
     /**
      * BELOW THIS LINE WE ARE CHECKING FOR THE Q\UESTION BANK
@@ -66,9 +61,6 @@ try {
     if (pq($qcatslevel10)->length() > 0 || pq('optgroup[label="' . $localized_coresystem . '"]')->length() > 0) {
         require($CFG->dirroot . '/blocks/eduvidual/buffer/html_hook_qcats.php');
     }
-
-    // Disable Ajax for all pages - ever (this breaks fileareas)
-    pq('a, form')->attr('data-ajax', 'false');
 
     $buffer = $doc->htmlOuter();
 

@@ -45,6 +45,9 @@ function block_eduvidual_before_standard_html_head() {
     if (strpos($_SERVER["SCRIPT_FILENAME"], '/enrol/otherusers.php') > 0) {
         redirect($CFG->wwwroot . '/user/index.php?id=' . optional_param('id', 0, PARAM_INT));
     }
+    if (strpos($_SERVER["SCRIPT_FILENAME"], '/login/signup.php') > 0) {
+        $PAGE->requires->js_call_amd("block_eduvidual/jsinjector", "signupPage", array());
+    }
 
     // Deployggb.js is required for certain stack questions.
     // Disabled
