@@ -98,14 +98,13 @@ if ($formsent) {
                     $cat2 = $DB->get_record('course_categories', array('parent' => $cat1->id, 'name' => $subcat2));
                     if (empty($cat2->id)) {
                         // Create this category!
-                        require_once($CFG->dirroot . '/lib/coursecatlib.php');
                         $cat2 = (object)array(
                             'name' => $subcat2,
                             'description' => '',
                             'parent' => $cat1->id,
                             'visible' => 1
                         );
-                        $cat2 = coursecat::create($cat2);
+                        $cat2 = core_course_category::create($cat2);
                     }
                     // If it is still empty - error
                     if (empty($cat2->id)) {

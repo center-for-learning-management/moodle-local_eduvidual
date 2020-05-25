@@ -394,8 +394,7 @@ class block_eduvidual_lib_enrol {
 
     public static function get_course_image($course) {
         global $CFG;
-        require_once($CFG->libdir . '/coursecatlib.php');
-        $course = new course_in_list($course);
+        $course = new core_course_list_element($course);
 
         $imageurl = '';
         foreach ($course->get_course_overviewfiles() as $file) {
