@@ -34,7 +34,7 @@ function block_eduvidual_before_standard_html_head() {
     }
 
     // We want to get rid of bufferedmode.
-    if (get_config('block_eduvidual', 'bufferedmode')) {
+    if (false && get_config('block_eduvidual', 'bufferedmode')) {
         require_once($CFG->dirroot . '/blocks/eduvidual/buffered_mode.php');
     }
 
@@ -75,8 +75,9 @@ function block_eduvidual_before_standard_html_head() {
         $inject_styles[] = "body #page-header .card { background-image: url(" . $CFG->wwwroot . "/blocks/eduvidual/pix/banner-curve.jpg) !important; }";
     }
 
-    // @TODO echo goes here into the head of the page, not the body!!!
+    // @TODO WE STOPPED USING THE EXP-LEVELS
     // Check if we have selected a moo-level if required.
+    /*
     if (!is_siteadmin() && $USER->id > 0 && !isguestuser($USER) && in_array(block_eduvidual::get('role'), array('Teacher', 'Manager', 'Administrator'))) {
         if (in_array(\block_eduvidual::get('role'), array('Administrator', 'Manager', 'Teacher'))) {
             $valid_moolevels = explode(',', get_config('block_eduvidual', 'moolevels'));
@@ -95,6 +96,7 @@ function block_eduvidual_before_standard_html_head() {
             }
         }
     }
+    */
 
     // Insert user-extra.
     $extra = block_eduvidual::get('userextra');
@@ -233,6 +235,7 @@ function block_eduvidual_extend_navigation_user_settings($nav, $user, $context, 
  */
 // Will work since Moodle 3.6
 function block_eduvidual_override_webservice_execution($function, $params) {
+    
     if ($function->name === 'whatever') {
         $result = call_user_func_array([$function->classname, $function->methodname], $params);
 
