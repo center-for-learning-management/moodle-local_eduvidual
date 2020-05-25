@@ -14,6 +14,7 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'blo
                             ])
                 );
             });
+            $("a[href*='/login/logout.php?sesskey']").attr('href', URL.relativeUrl('/blocks/eduvidual/pages/logout.php'));
         },
         modifyRedirectUrl: function(type) {
             if (this.debug) console.log('block_eduvidual/jsinjector:modifyRedirectUrl(type)', type);
