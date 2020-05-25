@@ -50,7 +50,7 @@ function block_eduvidual_before_standard_html_head() {
             'id' => $COURSE->id,
             'contextid' => $PAGE->context->id,
         ),
-        'explevels' => \block_eduvidual\lib::get_explevels(),
+        'explevels' => \block_eduvidual\locallib::get_explevels(),
     );
     $PAGE->requires->js_call_amd("block_eduvidual/jsinjector", "run", array($data));
     // General boost-modifications.

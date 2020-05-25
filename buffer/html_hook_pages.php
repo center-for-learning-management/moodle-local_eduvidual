@@ -190,7 +190,7 @@ if (strpos($_SERVER["SCRIPT_FILENAME"], '/course/modedit.php') > 0) {
     }
     if (!empty($type)) {
         require_once($CFG->dirroot . '/blocks/eduvidual/locallib.php');
-        $explevels = \block_eduvidual\lib::get_explevels();
+        $explevels = \block_eduvidual\locallib::get_explevels();
         $formmodificators = json_decode(get_config('block_eduvidual', 'formmodificators'));
 
         foreach ($formmodificators AS $formmodificator) {
