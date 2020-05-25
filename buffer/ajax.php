@@ -49,7 +49,7 @@ switch ($requestscript) {
         }
     break;
     case 'search.php': // Assignment of Roles (at least in course category context)
-        $orgids = block_eduvidual::is_connected_orglist();
+        $orgids = \block_eduvidual\locallib::is_connected_orglist();
         $referer = parse_url($_SERVER['HTTP_REFERER'], PHP_URL_QUERY);
         $parameters = array();
         $courseid = 0;
@@ -74,9 +74,9 @@ switch ($requestscript) {
         }
         // If there is no org for now use all the user is member of.
         if (count($orgids) == 0) {
-            $orgids = block_eduvidual::is_connected_orglist($USER->id);
+            $orgids = \block_eduvidual\locallib::is_connected_orglist($USER->id);
         }
-        $obj->results[0]->users = block_eduvidual::is_connected_filter($obj->results[0]->users, $orgids);
+        $obj->results[0]->users = \block_eduvidual\locallib::is_connected_filter($obj->results[0]->users, $orgids);
     break;
     case 'service.php':
         switch(optional_param('info', '', PARAM_TEXT)) {
