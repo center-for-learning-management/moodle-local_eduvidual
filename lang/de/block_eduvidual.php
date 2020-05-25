@@ -207,10 +207,18 @@ $string['defaultroles:course:unmanaged'] = 'Nicht verwaltet';
 
 $string['defaultroles:orgcategory:title'] = 'Rollen (für Organisationen)';
 $string['defaultroles:orgcategory:description'] = 'Definieren Sie hier jene Rollen, die im Kursbereich einer Organisation vergeben werden!';
-$string['defaultroles:orgcategory:manager'] = 'Manager';
+$string['defaultroles:orgcategory:manager'] = 'Manager/in';
 $string['defaultroles:orgcategory:parent'] = 'Erziehungsberechtige/r';
 $string['defaultroles:orgcategory:student'] = 'Schüler/in';
 $string['defaultroles:orgcategory:teacher'] = 'Lehrer/in';
+
+$string['defaultroles:global:title'] = 'Rollen (Systemkontext)';
+$string['defaultroles:global:description'] = 'Definieren Sie hier jene Rollen, die im globalen Kontext vergeben werden!';
+$string['defaultroles:global:manager'] = 'Manager/in';
+$string['defaultroles:global:parent'] = 'Erziehungsberechtige/r';
+$string['defaultroles:global:student'] = 'Schüler/in';
+$string['defaultroles:global:teacher'] = 'Lehrer/in';
+$string['defaultroles:global:inuse'] = 'Rolle wird bereits verwendet.';
 
 $string['defaultroles:refreshroles'] = 'Rollen in Kurskategorien neu setzen';
 

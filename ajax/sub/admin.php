@@ -251,6 +251,54 @@ if (!block_eduvidual::get('role') == "Administrator") {
                 $reply['error'] = 'config_not_set';
             }
         break;
+        case 'globalrole':
+            $role = optional_param('role', 0, PARAM_INT);
+            $type = optional_param('type', '', PARAM_TEXT);
+            $types = array('manager', 'teacher', 'student', 'parent');
+            // Set to 0 if you require at least one!
+            if (in_array($type, $types)) {
+                // We test if the new role is already used by another role.
+                $roleinuse = false;
+                foreach ($types AS $testtype) {
+                    if ($testtype == $type) continue;
+                    if (get_config('block_eduvidual', 'defaultglobalrole' . $testtype) == $role) {
+                        $roleinuse = true;
+                    };
+                }
+                if (!$roleinuse) {
+                    $context = \context_system::instance();
+                    $previousrole = get_config('block_eduvidual', 'defaultglobalrole' . $type);
+                    //$reply['previousrole'] = $previousrole;
+                    if (!empty($previousrole)) {
+                        // We remove the previously set roles.
+                        $assignments = $DB->get_records('role_assignments', array('roleid' => $previousrole, 'contextid' => $context->id));
+                        foreach ($assignments AS $assignment) {
+                            role_unassign($previousrole, $assignment->userid, $contextid);
+                        }
+                    }
+                    if (!empty($role)) {
+                        set_config('defaultglobalrole' . $type, $role, 'block_eduvidual');
+                        //$reply['assigning'] = array();
+                        $members = $DB->get_records('block_eduvidual_orgid_userid', array('role' => ucfirst($type)));
+                        foreach ($members AS $member) {
+                            // Check if this user still exists.
+                            $user = core_user::get_user($member->userid, 'id,deleted', IGNORE_MISSING);
+                            if (empty($user->id) || $user->deleted) continue;
+                            //$reply['assigning'][] = $member->userid . ' / ' . $contextid;
+                            role_assign($role, $member->userid, $context->id);
+                        }
+                    } else {
+                        // How to remove a plugin-config?
+                        //remove_config('defaultglobalrole' . $type, 'block_eduvidual');
+                    }
+                    $reply['status'] = 'ok';
+                } else {
+                    $reply['error'] = get_string('defaultroles:global:inuse', 'block_eduvidual');
+                }
+            } else {
+                $reply['error'] = 'config_not_set';
+            }
+        break;
         case 'modifylogin':
             $setto = optional_param('setto', 0, PARAM_INT);
             if (set_config('modifylogin', $setto, 'block_eduvidual')) {

@@ -42,4 +42,17 @@
             {{/options}}
         </select>
     {{/rolestoset_org}}
+
+    <h4>{{#str}} defaultroles:global:title, block_eduvidual {{/str}}</h4>
+    <p>{{#str}} defaultroles:global:description, block_eduvidual {{/str}}</p>
+    {{#rolestoset_global}}
+        <h5>{{rolename}}</h5>
+        <select
+            id="block_eduvidual_admin_globalrole{{roleidentifier}}"
+            onchange="var e = this; require(['block_eduvidual/admin'], function(ADMIN) { ADMIN.globalrole('{{roleidentifier}}', e.value); }); return false;">
+            {{#options}}
+            <option value="{{id}}"{{selected}}>{{#name}}{{name}}{{/name}}{{^name}}{{shortname}}{{/name}}</option>
+            {{/options}}
+        </select>
+    {{/rolestoset_global}}
 </div>

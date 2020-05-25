@@ -198,16 +198,12 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'blo
             require(['block_eduvidual/main'], function(MAIN) {
                 MAIN.connect({ module: 'admin', act: 'orgrole', type: type, role: role }, { signalItem: $('#block_eduvidual_admin_orgrole' + type) });
             });
-            /*
-            if (this.debug > 0) console.log('ADMIN.orgroles()', sender, type);
-            var roles = new Array();
-            $.each($("input[name='" + type + "roles[]']:checked"), function() {
-                roles.push($(this).val());
-            });
+        },
+        globalrole: function(type, role) {
+            if (this.debug > 0) console.log('ADMIN.globalrole(type, role)', type, role);
             require(['block_eduvidual/main'], function(MAIN) {
-                MAIN.connect({ module: 'admin', act: 'orgroles', roles: roles, type: type }, { signalItem: $(sender).parent() });
+                MAIN.connect({ module: 'admin', act: 'globalrole', type: type, role: role }, { signalItem: $('#block_eduvidual_admin_globalrole' + type) });
             });
-            */
         },
         /**
         * Sets the default role of teachers and students

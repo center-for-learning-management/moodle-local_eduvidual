@@ -212,6 +212,14 @@ $string['defaultroles:orgcategory:parent'] = 'Parent';
 $string['defaultroles:orgcategory:student'] = 'Student';
 $string['defaultroles:orgcategory:teacher'] = 'Teacher';
 
+$string['defaultroles:global:title'] = 'Default Roles (Global Scope)';
+$string['defaultroles:global:description'] = 'Here you can specify roles that are assigned to users in the system context.';
+$string['defaultroles:global:manager'] = 'Manager';
+$string['defaultroles:global:parent'] = 'Parent';
+$string['defaultroles:global:student'] = 'Student';
+$string['defaultroles:global:teacher'] = 'Teacher';
+$string['defaultroles:global:inuse'] = 'Role already in use.';
+
 $string['defaultroles:refreshroles'] = 'Re-Assign Roles in course categories';
 
 $string['edutube:edutubeauthurl'] = 'eduTube Auth URL';
