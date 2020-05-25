@@ -17,6 +17,7 @@
 /**
  * @package    block_eduvidual
  * @copyright  2017 Digital Education Society (http://www.dibig.at)
+ *             2020 Center for Learning Management (https://www.lernmanagement.at)
  * @author     Robert Schrenk
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */

@@ -29,86 +29,30 @@ if(!defined('MOODLE_INTERNAL')) {
     require_once($CFG->dirroot . '/blocks/eduvidual/block_eduvidual.php');
 }
 
-if (!defined('MOODLE_INTERNAL') || $act == 'moolevelinit') {
-    echo $OUTPUT->render_from_template('block_eduvidual/alert', array(
-        "content" => get_string('preferences:request:moolevel', 'block_eduvidual'),
-        "type" => 'info',
-        "url" => $CFG->wwwroot . '/my',
-    ));
-}
-
-if (in_array(block_eduvidual::get('role'), array('Administrator', 'Manager', 'Teacher'))) {
-    if ($embed || $act == 'moolevel' || $act == 'moolevelinit') {
-        $moolevels = explode(',', get_config('block_eduvidual', 'moolevels'));
-        if (count($moolevels) > 0 && $moolevels[0] != '') {
+$context = \context_system::instance();
+if (has_capability('moodle/question:viewall', $context)) {
+    $questioncategories = explode(",", get_config('block_eduvidual', 'questioncategories'));
+    if (count($questioncategories) > 0) {
         ?>
-            <div class="card">
-                <h3><?php echo get_string('preferences:explevel', 'block_eduvidual'); ?></h3>
-                <p><?php echo get_string('preferences:explevel:description', 'block_eduvidual'); ?></p>
+        <div class="card">
+            <h3><?php echo get_string('preferences:questioncategories', 'block_eduvidual'); ?></h3>
+            <p><?php echo get_string('preferences:questioncategories:description', 'block_eduvidual'); ?></p>
+            <?php
 
-                <div class="grid-eq-3">
-                <?php
-                if (!isset($userextra)) {
-                    $userextra = (object) array();
-                }
-                if (!isset($userextra->moolevels)) {
-                    $userextra->moolevels = array();
-                }
-                $context = context_system::instance();
-                $roles = get_user_roles($context, $USER->id, true);
-
-                $hasroles = array();
-                foreach($roles AS $hasrole) {
-                    $hasroles[] = $hasrole->roleid;
-                }
-
-                foreach($moolevels AS $moolevel) {
-                    $role = $DB->get_record('role', array('id' => $moolevel));
+            for ($a = 0; $a < count($questioncategories); $a++) {
+                $cat = $DB->get_record('question_categories', array('id' => $questioncategories[$a]));
+                if (isset($cat->id) && $cat->id > 0) {
+                    $active = $DB->get_record('block_eduvidual_userqcats', array('userid' => $USER->id, 'categoryid' => $questioncategories[$a]));
                     ?>
-                    <div>
-                        <label>
-                            <input type="radio" name="preferences_moolevels[]"
-                                   value="<?php echo $role->id; ?>" onclick="var inp = this; require(['block_eduvidual/teacher'], function(TEACHER) { TEACHER.moolevels(inp); });"
-                                   <?php if(in_array($role->id, $hasroles)){ echo ' checked="checked"'; } ?> />
-                            <strong><?php echo (($role->name != "")?$role->name:$role->shortname); ?></strong><br />
-                        </label>
-                        <p style="margin-left: 25px;">
-                            <?php
-                            if ($role->description != '') {
-                                echo get_string($role->description, 'block_eduvidual');
-                            }
-                            ?>
-                        </p>
-                    </div>
+                    <label>
+                        <input type="checkbox" name="questioncategories[]" value="<?php echo $cat->id; ?>"<?php if ($active && $active->categoryid == $cat->id) { echo " checked"; } ?>
+                            onclick="var inp = this; require(['block_eduvidual/teacher'], function(TEACHER) { TEACHER.questioncategories(inp); });" />
+                        <?php echo $cat->name; ?>
+                    </label>
                     <?php
                 }
-            ?></div></div><?php
-        } // has moolevels
-    }
-    if ($embed || $act == 'qcats' || $act == 'moolevelinit') {
-        $questioncategories = explode(",", get_config('block_eduvidual', 'questioncategories'));
-        if (count($questioncategories) > 0) {
+            }
             ?>
-            <div class="card">
-                <h3><?php echo get_string('preferences:questioncategories', 'block_eduvidual'); ?></h3>
-                <p><?php echo get_string('preferences:questioncategories:description', 'block_eduvidual'); ?></p>
-                <?php
-
-                for ($a = 0; $a < count($questioncategories); $a++) {
-                    $cat = $DB->get_record('question_categories', array('id' => $questioncategories[$a]));
-                    if (isset($cat->id) && $cat->id > 0) {
-                        $active = $DB->get_record('block_eduvidual_userqcats', array('userid' => $USER->id, 'categoryid' => $questioncategories[$a]));
-                        ?>
-                        <label>
-                            <input type="checkbox" name="questioncategories[]" value="<?php echo $cat->id; ?>"<?php if ($active && $active->categoryid == $cat->id) { echo " checked"; } ?>
-                                onclick="var inp = this; require(['block_eduvidual/teacher'], function(TEACHER) { TEACHER.questioncategories(inp); });" />
-                            <?php echo $cat->name; ?>
-                        </label>
-                        <?php
-                    }
-                }
-                ?>
-            </div><?php
-        } // endif count questioncategories > 0
-    }
-} // if is teacher
+        </div><?php
+    } // endif count questioncategories > 0
+}

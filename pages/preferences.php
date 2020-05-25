@@ -43,13 +43,6 @@ $PAGE->requires->css('/blocks/eduvidual/style/preferences.css');
 
 block_eduvidual::print_app_header();
 
-if (optional_param('request', '', PARAM_TEXT) == 'moolevel') {
-    ?>
-    <p class="alert alert-warning"><?php echo get_string('preferences:request:moolevel', 'block_eduvidual'); ?></p>
-    <?php
-}
-
-
 if ($embed || $act == 'backgrounds') {
     $background = get_user_preferences('block_eduvidual_background');
 
@@ -80,8 +73,8 @@ if ($embed || $act == 'backgrounds') {
     } // count bgdivs > 0
 }
 
-
-if (in_array(block_eduvidual::get('role'), array('Administrator', 'Manager', 'Teacher'))) {
+$context = \context_system::instance();
+if (has_capability('moodle/question:viewall', $context)) {
     require_once($CFG->dirroot . '/blocks/eduvidual/pages/preferences_teacher.php');
 } // if is teacher
 block_eduvidual::print_app_footer();
