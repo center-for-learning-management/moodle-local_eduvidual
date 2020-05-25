@@ -46,11 +46,6 @@ function block_eduvidual_before_standard_html_head() {
         redirect($CFG->wwwroot . '/user/index.php?id=' . optional_param('id', 0, PARAM_INT));
     }
 
-    // We want to get rid of bufferedmode.
-    if (false && get_config('block_eduvidual', 'bufferedmode')) {
-        require_once($CFG->dirroot . '/blocks/eduvidual/buffered_mode.php');
-    }
-
     // Deployggb.js is required for certain stack questions.
     // Disabled
     //$PAGE->requires->js('/blocks/eduvidual/js/deployggb.js');

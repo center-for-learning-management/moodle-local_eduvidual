@@ -466,7 +466,6 @@ class block_eduvidual extends block_base /* was block_list */ {
     **/
     public static function print_mainmenu(){
         global $CFG, $USER, $PAGE;
-        if (defined('EDUVIDUAL_BUFFERED_MODE_ALLOW') && !EDUVIDUAL_BUFFERED_MODE_ALLOW) return;
         $options = block_eduvidual::get_mainmenu_options();
 
         $menu = new stdClass();
@@ -514,7 +513,6 @@ class block_eduvidual extends block_base /* was block_list */ {
         switch($module) {
             case 'admin':
                 $actions['backgrounds'] = 'admin:backgrounds:title';
-                $actions['bufferedmode'] = 'bufferedmode:title';
                 $actions['blockfooter'] = 'admin:blockfooter:title';
                 $actions['coursestuff'] = 'admin:coursestuff:title';
                 $actions['defaultroles'] = 'defaultroles:title';
@@ -731,7 +729,6 @@ class block_eduvidual extends block_base /* was block_list */ {
         //}
 
         //echo '<div class="spinner-grid"><div /><div /><div /><div /></div>';
-        // What for???? if (defined('EDUVIDUAL_BUFFERED_MODE_ALLOW') && !EDUVIDUAL_BUFFERED_MODE_ALLOW) return;
         echo "<div class=\"ui-eduvidual\">";
     }
     /**
@@ -848,7 +845,6 @@ class block_eduvidual extends block_base /* was block_list */ {
     public function get_content() {
         global $PAGE;
         $PAGE->requires->css('/blocks/eduvidual/style/main.css');
-        if (defined('EDUVIDUAL_BUFFERED_MODE_ALLOW') && !EDUVIDUAL_BUFFERED_MODE_ALLOW) return;
         if ($this->content !== null) {
           return $this->content;
         }

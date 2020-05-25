@@ -177,20 +177,6 @@ $string['app:login_wrong_credentials'] = 'Wrong login credentials!';
 $string['app:login_wrong_token'] = 'Wrong login token!';
 $string['app:open_in_app'] = 'Open eduvidual-App';
 
-$string['bufferedmode:changesuccess'] = 'Change of buffered mode settings saved successfully.';
-$string['bufferedmode:configcopy:failed'] = 'Copy of config.php to {$bf} could not be made. It is advised to make a backup manually. You can force the modifications by clicking <a href="{$a->anywayurl}">here</a>';
-$string['bufferedmode:configcopy:success'] = 'Successfully created copy of config.php to {$a->bf}';
-$string['bufferedmode:description'] = 'Buffered Mode is required to separate different organizations from each other. People can not see courses, categories or users from other organisations. In order to enable privacy mode a little modification has to made to config.php of your moodle instance';
-$string['bufferedmode:disable'] = 'Disable';
-$string['bufferedmode:enable'] = 'Enable';
-$string['bufferedmode:isenabled'] = 'Buffered Mode is enabled';
-$string['bufferedmode:isdisabled'] = 'Buffered Mode is disabled';
-$string['bufferedmode:modifylogin'] = 'Modify Login Page';
-$string['bufferedmode:notwritable'] = 'Change of buffered mode settings failed! Is config.php writable by PHP? Maybe you have to modify config.php manually by appending/removing the following code: <pre>{$a->codecomplete}</pre>';
-$string['bufferedmode:requirecapability'] = 'Require Capability';
-$string['bufferedmode:requirecapability:description'] = 'If this is enabled users need the capability block/eduvidual:useinstance in system context to see and use this plugin.';
-$string['bufferedmode:title'] = 'Buffered Mode';
-
 $string['cachedef_appcache'] = 'This is the session cache used if in app mode';
 
 $string['categories:coursecategories'] = 'Courses & categories';

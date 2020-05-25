@@ -177,20 +177,6 @@ $string['app:login_wrong_credentials'] = 'Benutzer oder Passwort sind falsch!';
 $string['app:login_wrong_token'] = 'Der Login-Token ist falsch!';
 $string['app:open_in_app'] = 'Öffne eduvidual-App';
 
-$string['bufferedmode:changesuccess'] = 'Einstellungen zum "buffered mode" gesetzt.';
-$string['bufferedmode:configcopy:failed'] = 'Kopie der config.php nach {$bf} konnte nicht durchgeführt werden. Es ist ratsam ein Backup der Datei händisch anzulegen, bevor Sie fortfahren. Sie können die Änderungen durchführen, indem Sie <a href="{$a->anywayurl}">hier</a> klicken.';
-$string['bufferedmode:configcopy:success'] = 'Erfolgreich Kopie der config.php nach {$a->bf} hergestellt.';
-$string['bufferedmode:description'] = 'Buffered Mode ist erforderlich, um verschiedene Organisationen voneinander zu trennen. Dadurch ist gewährleistet, dass man nur Personen, Kurse und Kursbereiche der eigenen Organisation/en sehen kann. Um diesen Modus zu aktivieren, muss eine kleine Änderung an der config.php vorgenommen werden.';
-$string['bufferedmode:disable'] = 'Ausschalten';
-$string['bufferedmode:enable'] = 'Einschalten';
-$string['bufferedmode:isenabled'] = 'Buffered Mode ist eingeschaltet';
-$string['bufferedmode:isdisabled'] = 'Buffered Mode ist ausgeschaltet';
-$string['bufferedmode:modifylogin'] = 'Login Seite anpassen';
-$string['bufferedmode:notwritable'] = 'Einstellungen zum "buffered mode" konnten <strong>nicht</strong> gesetzt werden! Ist die config.php für PHP schreibbar? Möglicherweise müssen Sie die config.php händisch anpassen, indem Sie folgenden Code unten einfügen/löschen:<pre>{$a->codecomplete}</pre>';
-$string['bufferedmode:requirecapability'] = 'Capability voraussetzen';
-$string['bufferedmode:requirecapability:description'] = 'Ist diese Option aktiviert benötigen Nutzer/innen die Capability "block/eduvidual:useinstance" im Systemkontext, um dieses Plugin nutzen zu können. Achtung, das kann im Zusammenhang mit der App zu Problemen führen!';
-$string['bufferedmode:title'] = 'Buffered Mode';
-
 $string['cachedef_appcache'] = 'Das ist der Session-Cache des App-Modus';
 
 $string['categories:coursecategories'] = 'Kurse & Kategorien';
