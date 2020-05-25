@@ -25,7 +25,7 @@
 defined('MOODLE_INTERNAL') || die;
 
 $plugin->version  = 2020022500;
-$plugin->requires = 2014051200;  // Requires Moodle 2.7.
+$plugin->requires = 2019111803;  // Requires Moodle 3.8.3.
 $plugin->component = 'block_eduvidual';
 $plugin->release = '1.4 (Build: 2020022500)';
 $plugin->maturity = MATURITY_STABLE;
