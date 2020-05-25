@@ -27,6 +27,30 @@ defined('MOODLE_INTERNAL') || die;
 
 class lib_wshelper {
     /**
+     * Recognizes the result of a certain script and registers an output buffer for it.
+     */
+    public static function buffer() {
+        global $CFG;
+        $func = str_replace('__', '_', 'buffer_' . str_replace('/', '_', str_replace('.php', '', str_replace($CFG->dirroot, '', $_SERVER["SCRIPT_FILENAME"]))));
+        if (method_exists(__CLASS__, $func)) {
+            error_log('Buffer function ' . $func . ' called');
+            ob_start();
+            register_shutdown_function('\block_eduvidual\lib_wshelper::buffer_modify');
+        } else {
+            error_log('Buffer function ' . $func . ' not found');
+            return false;
+        }
+    }
+    /**
+     * Determines the appropriate handler-method for this output buffer.
+     */
+    public static function buffer_modify() {
+        global $CFG;
+        $buffer = ob_get_clean();
+        $func = str_replace('__', '_', 'buffer_' . str_replace('/', '_', str_replace('.php', '', str_replace($CFG->dirroot, '', $_SERVER["SCRIPT_FILENAME"]))));
+        call_user_func('self::' . $func, $buffer);
+    }
+    /**
      * Modifies the output of particular webservice calls.
      * @param classname Classname of the ws.
      * @param methodname The wsfunction-name.
@@ -43,6 +67,23 @@ class lib_wshelper {
             return false;
         }
     }
+
+    /**
+     * These are the buffer-functions, that should OUTPUT something using echo.
+     */
+    private static function buffer_user_selector_search($buffer) {
+        $result = json_decode($buffer);
+        if (!empty($result->results)) {
+            if (!empty($result->results[0]->users)) {
+                $result->results[0]->users = \block_eduvidual\locallib::filter_userlist($result->results[0]->users, 'id', 'name');
+            }
+        }
+        echo $buffer;
+    }
+
+    /**
+     * These are the override-functions, that should RETURN something like the result of ws requests.
+     */
     private static function override_block_exacomp_diggr_get_students_of_cohort($result) {
         error_log(print_r($result, 1));
         return $result;
@@ -56,6 +97,8 @@ class lib_wshelper {
         return $result;
     }
     private static function override_core_enrol_external_get_potential_users($result) {
+        return \block_eduvidual\locallib::filter_userlist($result, 'id', 'fullname');
+        /*
         $result2 = array();
         foreach ($result AS $item) {
             if (!\block_eduvidual\locallib::is_connected($item['id'])) {
@@ -68,6 +111,7 @@ class lib_wshelper {
             }
         }
         return $result2;
+        */
     }
     private static function override_core_message_message_search_users($result) {
         error_log(print_r($result, 1));

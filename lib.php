@@ -23,8 +23,21 @@
 
 defined('MOODLE_INTERNAL') || die;
 
-require_once($CFG->dirroot . '/blocks/eduvidual/locallib.php');
 require_once($CFG->dirroot . '/blocks/eduvidual/block_eduvidual.php');
+
+function block_eduvidual_after_config() {
+    global $CFG;
+    // Check for particular scripts, whose output has to be protected.
+    $scripts = array('/user/selector/search.php');
+    $script = str_replace($CFG->dirroot, '', $_SERVER["SCRIPT_FILENAME"]);
+    if (in_array($script, $scripts)) {
+        \block_eduvidual\lib_wshelper::buffer();
+    }
+}
+
+function block_eduvidual_after_require_login() {
+
+}
 
 function block_eduvidual_before_standard_html_head() {
     global $CFG, $CONTEXT, $COURSE, $DB, $PAGE, $USER;
