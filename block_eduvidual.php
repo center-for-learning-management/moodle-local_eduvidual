@@ -621,77 +621,25 @@ class block_eduvidual extends block_base /* was block_list */ {
         return $options;
     }
     /**
-     * Determines if a user is in the same org like another user
-     * @param touserid UserID we want to check if we are connected to
-     * @param orgids (optional) List of possible orgs, if empty list we use all orgs the srcuser is member of
-     * @param srcuserid (optional) User we want to check, if not given use the current logged in user
-     * @return Returns true if connected, false if not connected
+     * DEPRECATED, now in classes\locallib.php.
     **/
     public static function is_connected($touserid, $orgids = array(), $srcuserid = 0) {
-        global $DB, $USER;
-        if ($srcuserid == 0) {
-            $srcuserid = $USER->id;
-        }
-        if (count($orgids) == 0) {
-            $orgids = self::is_connected_orglist($srcuserid);
-        }
-        $sql = "SELECT userid
-                    FROM {block_eduvidual_orgid_userid}
-                    WHERE userid=?
-                        AND orgid IN (?)";
-        $params = array($touserid, implode(',', $orgids));
-        $chks = $DB->get_records_sql($sql, $params);
-        foreach ($chks AS $chk) {
-            if (!empty($chk->userid) && $chk->userid == $touserid) {
-                return true;
-            }
-        }
-        return false;
+        error_log('A script is using a deprecated call to block_eduvidual::is_connected');
+        return \block_eduvidual\is_connected($touserid, $orgids, $srcuserid);
     }
     /**
-     * Filters a list of users if they are connected to a list of orgs.
-     * If called by admin all users will be listed, but filtered users
-     * are appended by a strut before their fullname.
-     * @param users array of users.
-     * @param orgids orgids to check if they are member of.
-     * @return list of filtered users.
-     */
+     * DEPRECATED, now in classes\locallib.php.
+    **/
     public static function is_connected_filter($users, $orgids) {
-        $filtered = array();
-        foreach ($users AS $user) {
-            if (self::is_connected($user->id, $orgids)) {
-                $filtered[] = $user;
-            } elseif (self::get('role') == 'Administrator') {
-                if (!empty($user->name)) {
-                    $user->name = '! ' . $user->name;
-                    $user->fullname = $user->name;
-                } elseif (!empty($user->fullname)) {
-                    $user->fullname = '! ' . $user->fullname;
-                }
-                $filtered[] = $user;
-            }
-        }
-        return $filtered;
+        error_log('A script is using a deprecated call to block_eduvidual::is_connected_filter');
+        return \block_eduvidual\is_connected_filter($users, $orgids);
     }
     /**
-     * Makes a list of all orgs of a user without the "protectedorgs"
-     * @param userid (optional) if not given use the current logged in user.
-     * @return array containing all orgids the user is member of.
+     * DEPRECATED, now in classes\locallib.php.
     **/
     public static function is_connected_orglist($userid = 0) {
-        global $DB, $USER;
-        if ($userid == 0) {
-            $userid = $USER->id;
-        }
-        $protectedorgs = explode(',', get_config('block_eduvidual', 'protectedorgs'));
-        $orgids = array();
-        $orgs = $DB->get_records('block_eduvidual_orgid_userid', array('userid' => $userid));
-        foreach($orgs AS $org) {
-            if (!in_array($org->orgid, $protectedorgs)) {
-                $orgids[] = $org->orgid;
-            }
-        }
-        return $orgids;
+        error_log('A script is using a deprecated call to block_eduvidual::is_connected_orglist');
+        return \block_eduvidual\is_connected_orglist($userid);
     }
     /**
      * User wanted to access a page he is not permitted to.
