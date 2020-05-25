@@ -209,7 +209,6 @@ function block_eduvidual_extend_navigation_user_settings($nav, $user, $context, 
     //print_r($nav);die();
     //$nav->add(get_string('test'), new moodle_url('/blocks/eduvidual/pages/preferendes.php'));
     $node->add(get_string('preferences:selectbg:title', 'block_eduvidual'), new moodle_url('/blocks/eduvidual/pages/preferences.php?act=backgrounds'));
-    $node->add(get_string('preferences:explevel', 'block_eduvidual'), new moodle_url('/blocks/eduvidual/pages/preferences.php?act=moolevel'));
     $node->add(get_string('preferences:questioncategories', 'block_eduvidual'), new moodle_url('/blocks/eduvidual/pages/preferences.php?act=qcats'));
 
     $users = $DB->get_records('user', array('email' => $USER->email, 'suspended' => 0));
