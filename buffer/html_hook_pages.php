@@ -74,6 +74,7 @@ if (strpos($_SERVER["SCRIPT_FILENAME"], '/my') > 0 && count(pq('#page #page-head
 **/
 
 if (strpos($_SERVER["SCRIPT_FILENAME"], '/course/index.php') > 0) {
+    /* DISABLED for testing moodle/category:viewcourselist
     pq('#coursesearch, .paging-morelink')->remove();
     if (optional_param('categoryid', -1, PARAM_INT) === -1) {
         $cats = pq('div.subcategories>div[data-categoryid]');
@@ -120,11 +121,13 @@ if (strpos($_SERVER["SCRIPT_FILENAME"], '/course/index.php') > 0) {
             pq('#switchcategory .REMOVE_ME')->remove();
         }
     }
+    */
 }
 /**
  * Check on CATEGORY MANAGEMENT not to show wrong organization categories
 **/
 if (strpos($_SERVER["SCRIPT_FILENAME"], '/course/management.php') > 0) {
+    /*  DISABLED for testing moodle/category:viewcourselist
     $options = pq('.category-listing ul[aria-labelledby="category-listing-title"]>li');
     foreach($options AS $option) {
         pq($option)->addClass('REMOVE_ME');
@@ -140,6 +143,7 @@ if (strpos($_SERVER["SCRIPT_FILENAME"], '/course/management.php') > 0) {
     if(block_eduvidual::get('role') != 'Administrator') {
         pq('.category-listing ul[aria-labelledby="category-listing-title"]>li.REMOVE_ME')->remove();
     }
+    */
 }
 /**
  * If we edit a CATEGORY do not show all form elements
@@ -249,12 +253,12 @@ if (strpos($_SERVER["SCRIPT_FILENAME"], '/enrol/manual/manage.php') > 0) {
     }
     // If there is no org for now use all the user is member of.
     if (count($orgids) == 0) {
-        $orgids = block_eduvidual::is_connected_orglist($USER->id);
+        $orgids = \block_eduvidual\locallib::is_connected_orglist($USER->id);
     }
     $options = pq('#addselect option');
     foreach ($options AS $option) {
         $userid = pq($option)->attr('value');
-        if (!block_eduvidual::is_connected($userid, $orgids)) {
+        if (!\block_eduvidual\locallib::is_connected($userid, $orgids)) {
             if (!block_eduvidual::get('role') == 'Administrator') {
                 pq($option)->addClass('REMOVE_ME');
             } else {

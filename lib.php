@@ -235,15 +235,21 @@ function block_eduvidual_extend_navigation_user_settings($nav, $user, $context, 
  */
 // Will work since Moodle 3.6
 function block_eduvidual_override_webservice_execution($function, $params) {
-    
-    if ($function->name === 'whatever') {
-        $result = call_user_func_array([$function->classname, $function->methodname], $params);
-
-        // Now modify $result.
-        return $result;
+    $supported = array(
+        'block_exacomp_diggr_get_students_of_cohort', 'core_cohort_add_cohort_members',
+        'core_cohort_search_cohorts', 'core_enrol_external_get_potential_users',
+        'core_message_message_search_users',
+        'core_message_search_contacts', 'core_search_get_relevant_users',
+        'core_user_get_users', 'tool_lp_search_cohorts', 'tool_lp_search_users'
+    );
+    $func = $function->classname . '_' . $function->methodname;
+    error_log($func);
+    if (in_array($func, $supported)) {
+        global $CFG;
+        require_once($CFG->dirroot . '/blocks/eduvidual/classes/lib_wshelper.php');
+        error_log('Overriding ' . $func);
+        return \block_eduvidual\lib_wshelper::override($function->classname, $function->methodname, $params);
     }
-    // Implement that we do not list the global support-course in messages area of user.
-
     return false;
 }
 
