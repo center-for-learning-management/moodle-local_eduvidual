@@ -80,6 +80,24 @@ class lib_wshelper {
         }
         echo $buffer;
     }
+    private static function buffer_web_lib_ajax_getnavbranch($buffer) {
+        $result = json_decode($buffer);
+        $orgs = block_eduvidual::get_organisations('*');
+        $categories = array();
+        foreach($orgs AS $org) {
+            $categories[] = $org->categoryid;
+        }
+        $result->categories = $categories;
+        if (isset($result->children)) {
+            foreach (array_keys($result->children) AS $key) {
+                if (!in_array($result->children[$key]->key, $categories)) {
+                    unset($result->children[$key]);
+                }
+            }
+            $result->children = array_values($result->children);
+        }
+        echo json_encode($result, JSON_NUMERIC_CHECK);
+    }
 
     /**
      * These are the override-functions, that should RETURN something like the result of ws requests.
@@ -98,21 +116,21 @@ class lib_wshelper {
     }
     private static function override_core_enrol_external_get_potential_users($result) {
         return \block_eduvidual\locallib::filter_userlist($result, 'id', 'fullname');
-        /*
-        $result2 = array();
-        foreach ($result AS $item) {
-            if (!\block_eduvidual\locallib::is_connected($item['id'])) {
-                if (is_siteadmin()) {
-                    $item['fullname'] = '! ' . $item['fullname'];
-                    $result2[] = $item;
-                }
-            } else {
-                $result2[] = $item;
-            }
-        }
-        return $result2;
-        */
     }
+    private static function override_core_get_fragment($result) {
+        if (!empty($result[0]->args->component) && $result[0]->args->component == 'mod_quiz') {
+            error_log('WE WILL NEED TO PROGRAM THIS IN ANOTHER WAY - override_core_get_fragment for mod_quiz');
+        }
+    }
+
+    /* THIS WSFUNCTION IS MARKED AS OBSOLETE. WE KEEP IT IF OLDER PLUGINS STILL USE IT */
+    private static function override_core_message_data_for_messagearea_search_users($result) {
+        if (!empty($result->data[0]->noncontacts)) {
+            $result->data[0]->noncontacts = \block_eduvidual\locallib::filter_userlist($result->data[0]->noncontacts, 'userid', 'fullname');
+        }
+        return $result;
+    }
+
     private static function override_core_message_message_search_users($result) {
         error_log(print_r($result, 1));
         return $result;
