@@ -58,33 +58,6 @@ class locallib {
         return $users2;
     }
     /**
-     * Get all explevels of the current user
-     * @param user either userid or object. If empty use $USER.
-     * @return array with all roleids.
-     */
-    public static function get_explevels($user = null) {
-        if (empty($user)) {
-            global $USER;
-            $user = $USER;
-        } elseif (is_int($user)) {
-            $user = $DB->get_record('user', array('id' => $user), '*', IGNORE_MISSING);
-        }
-        if (empty($user->id)) return array();
-
-        $valid_moolevels = explode(',', get_config('block_eduvidual', 'moolevels'));
-        $found_moolevels = array();
-        if (count($valid_moolevels) > 0) {
-            $context = \context_system::instance();
-            $roles = get_user_roles($context, $USER->id, true);
-            foreach ($roles AS $role) {
-                if (in_array($role->roleid, $valid_moolevels)) {
-                    $found_moolevels[] = $role->roleid;
-                }
-            }
-        }
-        return $found_moolevels;
-    }
-    /**
      * Determines if a user is in the same org like another user
      * @param touserid UserID we want to check if we are connected to
      * @param orgids (optional) List of possible orgs, if empty list we use all orgs the srcuser is member of

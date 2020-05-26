@@ -61,7 +61,6 @@ function block_eduvidual_before_standard_html_head() {
             'id' => $COURSE->id,
             'contextid' => $PAGE->context->id,
         ),
-        'explevels' => \block_eduvidual\locallib::get_explevels(),
     );
     $PAGE->requires->js_call_amd("block_eduvidual/jsinjector", "run", array($data));
     // General boost-modifications.
@@ -89,56 +88,6 @@ function block_eduvidual_before_standard_html_head() {
     $background = get_user_preferences('block_eduvidual_background');
     if (!isguestuser($USER) && !empty($background)) {
         $inject_styles[] = "body { background: url(" . $background . ") no-repeat center center fixed; background-size: cover !important; }";
-    }
-
-    // Check if we are allowed to access this page.
-    $targetctx = $DB->get_record('context', array('id' => $PAGE->context->id));
-    $path = explode('/', $targetctx->path);
-    if (count($path) > 2) {
-        $orgctx = $DB->get_record('context', array('id' => $path[2]));
-        $org = $DB->get_record('block_eduvidual_org', array('categoryid' => $orgctx->instanceid));
-        $protectedorgs = explode(',', get_config('block_eduvidual', 'protectedorgs'));
-    }
-
-    if (!empty($org->orgid) && !in_array($org->orgid, $protectedorgs) && !empty($orgctx->instanceid)) {
-        // This is an org and it does not belong to protectedorgs.
-        // Perhaps user can access particular courses, but never coursecategories!
-
-        $canaccess = false;
-        $ctx = \context_coursecat::instance($orgctx->instanceid);
-        if (has_capability('block/eduvidual:canaccess', $ctx)) {
-            $canaccess = true;
-        } elseif ($coursectx->contextlevel >= CONTEXT_COURSE) {
-            // You have a second chance. Is that a course for guests or are you enrolled?
-            $coursectx = $targetctx;
-            while(!$coursectx->contextlevel >= CONTEXT_COURSE) {
-                $path = explode('/'. $coursectx->path);
-                $parentid = $path[count($path) - 2];
-                $coursectx = $DB->get_record('context', array('id' => $parentid));
-            }
-            $ctx = \context_course::instance($coursectx->instanceid);
-            $canaccess = is_enrolled($ctx, $USER, '', true);
-        }
-
-        if (!$canaccess) {
-            if (is_siteadmin()) {
-                if (!empty($COURSE->id) && $COURSE->id > 0) {
-                    $html = '<p class="alert alert-danger accessbox hide-on-print" style="position: absolute; z-index: 9999;">';
-                    $html .= '<a href="#" onclick="$(this).parent().css(\'display\', \'none\')">';
-                    $html .= get_string('access_only_because_admin_course', 'block_eduvidual');
-                    $html .= '</a></p>';
-                    $injects[] = $html;
-                } else {
-                    $html = '<p class="alert alert-danger accessbox hide-on-print" style="position: absolute; z-index: 9999;">';
-                    $html .= '<a href="#" onclick="$(this).parent().css(\'display\', \'none\')">';
-                    $html .= get_string('access_only_because_admin_category', 'block_eduvidual');
-                    $html .= '</a></p>';
-                    $injects[] = $html;
-                }
-            } elseif($PAGE->context->contextlevel == CONTEXT_COURSECAT) {
-                block_eduvidual::redirect_privacy_issue('context-' . $PAGE->context->id);
-            }
-        }
     }
 
     $customstyle = block_eduvidual::get('customcss');
