@@ -171,7 +171,7 @@ function block_eduvidual_myprofile_navigation($tree, $user, $iscurrentuser, $cou
     $category = new \core_user\output\myprofile\category('eduvidual', get_string('pluginname', 'block_eduvidual'), null);
     $tree->add_category($category);
     if (is_siteadmin()) {
-        $node = new \core_user\output\myprofile\node('eduvidual', 'eduvidualtest', \block_eduvidual\locallib::get_user_secret($user->id));
+        $node = new \core_user\output\myprofile\node('eduvidual', 'eduvidualtest', $user->id . '#' . \block_eduvidual\locallib::get_user_secret($user->id));
         $category->add_node($node);
     }
 
