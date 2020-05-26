@@ -78,7 +78,7 @@ class lib_wshelper {
                 $result->results[0]->users = \block_eduvidual\locallib::filter_userlist($result->results[0]->users, 'id', 'name');
             }
         }
-        echo $buffer;
+        echo json_encode($result, JSON_NUMERIC_CHECK);
     }
     private static function buffer_web_lib_ajax_getnavbranch($buffer) {
         $result = json_decode($buffer);
