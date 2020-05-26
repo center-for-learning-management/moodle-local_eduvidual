@@ -104,7 +104,7 @@ if (optional_param('datavalidated', 0, PARAM_INT) == 1) {
                 $u->calendartype = 'gregorian';
 
                 $u->id = user_create_user($u, false, false);
-                $user->secret = block_eduvidual::get_user_secret($u->id);
+                $user->secret = \block_eduvidual\locallib::get_user_secret($u->id);
                 if (empty($user->password)) {
                     $user->password = $user->secret;
                 }

@@ -58,6 +58,55 @@ class locallib {
         return $users2;
     }
     /**
+     * Gets the custom profile field 'secret'
+     * If not yet set, sets a new secret
+     * @param userid UserID
+     * @return returns the current secret
+    **/
+    public static function get_user_secret($userid) {
+        global $DB;
+        $fieldid = get_config('block_eduvidual', 'fieldid_secret');
+        $dbsecret = $DB->get_record('user_info_data', array('fieldid' => $fieldid, 'userid' => $userid));
+        if (empty($dbsecret->data)) {
+            $insert = false;
+            if (empty($dbsecret->userid)) {
+                $insert = true;
+                $dbsecret = new \stdClass();
+                $dbsecret->userid = $userid;
+                $dbsecret->fieldid = $fieldid;
+            }
+            $dbsecret->data = substr(md5(microtime() . rand(9, 999)), 0, 5);
+            $dbsecret->dataformat = 0;
+            if ($insert) {
+                $DB->insert_record('user_info_data', $dbsecret);
+            } else {
+                $DB->update_record('user_info_data', $dbsecret);
+            }
+        }
+
+        // Check if the user has a support-flag. If not use the users secret instead!
+        $fieldid = get_config('block_eduvidual', 'fieldid_supportflag');
+        $dbsupportflag = $DB->get_record('user_info_data', array('fieldid' => $fieldid, 'userid' => $userid));
+        if (empty($dbsupportflag->data)) {
+            $insert = false;
+            if (empty($dbsupportflag->userid)) {
+                $insert = true;
+                $dbsupportflag = new \stdClass();
+                $dbsupportflag->userid = $userid;
+                $dbsupportflag->fieldid = $fieldid;
+            }
+            $user = $DB->get_record('user', array('id' => $userid));
+            $dbsupportflag->data = $user->firstname . ' ' . $user->lastname . ' (' . $userid . ')';
+            $dbsupportflag->dataformat = 0;
+            if ($insert) {
+                $DB->insert_record('user_info_data', $dbsupportflag);
+            } else {
+                $DB->update_record('user_info_data', $dbsupportflag);
+            }
+        }
+        return $dbsecret->data;
+    }
+    /**
      * Determines if a user is in the same org like another user
      * @param touserid UserID we want to check if we are connected to
      * @param orgids (optional) List of possible orgs, if empty list we use all orgs the srcuser is member of

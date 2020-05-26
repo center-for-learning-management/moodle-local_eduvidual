@@ -273,7 +273,7 @@ if (!$org) {
                         $u->calendartype = 'gregorian';
 
                         $u->id = user_create_user($u, false, false);
-                        $u->secret = block_eduvidual::get_user_secret($u->id);
+                        $u->secret = \block_eduvidual\locallib::get_user_secret($u->id);
                         $user = $DB->get_record('user', array('id' => $u->id));
                         update_internal_user_password($user, $u->secret, false);
 
@@ -322,7 +322,7 @@ if (!$org) {
                 $secret[1] = trim($secret[1]);
                 $chkuser = $DB->get_record('user', array('id' => $secret[0]));
                 if (isset($chkuser) && $chkuser->id == $secret[0]) {
-                    $dbsecret = block_eduvidual::get_user_secret($secret[0]);
+                    $dbsecret = \block_eduvidual\locallib::get_user_secret($secret[0]);
         			if ($dbsecret == $secret[1]) {
         				$roles = array('Manager', 'Teacher', 'Student', 'Parent', 'remove');
         				$role = optional_param('role', '', PARAM_TEXT);
@@ -437,7 +437,7 @@ if (!$org) {
                 $secret = explode('#', $secret_);
                 $chkuser = $DB->get_record('user', array('id' => $secret[0]));
                 if (isset($chkuser) && $chkuser->id == $secret[0]) {
-                    $dbsecret = block_eduvidual::get_user_secret($secret[0]);
+                    $dbsecret = \block_eduvidual\locallib::get_user_secret($secret[0]);
         			if ($dbsecret == $secret[1]) {
                         // Secret is ok, check account type.
                         if (in_array($chkuser->auth, $resetfor)) {
