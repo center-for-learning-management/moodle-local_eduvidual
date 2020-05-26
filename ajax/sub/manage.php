@@ -306,7 +306,7 @@ if (!$org) {
             }
         break;
 		case 'adduser':
-			$secrets = array(optional_param('secret', '', PARAM_TEXT));
+			$secrets = explode(' ', optional_param('secret', '', PARAM_TEXT));
         case 'setuserrole':
             if (!isset($secrets)) {
                 $secrets = optional_param_array('secrets', NULL, PARAM_TEXT);
@@ -319,6 +319,8 @@ if (!$org) {
 
             foreach ($secrets AS $secret_) {
                 $secret = explode('#', $secret_);
+                $secret[0] = trim($secret[0]);
+                $secret[1] = trim($secret[1]);
                 $chkuser = $DB->get_record('user', array('id' => $secret[0]));
                 if (isset($chkuser) && $chkuser->id == $secret[0]) {
                     $dbsecret = block_eduvidual::get_user_secret($secret[0]);

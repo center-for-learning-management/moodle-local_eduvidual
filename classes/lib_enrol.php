@@ -82,135 +82,117 @@ class block_eduvidual_lib_enrol {
         // Remove could be written in various cases.
         if (strtolower($role) == 'remove') $role = 'remove';
 
-        $user = $DB->get_record('user', array('id' => $userid), '*', IGNORE_MISSING);
-        if (empty($user->id) || $user->deleted == 1) {
-            $reply['error'] = 'User ' . $userid . ' does not exist anymore';
-            $DB->delete_records('block_eduvidual_orgid_userid', array('userid' => $userid));
-            $DB->delete_records('block_eduvidual_userbunches', array('userid' => $userid));
-            return $reply;
-        }
+        // Check if this user exists.
+        self::user_exists($userid);
 
+        // If org was given by orgid, load object from database.
         if (is_numeric($org)) {
             $org =  $DB->get_record('block_eduvidual_org', array('orgid' => $org));
         }
         // We can only proceed if this is a valid org.
         if (!empty($org->orgid)) {
+            // Get our current role.
             $current = $DB->get_record('block_eduvidual_orgid_userid', array('orgid' => $org->orgid, 'userid' => $userid));
 
             // If we are removing the user, we have to remove a bunch and cohorts as well.
             if ($role == 'remove') {
-                $DB->delete_records('block_eduvidual_userbunches', array('orgid' => $org->orgid, 'userid' => $userid));
-                // Check if we are enrolled in cohorts and remove us.
-                $coursecatcontext = \context_coursecat::instance($org->categoryid, IGNORE_MISSING);
-                if (!empty($coursecatcontext->id)) {
-                    $cohorts = $DB->get_records('cohort', array('contextid' => $coursecatcontext->id));
+                // Remove from orgcourse
+                self::course_manual_enrolments(array($org->courseid), array($userid), -1);
+
+                // Remove from orgcategory
+                $orgcatcontext = \context_coursecat::instance($org->categoryid, IGNORE_MISSING);
+                if (!empty($orgcatcontext->id)) {
+                    // Remove alle roles that were given in coursecat.
+                    $orgroles = array('manager', 'teacher', 'student', 'parent');
+                    foreach ($orgroles AS $orgrole) {
+                        $catrole = get_config('block_eduvidual', 'defaultorgrole' . strtolower($orgrole));
+                        if (!empty($catrole)) {
+                            role_unassign($catrole, $userid, $orgcatcontext->id);
+                        }
+                    }
+                    // Remove user from any cohorts in this orgcategory.
+                    $cohorts = $DB->get_records('cohort', array('contextid' => $orgcatcontext->id));
                     foreach ($cohorts AS $cohort) {
                         $DB->delete_records('cohort_members', array('cohortid' => $cohort->id, 'userid' => $userid));
                     }
                 }
-            }
 
-            if (!empty($current->orgid) && $current->role == $role && !$force) {
-                // Nothing to do
-                $reply['nothing_to_do'] = true;
+                // Now remove our eduvidual-membership.
+                $DB->delete_records('block_eduvidual_userbunches', array('orgid' => $org->orgid, 'userid' => $userid));
+                $DB->delete_records('block_eduvidual_orgid_userid', array('orgid' => $org->orgid, 'userid' => $userid));
             } else {
-                // We need to change something for this user.
-                $orgcatcontext = \context_coursecat::instance($org->categoryid, IGNORE_MISSING);
-                if (!empty($orgcatcontext->id)) {
-                    // Remove old roles that were given in coursecat.
-                    $catrole = get_config('block_eduvidual', 'defaultorgrole' . strtolower($current->role));
-                    if (!empty($catrole)) {
-                        $reply['role_unassign'][] = 'orgcat: user ' . $userid . ' roleid ' . $catrole . ' categoryid ' . $org->categoryid;
-                        role_unassign($catrole, $userid, $orgcatcontext->id);
-                    }
-                }
-
-                // We can now safely remove the user from this org, or assign new roles.
-                if ($role === 'remove') {
-                    // Unenrol from orgcourse.
-                    $reply['unenrolments'][] = 'orgcourse: user ' . $userid . ' roleid -1 courseid ' . $org->courseid;
-                    self::course_manual_enrolments($org->courseid, array($userid), -1);
-                    $reply['removed_user'] = $org->orgid . ' / ' . $userid;
-                    $DB->delete_records('block_eduvidual_orgid_userid', array('orgid' => $org->orgid, 'userid' => $userid));
-                    if (!empty($current->role) && $current->role === 'Manager') {
-                        // This person was a manager. If we are not manager in any organization we should be unenrolled from managers-course.
-                        $managerroles = array_keys($DB->get_records_sql('SELECT id FROM {block_eduvidual_orgid_userid} WHERE userid=? AND role=?', array($userid, 'Manager')));
-                        if (count($managerroles) == 0) {
-                            // Unenrol from system wide courses for managers to
-                            $allmanagerscourses = explode(',', get_config('block_eduvidual', 'allmanagerscourses'));
-                            self::course_manual_enrolments($allmanagerscourses, array($userid), -1);
-                        }
-                    }
+                // Set our roles in this org.
+                if (!empty($current->orgid) && $current->role == $role && !$force) {
+                    // Nothing to do
+                    $reply['nothing_to_do'] = true;
                 } else {
-                    if (!empty($current->role)) {
-                        $current->role = $role;
-                        $DB->update_record('block_eduvidual_orgid_userid', $current);
-                        $reply['update_user'] = $org->orgid . ' / ' . $userid . ' / ' . $role;
-                    } else {
-                        $obj = new \stdClass;
-                        $obj->orgid = $org->orgid;
-                        $obj->userid = $userid;
-                        $obj->role = $role;
-                        $DB->insert_record('block_eduvidual_orgid_userid', $obj);
-                        $reply['insert_user'] = $org->orgid . ' / ' . $userid . ' / ' . $role;
-                    }
-                    if (!empty($org->courseid)) {
-                        // Enrol into organization course as student or teacher (if it is a manager!!)
-                        switch($role) {
-                            case 'Manager': $_role = get_config('block_eduvidual', 'defaultroleteacher'); break;
-                            case 'Parent': $_role = get_config('block_eduvidual', 'defaultrolestudent'); break;
-                            case 'Student': $_role = get_config('block_eduvidual', 'defaultrolestudent'); break;
-                            case 'Teacher': $_role = get_config('block_eduvidual', 'defaultrolestudent'); break;
-                            default: $_role = 0;
-                        }
-                        if ($_role > 0) {
-                            $reply['enrolments'][] = 'allmanagerscourse: user ' . $userid . ' roleid ' . $_role . ' courseid ' . $org->courseid;
-                            self::course_manual_enrolments($org->courseid, array($userid), $_role);
-                        }
-                        if ($role == 'Manager') {
-                            // Enrol into system wide courses for managers to
-                            $allmanagerscourses = explode(',', get_config('block_eduvidual', 'allmanagerscourses'));
-                            $_role = get_config('block_eduvidual', 'defaultrolestudent');
-                            self::course_manual_enrolments($allmanagerscourses, array($userid), $_role);
-                        }
-                    }
-                }
-                if (!empty($orgcatcontext->id)) {
-                    if ($role === 'remove') {
-                        // Remove roles that were be given in coursecat.
-                        $catroles = array();
-                        $catroles = array_merge($catroles, explode(",", get_config('block_eduvidual', 'defaultorgrolemanager')));
-                        $catroles = array_merge($catroles, explode(",", get_config('block_eduvidual', 'defaultorgoleparent')));
-                        $catroles = array_merge($catroles, explode(",", get_config('block_eduvidual', 'defaultorgrolestudent')));
-                        $catroles = array_merge($catroles, explode(",", get_config('block_eduvidual', 'defaultorgroleteacher')));
+                    // The user orgrole was added, changed or we are forced to set it again.
 
-                        foreach($catroles AS $catrole) {
-                            if (!empty($catrole)) {
-                                role_unassign($catrole, $userid, $orgcatcontext->id);
-                                $reply['role_unassign'][] = 'orgcat: user ' . $userid . ' roleid ' . $catrole . ' categoryid ' . $org->categoryid;
-                            }
-                        }
+                    // Add our eduvidual-membership
+                    if (!empty($current->id)) {
+                        $DB->set_field('block_eduvidual_orgid_userid', 'role', $role, array('orgid' => $org->orgid, 'userid' => $userid));
                     } else {
-                        // Assign new roles that should be given in coursecat.
-                        $catroles = array();
-                        switch ($role) {
-                            case 'Manager': $catroles = array_merge($catroles, explode(",", get_config('block_eduvidual', 'defaultorgrolemanager'))); break;
-                            case 'Parent': $catroles = array_merge($catroles, explode(",", get_config('block_eduvidual', 'defaultorgroleparent'))); break;
-                            case 'Student': $catroles = array_merge($catroles, explode(",", get_config('block_eduvidual', 'defaultorgrolestudent'))); break;
-                            case 'Teacher': $catroles = array_merge($catroles, explode(",", get_config('block_eduvidual', 'defaultorgroleteacher'))); break;
+                        $data = array('orgid' => $org->orgid, 'userid' => $userid, 'role' => $role);
+                        $DB->insert_record('block_eduvidual_orgid_userid', $data);
+                    }
+
+                    // Add user to orgcategory
+                    $orgcatcontext = \context_coursecat::instance($org->categoryid, IGNORE_MISSING);
+                    if (!empty($orgcatcontext->id)) {
+                        $coursecatrolenew = get_config('block_eduvidual', 'defaultorgrole' . strtolower($role));
+                        if (!empty($coursecatrolenew)) {
+                            role_assign($coursecatrolenew, $userid, $orgcatcontext->id);
                         }
-                        foreach($catroles AS $catrole) {
-                            if (!empty($catrole)) {
-                                role_assign($catrole, $userid, $orgcatcontext->id);
-                                $reply['role_assign'][] = 'orgcat: user ' . $userid . ' roleid ' . $catrole . ' categoryid ' . $org->categoryid;
+                        // If our old role differs, we should unassign it.
+                        if (!empty($current->role)) {
+                            // Check course category context
+                            $coursecatroleold = get_config('block_eduvidual', 'defaultorgrole' . strtolower($current->role));
+
+                            if ($coursecatroleold != $coursecatrolenew) {
+                                role_unassign($coursecatroleold, $userid, $orgcatcontext->id);
                             }
                         }
                     }
 
-
-                    /** remove role from orgcat */
+                    // Add user to orgcourse
+                    self::set_orgcourserole($org, $role, $userid);
+                    $reply['status'] = 'ok';
                 }
-                $reply['status'] = 'ok';
+
+            }
+        }
+
+        // Check for managers courses.
+        if ($role == 'Manager' || (!empty($current->role) && $current->role == 'Manager')) {
+            // We are now manager of have been manager before.
+            $managerroles = array_keys($DB->get_records_sql('SELECT id FROM {block_eduvidual_orgid_userid} WHERE userid=? AND role=?', array($userid, 'Manager')));
+            $setrole = (count($managerroles) > 0) ? get_config('block_eduvidual', 'defaultrolestudent') : -1;
+            $allmanagerscourses = explode(',', get_config('block_eduvidual', 'allmanagerscourses'));
+            self::course_manual_enrolments($allmanagerscourses, array($userid), $setrole);
+        }
+
+        // Check for global roles.
+        $globalroles = array(
+            'manager' => get_config('block_eduvidual', 'defaultglobalrolemanager'),
+            'teacher' => get_config('block_eduvidual', 'defaultglobalroleteacher'),
+            'student' => get_config('block_eduvidual', 'defaultglobalrolestudent'),
+            'parent' => get_config('block_eduvidual', 'defaultglobalroleparent'),
+        );
+        $sql = "SELECT DISTINCT(role) AS role
+                    FROM {block_eduvidual_orgid_userid}
+                    WHERE userid=?";
+        $hasroles = array_values($DB->get_records_sql($sql, array($userid)));
+        $syscontext = \context_system::instance();
+        foreach ($hasroles AS $hasrole) {
+            $roleid = $globalroles[strtolower($hasrole->role)];
+            role_assign($roleid, $userid, $syscontext->id);
+            // set globalrole to 0.
+            $globalroles[strtolower($hasrole->role)] = 0;
+        }
+        // globalroles that were not set to 0 will be unassigned.
+        foreach ($globalroles AS $roleid) {
+            if (!empty($roleid)) {
+                role_unassign($roleid, $userid, $syscontext->id);
             }
         }
 
@@ -319,64 +301,31 @@ class block_eduvidual_lib_enrol {
         //print_r($courseids); print_r($userids); echo $roleid;
         if (!is_array($courseids)) $courseids = array($courseids);
         if (!is_array($userids)) $userids = array($userids);
-        // Retrieve the manual enrolment plugin.
+
+        // Check manual enrolment plugin instance is enabled/exist.
         $enrol = enrol_get_plugin('manual');
         if (empty($enrol)) {
-            return false;
+            throw new moodle_exception('manualpluginnotinstalled', 'enrol_manual');
         }
         $failures = 0;
+        $instances = array();
         foreach ($courseids AS $courseid) {
             // Check if course exists.
             $course = $DB->get_record('course', array('id' => $courseid), '*', IGNORE_MISSING);
             //$course = get_course($courseid);
             if (empty($course->id)) continue;
-            // Check manual enrolment plugin instance is enabled/exist.
-            $instance = null;
-            $enrolinstances = enrol_get_instances($courseid, false);
-            $reply['enrolinstances'] = $enrolinstances;
-            foreach ($enrolinstances as $courseenrolinstance) {
-              if ($courseenrolinstance->enrol == "manual") {
-                  $instance = $courseenrolinstance;
-                  break;
-              }
+            if (empty($instances[$courseid])) {
+                $instances[$courseid] = self::get_enrol_instance($courseid);
             }
-            if (empty($instance)) {
-                // We have to add a "manual-enrolment"-instance
-                $fields = array(
-                    'status' => 0,
-                    'roleid' => get_config('block_eduvidual', 'defaultrolestudent'),
-                    'enrolperiod' => 0,
-                    'expirynotify' => 0,
-                    'expirytreshold' => 0,
-                    'notifyall' => 0
-                );
-                require_once($CFG->dirroot . '/enrol/manual/lib.php');
-                $emp = new enrol_manual_plugin();
-                $reply['createinstance'] = true;
-                $instance = $emp->add_instance($course, $fields);
-            }
-            $reply['enrolinstance'] = $instance;
-            if (empty($instance)) {
-                $failures++;
-            } else {
-                if ($instance->status == 1) {
-                    // It is inactive - we have to activate it!
-                    $data = (object)array('status' => 0);
-                    require_once($CFG->dirroot . '/enrol/manual/lib.php');
-                    $emp = new enrol_manual_plugin();
-                    $reply['updateinstance'] = true;
-                    $emp->update_instance($instance, $data);
-                    $instance->status = $data->status;
+
+            foreach($userids AS $userid) {
+                if (!self::user_exists($userid)) continue;
+                if ($roleid == -1) {
+                    $enrol->unenrol_user($instances[$courseid], $userid);
+                } else {
+                    $enrol->enrol_user($instances[$courseid], $userid, $roleid, time(), 0, ENROL_USER_ACTIVE);
                 }
-                foreach ($userids AS $userid) {
-                    if (self::user_exists($userid)) {
-                        if ($roleid == -1) {
-                            $enrol->unenrol_user($instance, $userid);
-                        } else {
-                            $enrol->enrol_user($instance, $userid, $roleid, 0, 0, ENROL_USER_ACTIVE);
-                        }
-                    }
-                }
+
             }
         }
         return ($failures == 0);
@@ -401,6 +350,76 @@ class block_eduvidual_lib_enrol {
         }
         return $imageurl;
     }
+    /**
+     * Get the enrol instance for manual enrolments of a course, or create one.
+     * @param courseid
+     * @return object enrolinstance
+     */
+    private static function get_enrol_instance($courseid) {
+        // Check manual enrolment plugin instance is enabled/exist.
+        $enrol = enrol_get_plugin('manual');
+        if (empty($enrol)) {
+            throw new moodle_exception('manualpluginnotinstalled', 'enrol_manual');
+        }
+        $instance = null;
+        $enrolinstances = enrol_get_instances($courseid, false);
+        foreach ($enrolinstances as $courseenrolinstance) {
+            if ($courseenrolinstance->enrol == "manual") {
+                /*
+                 * We should think about that - shall we really activate not regarding what the user wants?
+                if ($courseenrolinstance->status == 1) {
+                    // It is inactive - we have to activate it!
+                    $data = (object)array('status' => 0);
+                    $enrol->update_instance($courseenrolinstance, $data);
+                    $courseenrolinstance->status = $data->status;
+                }
+                */
+                return $courseenrolinstance;
+            }
+        }
+        if (empty($instance)) {
+            $course = get_course($courseid);
+            $enrol->add_instance($course);
+            return self::get_enrol_instance($courseid);
+        }
+    }
+    /**
+     * Set the role in the orgcourse based on the orgrole.
+     * This method only switches between roles, it does not unenrol!
+     * @param object org
+     * @param String orgrole
+     */
+    private static function set_orgcourserole($org, $orgrole, $userid) {
+        $orgrole = strtolower($orgrole);
+        $valid = array('manager', 'teacher', 'student', 'parent');
+        if (!in_array($orgrole, $valid)) return;
+        // Enrol into organization course as student or teacher (if it is a manager!!)
+        $roles = array(
+            'manager' => get_config('block_eduvidual', 'defaultroleteacher'),
+            'teacher' => get_config('block_eduvidual', 'defaultrolestudent'),
+        );
+        $roles['student'] = $roles['teacher'];
+        $roles['parent'] = $roles['teacher'];
+        $context = \context_course::instance($org->courseid);
+        if (is_enrolled($context, $userid)) {
+            // Only switch role
+            foreach ($roles AS $role => $roleid) {
+                if ($role == $orgrole) {
+                    role_assign($roleid, $userid, $context->id);
+                } else {
+                    role_unassign($roleid, $userid, $context->id);
+                }
+            }
+        } else {
+            // Enrol user with the required role.
+            self::course_manual_enrolments($org->courseid, array($userid), $roles[$orgrole]);
+        }
+    }
+    /**
+     * Ensure that a user exists.
+     * @param userid
+     * @return boolean true or false
+     */
     public static function user_exists($userid) {
         global $DB;
         $chk = $DB->get_record('user', array('id' => $userid), 'deleted');
@@ -418,4 +437,6 @@ class block_eduvidual_lib_enrol {
             return true;
         }
     }
+
+
 }
