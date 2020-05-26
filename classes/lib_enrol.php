@@ -21,9 +21,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+namespace block_eduvidual;
+
 defined('MOODLE_INTERNAL') || die;
 
-class block_eduvidual_lib_enrol {
+class lib_enrol {
     /**
      * Adds a user to the cohort for a bunch of an org.
      */

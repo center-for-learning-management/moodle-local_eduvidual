@@ -281,12 +281,11 @@ if (!$org) {
                             $userbunch->bunch = $bunch;
                             $userbunch->userid = $u->id;
                             $DB->insert_record('block_eduvidual_userbunches', $userbunch);
-                            block_eduvidual_lib_enrol::bunch_set($u->id, $org, $userbunch->bunch);
+                            \block_eduvidual\lib_enrol::bunch_set($u->id, $org, $userbunch->bunch);
                         }
 
-                        require_once($CFG->dirroot . '/blocks/eduvidual/classes/lib_enrol.php');
-                        block_eduvidual_lib_enrol::role_set($u->id, $orgid, $role);
-                        block_eduvidual_lib_enrol::choose_background($u->id);
+                        \block_eduvidual\lib_enrol::role_set($u->id, $orgid, $role);
+                        \block_eduvidual\lib_enrol::choose_background($u->id);
                         // Trigger event.
                         \core\event\user_created::create_from_userid($u->id)->trigger();
                         if ($u->id > 0) {
@@ -328,8 +327,7 @@ if (!$org) {
         				$roles = array('Manager', 'Teacher', 'Student', 'Parent', 'remove');
         				$role = optional_param('role', '', PARAM_TEXT);
                         if (in_array($role, $roles)) {
-                            require_once($CFG->dirroot . '/blocks/eduvidual/classes/lib_enrol.php');
-                            $reply = array_merge($reply, block_eduvidual_lib_enrol::role_set($secret[0], $org, $role));
+                            $reply = array_merge($reply, \block_eduvidual\lib_enrol::role_set($secret[0], $org, $role));
                             $reply['updated'][] = $secret_;
                         } else {
                             $reply['invalid_role_' . $role] = true;
@@ -359,8 +357,7 @@ if (!$org) {
             if ($courseid > 0) {
                 $org = block_eduvidual::set_org_by_courseid($courseid);
                 if (!empty($org->orgid) && (block_eduvidual::get('orgrole') == 'Manager' || block_eduvidual::get('role') == 'Administrator')) {
-                    require_once($CFG->dirroot . '/blocks/eduvidual/classes/lib_enrol.php');
-                    block_eduvidual_lib_enrol::course_manual_enrolments(array($courseid), array($USER->id), get_config('block_eduvidual', 'defaultroleteacher'));
+                    \block_eduvidual\lib_enrol::course_manual_enrolments(array($courseid), array($USER->id), get_config('block_eduvidual', 'defaultroleteacher'));
                     $reply['status'] = 'ok';
                 } else {
                     $reply['error'] = get_string('access_denied', 'block_eduvidual');
@@ -399,7 +396,6 @@ if (!$org) {
         break;
         case 'maildomain_apply':
             if (is_siteadmin()) {
-                require_once($CFG->dirroot . '/blocks/eduvidual/classes/lib_enrol.php');
                 $types = array('maildomain', 'maildomainteacher');
                 $reply['updated'] = array(
                     'Student' => 0,
@@ -419,7 +415,7 @@ if (!$org) {
                             $hasrole = $DB->get_record('block_eduvidual_orgid_userid', array('orgid' => $org->orgid, 'userid' => $user->id));
                             if (empty($hasrole->id)) {
                                 $reply['updated'][$role]++;
-                                \block_eduvidual_lib_enrol::role_set($user->id, $org, $role);
+                                \block_eduvidual\lib_enrol::role_set($user->id, $org, $role);
                             }
                         }
                     }

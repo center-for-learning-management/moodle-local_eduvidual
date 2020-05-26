@@ -52,8 +52,7 @@ switch ($act) {
                 }
                 if (!empty($role)) {
                     // Code is ok - enrol user
-                    require_once($CFG->dirroot . '/blocks/eduvidual/classes/lib_enrol.php');
-                    $reply['enrolment'] = block_eduvidual_lib_enrol::role_set($USER->id, $orgid, $role);
+                    $reply['enrolment'] = \block_eduvidual\lib_enrol::role_set($USER->id, $orgid, $role);
                     $reply['orgid'] = $orgid;
                     $reply['status'] = 'ok';
                 } else {

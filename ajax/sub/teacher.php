@@ -77,8 +77,7 @@ if (!$org) {
         break;
         case 'createcourse_basements':
             $reply['status'] = 'ok';
-            require_once($CFG->dirroot . '/blocks/eduvidual/classes/lib_enrol.php');
-            $reply['basements'] = block_eduvidual_lib_enrol::get_course_basements('all');
+            $reply['basements'] = \block_eduvidual\lib_enrol::get_course_basements('all');
             $orgid = optional_param('orgid', 0, PARAM_INT);
             $membership = $DB->get_record('block_eduvidual_orgid_userid', array('orgid' => $orgid, 'userid' => $USER->id));
             $reply['canmanage'] = block_eduvidual::get('role') == 'Administrator' || (isset($membership->role) && $membership->role == 'Manager');
@@ -91,9 +90,8 @@ if (!$org) {
             if ($path[1] == $org->categoryid) {
                 if (in_array(block_eduvidual::get('orgrole'), array('Administrator', 'Manager', 'Teacher')) || block_eduvidual::get('role') == 'Administrator') {
                     // Now check if basement is valid
-                    require_once($CFG->dirroot . '/blocks/eduvidual/classes/lib_enrol.php');
                     $basement = optional_param('basement', 0, PARAM_INT);
-                    if(block_eduvidual_lib_enrol::is_valid_course_basement('all', $basement)){
+                    if(\block_eduvidual\lib_enrol::is_valid_course_basement('all', $basement)){
                         // Create course here
                         $fullname = optional_param('name', '', PARAM_TEXT);
                         if (strlen($fullname) > 5) {
@@ -136,7 +134,7 @@ if (!$org) {
                                 $enroluser = optional_param('setteacher', 0, PARAM_INT);
                                 if (empty($enroluser) || $enroluser == 0) $enroluser = $USER->id;
                                 $reply['enrolments'][] = 'course: user ' . $enroluser . ' roleid ' . $role . ' courseid ' . $course['id'];
-                                block_eduvidual_lib_enrol::course_manual_enrolments(array($course['id']), array($enroluser), $role);
+                                \block_eduvidual\lib_enrol::course_manual_enrolments(array($course['id']), array($enroluser), $role);
                                 // Set the start date of this course to sep 1st of the school year
                                 $course = $DB->get_record('course', array('id' => $course['id']));
                                 $course->startdate = (date("m") < 6)?strtotime((date("Y")-1) . '0901000000'):strtotime(date("Y") . '0901000000');
@@ -510,8 +508,7 @@ if (!$org) {
                                         $userinorg[] = $userid;
                                     }
                                 }
-                                require_once($CFG->dirroot . '/blocks/eduvidual/classes/lib_enrol.php');
-                                $reply['failures'] = block_eduvidual_lib_enrol::course_manual_enrolments(array($courseid), $userinorg, $roleid);
+                                $reply['failures'] = \block_eduvidual\lib_enrol::course_manual_enrolments(array($courseid), $userinorg, $roleid);
                                 $reply['updates'] = array(array($courseid), $userinorg, $roleid);
                                 $reply['updateduserids'] = $userinorg;
         			            $reply['status'] = 'ok';
