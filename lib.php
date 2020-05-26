@@ -49,11 +49,6 @@ function block_eduvidual_before_standard_html_head() {
         $PAGE->requires->js_call_amd("block_eduvidual/jsinjector", "signupPage", array());
     }
 
-    // Deployggb.js is required for certain stack questions.
-    // Disabled
-    //$PAGE->requires->js('/blocks/eduvidual/js/deployggb.js');
-
-
     $data = array(
         'context' => $CONTEXT,
         'course' => (object) array(
