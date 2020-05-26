@@ -161,7 +161,7 @@ function block_eduvidual_before_standard_html_head() {
 // Will work since Moodle 3.6
 function block_eduvidual_control_view_profile($user, $course = null, $usercontext = null) {
     // Check here if we can view this users profile.
-    if (!\block_eduvidual\locallib::is_connected($user->id)) {
+    if (!\block_eduvidual\locallib::is_connected($user->id) && !is_siteadmin()) {
         return core_user::VIEWPROFILE_PREVENT;
     }
     return core_user::VIEWPROFILE_DO_NOT_PREVENT;
