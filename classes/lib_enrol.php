@@ -45,7 +45,7 @@ class lib_enrol {
 
         // Sync bunch to cohorts
         if (empty($org->categoryid)) return;
-        $context = context_coursecat::instance($org->categoryid);
+        $context = \context_coursecat::instance($org->categoryid);
         if (empty($context->id)) return;
         global $DB;
         $idnumber = $org->orgid . '_' . hash('crc32', $bunch);
@@ -199,7 +199,7 @@ class lib_enrol {
         }
 
         require_once($CFG->dirroot . '/blocks/eduvidual/classes/lib_phplist.php');
-        block_eduvidual_lib_phplist::check_user_role($userid);
+        \block_eduvidual_lib_phplist::check_user_role($userid);
         return $reply;
     }
 
@@ -210,13 +210,13 @@ class lib_enrol {
     **/
     public static function choose_background($userid = 0){
         global $DB;
-        $context = context_system::instance();
+        $context = \context_system::instance();
         $fs = get_file_storage();
         $files = $fs->get_area_files($context->id, 'block_eduvidual', 'backgrounds_cards', 0);
         $urls = array();
         foreach ($files as $file) {
             if (str_replace('.', '', $file->get_filename()) != ""){
-                $urls[] = '' . moodle_url::make_pluginfile_url($file->get_contextid(), $file->get_component(), $file->get_filearea(), $file->get_itemid(), $file->get_filepath(), $file->get_filename());
+                $urls[] = '' . \moodle_url::make_pluginfile_url($file->get_contextid(), $file->get_component(), $file->get_filearea(), $file->get_itemid(), $file->get_filepath(), $file->get_filename());
             }
         }
 
@@ -256,7 +256,7 @@ class lib_enrol {
             $courses[$selflbl] = array();
             $coursesbyname = array();
             foreach ($_courses AS $c) {
-                $context = context_course::instance($c->id);
+                $context = \context_course::instance($c->id);
                 $canedit = has_capability('moodle/course:update', $context);
                 if ($canedit) {
                     $c->imageurl = self::get_course_image($c);
@@ -307,7 +307,7 @@ class lib_enrol {
         // Check manual enrolment plugin instance is enabled/exist.
         $enrol = enrol_get_plugin('manual');
         if (empty($enrol)) {
-            throw new moodle_exception('manualpluginnotinstalled', 'enrol_manual');
+            throw new \moodle_exception('manualpluginnotinstalled', 'enrol_manual');
         }
         $failures = 0;
         $instances = array();
@@ -335,7 +335,7 @@ class lib_enrol {
 
     public static function get_course_image($course) {
         global $CFG;
-        $course = new core_course_list_element($course);
+        $course = new \core_course_list_element($course);
 
         $imageurl = '';
         foreach ($course->get_course_overviewfiles() as $file) {
@@ -361,7 +361,7 @@ class lib_enrol {
         // Check manual enrolment plugin instance is enabled/exist.
         $enrol = enrol_get_plugin('manual');
         if (empty($enrol)) {
-            throw new moodle_exception('manualpluginnotinstalled', 'enrol_manual');
+            throw new \moodle_exception('manualpluginnotinstalled', 'enrol_manual');
         }
         $instance = null;
         $enrolinstances = enrol_get_instances($courseid, false);
