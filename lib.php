@@ -52,8 +52,7 @@ function block_eduvidual_before_standard_html_head() {
     // Deployggb.js is required for certain stack questions.
     // Disabled
     //$PAGE->requires->js('/blocks/eduvidual/js/deployggb.js');
-    // Main.css changes some styles for eduvidual.
-    $PAGE->requires->css('/blocks/eduvidual/style/main.css');
+
 
     $data = array(
         'context' => $CONTEXT,
@@ -63,8 +62,10 @@ function block_eduvidual_before_standard_html_head() {
         ),
     );
     $PAGE->requires->js_call_amd("block_eduvidual/jsinjector", "run", array($data));
+    // Main.css changes some styles for eduvidual.
+    //$PAGE->requires->css('/blocks/eduvidual/style/main.css');
     // General boost-modifications.
-    $PAGE->requires->css('/blocks/eduvidual/style/theme_boost.css');
+    //$PAGE->requires->css('/blocks/eduvidual/style/theme_boost.css');
     if (strpos($_SERVER["SCRIPT_FILENAME"], '/course/delete.php') > 0) {
         $PAGE->requires->js_call_amd("block_eduvidual/jsinjector", "modifyRedirectUrl", array('coursedelete'));
     }
