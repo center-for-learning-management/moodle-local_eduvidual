@@ -403,10 +403,11 @@ class block_eduvidual_lib_enrol {
         $context = \context_course::instance($org->courseid);
         if (is_enrolled($context, $userid)) {
             // Only switch role
+            $roletoassign = $roles[$orgrole];
+            role_assign($roletoassign, $userid, $context->id);
+
             foreach ($roles AS $role => $roleid) {
-                if ($role == $orgrole) {
-                    role_assign($roleid, $userid, $context->id);
-                } else {
+                if ($roleid !== $roletoassign) {
                     role_unassign($roleid, $userid, $context->id);
                 }
             }
