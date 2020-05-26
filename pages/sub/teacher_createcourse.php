@@ -152,8 +152,8 @@ if ($formsent) {
                                     $revoketargetrole = false;
                                 }
                             }
-                            //role_assign($roletoassign, $USER->id, $sourcecatcontext->id);
-                            //role_assign($roletoassign, $USER->id, $targetcatcontext->id);
+                            role_assign($roletoassign, $USER->id, $sourcecatcontext->id);
+                            role_assign($roletoassign, $USER->id, $targetcatcontext->id);
 
                             // Create new course.
                             require_once($CFG->dirroot . '/course/lib.php');
@@ -170,7 +170,6 @@ if ($formsent) {
                             if (!empty($subcat2)) $coursedata->summary .= $org->subcats2lbl . ': ' . $subcat2 . "<br />\n";
                             if (!empty($subcat3)) $coursedata->summary .= $org->subcats3lbl . ': ' . $subcat3 . "<br />\n";
                             if (!empty($subcat4)) $coursedata->summary .= $org->subcats4lbl . ': ' . $subcat4 . "<br />\n";
-                            //print_r($coursedata);
                             $course = create_course($coursedata);
 
                             $basecontext = context_course::instance($basement);
@@ -187,14 +186,6 @@ if ($formsent) {
 
                             // ATTENTION - Revoking the role is MANDATORY and is done AFTER the roles are set in the course!
                             if (!empty($course->id)) {
-                                // If we should enrol another user, we do it.
-                                $enroluser = !empty($enroluser) ? $enroluser : $USER->id;
-                                $context = context_course::instance($course->id);
-                                $role = get_config('block_eduvidual', 'defaultroleteacher');
-                                $enroluser = optional_param('setteacher', 0, PARAM_INT);
-                                if (empty($enroluser) || $enroluser == 0) $enroluser = $USER->id;
-                                \block_eduvidual\lib_enrol::course_manual_enrolments(array($course->id), array($enroluser), $role);
-
                                 // Do the import from basement.
                                 require_once($CFG->dirroot . '/backup/util/includes/backup_includes.php');
 
@@ -233,6 +224,15 @@ if ($formsent) {
 
                                 // Commit.
                                 $transaction->allow_commit();
+
+                                // If we should enrol another user, we do it.
+                                $enroluser = !empty($enroluser) ? $enroluser : $USER->id;
+                                $context = context_course::instance($course->id);
+                                $role = get_config('block_eduvidual', 'defaultroleteacher');
+                                $enroluser = optional_param('setteacher', 0, PARAM_INT);
+                                if (empty($enroluser) || $enroluser == 0) $enroluser = $USER->id;
+
+                                \block_eduvidual\lib_enrol::course_manual_enrolments(array($course->id), array($enroluser), $role);
 
                                 $msg[] = $OUTPUT->render_from_template('block_eduvidual/alert', array(
                                     'content' => get_string('createcourse:created', 'block_eduvidual'),

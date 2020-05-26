@@ -31,7 +31,6 @@ class lib_enrol {
      */
     public static function bunch_set($userid, $org, $bunch) {
         global $DB;
-        //echo $userid . "/" . $org->orgid . "/" . $bunch . "<br />\n";
         if (empty($bunch)) return;
 
         // Store bunch in eduvidual-plugin
@@ -300,7 +299,6 @@ class lib_enrol {
     public static function course_manual_enrolments($courseids, $userids, $roleid) {
         global $CFG, $DB, $reply;
         if (!isset($reply)) $reply = array();
-        //print_r($courseids); print_r($userids); echo $roleid;
         if (!is_array($courseids)) $courseids = array($courseids);
         if (!is_array($userids)) $userids = array($userids);
 
@@ -381,7 +379,7 @@ class lib_enrol {
         }
         if (empty($instance)) {
             $course = get_course($courseid);
-            $enrol->add_instance($course);
+            $enrol->add_default_instance($course);
             return self::get_enrol_instance($courseid);
         }
     }
