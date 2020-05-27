@@ -128,8 +128,7 @@ function block_eduvidual_extend_navigation_course($nav, $course, $context) {
         $nav->add(get_string('deletecourse'), new moodle_url('/course/delete.php?id=' . $course->id));
     }
     if (\block_eduvidual\locallib::is_manager($course->category)) {
-        $nodeusers = $nav->find('users', null);
-        $nodeusers->add(get_string('manage:enrolmeasteacher', 'block_eduvidual'), new \moodle_url("#", array("onclick" => "javascript:require(['block_eduvidual/manager'], function(MANAGER) { MANAGER.forceEnrol($course->id); });")));
+        $nav->add(get_string('manage:enrolmeasteacher', 'block_eduvidual'), new \moodle_url('/blocks/eduvidual/pages/redirects/forceenrol.php', array('courseid' => $course->id)));
     }
     if ($otherusers = $nav->find('otherusers', global_navigation::TYPE_SETTING)) {
         $otherusers->remove();

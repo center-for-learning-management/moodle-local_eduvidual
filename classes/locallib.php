@@ -57,6 +57,46 @@ class locallib {
         }
         return $users2;
     }
+
+    /**
+     * Get organisation by categoryid.
+     * @param int categoryid
+     * @return Object organization
+     */
+    public static function get_org_by_categoryid($categoryid) {
+        global $DB;
+        $category = $DB->get_record('context', array('contextlevel' => CONTEXT_COURSECAT, 'instanceid' => $categoryid), '*', IGNORE_MISSING);
+        if (empty($category->id)) return false;
+        $path = explode('/', $category->path);
+        // Get organisation by top level course category.
+        return $DB->get_record('block_eduvidual_org', array('categoryid' => $path[1]));
+    }
+
+    /**
+     * Get organisation by courseid.
+     * @param int courseid
+     * @return Object organization
+     */
+    public static function get_org_by_courseid($courseid) {
+        global $DB;
+        $course = $DB->get_record('course', array('id' => $courseid), '*', IGNORE_MISSING);
+        if (empty($course->id)) return;
+        return self::get_org_by_categoryid($course->category);
+    }
+
+    /**
+     * Retrieves the role of a user in an organization.
+     * @param int orgid
+     * @param int userid (optional) If not given, will use $USER.
+     * @return String role in that organisation (Manager, Teacher, Student, Parent)
+     */
+    public static function get_orgrole($orgid, $userid = 0) {
+        global $DB, $USER;
+        if (empty($userid)) $userid = $USER->id;
+        $r = $DB->get_record('block_eduvidual_orgid_userid', array('orgid' => $orgid, 'userid' => $userid));
+        if (!empty($r->role)) return $r->role;
+    }
+
     /**
      * Gets the custom profile field 'secret'
      * If not yet set, sets a new secret
@@ -156,7 +196,7 @@ class locallib {
     }
 
     /**
-     * Check if the current user is manager in any, or in a particular organization.
+     * Check if the current user is manager in any, or in a particular organization, based on category.
      * @param int categoryid (optional)
      */
     public static function is_manager($categoryid = 0) {
@@ -169,11 +209,7 @@ class locallib {
             return !empty($chk->orgid);
         } else {
             // Check if user is manager in a particular organization.
-            $category = $DB->get_record('context', array('contextlevel' => CONTEXT_COURSECAT, 'instanceid' => $categoryid), '*', IGNORE_MISSING);
-            if (empty($category->id)) return false;
-            $path = explode('/', $category->path);
-            // Get organisation by top level course category.
-            $org = $DB->get_record('block_eduvidual_org', array('categoryid' => $path[1]));
+            $org = self::get_org_by_categoryid($categoryid);
             if (empty($org->orgid)) return false;
             $chk = $DB->get_record('block_eduvidual_orgid_userid', array('orgid' => $org->orgid, 'role' => 'Manager', 'userid' => $USER->id));
             return !empty($chk->orgid);
