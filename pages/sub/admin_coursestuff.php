@@ -21,7 +21,7 @@
  */
 
 defined('MOODLE_INTERNAL') || die;
-if (!block_eduvidual::get('role') == "Administrator") die;
+if (!is_siteadmin()) die;
 
 $orgcoursebasement = get_config('block_eduvidual', 'orgcoursebasement');
 $basements = \block_eduvidual\lib_enrol::get_course_basements('system');

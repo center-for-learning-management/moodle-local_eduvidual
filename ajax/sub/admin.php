@@ -23,7 +23,7 @@
 
 defined('MOODLE_INTERNAL') || die;
 
-if (!block_eduvidual::get('role') == "Administrator") {
+if (!is_siteadmin()) {
     $reply['error'] = get_string('access_denied', 'block_eduvidual');
 } else {
     $act = optional_param('act', '', PARAM_TEXT);

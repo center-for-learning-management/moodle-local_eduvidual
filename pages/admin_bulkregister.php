@@ -35,7 +35,7 @@ $PAGE->set_heading(get_string('Administration', 'block_eduvidual'));
 
 require_login();
 
-if (!block_eduvidual::get('role') == "Administrator") die;
+if (!is_siteadmin()) die;
 
 $msgs = array();
 

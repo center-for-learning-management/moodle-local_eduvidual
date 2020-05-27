@@ -38,8 +38,8 @@ $PAGE->set_heading(get_string('Management', 'block_eduvidual'));
 $PAGE->requires->css('/blocks/eduvidual/style/manage.css');
 
 // Only allow a certain user group access to this script
-$allow = array("Administrator", "Manager");
-if (!in_array(block_eduvidual::get('role'), $allow)) {
+$allow = array("Manager");
+if (!in_array(block_eduvidual::get('role'), $allow) && !is_siteadmin()) {
 	block_eduvidual::print_app_header();
 	?>
 		<p class="alert alert-danger"><?php get_string('access_denied', 'block_eduvidual'); ?></p>

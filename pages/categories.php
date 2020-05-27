@@ -86,7 +86,7 @@ if (empty($current_orgid)) {
     //$manageractions = block_eduvidual::get_actions('manage');
     $memberships = array_values($DB->get_records_sql($sql, $params));
     foreach ($memberships AS &$membership) {
-        $membership->canmanage = is_siteadmin() || in_array($membership->role, array('Administrator', 'Manager'));
+        $membership->canmanage = is_siteadmin() || in_array($membership->role, array('Manager'));
         if ($membership->canmanage) {
             if (empty($managersactions)) {
                 $_actions = block_eduvidual::get_actions('manage', true);
@@ -107,7 +107,7 @@ if (empty($current_orgid)) {
         $membership->role = get_string('role:' . $membership->role, 'block_eduvidual');
     }
     echo $OUTPUT->render_from_template('block_eduvidual/user_orgs', array(
-        'isadmin' => (block_eduvidual::get('role') == 'Administrator'),
+        'isadmin' => is_siteadmin(),
         'memberships' => $memberships,
         'wwwroot' => $CFG->wwwroot
     ));

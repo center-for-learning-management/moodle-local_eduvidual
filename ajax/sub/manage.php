@@ -167,7 +167,7 @@ if (!$org) {
 
             if ($orgid > 0 && $studentid > 0 && $parentid > 0) {
                 $chk = $DB->get_record('block_eduvidual_orgid_userid', array('orgid' => $orgid, 'userid' => $USER->id));
-                if (block_eduvidual::get('role') != 'Administrator' && $chk->role != 'Manager') {
+                if (!is_siteadmin() && $chk->role != 'Manager') {
                     $reply['error'] = 'not_member_of_this_org';
                 } else {
                     $chk_student = $DB->get_record('block_eduvidual_orgid_userid', array('orgid' => $orgid, 'userid' => $studentid));
@@ -196,7 +196,7 @@ if (!$org) {
             $orgid = optional_param('orgid', 0, PARAM_INT);
             $studentid = optional_param('studentid', 0, PARAM_INT);
             $chk = $DB->get_record('block_eduvidual_orgid_userid', array('orgid' => $orgid, 'userid' => $USER->id));
-            if (block_eduvidual::get('role') != 'Administrator' && $chk->role != 'Manager') {
+            if (!is_siteadmin() && $chk->role != 'Manager') {
                 $reply['error'] = 'not_member_of_this_org';
             } else {
                 $filter = '%' . optional_param('filter', 'zzzzzz', PARAM_TEXT) . '%';
@@ -237,7 +237,7 @@ if (!$org) {
 
             $success = 0; $failed = 0;
 
-            if (block_eduvidual::get('orgrole') == 'Manager' || block_eduvidual::get('role') == 'Administrator') {
+            if (block_eduvidual::get('orgrole') == 'Manager' || is_siteadmin()) {
                 if ($amount <= $maximum) {
                     require_once($CFG->dirroot . '/user/lib.php');
                     $colors = file($CFG->dirroot . '/blocks/eduvidual/templates/names.colors', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
@@ -356,7 +356,7 @@ if (!$org) {
             $courseid = optional_param('courseid', 0, PARAM_INT);
             if ($courseid > 0) {
                 $org = block_eduvidual::set_org_by_courseid($courseid);
-                if (!empty($org->orgid) && (block_eduvidual::get('orgrole') == 'Manager' || block_eduvidual::get('role') == 'Administrator')) {
+                if (!empty($org->orgid) && (block_eduvidual::get('orgrole') == 'Manager' || is_siteadmin())) {
                     \block_eduvidual\lib_enrol::course_manual_enrolments(array($courseid), array($USER->id), get_config('block_eduvidual', 'defaultroleteacher'));
                     $reply['status'] = 'ok';
                 } else {
@@ -373,7 +373,7 @@ if (!$org) {
                 if ($maildomain == '' || strlen($maildomain) > 2) {
                     if ($maildomain == '' || substr($maildomain, 0, 1) == '@') {
                         if (true) { // Disabled check for invalid characters
-                            if (block_eduvidual::get('role') == 'Administrator') {
+                            if (is_siteadmin()) {
                                 $field = 'maildomain' . $type;
                                 $org->{$field} = $maildomain;
                                 $reply['org'] = $org;
@@ -465,7 +465,7 @@ if (!$org) {
 			if (strlen($search) > $minimum) {
 				$search = "%" . $search . "%";
                 $CONCAT = 'CONCAT("[",ou.role,"] ",u.firstname," ",u.lastname,IF(ub.bunch IS NULL,"",CONCAT(" #",ub.bunch)))';
-                if (false && block_eduvidual::get('role') == 'Administrator') {
+                if (false && is_siteadmin()) {
                     $users = $DB->get_records_sql('SELECT u.id,u.email,' . $CONCAT . ' AS userfullname FROM {user} AS u INNER JOIN {block_eduvidual_orgid_userid} AS ou ON u.id=ou.userid LEFT JOIN {block_eduvidual_userbunches} AS ub ON u.id=ub.userid WHERE ' . $CONCAT . ' LIKE ? AND u.suspended=0', array($search));
                 } else {
                     $users = $DB->get_records_sql('SELECT u.id,u.email,' . $CONCAT . ' AS userfullname FROM {user} AS u INNER JOIN {block_eduvidual_orgid_userid} AS ou ON u.id=ou.userid LEFT JOIN {block_eduvidual_userbunches} AS ub ON u.id=ub.userid WHERE ou.orgid=? AND ' . $CONCAT . ' LIKE ? AND u.suspended=0', array($org->orgid, $search));
@@ -479,14 +479,6 @@ if (!$org) {
     					"userfullname" => $user->userfullname,
     					"email" => $user->email
     				);
-                    /*
-                    if (block_eduvidual::get('role') == 'Administrator') {
-                        $currentrole = $DB->get_record('block_eduvidual_orgid_userid', array('orgid' => $org->orgid, 'userid' => $user->id));
-                        if (empty($currentrole->role)) {
-                            $item['userfullname'] = '! ' . $item['userfullname'];
-                        }
-                    }
-                    */
                     $reply['users'][] = $item;
     			}
 			} else {

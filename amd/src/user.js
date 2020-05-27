@@ -172,11 +172,11 @@ define(
                             actionselect.append($('<option value="">' + s[1] + '</option>'));
 
                             // Add course-add buttons for teachers
-                            if (['Administrator', 'Manager', 'Teacher'].indexOf(o.result.orgrole) > -1 || o.result.role == 'Administrator') {
+                            if (['Manager', 'Teacher'].indexOf(o.result.orgrole) > -1 || o.result.role == 'Administrator') {
                                 actionselect.append($('<option value="createcourse">' + s[2] + '</option>'));
                             }
                             // Add category-add/-remove buttons for managers
-                            if (['Administrator', 'Manager'].indexOf(o.result.orgrole) > -1 || o.result.role == 'Administrator') {
+                            if (['Manager'].indexOf(o.result.orgrole) > -1 || o.result.role == 'Administrator') {
                                 actionselect.append($('<option value="createcategory">' + s[3] + '</option>'));
                                 if (o.result.orgcategoryid != o.data.categoryid) {
                                     actionselect.append($('<option value="editcategory">' + s[4] + '</option>'));
@@ -212,13 +212,7 @@ define(
                                         .css('display', 'inline')
                                         .css('margin-left', '5px');
                             li.append(a_.append([img, h3]));
-                            /*
-                            if (['Administrator', 'Manager', 'Teacher'].indexOf(o.result.orgrole) > -1 || o.result.role == 'Administrator') {
-                                var url = URL.fileUrl("/blocks/eduvidual/pages/teacher.php", "") + '?act=createcourse&categoryid=' + category.id;
-                                var aplus = $('<a>').attr('href', url).html('<img src="/pix/t/add.svg" alt="add course" />');
-                                li.append(aplus);
-                            }
-                            */
+
                             ul.append(li);
                         }
                         container.append(ul);

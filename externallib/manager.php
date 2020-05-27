@@ -65,7 +65,7 @@ class block_eduvidual_external_manager extends external_api {
 
         $membership = $DB->get_record('block_eduvidual_orgid_userid', $params);
 
-        if (empty($membership->id) || (block_eduvidual::get('orgrole') != 'Manager' && block_eduvidual::get('role') != 'Administrator')) {
+        if (empty($membership->id) || (block_eduvidual::get('orgrole') != 'Manager' && !is_siteadmin())) {
             // We are not allowed to to this!
             return get_string('missing_permission', 'block_eduvidual');
         } else {
@@ -101,7 +101,7 @@ class block_eduvidual_external_manager extends external_api {
             'subject' => '',
             'success' => 0,
         );
-        if (empty($membership->id) || (block_eduvidual::get('orgrole') != 'Manager' && block_eduvidual::get('role') != 'Administrator')) {
+        if (empty($membership->id) || (block_eduvidual::get('orgrole') != 'Manager' && !is_siteadmin())) {
             // We are not allowed to to this!
             $reply->message = get_string('missing_permission', 'block_eduvidual');
             $reply->subject = get_string('error');

@@ -44,7 +44,7 @@ if (empty($org->mnetlogo)) {
 }
 
 echo $OUTPUT->render_from_template(
-    'block_eduvidual/manage_mnet' . ((block_eduvidual::get('role') == 'Administrator') ? '_isadmin': ''),
+    'block_eduvidual/manage_mnet' . ((is_siteadmin() ? '_isadmin': ''),
     (object) array(
         'maildomain' => $org->maildomain,
         'maildomainteacher' => $org->maildomainteacher,
@@ -56,7 +56,7 @@ echo $OUTPUT->render_from_template(
     )
 );
 
-if (block_eduvidual::get('role') == 'Administrator') {
+if (is_siteadmin()) {
     require_once($CFG->dirroot . "/blocks/eduvidual/classes/manage_mnet_form.php");
 
     $form = new block_eduvidual_manage_mnet_form(null, null, 'post', '_self', array('data-ajax' => 'false'), true);

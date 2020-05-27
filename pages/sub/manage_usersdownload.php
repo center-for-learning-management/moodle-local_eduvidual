@@ -34,7 +34,7 @@ $dataformat = required_param('dataformat', PARAM_ALPHA);
 
 block_eduvidual::set_org($orgid);
 
-if (block_eduvidual::get('orgrole') != "Manager" && block_eduvidual::get('role') != 'Administrator') {
+if (block_eduvidual::get('orgrole') != "Manager" && !is_siteadmin()) {
     $OUTPUT->header();
     $OUTPUT->render_from_template('block_eduvidual/alert', array(
         'type' => 'warning',

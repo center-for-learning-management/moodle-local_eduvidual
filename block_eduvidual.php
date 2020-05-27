@@ -34,7 +34,7 @@ class block_eduvidual extends block_base /* was block_list */ {
     static $orgs;
     static $org;
     static $orgrole;
-    static $role = "Student"; // Role for user interface (Administrator, Manager, Teacher, Student)
+    static $role = "Student"; // Role for user interface (Manager, Teacher, Student)
     static $qcats;
     static $scripts_on_load = array();
     static $pagelayout = ''; // Stores a force pagelayout (embedded prevents background image)
@@ -57,8 +57,7 @@ class block_eduvidual extends block_base /* was block_list */ {
                 block_eduvidual::$role = "Teacher";
             }
         }
-        if(has_capability('moodle/site:config', $sysctx)) {
-            // Has capability site:config and is Administrator
+        if(is_siteadmin()) {
             block_eduvidual::$role = "Administrator";
         }
 
@@ -350,7 +349,7 @@ class block_eduvidual extends block_base /* was block_list */ {
     **/
     public static function get_organisations($role="", $allforadmin=true){
         global $DB, $USER;
-        if ($allforadmin && block_eduvidual::get('role') == 'Administrator') {
+        if ($allforadmin && is_siteadmin()) {
         	return $DB->get_records_sql('SELECT * FROM {block_eduvidual_org} WHERE authenticated=1 ORDER BY orgid ASC', array());
         } elseif ($role == '*') {
             return $DB->get_records_sql('SELECT o.orgid,o.* FROM {block_eduvidual_org} AS o,{block_eduvidual_orgid_userid} AS ou WHERE o.orgid=ou.orgid AND ou.userid=? GROUP BY o.orgid ORDER BY o.orgid ASC', array($USER->id));
@@ -454,7 +453,7 @@ class block_eduvidual extends block_base /* was block_list */ {
                 $actions['style'] = 'manage:style';
                 $actions['subcats'] = 'manage:subcats:title';
                 $actions['users'] = 'manage:users';
-                if (block_eduvidual::get('role') == "Administrator")
+                if (is_siteadmin())
                     $actions['stats'] = 'manage:stats';
             break;
             case 'teacher':
@@ -498,7 +497,7 @@ class block_eduvidual extends block_base /* was block_list */ {
                 "icon" => '/pix/i/withsubcat.svg', //'/blocks/eduvidual/pix/user_courses.svg',
             );
         }
-        if (in_array(block_eduvidual::get('role'), array('Administrator', 'Manager', 'Teacher'))) {
+        if (in_array(block_eduvidual::get('role'), array('Manager', 'Teacher')) || is_siteadmin()) {
             $options[] = array(
                 "title" => get_string('teacher:createcourse', 'block_eduvidual'),
                 "href" => '/blocks/eduvidual/pages/teacher.php?act=createcourse&orgid=' . $ORGID .
@@ -514,7 +513,7 @@ class block_eduvidual extends block_base /* was block_list */ {
                 "icon" => '/pix/t/add.svg',
             );
         }
-        if (in_array(block_eduvidual::get('role'), array('Administrator', 'Manager'))) {
+        if (in_array(block_eduvidual::get('role'), array('Manager')) || is_siteadmin()) {
             $options[] = array(
                 "title" => get_string('Management', 'block_eduvidual'),
                 "href" => '/blocks/eduvidual/pages/manage.php?act=&orgid=' . $ORGID,

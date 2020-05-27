@@ -21,7 +21,7 @@
  */
 
 defined('MOODLE_INTERNAL') || die;
-$isadmin = in_array(block_eduvidual::get('role') == 'Administrator';
+$isadmin = is_siteadmin();
 $ismanager = in_array(block_eduvidual::get('role') == 'Manager';
 if (!$isadmin && !$ismanager) die;
 

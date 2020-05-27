@@ -40,7 +40,7 @@ class block_eduvidual_external_admin extends external_api {
         global $CFG, $DB, $PAGE;
 
         require_once($CFG->dirroot . '/blocks/eduvidual/block_eduvidual.php');
-        if (block_eduvidual::get('role') != 'Administrator') {
+        if (!is_siteadmin()) {
             return json_encode(array());
         }
         $params = self::validate_parameters(self::org_gps_parameters(), array('lon1' => $lon1, 'lon2' => $lon2, 'lat1' => $lat1, 'lat2' => $lat2, 'includenonegroup' => $includenonegroup, 'advanceddata' => $advanceddata));

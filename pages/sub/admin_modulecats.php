@@ -21,7 +21,7 @@
  */
 
 defined('MOODLE_INTERNAL') || die;
-if (!block_eduvidual::get('role') == "Administrator") die;
+if (!is_siteadmin()) die;
 
 // IF THE CATEGORYFORM WAS SENT STORE RESULT
 require_once($CFG->dirroot . "/blocks/eduvidual/classes/admin_modulecat_form.php");

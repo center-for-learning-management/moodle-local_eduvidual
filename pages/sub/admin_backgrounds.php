@@ -21,7 +21,7 @@
  */
 
 defined('MOODLE_INTERNAL') || die;
-if (!block_eduvidual::get('role') == "Administrator") die;
+if (!is_siteadmin()) die;
 
 ?>
 <h4><?php echo get_string('admin:backgrounds:title', 'block_eduvidual'); ?></h4>

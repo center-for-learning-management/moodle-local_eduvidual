@@ -44,7 +44,7 @@ foreach($anchors AS $anchor) {
         pq($anchor)->html('! ' . pq($anchor)->html());
     }
 }
-if(block_eduvidual::get('role') != 'Administrator') {
+if(!is_siteadmin()) {
     pq('.REMOVE_ME')->remove();
 }
 
@@ -68,6 +68,6 @@ foreach($options AS $option) {
         //pq($option)->html('REMOVED ' . pq($option)->html());
     }
 }
-if(block_eduvidual::get('role') != 'Administrator') {
+if(!is_siteadmin()) {
     pq('optgroup[label="' . $localized_coresystem . '"] .REMOVE_ME')->remove();
 }

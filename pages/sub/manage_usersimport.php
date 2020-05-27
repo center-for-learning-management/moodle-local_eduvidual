@@ -22,7 +22,7 @@
 
 defined('MOODLE_INTERNAL') || die;
 
-if (block_eduvidual::get('orgrole') != "Manager" && block_eduvidual::get('role') != 'Administrator') {
+if (block_eduvidual::get('orgrole') != "Manager" && !is_siteadmin()) {
     ?>
     <p class="alert alert-warning"><?php echo get_string('js:missing_permission', 'block_eduvidual'); ?></p>
     <?php
