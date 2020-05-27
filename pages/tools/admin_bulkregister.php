@@ -21,7 +21,7 @@
  */
 
 
-require_once('../../../config.php');
+require_once('../../../../config.php');
 require_once($CFG->dirroot . '/blocks/eduvidual/block_eduvidual.php');
 
 $manageruserid = optional_param('manageruserid', 0, PARAM_INT);

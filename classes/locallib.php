@@ -154,4 +154,29 @@ class locallib {
         }
         return $orgids;
     }
+
+    /**
+     * Check if the current user is manager in any, or in a particular organization.
+     * @param int categoryid (optional)
+     */
+    public static function is_manager($categoryid = 0) {
+        return true;
+        //if (is_siteadmin()) return true;
+        global $DB, $USER;
+        if (empty($categoryid)) {
+            // Check if user is manager in any organization.
+            $chk = $DB->get_record('block_eduvidual_orgid_userid', array('role' => 'Manager', 'userid' => $USER->id));
+            return !empty($chk->orgid);
+        } else {
+            // Check if user is manager in a particular organization.
+            $category = $DB->get_record('context', array('contextlevel' => CONTEXT_COURSECAT, 'instanceid' => $categoryid), '*', IGNORE_MISSING);
+            if (empty($category->id)) return false;
+            $path = explode('/', $category->path);
+            // Get organisation by top level course category.
+            $org = $DB->get_record('block_eduvidual_org', array('categoryid' => $path[1]));
+            if (empty($org->orgid)) return false;
+            $chk = $DB->get_record('block_eduvidual_orgid_userid', array('orgid' => $org->orgid, 'role' => 'Manager', 'userid' => $USER->id));
+            return !empty($chk->orgid);
+        }
+    }
 }

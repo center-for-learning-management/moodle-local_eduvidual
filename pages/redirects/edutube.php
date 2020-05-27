@@ -22,7 +22,7 @@
 
 // We require a login, check if we belong to an org and launch edutube afterwards.
 
-require_once('../../../config.php');
+require_once('../../../../config.php');
 require_login();
 
 $PAGE->set_context(context_system::instance());

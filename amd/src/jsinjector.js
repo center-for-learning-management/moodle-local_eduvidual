@@ -14,7 +14,7 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'blo
                             ])
                 );
             });
-            $("a[href*='/login/logout.php?sesskey']").attr('href', URL.relativeUrl('/blocks/eduvidual/pages/logout.php'));
+            $("a[href*='/login/logout.php?sesskey']").attr('href', URL.relativeUrl('/blocks/eduvidual/pages/redirect/logout.php'));
             this.fakeBreadCrumb();
         },
         fakeBreadCrumb: function() {
