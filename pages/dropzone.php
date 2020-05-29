@@ -49,7 +49,11 @@ if (!in_array(block_eduvidual::get('role'), $roles)) {
 	die();
 }
 
-$dropzonepath = get_config('block_eduvidual', 'dropzonepath');
+$reponame = 'u' . $USER->id;
+$repolabel = fullname($USER);
+// From now on we will use a user-specific dropzone-Path
+$dropzonepath = $CFG->dataroot . '/repository/' . $reponame;
+//$dropzonepath = get_config('block_eduvidual', 'dropzonepath');
 if (empty($dropzonepath)) {
     ?>
         <p class="alert alert-danger"><?php echo get_string('admin:dropzone:notset', 'block_eduvidual'); ?></p>
@@ -60,18 +64,54 @@ if (empty($dropzonepath)) {
 // Just to be sure it is used as directory.
 $dropzonepath .= '/';
 
+if (!is_dir($dropzonepath)) {
+    mkdir($dropzonepath);
+}
+
 if (isset($_FILES["dropfile"])) {
-    file_put_contents($dropzonepath . $USER->id . "_" . str_replace("@", "_", $USER->email) . "_" . date("Y-m-d") . "_" . @$_POST["stamp"] . ".mbz", file_get_contents($_FILES["dropfile"]["tmp_name"]), FILE_APPEND);
+    file_put_contents($dropzonepath . $_FILES["dropfile"]["name"], file_get_contents($_FILES["dropfile"]["tmp_name"]), FILE_APPEND);
+    // This is the old line that uses another filename.
+    //file_put_contents($dropzonepath . $USER->id . "_" . str_replace("@", "_", $USER->email) . "_" . date("Y-m-d") . "_" . @$_POST["stamp"] . ".mbz", file_get_contents($_FILES["dropfile"]["tmp_name"]), FILE_APPEND);
 
     // Assign user the "repository filesystem"-role
+    /* This is the old style.
     $context = context_system::instance();
     role_assign(15, $USER->id, $context->id);
+    */
+    $context = \context_user::instance($USER->id);
+    $repo = $DB->get_record('repository', array('type' => 'filesystem'));
+    $check = $DB->get_record('repository_instances', array('typeid' => $repo->id, 'contextid' => $context->id));
+    if (empty($check->id)) {
+        $params = (object) array(
+            'name' => $repolabel,
+            'typeid' => $repo->id,
+            'userid' => 0,
+            'contextid' => $context->id,
+            'timecreated' => time(),
+            'timemodified' => time(),
+            'readonly' => 0,
+        );
+        $params->id = $DB->insert_record('repository_instances', $params);
+        if (!empty($params->id)) {
+            $config = (object) array(
+                'instanceid' => $params->id,
+                'name' => 'fs_path',
+                'value' => $reponame,
+            );
+            $DB->insert_record('repository_instance_config', $config);
+            cache::make('core', 'repositories')->purge();
+        }
+    } else {
+        // Maybe our name has changed - so we will change that too....
+        $DB->set_field('repository_instances', 'name', $repolabel, array('id' => $check->id));
+    }
+
 	die();
 }
 ?>
 <h3>Dropzone</h3>
 <p>
-	Hier können große Kurssicherungen hochgeladen werden, sofern diese das Maximum der Webseite (48MB) überschreiten.
+	Hier können große Kurssicherungen hochgeladen werden, sofern diese das Maximum der Webseite überschreiten.
 	Die Vorgehensweise ist wie folgt:
 </p>
 <ol>
@@ -86,7 +126,7 @@ if (isset($_FILES["dropfile"])) {
 	<input type="hidden" name="stamp" value="<?php echo substr(md5(date("i:s")), 0, 4); ?>" />
 </form>
 <p>
-	Hinweis: Immer nur 1 Datei hochladen, danach <a href="#" onclick="top.location.reload();">neu laden</a>
+	Hinweis: Bitte immer nur 1 Datei hochladen, danach <a href="#" onclick="top.location.reload();">neu laden</a>, bevor man die nächste Datei hochlädt.
 </p>
 <script type="text/javascript">
 window.onload = function(){
@@ -108,8 +148,9 @@ window.onload = function(){
 <ul>
 <?php
 
-$filter = $USER->id . "_";
-if (isset($_GET["remove"]) && substr($_GET["remove"], 0, strlen($filter)) == $filter) {
+$filter = '';
+//$filter = $USER->id . "_";
+if (isset($_GET["remove"]) && (empty($filter) || substr($_GET["remove"], 0, strlen($filter)) == $filter)) {
 	if(unlink($dropzonepath . $_GET["remove"]))
 		echo "<p class=\"alert alert-success\">Datei '" . $_GET["remove"] . "' gelöscht</p>";
 	else
@@ -118,8 +159,9 @@ if (isset($_GET["remove"]) && substr($_GET["remove"], 0, strlen($filter)) == $fi
 
 $d = opendir($dropzonepath);
 while($f=readdir($d)) {
-	if (str_replace(".", "", $f) == "") continue;
-	if (substr($f, 0, strlen($filter)) != $filter) continue;
+	if (empty(str_replace(".", "", $f))) continue;
+    if (substr($f, 0, 1) == '.') continue;
+	if (!empty($filter) && substr($f, 0, strlen($filter)) != $filter) continue;
 	echo "<li>" . $f . " [<a href=\"?remove=" . $f . "\">löschen</a>]</li>";
 }
 
