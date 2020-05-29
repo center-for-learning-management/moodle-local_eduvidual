@@ -50,6 +50,7 @@ if (!in_array(block_eduvidual::get('role'), $roles)) {
 }
 
 $reponame = 'u' . $USER->id;
+$repolabel = fullname($USER);
 // From now on we will use a user-specific dropzone-Path
 $dropzonepath = $CFG->dataroot . '/repository/' . $reponame;
 //$dropzonepath = get_config('block_eduvidual', 'dropzonepath');
@@ -79,10 +80,10 @@ if (isset($_FILES["dropfile"])) {
     */
     $context = \context_user::instance($USER->id);
     $repo = $DB->get_record('repository', array('type' => 'filesystem'));
-    $check = $DB->get_record('repository_instances', array('name' => $reponame, 'typeid' => $repo->id, 'contextid' => $context->id));
+    $check = $DB->get_record('repository_instances', array('typeid' => $repo->id, 'contextid' => $context->id));
     if (empty($check->id)) {
         $params = (object) array(
-            'name' => $reponame,
+            'name' => $repolabel,
             'typeid' => $repo->id,
             'userid' => 0,
             'contextid' => $context->id,
@@ -98,10 +99,13 @@ if (isset($_FILES["dropfile"])) {
                 'value' => $reponame,
             );
             $DB->insert_record('repository_instance_config', $config);
+            cache::make('core', 'repositories')->purge();
         }
-
-        cache::make('core', 'repositories')->purge();
+    } else {
+        // Maybe our name has changed - so we will change that too....
+        $DB->set_field('repository_instances', 'name', $repolabel, array('id' => $check->id));
     }
+
 	die();
 }
 ?>
