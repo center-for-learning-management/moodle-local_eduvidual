@@ -81,7 +81,7 @@ if (isset($_FILES["dropfile"])) {
     $repo = $DB->get_record('repository', array('type' => 'filesystem'));
     $check = $DB->get_record('repository_instances', array('name' => $reponame, 'typeid' => $repo->id, 'contextid' => $context->id));
     if (empty($check->id)) {
-        $params = array(
+        $params = (object) array(
             'name' => $reponame,
             'typeid' => $repo->id,
             'userid' => 0,
@@ -90,7 +90,16 @@ if (isset($_FILES["dropfile"])) {
             'timemodified' => time(),
             'readonly' => 0,
         );
-        $DB->insert_record('repository_instances', $params);
+        $params->id = $DB->insert_record('repository_instances', $params);
+        if (!empty($params->id)) {
+            $config = (object) array(
+                'instanceid' => $params->id,
+                'name' => 'fs_path',
+                'value' => $reponame,
+            );
+            $DB->insert_record('repository_instance_config', $config);
+        }
+
         cache::make('core', 'repositories')->purge();
     }
 	die();
