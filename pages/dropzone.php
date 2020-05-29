@@ -159,7 +159,8 @@ if (isset($_GET["remove"]) && (empty($filter) || substr($_GET["remove"], 0, strl
 
 $d = opendir($dropzonepath);
 while($f=readdir($d)) {
-	if (str_replace(".", "", $f) == "") continue;
+	if (empty(str_replace(".", "", $f))) continue;
+    if (substr($f, 0, 1) == '.') continue;
 	if (!empty($filter) && substr($f, 0, strlen($filter)) != $filter) continue;
 	echo "<li>" . $f . " [<a href=\"?remove=" . $f . "\">löschen</a>]</li>";
 }
