@@ -49,7 +49,10 @@ if (!in_array(block_eduvidual::get('role'), $roles)) {
 	die();
 }
 
-$dropzonepath = get_config('block_eduvidual', 'dropzonepath');
+$reponame = 'u' . $USER->id;
+// From now on we will use a user-specific dropzone-Path
+$dropzonepath = $CFG->dataroot . '/repository/' . $reponame;
+//$dropzonepath = get_config('block_eduvidual', 'dropzonepath');
 if (empty($dropzonepath)) {
     ?>
         <p class="alert alert-danger"><?php echo get_string('admin:dropzone:notset', 'block_eduvidual'); ?></p>
@@ -60,18 +63,42 @@ if (empty($dropzonepath)) {
 // Just to be sure it is used as directory.
 $dropzonepath .= '/';
 
+if (!is_dir($dropzonepath)) {
+    mkdir($dropzonepath);
+}
+
 if (isset($_FILES["dropfile"])) {
-    file_put_contents($dropzonepath . $USER->id . "_" . str_replace("@", "_", $USER->email) . "_" . date("Y-m-d") . "_" . @$_POST["stamp"] . ".mbz", file_get_contents($_FILES["dropfile"]["tmp_name"]), FILE_APPEND);
+    file_put_contents($dropzonepath . $_FILES["dropfile"]["name"], file_get_contents($_FILES["dropfile"]["tmp_name"]), FILE_APPEND);
+    // This is the old line that uses another filename.
+    //file_put_contents($dropzonepath . $USER->id . "_" . str_replace("@", "_", $USER->email) . "_" . date("Y-m-d") . "_" . @$_POST["stamp"] . ".mbz", file_get_contents($_FILES["dropfile"]["tmp_name"]), FILE_APPEND);
 
     // Assign user the "repository filesystem"-role
+    /* This is the old style.
     $context = context_system::instance();
     role_assign(15, $USER->id, $context->id);
+    */
+    $context = \context_user::instance($USER->id);
+    $repo = $DB->get_record('repository', array('type' => 'filesystem'));
+    $check = $DB->get_record('repository_instances', array('name' => $reponame, 'typeid' => $repo->id, 'contextid' => $context->id));
+    if (empty($check->id)) {
+        $params = array(
+            'name' => $reponame,
+            'typeid' => $repo->id,
+            'userid' => 0,
+            'contextid' => $context->id,
+            'timecreated' => time(),
+            'timemodified' => time(),
+            'readonly' => 0,
+        );
+        $DB->insert_record('repository_instances', $params);
+        cache::make('core', 'repositories')->purge();
+    }
 	die();
 }
 ?>
 <h3>Dropzone</h3>
 <p>
-	Hier können große Kurssicherungen hochgeladen werden, sofern diese das Maximum der Webseite (48MB) überschreiten.
+	Hier können große Kurssicherungen hochgeladen werden, sofern diese das Maximum der Webseite überschreiten.
 	Die Vorgehensweise ist wie folgt:
 </p>
 <ol>
@@ -86,7 +113,7 @@ if (isset($_FILES["dropfile"])) {
 	<input type="hidden" name="stamp" value="<?php echo substr(md5(date("i:s")), 0, 4); ?>" />
 </form>
 <p>
-	Hinweis: Immer nur 1 Datei hochladen, danach <a href="#" onclick="top.location.reload();">neu laden</a>
+	Hinweis: Bitte immer nur 1 Datei hochladen, danach <a href="#" onclick="top.location.reload();">neu laden</a>, bevor man die nächste Datei hochlädt.
 </p>
 <script type="text/javascript">
 window.onload = function(){
