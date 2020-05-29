@@ -144,8 +144,9 @@ window.onload = function(){
 <ul>
 <?php
 
-$filter = $USER->id . "_";
-if (isset($_GET["remove"]) && substr($_GET["remove"], 0, strlen($filter)) == $filter) {
+$filter = '';
+//$filter = $USER->id . "_";
+if (isset($_GET["remove"]) && (empty($filter) || substr($_GET["remove"], 0, strlen($filter)) == $filter)) {
 	if(unlink($dropzonepath . $_GET["remove"]))
 		echo "<p class=\"alert alert-success\">Datei '" . $_GET["remove"] . "' gelöscht</p>";
 	else
@@ -155,7 +156,7 @@ if (isset($_GET["remove"]) && substr($_GET["remove"], 0, strlen($filter)) == $fi
 $d = opendir($dropzonepath);
 while($f=readdir($d)) {
 	if (str_replace(".", "", $f) == "") continue;
-	if (substr($f, 0, strlen($filter)) != $filter) continue;
+	if (!empty($filter) && substr($f, 0, strlen($filter)) != $filter) continue;
 	echo "<li>" . $f . " [<a href=\"?remove=" . $f . "\">löschen</a>]</li>";
 }
 
