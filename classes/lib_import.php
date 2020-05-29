@@ -308,7 +308,7 @@ class block_eduvidual_lib_import_compiler_user extends block_eduvidual_lib_impor
             $obj->email = strtolower($obj->email);
             global $CFG;
             require_once($CFG->dirroot . '/blocks/eduvidual/block_eduvidual.php');
-            if (empty($obj->username) || block_eduvidual::get('role') != 'Administrator') {
+            if (empty($obj->username) || !is_siteadmin()) {
                 $obj->username = str_replace($dummydomain, '', $obj->email);
             }
         }

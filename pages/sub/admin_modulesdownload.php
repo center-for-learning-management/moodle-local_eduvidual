@@ -27,7 +27,7 @@ require_login();
 require_once($CFG->libdir . '/adminlib.php');
 require_once($CFG->dirroot . '/blocks/eduvidual/block_eduvidual.php');
 
-if (!block_eduvidual::get('role') == "Administrator") {
+if (!is_siteadmin()) {
     ?>
     <p class="alert alert-warning"><?php echo get_string('js:missing_permission', 'block_eduvidual'); ?></p>
     <?php

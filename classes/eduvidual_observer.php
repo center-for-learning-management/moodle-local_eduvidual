@@ -105,8 +105,7 @@ class eduvidual_observer {
                         $setrole = 'Student';
                     }
                     if (!empty($setrole)) {
-                        require_once($CFG->dirroot . '/blocks/eduvidual/classes/lib_enrol.php');
-                        $reply = \block_eduvidual_lib_enrol::role_set($user->id, $org, $setrole);
+                        $reply = \block_eduvidual\lib_enrol::role_set($user->id, $org, $setrole);
                         $success = isset($reply['enrolments']) ? count($reply['enrolments']) : 0;
                         if ($debug) error_log('Set role from mnet: ' . $setrole . ' on user ' . $user->id . ' for org ' . $org->orgid . ' => ' . $success . ' enrolments done');
                         //error_log(print_r($reply, 1));
@@ -129,14 +128,13 @@ class eduvidual_observer {
                 foreach($chkorgs AS $chkorg) {
                     $member = $DB->get_record('block_eduvidual_orgid_userid', array('orgid' => $chkorg->orgid, 'userid' => $user->id));
                     if (!isset($member->role) || empty($member->role)) {
-                        require_once($CFG->dirroot . '/blocks/eduvidual/classes/lib_enrol.php');
                         $setrole = (strpos($chkorg->maildomainteacher, $maildomain) !== false) ? 'Teacher': 'Student';
                         if (!isset($reply['enrolments'])) {
                             $reply['enrolments'] = array();
                         }
                         if ($member->role == 'Manager') $setrole = 'Manager';
                         if ($debug) error_log('Set role from maildomain ' . $maildomain . ': ' . $setrole . ' on user ' . $user->id . ' for org ' . $chkorg->orgid);
-                        $reply['enrolments'][] = \block_eduvidual_lib_enrol::role_set($user->id, $chkorg, $setrole);
+                        $reply['enrolments'][] = \block_eduvidual\lib_enrol::role_set($user->id, $chkorg, $setrole);
                     }
                 }
             }

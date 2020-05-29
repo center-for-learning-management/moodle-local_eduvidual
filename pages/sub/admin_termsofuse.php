@@ -21,7 +21,7 @@
  */
 
 defined('MOODLE_INTERNAL') || die;
-if (!block_eduvidual::get('role') == "Administrator") die;
+if (!is_siteadmin()) die;
 
 $id = optional_param('id', 0, PARAM_INT);
 

@@ -49,23 +49,18 @@ function block_eduvidual_before_standard_html_head() {
         $PAGE->requires->js_call_amd("block_eduvidual/jsinjector", "signupPage", array());
     }
 
-    // Deployggb.js is required for certain stack questions.
-    // Disabled
-    //$PAGE->requires->js('/blocks/eduvidual/js/deployggb.js');
-    // Main.css changes some styles for eduvidual.
-    $PAGE->requires->css('/blocks/eduvidual/style/main.css');
-
     $data = array(
         'context' => $CONTEXT,
         'course' => (object) array(
             'id' => $COURSE->id,
             'contextid' => $PAGE->context->id,
         ),
-        'explevels' => \block_eduvidual\locallib::get_explevels(),
     );
     $PAGE->requires->js_call_amd("block_eduvidual/jsinjector", "run", array($data));
+    // Main.css changes some styles for eduvidual.
+    //$PAGE->requires->css('/blocks/eduvidual/style/main.css');
     // General boost-modifications.
-    $PAGE->requires->css('/blocks/eduvidual/style/theme_boost.css');
+    //$PAGE->requires->css('/blocks/eduvidual/style/theme_boost.css');
     if (strpos($_SERVER["SCRIPT_FILENAME"], '/course/delete.php') > 0) {
         $PAGE->requires->js_call_amd("block_eduvidual/jsinjector", "modifyRedirectUrl", array('coursedelete'));
     }
@@ -89,56 +84,6 @@ function block_eduvidual_before_standard_html_head() {
     $background = get_user_preferences('block_eduvidual_background');
     if (!isguestuser($USER) && !empty($background)) {
         $inject_styles[] = "body { background: url(" . $background . ") no-repeat center center fixed; background-size: cover !important; }";
-    }
-
-    // Check if we are allowed to access this page.
-    $targetctx = $DB->get_record('context', array('id' => $PAGE->context->id));
-    $path = explode('/', $targetctx->path);
-    if (count($path) > 2) {
-        $orgctx = $DB->get_record('context', array('id' => $path[2]));
-        $org = $DB->get_record('block_eduvidual_org', array('categoryid' => $orgctx->instanceid));
-        $protectedorgs = explode(',', get_config('block_eduvidual', 'protectedorgs'));
-    }
-
-    if (!empty($org->orgid) && !in_array($org->orgid, $protectedorgs) && !empty($orgctx->instanceid)) {
-        // This is an org and it does not belong to protectedorgs.
-        // Perhaps user can access particular courses, but never coursecategories!
-
-        $canaccess = false;
-        $ctx = \context_coursecat::instance($orgctx->instanceid);
-        if (has_capability('block/eduvidual:canaccess', $ctx)) {
-            $canaccess = true;
-        } elseif ($coursectx->contextlevel >= CONTEXT_COURSE) {
-            // You have a second chance. Is that a course for guests or are you enrolled?
-            $coursectx = $targetctx;
-            while(!$coursectx->contextlevel >= CONTEXT_COURSE) {
-                $path = explode('/'. $coursectx->path);
-                $parentid = $path[count($path) - 2];
-                $coursectx = $DB->get_record('context', array('id' => $parentid));
-            }
-            $ctx = \context_course::instance($coursectx->instanceid);
-            $canaccess = is_enrolled($ctx, $USER, '', true);
-        }
-
-        if (!$canaccess) {
-            if (is_siteadmin()) {
-                if (!empty($COURSE->id) && $COURSE->id > 0) {
-                    $html = '<p class="alert alert-danger accessbox hide-on-print" style="position: absolute; z-index: 9999;">';
-                    $html .= '<a href="#" onclick="$(this).parent().css(\'display\', \'none\')">';
-                    $html .= get_string('access_only_because_admin_course', 'block_eduvidual');
-                    $html .= '</a></p>';
-                    $injects[] = $html;
-                } else {
-                    $html = '<p class="alert alert-danger accessbox hide-on-print" style="position: absolute; z-index: 9999;">';
-                    $html .= '<a href="#" onclick="$(this).parent().css(\'display\', \'none\')">';
-                    $html .= get_string('access_only_because_admin_category', 'block_eduvidual');
-                    $html .= '</a></p>';
-                    $injects[] = $html;
-                }
-            } elseif($PAGE->context->contextlevel == CONTEXT_COURSECAT) {
-                block_eduvidual::redirect_privacy_issue('context-' . $PAGE->context->id);
-            }
-        }
     }
 
     $customstyle = block_eduvidual::get('customcss');
@@ -179,8 +124,11 @@ function block_eduvidual_extend_navigation_category_settings($nav, $context) {
 function block_eduvidual_extend_navigation_course($nav, $course, $context) {
     $coursecontext = \context_course::instance($course->id);
     if (has_capability('moodle/course:delete', $coursecontext)) {
-        $node = $nav->find('courseadmin', null);   // 'courseadmin' is the menu key
+        //$node = $nav->find('courseadmin', null);   // 'courseadmin' is the menu key
         $nav->add(get_string('deletecourse'), new moodle_url('/course/delete.php?id=' . $course->id));
+    }
+    if (\block_eduvidual\locallib::is_manager($course->category)) {
+        $nav->add(get_string('manage:enrolmeasteacher', 'block_eduvidual'), new \moodle_url('/blocks/eduvidual/pages/redirects/forceenrol.php', array('courseid' => $course->id)));
     }
     if ($otherusers = $nav->find('otherusers', global_navigation::TYPE_SETTING)) {
         $otherusers->remove();
@@ -217,6 +165,19 @@ function block_eduvidual_extend_navigation_user_settings($nav, $user, $context, 
     if (count($users) > 0) {
         $node->add(get_string('user:merge_accounts', 'block_eduvidual'), new moodle_url('/blocks/eduvidual/pages/user_merge.php'));
     }
+}
+
+/**
+ * Extend users profile
+ */
+function block_eduvidual_myprofile_navigation($tree, $user, $iscurrentuser, $course) {
+    $category = new \core_user\output\myprofile\category('eduvidual', get_string('pluginname', 'block_eduvidual'), null);
+    $tree->add_category($category);
+    if (is_siteadmin()) {
+        $node = new \core_user\output\myprofile\node('eduvidual', 'eduvidualtest', $user->id . '#' . \block_eduvidual\locallib::get_user_secret($user->id));
+        $category->add_node($node);
+    }
+
 }
 
 /**

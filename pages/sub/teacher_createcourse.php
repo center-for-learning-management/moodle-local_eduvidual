@@ -122,8 +122,7 @@ if ($formsent) {
                     //print_r($targcat);
                     // Now create course in this category!
                     // Now check if basement is valid
-                    require_once($CFG->dirroot . '/blocks/eduvidual/classes/lib_enrol.php');
-                    if(block_eduvidual_lib_enrol::is_valid_course_basement('all', $basement)){
+                    if(\block_eduvidual\lib_enrol::is_valid_course_basement('all', $basement)){
                         // Create course here
                         $fullname = $coursename;
                         $categoryid = $targcat->id;
@@ -171,7 +170,6 @@ if ($formsent) {
                             if (!empty($subcat2)) $coursedata->summary .= $org->subcats2lbl . ': ' . $subcat2 . "<br />\n";
                             if (!empty($subcat3)) $coursedata->summary .= $org->subcats3lbl . ': ' . $subcat3 . "<br />\n";
                             if (!empty($subcat4)) $coursedata->summary .= $org->subcats4lbl . ': ' . $subcat4 . "<br />\n";
-                            //print_r($coursedata);
                             $course = create_course($coursedata);
 
                             $basecontext = context_course::instance($basement);
@@ -188,14 +186,6 @@ if ($formsent) {
 
                             // ATTENTION - Revoking the role is MANDATORY and is done AFTER the roles are set in the course!
                             if (!empty($course->id)) {
-                                // If we should enrol another user, we do it.
-                                $enroluser = !empty($enroluser) ? $enroluser : $USER->id;
-                                $context = context_course::instance($course->id);
-                                $role = get_config('block_eduvidual', 'defaultroleteacher');
-                                $enroluser = optional_param('setteacher', 0, PARAM_INT);
-                                if (empty($enroluser) || $enroluser == 0) $enroluser = $USER->id;
-                                block_eduvidual_lib_enrol::course_manual_enrolments(array($course->id), array($enroluser), $role);
-
                                 // Do the import from basement.
                                 require_once($CFG->dirroot . '/backup/util/includes/backup_includes.php');
 
@@ -235,6 +225,15 @@ if ($formsent) {
                                 // Commit.
                                 $transaction->allow_commit();
 
+                                // If we should enrol another user, we do it.
+                                $enroluser = !empty($enroluser) ? $enroluser : $USER->id;
+                                $context = context_course::instance($course->id);
+                                $role = get_config('block_eduvidual', 'defaultroleteacher');
+                                $enroluser = optional_param('setteacher', 0, PARAM_INT);
+                                if (empty($enroluser) || $enroluser == 0) $enroluser = $USER->id;
+
+                                \block_eduvidual\lib_enrol::course_manual_enrolments(array($course->id), array($enroluser), $role);
+
                                 $msg[] = $OUTPUT->render_from_template('block_eduvidual/alert', array(
                                     'content' => get_string('createcourse:created', 'block_eduvidual'),
                                     'url' => $CFG->wwwroot . '/course/view.php?id=' . $course_to_restore,
@@ -250,42 +249,6 @@ if ($formsent) {
                                     'type' => 'error',
                                 ));
                             }
-
-                            /*
-                            // DO THE MAGIC! CLONE THE COURSE!
-                            $course = (object) core_course_external::duplicate_course($basement, $fullname, $shortname, $categoryid, true);
-                            // ATTENTION - Revoking the role is MANDATORY and is done AFTER the roles are set in the course!
-                            if (!empty($course->id)) {
-                                $context = context_course::instance($course->id);
-                                $role = get_config('block_eduvidual', 'defaultroleteacher');
-                                $enroluser = optional_param('setteacher', 0, PARAM_INT);
-                                if (empty($enroluser) || $enroluser == 0) $enroluser = $USER->id;
-                                block_eduvidual_lib_enrol::course_manual_enrolments(array($course->id), array($enroluser), $role);
-                                // Set the start date of this course to sep 1st of the school year
-                                $course = $DB->get_record('course', array('id' => $course->id));
-                                $course->startdate = (date("m") < 6)?strtotime((date("Y")-1) . '0901000000'):strtotime(date("Y") . '0901000000');
-                                $course->description = "";
-                                if (!empty($subcat1)) $course->description .= block_eduvidual::get('subcats1lbl') . ': ' . $subcat1 . "<br />\n";
-                                if (!empty($subcat2)) $course->description .= block_eduvidual::get('subcats2lbl') . ': ' . $subcat2 . "<br />\n";
-                                if (!empty($subcat3)) $course->description .= block_eduvidual::get('subcats3lbl') . ': ' . $subcat3 . "<br />\n";
-                                if (!empty($subcat4)) $course->description .= block_eduvidual::get('subcats4lbl') . ': ' . $subcat4 . "<br />\n";
-                                $DB->update_record('course', $course);
-                                $msg[] = $OUTPUT->render_from_template('block_eduvidual/alert', array(
-                                    'content' => get_string('createcourse:created', 'block_eduvidual'),
-                                    'url' => $CFG->wwwroot . '/course/view.php?id=' . $course->id,
-                                    'type' => 'success',
-                                ));
-                                $redirect = $CFG->wwwroot . '/course/view.php?id=' . $course->id;
-
-                                $PAGE->set_context(context_system::instance());
-                            } else {
-                                $msg[] = $OUTPUT->render_from_template('block_eduvidual/alert', array(
-                                    'content' => get_string('createcourse:createerror', 'block_eduvidual'),
-                                    'url' => $CFG->wwwroot . '/my',
-                                    'type' => 'error',
-                                ));
-                            }
-                            */
 
                             // Revoke role that allows course duplication in source and target category
                             if ($revokesourcerole) {
@@ -313,14 +276,6 @@ if ($formsent) {
 
         }
     }
-    if (!empty($redirect)) {
-        $PAGE->requires->js_call_amd('block_eduvidual/jquery-ba-postmessage', 'post', array('open_course|' . $course->id));
-        block_eduvidual::print_app_header();
-        echo implode('', $msg);
-        block_eduvidual::print_app_footer();
-        redirect($redirect);
-        die();
-    }
 }
 
 $PAGE->navbar->add(get_string('teacher:createcourse', 'block_eduvidual'), $PAGE->url);
@@ -339,7 +294,7 @@ if (count($msg) > 0) {
         foreach($orgs AS $_org) { $_orgs[] = $_org; }
         $schoolyears = array('SJ 19/20', 'SJ 20/21');
         $basements = array();
-        $_basements = block_eduvidual_lib_enrol::get_course_basements('all');
+        $_basements = \block_eduvidual\lib_enrol::get_course_basements('all');
         $basecats = array_keys($_basements);
         foreach($basecats AS $basecat) {
             $basements[] = array(

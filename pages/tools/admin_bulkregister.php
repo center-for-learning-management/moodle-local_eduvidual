@@ -21,7 +21,7 @@
  */
 
 
-require_once('../../../config.php');
+require_once('../../../../config.php');
 require_once($CFG->dirroot . '/blocks/eduvidual/block_eduvidual.php');
 
 $manageruserid = optional_param('manageruserid', 0, PARAM_INT);
@@ -35,7 +35,7 @@ $PAGE->set_heading(get_string('Administration', 'block_eduvidual'));
 
 require_login();
 
-if (!block_eduvidual::get('role') == "Administrator") die;
+if (!is_siteadmin()) die;
 
 $msgs = array();
 
@@ -80,9 +80,8 @@ if (!empty($orgids) && !empty($manageruserid)) {
             }
 
             if (!empty($org->courseid)) {
-                require_once($CFG->dirroot . '/blocks/eduvidual/classes/lib_enrol.php');
                 $msgs[] = "=> Setting up roles<br />";
-                block_eduvidual_lib_enrol::role_set($manageruserid, $org, 'Manager');
+                \block_eduvidual\lib_enrol::role_set($manageruserid, $org, 'Manager');
 
                 $org->authenticated = 1;
                 $org->authtan = '';

@@ -21,7 +21,7 @@
  */
 
 defined('MOODLE_INTERNAL') || die;
-if (!block_eduvidual::get('role') == "Administrator") die;
+if (!is_siteadmin()) die;
 
 $modules = $DB->get_records_sql('SELECT * FROM {block_eduvidual_modules} WHERE categoryid=? ORDER BY name ASC', array($categoryid));
 ?>

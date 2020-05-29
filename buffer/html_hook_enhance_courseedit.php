@@ -34,12 +34,12 @@ if ($publisherexists) {
     $publishercanuse = block_edupublisher::check_requirements(false);
 }
 
-$module_allow = array("Administrator", "Manager", "Teacher");
+$module_allow = array("Manager", "Teacher");
 
 $addresource_o = (object) array(
     'courseid' => $COURSE->id,
     'orgid' => $org->orgid,
-    'modulecanuse' => in_array(block_eduvidual::get('role'), $module_allow),
+    'modulecanuse' => in_array(block_eduvidual::get('role'), $module_allow) || is_siteadmin(),
     'publishercanuse' => $publishercanuse,
     'publisherexists' => $publisherexists,
     'section' => 0,

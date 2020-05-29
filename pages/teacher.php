@@ -38,8 +38,8 @@ $PAGE->set_url('/blocks/eduvidual/pages/teacher.php', array('act' => $act, 'orgi
 //$PAGE->set_cacheable(false);
 
 // Only allow a certain user group access to this page
-$allow = array("Administrator", "Manager", "Teacher");
-if (!in_array(block_eduvidual::get('role'), $allow)) {
+$allow = array("Manager", "Teacher");
+if (!in_array(block_eduvidual::get('role'), $allow) && !is_siteadmin()) {
     $PAGE->set_context(context_system::instance());
     block_eduvidual::print_app_header();
     echo $OUTPUT->render_from_template('block_eduvidual/alert', array(

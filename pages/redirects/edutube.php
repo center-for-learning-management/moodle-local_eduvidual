@@ -22,12 +22,12 @@
 
 // We require a login, check if we belong to an org and launch edutube afterwards.
 
-require_once('../../../config.php');
+require_once('../../../../config.php');
 require_login();
 
 $PAGE->set_context(context_system::instance());
 $PAGE->set_pagelayout('dashboard');
-$PAGE->set_url('/blocks/eduvidual/pages/edutube.php', array());
+$PAGE->set_url('/blocks/eduvidual/pages/redirects/edutube.php', array());
 $PAGE->set_title(get_string('edutube:title', 'block_eduvidual'));
 $PAGE->set_heading(get_string('edutube:title', 'block_eduvidual'));
 

@@ -21,7 +21,7 @@
  */
 
 defined('MOODLE_INTERNAL') || die;
-if (!block_eduvidual::get('role') == "Administrator") die;
+if (!is_siteadmin()) die;
 
 echo $OUTPUT->render_from_template(
     'block_eduvidual/admin_blockfooter',

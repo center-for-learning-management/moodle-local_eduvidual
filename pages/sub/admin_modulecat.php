@@ -21,7 +21,7 @@
  */
 
 defined('MOODLE_INTERNAL') || die;
-if (!block_eduvidual::get('role') == "Administrator") die;
+if (!is_siteadmin()) die;
 
 // This file is included from admin_modulecats.php and we have a $categoryid
 

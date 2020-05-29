@@ -42,7 +42,7 @@ $PAGE->requires->css('/blocks/eduvidual/style/admin.css');
 
 block_eduvidual::print_app_header();
 
-if (block_eduvidual::get('role') != "Administrator") {
+if (!is_siteadmin()) {
 	?>
 		<p class="alert alert-danger"><?php echo get_string('access_denied', 'block_eduvidual'); ?></p>
 	<?php

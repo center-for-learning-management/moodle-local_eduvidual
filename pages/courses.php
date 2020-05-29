@@ -49,7 +49,7 @@ if ($id == 0) {
             $shown = $DB->get_record('block_eduvidual_courseshow', array('userid' => $USER->id, 'courseid' => $course->id));
             $url = $CFG->wwwroot . "/course/view.php?id=" . $course->id;
             $context = context_course::instance($course->id);
-            $canviewinvisible = has_capability('moodle/course:update', $context) || block_eduvidual::get('role') == 'Administrator' || block_eduvidual::get('orgrole') == 'Manager';
+            $canviewinvisible = has_capability('moodle/course:update', $context) || is_siteadmin() || block_eduvidual::get('orgrole') == 'Manager';
             if (true || block_eduvidual::$isapp) {
                 $url = $CFG->wwwroot . "/blocks/eduvidual/pages/courses.php?id=" . $course->id;
             }
@@ -120,7 +120,7 @@ if ($id == 0) {
     block_eduvidual::print_app_header();
 
     $isenrolled = is_enrolled($context, $USER->id, '', true);
-    $canedit = has_capability('moodle/course:update', $context) || block_eduvidual::get('role') == 'Administrator';
+    $canedit = has_capability('moodle/course:update', $context) || is_siteadmin();
 
     if ($canedit && optional_param('act', '', PARAM_TEXT) == 'enrol') {
         require_once($CFG->dirroot . '/blocks/eduvidual/pages/sub/courses_enrol.php');
@@ -144,7 +144,7 @@ if ($id == 0) {
             ?>
         </div>
         <?php
-        if ($isenrolled || block_eduvidual::get('role') == 'Administrator') {
+        if ($isenrolled || is_siteadmin()) {
             ?>
             <ul data-role="listview" data-inset="true" class="ui-listview ui-listview-inset ui-corner-all ui-shadow fix-images" data-icon="false" data-split-icon="action">
             <?php

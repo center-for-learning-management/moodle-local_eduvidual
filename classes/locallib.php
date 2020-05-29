@@ -57,32 +57,94 @@ class locallib {
         }
         return $users2;
     }
-    /**
-     * Get all explevels of the current user
-     * @param user either userid or object. If empty use $USER.
-     * @return array with all roleids.
-     */
-    public static function get_explevels($user = null) {
-        if (empty($user)) {
-            global $USER;
-            $user = $USER;
-        } elseif (is_int($user)) {
-            $user = $DB->get_record('user', array('id' => $user), '*', IGNORE_MISSING);
-        }
-        if (empty($user->id)) return array();
 
-        $valid_moolevels = explode(',', get_config('block_eduvidual', 'moolevels'));
-        $found_moolevels = array();
-        if (count($valid_moolevels) > 0) {
-            $context = \context_system::instance();
-            $roles = get_user_roles($context, $USER->id, true);
-            foreach ($roles AS $role) {
-                if (in_array($role->roleid, $valid_moolevels)) {
-                    $found_moolevels[] = $role->roleid;
-                }
+    /**
+     * Get organisation by categoryid.
+     * @param int categoryid
+     * @return Object organization
+     */
+    public static function get_org_by_categoryid($categoryid) {
+        global $DB;
+        $category = $DB->get_record('context', array('contextlevel' => CONTEXT_COURSECAT, 'instanceid' => $categoryid), '*', IGNORE_MISSING);
+        if (empty($category->id)) return false;
+        $path = explode('/', $category->path);
+        // Get organisation by top level course category.
+        return $DB->get_record('block_eduvidual_org', array('categoryid' => $path[1]));
+    }
+
+    /**
+     * Get organisation by courseid.
+     * @param int courseid
+     * @return Object organization
+     */
+    public static function get_org_by_courseid($courseid) {
+        global $DB;
+        $course = $DB->get_record('course', array('id' => $courseid), '*', IGNORE_MISSING);
+        if (empty($course->id)) return;
+        return self::get_org_by_categoryid($course->category);
+    }
+
+    /**
+     * Retrieves the role of a user in an organization.
+     * @param int orgid
+     * @param int userid (optional) If not given, will use $USER.
+     * @return String role in that organisation (Manager, Teacher, Student, Parent)
+     */
+    public static function get_orgrole($orgid, $userid = 0) {
+        global $DB, $USER;
+        if (empty($userid)) $userid = $USER->id;
+        $r = $DB->get_record('block_eduvidual_orgid_userid', array('orgid' => $orgid, 'userid' => $userid));
+        if (!empty($r->role)) return $r->role;
+    }
+
+    /**
+     * Gets the custom profile field 'secret'
+     * If not yet set, sets a new secret
+     * @param userid UserID
+     * @return returns the current secret
+    **/
+    public static function get_user_secret($userid) {
+        global $DB;
+        $fieldid = get_config('block_eduvidual', 'fieldid_secret');
+        $dbsecret = $DB->get_record('user_info_data', array('fieldid' => $fieldid, 'userid' => $userid));
+        if (empty($dbsecret->data)) {
+            $insert = false;
+            if (empty($dbsecret->userid)) {
+                $insert = true;
+                $dbsecret = new \stdClass();
+                $dbsecret->userid = $userid;
+                $dbsecret->fieldid = $fieldid;
+            }
+            $dbsecret->data = substr(md5(microtime() . rand(9, 999)), 0, 5);
+            $dbsecret->dataformat = 0;
+            if ($insert) {
+                $DB->insert_record('user_info_data', $dbsecret);
+            } else {
+                $DB->update_record('user_info_data', $dbsecret);
             }
         }
-        return $found_moolevels;
+
+        // Check if the user has a support-flag. If not use the users secret instead!
+        $fieldid = get_config('block_eduvidual', 'fieldid_supportflag');
+        $dbsupportflag = $DB->get_record('user_info_data', array('fieldid' => $fieldid, 'userid' => $userid));
+        if (empty($dbsupportflag->data)) {
+            $insert = false;
+            if (empty($dbsupportflag->userid)) {
+                $insert = true;
+                $dbsupportflag = new \stdClass();
+                $dbsupportflag->userid = $userid;
+                $dbsupportflag->fieldid = $fieldid;
+            }
+            $user = $DB->get_record('user', array('id' => $userid));
+            $dbsupportflag->data = $user->firstname . ' ' . $user->lastname . ' (' . $userid . ')';
+            $dbsupportflag->dataformat = 0;
+            if ($insert) {
+                $DB->insert_record('user_info_data', $dbsupportflag);
+            } else {
+                $DB->update_record('user_info_data', $dbsupportflag);
+            }
+        }
+        return $dbsecret->data;
     }
     /**
      * Determines if a user is in the same org like another user
@@ -131,5 +193,26 @@ class locallib {
             }
         }
         return $orgids;
+    }
+
+    /**
+     * Check if the current user is manager in any, or in a particular organization, based on category.
+     * @param int categoryid (optional)
+     */
+    public static function is_manager($categoryid = 0) {
+        return true;
+        //if (is_siteadmin()) return true;
+        global $DB, $USER;
+        if (empty($categoryid)) {
+            // Check if user is manager in any organization.
+            $chk = $DB->get_record('block_eduvidual_orgid_userid', array('role' => 'Manager', 'userid' => $USER->id));
+            return !empty($chk->orgid);
+        } else {
+            // Check if user is manager in a particular organization.
+            $org = self::get_org_by_categoryid($categoryid);
+            if (empty($org->orgid)) return false;
+            $chk = $DB->get_record('block_eduvidual_orgid_userid', array('orgid' => $org->orgid, 'role' => 'Manager', 'userid' => $USER->id));
+            return !empty($chk->orgid);
+        }
     }
 }

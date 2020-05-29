@@ -45,7 +45,7 @@ if (!$org) {
         case 'course_remove':
             $courseid = optional_param('courseid', 0, PARAM_INT);
             $context = context_course::instance($courseid);
-            $canedit = has_capability('moodle/course:update', $context) || block_eduvidual::get('role') == 'Administrator';
+            $canedit = has_capability('moodle/course:update', $context) || is_siteadmin();
             if ($canedit) {
                 $course = $DB->get_record('course', array('id' => $courseid));
                 $reply['course_before'] = $course;
@@ -77,11 +77,10 @@ if (!$org) {
         break;
         case 'createcourse_basements':
             $reply['status'] = 'ok';
-            require_once($CFG->dirroot . '/blocks/eduvidual/classes/lib_enrol.php');
-            $reply['basements'] = block_eduvidual_lib_enrol::get_course_basements('all');
+            $reply['basements'] = \block_eduvidual\lib_enrol::get_course_basements('all');
             $orgid = optional_param('orgid', 0, PARAM_INT);
             $membership = $DB->get_record('block_eduvidual_orgid_userid', array('orgid' => $orgid, 'userid' => $USER->id));
-            $reply['canmanage'] = block_eduvidual::get('role') == 'Administrator' || (isset($membership->role) && $membership->role == 'Manager');
+            $reply['canmanage'] = is_siteadmin() || (isset($membership->role) && $membership->role == 'Manager');
         break;
         case 'createcourse_now':
             $categoryid = optional_param('categoryid', 0, PARAM_INT);
@@ -89,11 +88,10 @@ if (!$org) {
             $path = explode("/", $category->path);
             $reply['msgs'] = array();
             if ($path[1] == $org->categoryid) {
-                if (in_array(block_eduvidual::get('orgrole'), array('Administrator', 'Manager', 'Teacher')) || block_eduvidual::get('role') == 'Administrator') {
+                if (in_array(block_eduvidual::get('orgrole'), array('Manager', 'Teacher')) || is_siteadmin()) {
                     // Now check if basement is valid
-                    require_once($CFG->dirroot . '/blocks/eduvidual/classes/lib_enrol.php');
                     $basement = optional_param('basement', 0, PARAM_INT);
-                    if(block_eduvidual_lib_enrol::is_valid_course_basement('all', $basement)){
+                    if(\block_eduvidual\lib_enrol::is_valid_course_basement('all', $basement)){
                         // Create course here
                         $fullname = optional_param('name', '', PARAM_TEXT);
                         if (strlen($fullname) > 5) {
@@ -136,7 +134,7 @@ if (!$org) {
                                 $enroluser = optional_param('setteacher', 0, PARAM_INT);
                                 if (empty($enroluser) || $enroluser == 0) $enroluser = $USER->id;
                                 $reply['enrolments'][] = 'course: user ' . $enroluser . ' roleid ' . $role . ' courseid ' . $course['id'];
-                                block_eduvidual_lib_enrol::course_manual_enrolments(array($course['id']), array($enroluser), $role);
+                                \block_eduvidual\lib_enrol::course_manual_enrolments(array($course['id']), array($enroluser), $role);
                                 // Set the start date of this course to sep 1st of the school year
                                 $course = $DB->get_record('course', array('id' => $course['id']));
                                 $course->startdate = (date("m") < 6)?strtotime((date("Y")-1) . '0901000000'):strtotime(date("Y") . '0901000000');
@@ -178,7 +176,7 @@ if (!$org) {
             $category = $DB->get_record('course_categories', array('id' => $categoryid));
             $path = explode("/", $category->path);
             if ($path[1] == $org->categoryid) {
-                if (in_array(block_eduvidual::get('orgrole'), array('Administrator', 'Manager', 'Teacher')) || block_eduvidual::get('role') == 'Administrator') {
+                if (in_array(block_eduvidual::get('orgrole'), array('Manager', 'Teacher')) || is_siteadmin()) {
                     $parent = $DB->get_record('course_categories', array('id' => $category->parent));
                     $reply['parent'] = $parent;
                     $reply['category'] = $category;
@@ -200,7 +198,7 @@ if (!$org) {
             $category = $DB->get_record('course_categories', array('id' => $categoryid));
             $path = explode("/", $category->path);
             if ($path[1] == $org->categoryid) {
-                if (in_array(block_eduvidual::get('orgrole'), array('Administrator', 'Manager', 'Teacher'))) {
+                if (in_array(block_eduvidual::get('orgrole'), array('Manager', 'Teacher')) || is_siteadmin()) {
                     // You can savely create the course here
                     $reply['status'] = 'ok';
                 } else {
@@ -437,7 +435,7 @@ if (!$org) {
             $reply['status'] = 'ok';
         break;
         case 'user_search':
-            if (!in_array(block_eduvidual::get('orgrole'), array('Manager', 'Teacher')) && !!in_array(block_eduvidual::get('role'), array('Administrator'))) {
+            if (!in_array(block_eduvidual::get('orgrole'), array('Manager', 'Teacher')) && !is_siteadmin()) {
                 $reply['error'] = 'No_permission';
             } else {
                 $courseid = optional_param('courseid', 0, PARAM_INT);
@@ -482,7 +480,7 @@ if (!$org) {
             }
         break;
         case 'user_set':
-            if (!in_array(block_eduvidual::get('orgrole'), array('Manager', 'Teacher')) && !!in_array(block_eduvidual::get('role'), array('Administrator'))) {
+            if (!in_array(block_eduvidual::get('orgrole'), array('Manager', 'Teacher')) && !is_siteadmin()) {
                 $reply['error'] = get_string('access_denied', 'block_eduvidual');
             } else {
                 $courseid = optional_param('courseid', 0, PARAM_INT);
@@ -492,7 +490,7 @@ if (!$org) {
                     $path = explode('/', $category->path);
                     if ($path[1] == $org->categoryid) {
                         $context = context_course::instance($course->id);
-                        $canedit = has_capability('moodle/course:update', $context) || block_eduvidual::get('role') == 'Administrator' || block_eduvidual::get('orgrole') == 'Manager';
+                        $canedit = has_capability('moodle/course:update', $context) || is_siteadmin() || block_eduvidual::get('orgrole') == 'Manager';
                         if ($canedit) {
                             $roleid = 0;
                             switch(optional_param('role', '', PARAM_TEXT)) {
@@ -510,8 +508,7 @@ if (!$org) {
                                         $userinorg[] = $userid;
                                     }
                                 }
-                                require_once($CFG->dirroot . '/blocks/eduvidual/classes/lib_enrol.php');
-                                $reply['failures'] = block_eduvidual_lib_enrol::course_manual_enrolments(array($courseid), $userinorg, $roleid);
+                                $reply['failures'] = \block_eduvidual\lib_enrol::course_manual_enrolments(array($courseid), $userinorg, $roleid);
                                 $reply['updates'] = array(array($courseid), $userinorg, $roleid);
                                 $reply['updateduserids'] = $userinorg;
         			            $reply['status'] = 'ok';

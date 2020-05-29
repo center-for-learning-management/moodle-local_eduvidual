@@ -52,8 +52,7 @@ switch ($act) {
                 }
                 if (!empty($role)) {
                     // Code is ok - enrol user
-                    require_once($CFG->dirroot . '/blocks/eduvidual/classes/lib_enrol.php');
-                    $reply['enrolment'] = block_eduvidual_lib_enrol::role_set($USER->id, $orgid, $role);
+                    $reply['enrolment'] = \block_eduvidual\lib_enrol::role_set($USER->id, $orgid, $role);
                     $reply['orgid'] = $orgid;
                     $reply['status'] = 'ok';
                 } else {
@@ -110,7 +109,7 @@ switch ($act) {
         $cats = $DB->get_records_sql('SELECT * FROM {course_categories} WHERE parent=? AND path LIKE ? ORDER BY name ASC', array($categoryid, '/' . $org->categoryid . '%'));
         foreach($cats AS $cat) {
             if ($cat->visible == 0) {
-                if (!in_array(block_eduvidual::get('role'), array('Administrator','Manager'))) {
+                if (!in_array(block_eduvidual::get('role'), array('Manager')) && !is_siteadmin()) {
                     continue;
                 }
             }
@@ -120,7 +119,7 @@ switch ($act) {
         foreach($courses AS $course) {
             if ($course->visible == 0) {
                 $context = context_course::instance($course->id);
-                if (!has_capability('moodle/course:update', $context) && !in_array(block_eduvidual::get('role'), array('Administrator','Manager'))) {
+                if (!has_capability('moodle/course:update', $context) && !in_array(block_eduvidual::get('role'), array('Manager')) && !is_siteadmin()) {
                     continue;
                 }
             }

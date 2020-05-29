@@ -23,7 +23,7 @@
 
 defined('MOODLE_INTERNAL') || die;
 
-if (!block_eduvidual::get('role') == "Administrator") {
+if (!is_siteadmin()) {
     $reply['error'] = get_string('access_denied', 'block_eduvidual');
 } else {
     $act = optional_param('act', '', PARAM_TEXT);
@@ -356,9 +356,8 @@ if (!block_eduvidual::get('role') == "Administrator") {
         break;
         case 'orgcoursebasement':
             $basement = optional_param('basement', 0, PARAM_INT);
-            require_once($CFG->dirroot . '/blocks/eduvidual/classes/lib_enrol.php');
 
-            if (block_eduvidual_lib_enrol::is_valid_course_basement('system', $basement)) {
+            if (\block_eduvidual\lib_enrol::is_valid_course_basement('system', $basement)) {
                 set_config('orgcoursebasement', $basement, 'block_eduvidual');
                 $reply['status'] = 'ok';
             } else {

@@ -31,7 +31,7 @@ $requestscript = $request[count($request) - 1];
 /**
  * If we edit a CATEGORY do not show all form elements
 **/
-if (block_eduvidual::get('role') !== 'Administrator' && strpos($_SERVER["SCRIPT_FILENAME"], '/course/editcategory.php') > 0) {
+if (!is_siteadmin() && strpos($_SERVER["SCRIPT_FILENAME"], '/course/editcategory.php') > 0) {
     $categoryid = optional_param('id', 0, PARAM_INT);
     $parentid = optional_param('parent', 0, PARAM_INT);
     $isorg = $DB->get_record('block_eduvidual_org', array('categoryid' => $categoryid));
@@ -61,7 +61,7 @@ if (block_eduvidual::get('role') !== 'Administrator' && strpos($_SERVER["SCRIPT_
 if (strpos($_SERVER["SCRIPT_FILENAME"], '/enrol/index.php') > 0) {
     $courseid = optional_param('id', 0, PARAM_INT);
     $org = block_eduvidual::set_org_by_courseid($courseid);
-    if (!empty($org->orgid) && (block_eduvidual::get('orgrole') == 'Manager' || block_eduvidual::get('role') == 'Administrator')) {
+    if (!empty($org->orgid) && (block_eduvidual::get('orgrole') == 'Manager' || is_siteadmin())) {
         $box = pq('div[role="main"]');
         $btn = pq('<a>')->html(get_string('manage:enrolmeasteacher', 'block_eduvidual'))
                         ->addClass('btn ui-btn btn-primary')
@@ -92,7 +92,7 @@ if (strpos($_SERVER["SCRIPT_FILENAME"], '/enrol/manual/manage.php') > 0) {
     foreach ($options AS $option) {
         $userid = pq($option)->attr('value');
         if (!\block_eduvidual\locallib::is_connected($userid, $orgids)) {
-            if (!block_eduvidual::get('role') == 'Administrator') {
+            if (!is_siteadmin()) {
                 pq($option)->addClass('REMOVE_ME');
             } else {
                 pq($option)->html('! ' . pq($option)->html());

@@ -22,7 +22,7 @@
 
 // Just redirect to the google login provider
 
-require_once('../../../config.php');
+require_once('../../../../config.php');
 
 if (!empty($SESSION->wantsurl)) $wantsurl = str_replace($CFG->wwwroot, "", $SESSION->wantsurl);
 if (empty($wantsurl)) $wantsurl = '/my';

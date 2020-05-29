@@ -22,7 +22,7 @@
 
 defined('MOODLE_INTERNAL') || die;
 
-if (block_eduvidual::get('orgrole') != "Manager" && block_eduvidual::get('role') != 'Administrator') {
+if (block_eduvidual::get('orgrole') != "Manager" && !is_siteadmin()) {
     ?>
     <p class="alert alert-warning"><?php echo get_string('js:missing_permission', 'block_eduvidual'); ?></p>
     <?php
@@ -81,10 +81,9 @@ if (optional_param('datavalidated', 0, PARAM_INT) == 1) {
                     update_internal_user_password($u, $user->password, false);
                 }
 
-                require_once($CFG->dirroot . '/blocks/eduvidual/classes/lib_enrol.php');
-                block_eduvidual_lib_enrol::role_set($u->id, $org, $user->role);
+                \block_eduvidual\lib_enrol::role_set($u->id, $org, $user->role);
                 if (!empty($user->bunch) && strtolower($user->role) != 'remove') {
-                    block_eduvidual_lib_enrol::bunch_set($u->id, $org, $user->bunch);
+                    \block_eduvidual\lib_enrol::bunch_set($u->id, $org, $user->bunch);
                 }
                 if (strtolower($user->role) == 'remove') {
                     echo 'Removed #' . $u->id;
@@ -105,7 +104,7 @@ if (optional_param('datavalidated', 0, PARAM_INT) == 1) {
                 $u->calendartype = 'gregorian';
 
                 $u->id = user_create_user($u, false, false);
-                $user->secret = block_eduvidual::get_user_secret($u->id);
+                $user->secret = \block_eduvidual\locallib::get_user_secret($u->id);
                 if (empty($user->password)) {
                     $user->password = $user->secret;
                 }
@@ -122,9 +121,8 @@ if (optional_param('datavalidated', 0, PARAM_INT) == 1) {
                     $DB->insert_record('block_eduvidual_userbunches', $userbunch);
                 }
 
-                require_once($CFG->dirroot . '/blocks/eduvidual/classes/lib_enrol.php');
-                block_eduvidual_lib_enrol::role_set($user->id, $org, $user->role);
-                block_eduvidual_lib_enrol::choose_background($user->id);
+                \block_eduvidual\lib_enrol::role_set($user->id, $org, $user->role);
+                \block_eduvidual\lib_enrol::choose_background($user->id);
                 // Trigger event.
                 \core\event\user_created::create_from_userid($user->id)->trigger();
                 if ($user->id > 0) {

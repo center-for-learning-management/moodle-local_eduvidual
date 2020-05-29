@@ -39,9 +39,9 @@ $PAGE->requires->js('/blocks/eduvidual/js/dropzone.js');
 
 block_eduvidual::print_app_header();
 
-$roles = array('Administrator', 'Manager');
+$roles = array('Manager');
 
-if (!in_array(block_eduvidual::get('role'), $roles)) {
+if (!in_array(block_eduvidual::get('role'), $roles) && !is_siteadmin()) {
 	?>
 		<p class="alert alert-danger"><?php echo get_string('access_denied', 'block_eduvidual'); ?></p>
 	<?php

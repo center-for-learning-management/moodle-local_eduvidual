@@ -21,11 +21,10 @@
  */
 
 defined('MOODLE_INTERNAL') || die;
-if (!block_eduvidual::get('role') == "Administrator") die;
+if (!is_siteadmin()) die;
 
 $orgcoursebasement = get_config('block_eduvidual', 'orgcoursebasement');
-require_once($CFG->dirroot . '/blocks/eduvidual/classes/lib_enrol.php');
-$basements = block_eduvidual_lib_enrol::get_course_basements('system');
+$basements = \block_eduvidual\lib_enrol::get_course_basements('system');
 $keys = array_keys($basements);
 $orgcoursebasements = array();
 

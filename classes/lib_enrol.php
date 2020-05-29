@@ -21,15 +21,16 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+namespace block_eduvidual;
+
 defined('MOODLE_INTERNAL') || die;
 
-class block_eduvidual_lib_enrol {
+class lib_enrol {
     /**
      * Adds a user to the cohort for a bunch of an org.
      */
     public static function bunch_set($userid, $org, $bunch) {
         global $DB;
-        //echo $userid . "/" . $org->orgid . "/" . $bunch . "<br />\n";
         if (empty($bunch)) return;
 
         // Store bunch in eduvidual-plugin
@@ -43,7 +44,7 @@ class block_eduvidual_lib_enrol {
 
         // Sync bunch to cohorts
         if (empty($org->categoryid)) return;
-        $context = context_coursecat::instance($org->categoryid);
+        $context = \context_coursecat::instance($org->categoryid);
         if (empty($context->id)) return;
         global $DB;
         $idnumber = $org->orgid . '_' . hash('crc32', $bunch);
@@ -197,7 +198,7 @@ class block_eduvidual_lib_enrol {
         }
 
         require_once($CFG->dirroot . '/blocks/eduvidual/classes/lib_phplist.php');
-        block_eduvidual_lib_phplist::check_user_role($userid);
+        \block_eduvidual_lib_phplist::check_user_role($userid);
         return $reply;
     }
 
@@ -208,13 +209,13 @@ class block_eduvidual_lib_enrol {
     **/
     public static function choose_background($userid = 0){
         global $DB;
-        $context = context_system::instance();
+        $context = \context_system::instance();
         $fs = get_file_storage();
         $files = $fs->get_area_files($context->id, 'block_eduvidual', 'backgrounds_cards', 0);
         $urls = array();
         foreach ($files as $file) {
             if (str_replace('.', '', $file->get_filename()) != ""){
-                $urls[] = '' . moodle_url::make_pluginfile_url($file->get_contextid(), $file->get_component(), $file->get_filearea(), $file->get_itemid(), $file->get_filepath(), $file->get_filename());
+                $urls[] = '' . \moodle_url::make_pluginfile_url($file->get_contextid(), $file->get_component(), $file->get_filearea(), $file->get_itemid(), $file->get_filepath(), $file->get_filename());
             }
         }
 
@@ -254,7 +255,7 @@ class block_eduvidual_lib_enrol {
             $courses[$selflbl] = array();
             $coursesbyname = array();
             foreach ($_courses AS $c) {
-                $context = context_course::instance($c->id);
+                $context = \context_course::instance($c->id);
                 $canedit = has_capability('moodle/course:update', $context);
                 if ($canedit) {
                     $c->imageurl = self::get_course_image($c);
@@ -298,14 +299,13 @@ class block_eduvidual_lib_enrol {
     public static function course_manual_enrolments($courseids, $userids, $roleid) {
         global $CFG, $DB, $reply;
         if (!isset($reply)) $reply = array();
-        //print_r($courseids); print_r($userids); echo $roleid;
         if (!is_array($courseids)) $courseids = array($courseids);
         if (!is_array($userids)) $userids = array($userids);
 
         // Check manual enrolment plugin instance is enabled/exist.
         $enrol = enrol_get_plugin('manual');
         if (empty($enrol)) {
-            throw new moodle_exception('manualpluginnotinstalled', 'enrol_manual');
+            throw new \moodle_exception('manualpluginnotinstalled', 'enrol_manual');
         }
         $failures = 0;
         $instances = array();
@@ -333,7 +333,7 @@ class block_eduvidual_lib_enrol {
 
     public static function get_course_image($course) {
         global $CFG;
-        $course = new core_course_list_element($course);
+        $course = new \core_course_list_element($course);
 
         $imageurl = '';
         foreach ($course->get_course_overviewfiles() as $file) {
@@ -359,7 +359,7 @@ class block_eduvidual_lib_enrol {
         // Check manual enrolment plugin instance is enabled/exist.
         $enrol = enrol_get_plugin('manual');
         if (empty($enrol)) {
-            throw new moodle_exception('manualpluginnotinstalled', 'enrol_manual');
+            throw new \moodle_exception('manualpluginnotinstalled', 'enrol_manual');
         }
         $instance = null;
         $enrolinstances = enrol_get_instances($courseid, false);
@@ -379,7 +379,7 @@ class block_eduvidual_lib_enrol {
         }
         if (empty($instance)) {
             $course = get_course($courseid);
-            $enrol->add_instance($course);
+            $enrol->add_default_instance($course);
             return self::get_enrol_instance($courseid);
         }
     }
@@ -403,10 +403,11 @@ class block_eduvidual_lib_enrol {
         $context = \context_course::instance($org->courseid);
         if (is_enrolled($context, $userid)) {
             // Only switch role
+            $roletoassign = $roles[$orgrole];
+            role_assign($roletoassign, $userid, $context->id);
+
             foreach ($roles AS $role => $roleid) {
-                if ($role == $orgrole) {
-                    role_assign($roleid, $userid, $context->id);
-                } else {
+                if ($roleid !== $roletoassign) {
                     role_unassign($roleid, $userid, $context->id);
                 }
             }

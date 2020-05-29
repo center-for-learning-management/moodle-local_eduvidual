@@ -47,7 +47,7 @@ if (empty($service->id)) {
     ));
 } else {
     $user = $USER;
-    if (block_eduvidual::get('role') == 'Administrator' && optional_param('userid', 0, PARAM_INT) > 0) {
+    if (is_siteadmin() && optional_param('userid', 0, PARAM_INT) > 0) {
         $user = \core_user::get_user(optional_param('userid', 0, PARAM_INT));
     }
     $tokens = array_values($DB->get_records('external_tokens', array('externalserviceid' => $service->id, 'userid' => $user->id)));

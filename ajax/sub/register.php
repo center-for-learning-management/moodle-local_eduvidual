@@ -195,8 +195,7 @@ if ($USER->id > 1) {
                     }
 
                     if (!empty($org->courseid)) {
-                        require_once($CFG->dirroot . '/blocks/eduvidual/classes/lib_enrol.php');
-                        $reply['roleset'] = block_eduvidual_lib_enrol::role_set($USER->id, $org, 'Manager');
+                        $reply['roleset'] = \block_eduvidual\lib_enrol::role_set($USER->id, $org, 'Manager');
 
                         $messagehtml = $OUTPUT->render_from_template(
                             'block_eduvidual/register_mail_completed',
