@@ -654,6 +654,7 @@ class block_eduvidual extends block_base /* was block_list */ {
     **/
     public static function print_org_selector($role = '*', $orgid = 0) {
         global $DB,$PAGE;
+
         $orgs = block_eduvidual::get_organisations($role);
         $act = optional_param('act', '', PARAM_TEXT);
         if ($orgid == 0) {
@@ -666,11 +667,14 @@ class block_eduvidual extends block_base /* was block_list */ {
             $org->orgid = 0;
             $org->name = get_string('none');
         }
+
+        $favorgid = \block_eduvidual\locallib::get_favorgid();
+
         $parts = parse_url($PAGE->url);
         $url = $parts['scheme'] . '://' . $parts['host'] . $parts['path'];
         echo "\t<select onchange=\"var sel = this; require(['block_eduvidual/main'], function(MAIN) { MAIN.navigate('" . $url . "?act=" . $act . "&orgid=' + sel.value); });\">\n";
         foreach($orgs AS $org) {
-            echo "\t\t<option value=\"" . $org->orgid . "\"" . (($orgid == $org->orgid)?' selected':'') . ">" . $org->orgid . " | " . $org->name . "</option>\n";
+            echo "\t\t<option value=\"" . $org->orgid . "\"" . (((empty($orgid) && $orgid == $favorgid) || $orgid == $org->orgid)?' selected="selected"':'') . ">" . $org->orgid . " | " . $org->name . "</option>\n";
         }
         echo "\t</select>\n";
     }

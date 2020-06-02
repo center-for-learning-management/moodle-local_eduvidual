@@ -50,21 +50,6 @@ $PAGE->requires->css('/blocks/eduvidual/style/main.css');
 
 block_eduvidual::print_app_header();
 
-/*
-if (empty($org)) {
-    block_eduvidual::print_app_footer();
-    exit;
-}
-*/
-/* Old select-box.
-echo "<div class=\"grid-eq-2\">\n";
-if (count($orgas) > 1) {
-    block_eduvidual::print_org_selector('*', $org->orgid);
-}
-echo "</div>\n";
-*/
-
-
 if (empty($current_orgid)) {
     // Show list of my orgs.
     if (is_siteadmin() && optional_param('showall', 0, PARAM_INT) == 1) {
@@ -83,9 +68,19 @@ if (empty($current_orgid)) {
         $params = array($USER->id);
     }
 
+    if (!empty($favorite = optional_param('favorite', 0, PARAM_INT))) {
+        if ($favorite < 0) {
+            \unset_user_preference('block_eduvidual_favorgid');
+        } else {
+            \set_user_preference('block_eduvidual_favorgid', $favorite);
+        }
+    }
+    $favorgid = \block_eduvidual\locallib::get_favorgid();
+
     //$manageractions = block_eduvidual::get_actions('manage');
     $memberships = array_values($DB->get_records_sql($sql, $params));
     foreach ($memberships AS &$membership) {
+        $membership->isfavorite = ($membership->orgid == $favorgid);
         $membership->canmanage = is_siteadmin() || in_array($membership->role, array('Manager'));
         if ($membership->canmanage) {
             if (empty($managersactions)) {
@@ -107,6 +102,7 @@ if (empty($current_orgid)) {
         $membership->role = get_string('role:' . $membership->role, 'block_eduvidual');
     }
     echo $OUTPUT->render_from_template('block_eduvidual/user_orgs', array(
+        'hasmultiple' => count($memberships) > 1,
         'isadmin' => is_siteadmin(),
         'memberships' => $memberships,
         'wwwroot' => $CFG->wwwroot

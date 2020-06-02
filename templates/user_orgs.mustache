@@ -29,15 +29,24 @@
 <table class="generaltable">
     {{#memberships}}
     <tr>
+        {{#hasmultiple}}
+        <td width="30">
+            <a href="{{wwwroot}}/blocks/eduvidual/pages/categories.php?favorite=-1">
+                {{#isfavorite}}
+                    {{#pix}} favorg_1, block_eduvidual {{/pix}}
+                {{/isfavorite}}
+            </a>
+            <a href="{{wwwroot}}/blocks/eduvidual/pages/categories.php?favorite={{orgid}}">
+                {{^isfavorite}}
+                    {{#pix}} favorg_0, block_eduvidual {{/pix}}
+                {{/isfavorite}}
+            </a>
+        </td>
+        {{/hasmultiple}}
         <td width="30">
             <a href="{{wwwroot}}/course/index.php?categoryid={{categoryid}}">
                 {{orgid}}
             </a>
-            {{!
-            <a href="{{wwwroot} }/blocks/eduvidual/pages/categories.php?orgid={{orgid} }">
-                {{orgid} }
-            </a>
-            }}
         </td>
         <td>
             <a href="{{wwwroot}}/course/index.php?categoryid={{categoryid}}">

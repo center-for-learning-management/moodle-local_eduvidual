@@ -303,8 +303,9 @@ if (count($msg) > 0) {
             );
         }
 
+        $favorgid = \block_eduvidual\locallib::get_favorgid();
         foreach ($_orgs AS &$_org) {
-            $_org->isselected = (!empty($org->orgid) && !empty($_org->orgid) && $_org->orgid == $org->orgid) ? 1 : 0;
+            $_org->isselected = ((empty($orgid) && $favorgid == $_org->orgid) || (!empty($orgid) && $orgid == $_org->orgid)) ? 1 : 0;
         }
 
         echo $OUTPUT->render_from_template('block_eduvidual/teacher_createcourse', array(

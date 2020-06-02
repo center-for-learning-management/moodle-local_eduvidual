@@ -59,6 +59,19 @@ class locallib {
     }
 
     /**
+     * Get the preferred orgid for a user.
+     * @param user if not set, will use $USER.
+     * @return int
+     */
+    public static function get_favorgid($user = 0) {
+        if (empty($user)) {
+            global $USER;
+            $user = $USER;
+        }
+        return \get_user_preferences('block_eduvidual_favorgid', 0);
+    }
+
+    /**
      * Get organisation by categoryid.
      * @param int categoryid
      * @return Object organization
