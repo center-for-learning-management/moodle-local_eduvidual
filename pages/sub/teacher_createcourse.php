@@ -75,14 +75,14 @@ if ($formsent) {
             $cat1 = $DB->get_record('course_categories', array('parent' => $org->categoryid, 'name' => $subcat1));
             if (empty($cat1->id)) {
                 // Create this category!
-                require_once($CFG->dirroot . '/lib/coursecatlib.php');
+
                 $cat1 = (object) array(
                     'name' => $subcat1,
                     'description' => '',
                     'parent' => $org->categoryid,
                     'visible' => 1
                 );
-                $cat1 = coursecat::create($cat1);
+                $cat1 = \core_course_category::create($cat1);
             }
             // If it is still empty - error
             if (empty($cat1->id)) {
@@ -104,7 +104,7 @@ if ($formsent) {
                             'parent' => $cat1->id,
                             'visible' => 1
                         );
-                        $cat2 = core_course_category::create($cat2);
+                        $cat2 = \core_course_category::create($cat2);
                     }
                     // If it is still empty - error
                     if (empty($cat2->id)) {
