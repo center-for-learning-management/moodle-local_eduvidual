@@ -81,8 +81,10 @@ class locallib {
         $category = $DB->get_record('context', array('contextlevel' => CONTEXT_COURSECAT, 'instanceid' => $categoryid), '*', IGNORE_MISSING);
         if (empty($category->id)) return false;
         $path = explode('/', $category->path);
+        $catcontext =$DB->get_record('context', array('id' => $path[2]));
+
         // Get organisation by top level course category.
-        return $DB->get_record('block_eduvidual_org', array('categoryid' => $path[1]));
+        return $DB->get_record('block_eduvidual_org', array('categoryid' => $catcontext->instanceid));
     }
 
     /**

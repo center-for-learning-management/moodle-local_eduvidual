@@ -27,18 +27,17 @@ require_login();
 
 $courseid = required_param('courseid', PARAM_INT);
 
-$PAGE->set_context(context_system::instance());
-$PAGE->set_pagelayout('dashboard');
+$PAGE->set_context(\context_system::instance());
 $PAGE->set_url('/blocks/eduvidual/pages/redirects/forceenrol.php', array('courseid' => $courseid));
 $PAGE->set_title(get_string('manage:enrolmeasteacher', 'block_eduvidual'));
 $PAGE->set_heading(get_string('manage:enrolmeasteacher', 'block_eduvidual'));
 
 
-
 $org = \block_eduvidual\locallib::get_org_by_courseid($courseid);
-$is_manager = \block_eduvidual\locallib::is_manager($org->categoryid)
+print_r($org);
+$is_manager = !empty($org->id) && \block_eduvidual\locallib::is_manager($org->categoryid);
 
-if (!empty($org->orgid) && ($is_manager || is_siteadmin()))) {
+if (!empty($org->orgid) && ($is_manager || is_siteadmin())) {
     \block_eduvidual\lib_enrol::course_manual_enrolments(array($courseid), array($USER->id), get_config('block_eduvidual', 'defaultroleteacher'));
     redirect(new \moodle_url('/course/view.php', array('id' => $courseid)));
 } else {
