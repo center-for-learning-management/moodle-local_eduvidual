@@ -17,6 +17,8 @@
 /**
  * @package    block_eduvidual
  * @copyright  2018 Digital Education Society (http://www.dibig.at)
+ *             2020 Center for Learningmanagement (http://www.lernmanagement.at)
+ * @author     Robert Schrenk
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -51,6 +53,7 @@ if (optional_param('datavalidated', 0, PARAM_INT) == 1) {
                 <th>lastname</th>
                 <th>email</th>
                 <th>bunch</th>
+                <th>password</th>
                 <th>result</th>
                 <th>secret</th>
             </tr>
@@ -64,6 +67,7 @@ if (optional_param('datavalidated', 0, PARAM_INT) == 1) {
             <td><?php echo @$user->lastname; ?></td>
             <td><?php echo @$user->email; ?></td>
             <td><?php echo @$user->bunch; ?></td>
+            <td><?php echo @$user->password; ?></td>
             <td>
         <?php
         if ($user->payload->processed) {
