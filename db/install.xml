@@ -55,6 +55,7 @@
         <FIELD NAME="cap_space" TYPE="int" LENGTH="20" NOTNULL="true" DEFAULT="-1" SEQUENCE="false" COMMENT="Maximum data volume this organization can consume, -1 means unlimited"/>
         <FIELD NAME="categoryid" TYPE="int" LENGTH="20" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Category where this Organisation resides"/>
         <FIELD NAME="courseid" TYPE="int" LENGTH="20" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="CourseID where all members of this orga are enrolled to"/>
+        <FIELD NAME="supportcourseid" TYPE="int" LENGTH="20" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Supportcourse, where all members of this orga are enrolled to"/>
         <FIELD NAME="customcss" TYPE="text" NOTNULL="true" SEQUENCE="false"/>
         <FIELD NAME="mnetid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="ID of MNet Connection"/>
         <FIELD NAME="banner" TYPE="char" LENGTH="250" NOTNULL="true" SEQUENCE="false"/>

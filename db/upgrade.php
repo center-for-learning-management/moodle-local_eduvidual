@@ -142,7 +142,14 @@ function xmldb_block_eduvidual_upgrade($oldversion) {
 
         upgrade_block_savepoint(true, 2020052502, 'eduvidual');
     }
-
+    if ($oldversion < 2020060400) {
+        $table = new xmldb_table('block_eduvidual_org');
+        $field = new xmldb_field('supportcourseid', XMLDB_TYPE_INTEGER, '20', null, null, null, null, 'courseid');
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+        upgrade_block_savepoint(true, 2020060400, 'eduvidual');
+    }
 
 
     return true;
