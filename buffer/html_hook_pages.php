@@ -80,7 +80,7 @@ if (strpos($_SERVER["SCRIPT_FILENAME"], '/enrol/manual/manage.php') > 0) {
         $courseid = $enrolment->courseid;
     }
     $orgids = array();
-    $org = block_eduvidual::get_org_by_courseid($courseid);
+    $org = \block_eduvidual\locallib::get_org_by_courseid($courseid);
     if (!empty($org->orgid)) {
         $orgids[] = $org->orgid;
     }

@@ -73,25 +73,7 @@ class block_eduvidual extends block_base /* was block_list */ {
 
         block_eduvidual::$datainitalized = true;
     }
-    /**
-     * Determines org by courseid. If no courseid given tries current course.
-     * @param courseid courseid to determine org for or 0.
-     * @return org as db-object.
-     **/
-    public static function get_org_by_courseid($courseid = 0){
-        global $COURSE, $DB;
-        if (empty($courseid) && !empty($COURSE->id)) {
-            $courseid = $COURSE->id;
-        }
-        if (empty($courseid)) return;
-        $course = $DB->get_record('course', array('id' => $courseid), '*', IGNORE_MISSING);
-        if (empty($course->id)) return;
-        $category = $DB->get_record('course_categories', array('id' => $course->category), '*', IGNORE_MISSING);
-        $path = explode('/', $category->path);
-        if (count($path) < 2) return;
-        $org = $DB->get_record('block_eduvidual_org', array('categoryid' => $path[1]), '*', IGNORE_MISSING);
-        return $org;
-    }
+
     public static function determine_org() {
         global $DB, $PAGE;
         // Determine current organization
