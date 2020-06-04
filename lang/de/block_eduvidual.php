@@ -164,6 +164,7 @@ $string['admin:stats:type'] = 'Schultyp';
 $string['admin:stats:types'] = 'Schultypen';
 $string['admin:supportcourse_template'] = 'Vorlage für Supportkurs';
 $string['admin:supportcourse_template:description'] = 'Wenn dieser Wert gesetzt wurde, erhält jede Schule einen eigenen Supportkurs auf Basis dieser Vorlage. Dieser Supportkurs wird zusammen mit dem Plugin block_edusupport genutzt. Bitte geben Sie in diesem Textfeld die KursID des Vorlagekurses ein.';
+$string['admin:supportcourse:missingsetup'] = 'Vorlage für Supportkurse wurde nicht gesetzt. Bitte prüfen Sie die Plugin-Einstellungen in der Website-Administration!';
 $string['admin:supportcourses'] = 'Supportkurse';
 $string['admin:termsofuse:title'] = 'Nutzungsbedingungen';
 
