@@ -16,16 +16,27 @@
 
 /**
  * @package    block_eduvidual
- * @copyright  2018 Digital Education Society (http://www.dibig.at),
- *             2020 and ongoing Center for Learning Management (http://www.lernmanagement.at)
+ * @copyright  2020 Center for Learningmanagement (http://www.lernmanagement.at)
  * @author     Robert Schrenk
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die;
 
-$plugin->version  = 2020060401;
-$plugin->requires = 2019111803;  // Requires Moodle 3.8.3.
-$plugin->component = 'block_eduvidual';
-$plugin->release = '1.4 (Build: 2020060401)';
-$plugin->maturity = MATURITY_STABLE;
+require_once($CFG->libdir . "/formslib.php");
+
+class block_eduvidual_manage_orgmenu_form extends moodleform {
+    function definition() {
+        global $DB;
+        $mform = $this->_form;
+        $mform->addElement('hidden', 'orgid', 0);
+        $mform->setType('orgid', PARAM_INT);
+        $mform->addElement('hidden', 'act', 'orgmenu');
+        $mform->setType('act', PARAM_TEXT);
+
+        $mform->addElement('textarea', 'orgmenu', get_string('manage:orgmenu:title', 'block_eduvidual'));
+        $mform->setType('orgmenu', PARAM_TEXT);
+
+        $this->add_action_buttons();
+    }
+}

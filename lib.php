@@ -41,7 +41,7 @@ function block_eduvidual_after_require_login() {
 }
 
 function block_eduvidual_before_standard_html_head() {
-    global $CFG, $CONTEXT, $COURSE, $DB, $PAGE, $USER;
+    global $CFG, $CONTEXT, $COURSE, $DB, $OUTPUT, $PAGE, $USER;
 
     if (strpos($_SERVER["SCRIPT_FILENAME"], '/enrol/otherusers.php') > 0) {
         redirect($CFG->wwwroot . '/user/index.php?id=' . optional_param('id', 0, PARAM_INT));
@@ -68,14 +68,46 @@ function block_eduvidual_before_standard_html_head() {
     if (strpos($_SERVER["SCRIPT_FILENAME"], '/course/delete.php') > 0) {
         $PAGE->requires->js_call_amd("block_eduvidual/jsinjector", "modifyRedirectUrl", array('coursedelete'));
     }
+    $PAGE->requires->js('/blocks/eduvidual/js/ajax_observer.js');
 
-    // If we are going to build a organisation-specific mainmenu-extension, the following will be useful:
-    // $PAGE->set_headingmenu('something');
+    // Build a organisation-specific mainmenu-extension:
+    // @TODO store the menu in the session.
+    $orgmenus = array();
+    $fields = array("name", "url", "target", "roles");
+    $memberships = $DB->get_records('block_eduvidual_orgid_userid', array('userid' => $USER->id));
+    foreach($memberships as $membership){
+        $org = $DB->get_record('block_eduvidual_org', array('orgid' => $membership->orgid));
+        $entries = explode("\n", $org->orgmenu);
+        if (count($entries) > 0) {
+            $orgmenu = array(
+                'entries' => array(),
+                'name' => $org->name,
+                'orgid' => $org->orgid,
+                'url' => $CFG->wwwroot . '/course/index.php?categoryid=' . $org->categoryid,
+                'urlmanagement' => ($membership->role == 'Manager') ? $CFG->wwwroot . '/blocks/eduvidual/pages/manage.php?orgid=' . $org->orgid : '',
+            );
+            foreach ($entries AS $entry) {
+                $entry = explode("|", $entry);
+                if (empty($entry[0])) continue;
+                $o = array();
+                foreach ($fields AS $k => $field) {
+                    $o[$field] = (!empty($entry[$k])) ? $entry[$k] : '';
+                }
+                if (empty($o['roles']) || strpos($membership->role, $o['roles']) > -1) {
+                    $orgmenu['entries'][] = $o;
+                }
+            }
+            if (!empty($orgmenu['urlmanagement']) || count($orgmenu['entries']) > 0) {
+                $orgmenus[] = $orgmenu;
+            }
+        }
+    }
+    if (count($orgmenus) > 0) {
+        $PAGE->set_headingmenu($OUTPUT->render_from_template('block_eduvidual/orgmenu', array('orgmenus' => $orgmenus)));
+    }
 
     // Now inject organisation-specific resources.
-    $PAGE->requires->js('/blocks/eduvidual/js/ajax_observer.js');
     $inject_styles = array("<style type=\"text/css\" id=\"block_eduvidual_style_userextra\">");
-    block_eduvidual::determine_org();
     if (!empty(block_eduvidual::get('orgbanner'))) {
         $inject_styles[] = "body #page-header .card { background-image: url(" . block_eduvidual::get('orgbanner') . ") !important; }";
     }

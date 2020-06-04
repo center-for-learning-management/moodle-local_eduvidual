@@ -150,6 +150,14 @@ function xmldb_block_eduvidual_upgrade($oldversion) {
         }
         upgrade_block_savepoint(true, 2020060400, 'eduvidual');
     }
+    if ($oldversion < 2020060401) {
+        $table = new xmldb_table('block_eduvidual_org');
+        $field = new xmldb_field('orgmenu', XMLDB_TYPE_TEXT, null, null, null, null, null, 'customcss');
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+        upgrade_block_savepoint(true, 2020060401, 'eduvidual');
+    }
 
 
     return true;

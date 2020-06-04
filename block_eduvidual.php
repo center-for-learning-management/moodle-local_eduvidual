@@ -238,6 +238,13 @@ class block_eduvidual extends block_base /* was block_list */ {
                 return "";
             }
         }
+        if ($key == "orgmenu") {
+            if (isset(block_eduvidual::$org->orgmenu)) {
+                return block_eduvidual::$org->orgmenu;
+            } else {
+                return '';
+            }
+        }
         if ($key == "orgrole") {
             if (isset(block_eduvidual::$orgrole)) {
                 return block_eduvidual::$orgrole;
@@ -432,6 +439,7 @@ class block_eduvidual extends block_base /* was block_list */ {
                 $actions['archive'] = 'manage:archive';
                 $actions['categories'] = 'manage:categories';
                 $actions['mnet'] = 'manage:mnet:action';
+                $actions['orgmenu'] = 'manage:orgmenu:title';
                 $actions['style'] = 'manage:style';
                 $actions['subcats'] = 'manage:subcats:title';
                 $actions['users'] = 'manage:users';
