@@ -88,7 +88,7 @@ function block_eduvidual_before_standard_html_head() {
         $inject_styles[] = "body { background-image: url(" . $extra->background . "); background-position: center; background-size: cover; }";
     }
     $inject_styles[] = "</style>";
-    return implode("\n", $injects_styles);
+    return implode("\n", $inject_styles);
 }
 
 
