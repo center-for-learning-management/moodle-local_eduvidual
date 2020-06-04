@@ -17,6 +17,19 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'blo
             $("a[href*='/login/logout.php?sesskey']").attr('href', URL.relativeUrl('/blocks/eduvidual/pages/redirects/logout.php'));
             this.fakeBreadCrumb();
         },
+        /**
+         * We do not want to see the course shortname field.
+         */
+        courseEditPage: function(userid) {
+            $('#fitem_id_shortname').css('display', 'none');
+            if ($('#fitem_id_shortname #id_shortname').val() == '') {
+                var d = new Date();
+                $('#fitem_id_shortname #id_shortname').val(userid + '-' + Date.now());
+            }
+        },
+        /**
+         * If a page does not have a breadcrumb, we inject one.
+         */
         fakeBreadCrumb: function() {
             if ($('#page #page-header .card-body .d-flex.flex-wrap #page-navbar').length == 0) {
                 STR.get_strings([{ key: 'navigation', component: 'core' }, { key: 'myhome', component: 'core' }]).then(function (s) {
@@ -34,6 +47,9 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'blo
                 });
             }
         },
+        /**
+         * In some cases, we want other redirections.
+         */
         modifyRedirectUrl: function(type) {
             if (this.debug) console.log('block_eduvidual/jsinjector:modifyRedirectUrl(type)', type);
             if (type == 'coursedelete') {
@@ -41,6 +57,9 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'blo
                 $('#page-content .continuebutton form input[name="categoryid"]').remove();
             }
         },
+        /**
+         * We do not want the username field on the signup-page.
+         */
         signupPage: function() {
             STR.get_strings([{ key: 'email', component: 'core' }]).then(function (s) {
                 $('#fitem_id_username label[for="id_username"]').html(s[0]);

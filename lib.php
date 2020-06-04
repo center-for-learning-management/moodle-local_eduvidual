@@ -49,6 +49,9 @@ function block_eduvidual_before_standard_html_head() {
     if (strpos($_SERVER["SCRIPT_FILENAME"], '/login/signup.php') > 0) {
         $PAGE->requires->js_call_amd("block_eduvidual/jsinjector", "signupPage", array());
     }
+    if (strpos($_SERVER["SCRIPT_FILENAME"], '/course/edit.php') > 0) {
+        $PAGE->requires->js_call_amd("block_eduvidual/jsinjector", "courseEditPage", array($USER->id));
+    }
 
     $data = array(
         'context' => $CONTEXT,
