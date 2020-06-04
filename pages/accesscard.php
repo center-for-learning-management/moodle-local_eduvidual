@@ -55,7 +55,7 @@ if ($USER->id > 1 && !isguestuser($USER)) {
                     <div class="contact"><?php echo $USER->email; ?></div>
                     <div class="header"><?php echo get_string('Accesscard', 'block_eduvidual'); ?></div>
                     <div class="avatar"><?php echo $OUTPUT->user_picture($USER, array('size' => 200)); ?></div>
-                    <div class="qr"><img src="<?php echo $CFG->wwwroot . '/blocks/eduvidual/pix/qr.php?txt=' . rawurlencode($USER->id . '#' . block_eduvidual::get('field_secret')); ?>" alt="QR" /></div>
+                    <!-- <div class="qr"><img src="<?php echo $CFG->wwwroot . '/blocks/eduvidual/pix/qr.php?txt=' . rawurlencode($USER->id . '#' . block_eduvidual::get('field_secret')); ?>" alt="QR" /></div> -->
                     <div class="secret" style="display: flex; align-items: flex-end; justify-content: flex-end;">
                         <span class="uid"><?php echo $USER->id; ?></span>
                         <span class="hash">#</span>
