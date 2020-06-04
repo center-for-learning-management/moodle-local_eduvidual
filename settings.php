@@ -38,6 +38,15 @@ if ($ADMIN->fulltree) {
     $settings->add(new admin_setting_heading('block_eduvidual_others', get_string('other'), ''));
     $settings->add(
         new admin_setting_configtext(
+            'block_eduvidual/supportcourse_template',
+            get_string('admin:supportcourse_template', 'block_eduvidual'),
+            get_string('admin:supportcourse_template:description', 'block_eduvidual'),
+            '',
+            PARAM_INT
+        )
+    );
+    $settings->add(
+        new admin_setting_configtext(
             'block_eduvidual/mapquest_apikey',
             get_string('admin:map:mapquest:apikey', 'block_eduvidual'),
             get_string('admin:map:mapquest:apikey:description', 'block_eduvidual'),

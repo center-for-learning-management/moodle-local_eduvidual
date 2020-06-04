@@ -162,6 +162,8 @@ $string['admin:stats:states'] = 'Bundesländer';
 $string['admin:stats:title'] = 'Statistiken';
 $string['admin:stats:type'] = 'Schultyp';
 $string['admin:stats:types'] = 'Schultypen';
+$string['admin:supportcourse_template'] = 'Vorlage für Supportkurs';
+$string['admin:supportcourse_template:description'] = 'Wenn dieser Wert gesetzt wurde, erhält jede Schule einen eigenen Supportkurs auf Basis dieser Vorlage. Dieser Supportkurs wird zusammen mit dem Plugin block_edusupport genutzt. Bitte geben Sie in diesem Textfeld die KursID des Vorlagekurses ein.';
 $string['admin:termsofuse:title'] = 'Nutzungsbedingungen';
 
 $string['allmanagerscourses:title'] = 'Kurse für Manager/innen';

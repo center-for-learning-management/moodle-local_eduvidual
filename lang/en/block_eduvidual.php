@@ -162,6 +162,8 @@ $string['admin:stats:states'] = 'States';
 $string['admin:stats:title'] = 'Statistics';
 $string['admin:stats:type'] = 'Schooltype';
 $string['admin:stats:types'] = 'Schooltypes';
+$string['admin:supportcourse_template'] = 'Template for support course';
+$string['admin:supportcourse_template:description'] = 'If set every organisation gets a supportcoure based on this template, that is used in conjunction with block_edusupport. Please enter the courseid of the template course.';
 $string['admin:termsofuse:title'] = 'Terms of use';
 
 $string['allmanagerscourses:title'] = 'All-Managers-Course';
