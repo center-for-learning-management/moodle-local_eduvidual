@@ -171,11 +171,20 @@ function block_eduvidual_extend_navigation_user_settings($nav, $user, $context, 
  * Extend users profile
  */
 function block_eduvidual_myprofile_navigation($tree, $user, $iscurrentuser, $course) {
+    global $DB;
     $category = new \core_user\output\myprofile\category('eduvidual', get_string('pluginname', 'block_eduvidual'), null);
     $tree->add_category($category);
     if (is_siteadmin()) {
-        $node = new \core_user\output\myprofile\node('eduvidual', 'eduvidualtest', $user->id . '#' . \block_eduvidual\locallib::get_user_secret($user->id));
+        $node = new \core_user\output\myprofile\node('eduvidual', 'eduvidualsecret', $user->id . '#' . \block_eduvidual\locallib::get_user_secret($user->id));
         $category->add_node($node);
+        $memberships = \block_eduvidual\locallib::get_user_memberships();
+        foreach ($memberships AS $membership) {
+            $org = $DB->get_record('block_eduvidual_org', array('orgid' => $membership->orgid));
+            if (empty($org->id)) continue;
+            $link = '<a href="' . $CFG->wwwroot . '/blocks/eduvidual/pages/manage.php?orgid=' . $org->orgid . '">' . $org->name . '</a>';
+            $node = new \core_user\output\myprofile\node('eduvidual', 'eduvidualmembership-' . $membership->orgid, $link);
+            $category->add_node($node);
+        }
     }
 
 }

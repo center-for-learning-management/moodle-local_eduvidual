@@ -113,6 +113,25 @@ class locallib {
     }
 
     /**
+     * Get all orgs a user is member of. Optionally you can filter by role.
+     * @param userid if empty will use $USER
+     * @param roles restrict result to certain roles.
+     */
+    public static function get_user_memberships($userid = 0, $roles = array()) {
+        global $DB, $USER;
+        if (empty($userid)) $userid = $USER->id;
+        $_memberships = $DB->get_records('block_eduvidual_orgid_userid', array('userid' => $userid));
+        if (count($roles) == 0) return $_memberships;
+        $memberships = array();
+        foreach ($memberships AS $id => $membership) {
+            if (in_array($membership->role, $roles)) {
+                $memberships[$id] = $membership;
+            }
+        }
+        return $memberships;
+    }
+
+    /**
      * Gets the custom profile field 'secret'
      * If not yet set, sets a new secret
      * @param userid UserID
