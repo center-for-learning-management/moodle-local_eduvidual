@@ -26,7 +26,8 @@ defined('MOODLE_INTERNAL') || die;
 require_once($CFG->dirroot . '/blocks/eduvidual/block_eduvidual.php');
 
 function block_eduvidual_after_config() {
-    global $CFG;
+    global $CFG, $PAGE;
+    $PAGE->add_body_class('theme-' . $CFG->theme);
     // Check for particular scripts, whose output has to be protected.
     $scripts = array('/user/selector/search.php');
     $script = str_replace($CFG->dirroot, '', $_SERVER["SCRIPT_FILENAME"]);
@@ -58,48 +59,36 @@ function block_eduvidual_before_standard_html_head() {
     );
     $PAGE->requires->js_call_amd("block_eduvidual/jsinjector", "run", array($data));
     // Main.css changes some styles for eduvidual.
-    //$PAGE->requires->css('/blocks/eduvidual/style/main.css');
+    $PAGE->requires->css('/blocks/eduvidual/style/main.css');
     // General boost-modifications.
-    //$PAGE->requires->css('/blocks/eduvidual/style/theme_boost.css');
+    $PAGE->requires->css('/blocks/eduvidual/style/theme_boost.css');
     if (strpos($_SERVER["SCRIPT_FILENAME"], '/course/delete.php') > 0) {
         $PAGE->requires->js_call_amd("block_eduvidual/jsinjector", "modifyRedirectUrl", array('coursedelete'));
     }
 
-    // Now inject specific resources.
-    $injects = array();
-    $injects[] = "<script type=\"text/javascript\" src=\"" . $CFG->wwwroot . "/blocks/eduvidual/js/ajax_observer.js\"></script>";
+    // If we are going to build a organisation-specific mainmenu-extension, the following will be useful:
+    // $PAGE->set_headingmenu('something');
 
+    // Now inject organisation-specific resources.
+    $PAGE->requires->js('/blocks/eduvidual/js/ajax_observer.js');
     $inject_styles = array("<style type=\"text/css\" id=\"block_eduvidual_style_userextra\">");
-
-    if ($_SERVER['SCRIPT_FILENAME'] == $CFG->dirroot . '/index.php') {
-    }
-
     block_eduvidual::determine_org();
     if (!empty(block_eduvidual::get('orgbanner'))) {
         $inject_styles[] = "body #page-header .card { background-image: url(" . block_eduvidual::get('orgbanner') . ") !important; }";
-    } else {
-        $inject_styles[] = "body #page-header .card { background-image: url(" . $CFG->wwwroot . "/blocks/eduvidual/pix/banner-curve.jpg) !important; }";
     }
-
     $background = get_user_preferences('block_eduvidual_background');
     if (!isguestuser($USER) && !empty($background)) {
         $inject_styles[] = "body { background: url(" . $background . ") no-repeat center center fixed; background-size: cover !important; }";
     }
-
     $customstyle = block_eduvidual::get('customcss');
     if ($customstyle != "") {
         $inject_styles[] = $customstyle;
     }
-
-    $inject_styles[] = "</style>";
     if (!empty($extra->background)) {
-        $inject_styles[] = "<style type=\"text/css\" id=\"block_eduvidual_style_userextra\">
-                        body { background-image: url(" . $extra->background . "); background-position: center; background-size: cover; }
-                      </style>";
+        $inject_styles[] = "body { background-image: url(" . $extra->background . "); background-position: center; background-size: cover; }";
     }
-    $injects = array_merge($injects, $inject_styles);
-    //$PAGE->requires->js_call_amd('block_eduvidual/ajax_observer', 'observe');
-    return implode("\n", $injects);
+    $inject_styles[] = "</style>";
+    return implode("\n", $injects_styles);
 }
 
 
