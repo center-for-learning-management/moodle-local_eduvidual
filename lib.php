@@ -61,6 +61,7 @@ function block_eduvidual_before_standard_html_head() {
         ),
     );
     $PAGE->requires->js_call_amd("block_eduvidual/jsinjector", "run", array($data));
+    $PAGE->requires->js_call_amd("block_eduvidual/jsinjector", "orgMenu", array($USER->id));
     // Main.css changes some styles for eduvidual.
     $PAGE->requires->css('/blocks/eduvidual/style/main.css');
     // General boost-modifications.
@@ -69,42 +70,6 @@ function block_eduvidual_before_standard_html_head() {
         $PAGE->requires->js_call_amd("block_eduvidual/jsinjector", "modifyRedirectUrl", array('coursedelete'));
     }
     $PAGE->requires->js('/blocks/eduvidual/js/ajax_observer.js');
-
-    // Build a organisation-specific mainmenu-extension:
-    // @TODO store the menu in the session.
-    $orgmenus = array();
-    $fields = array("name", "url", "target", "roles");
-    $memberships = $DB->get_records('block_eduvidual_orgid_userid', array('userid' => $USER->id));
-    foreach($memberships as $membership){
-        $org = $DB->get_record('block_eduvidual_org', array('orgid' => $membership->orgid));
-        $entries = explode("\n", $org->orgmenu);
-        if (count($entries) > 0) {
-            $orgmenu = array(
-                'entries' => array(),
-                'name' => $org->name,
-                'orgid' => $org->orgid,
-                'url' => $CFG->wwwroot . '/course/index.php?categoryid=' . $org->categoryid,
-                'urlmanagement' => ($membership->role == 'Manager') ? $CFG->wwwroot . '/blocks/eduvidual/pages/manage.php?orgid=' . $org->orgid : '',
-            );
-            foreach ($entries AS $entry) {
-                $entry = explode("|", $entry);
-                if (empty($entry[0])) continue;
-                $o = array();
-                foreach ($fields AS $k => $field) {
-                    $o[$field] = (!empty($entry[$k])) ? $entry[$k] : '';
-                }
-                if (empty($o['roles']) || strpos($membership->role, $o['roles']) > -1) {
-                    $orgmenu['entries'][] = $o;
-                }
-            }
-            if (!empty($orgmenu['urlmanagement']) || count($orgmenu['entries']) > 0) {
-                $orgmenus[] = $orgmenu;
-            }
-        }
-    }
-    if (count($orgmenus) > 0) {
-        $PAGE->set_headingmenu($OUTPUT->render_from_template('block_eduvidual/orgmenu', array('orgmenus' => $orgmenus)));
-    }
 
     // Now inject organisation-specific resources.
     $inject_styles = array("<style type=\"text/css\" id=\"block_eduvidual_style_userextra\">");

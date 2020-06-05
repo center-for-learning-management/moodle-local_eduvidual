@@ -235,10 +235,9 @@ if (!$org) {
             $reply['parentid'] = (!isset($category->parentid) || empty($category->parentid))?-1:$category->parentid;
             $reply['category'] = $category;
             $reply['children'] = array();
-            require_once($CFG->dirroot . '/blocks/eduvidual/classes/lib_helper.php');
 
             $cs = $DB->get_records('block_eduvidual_modulescat', array('parentid' => $categoryid, 'active' => 1));
-            $reply['children'] = block_eduvidual_lib_helper::natsort($cs, 'name', 'modulescat');
+            $reply['children'] = \block_eduvidual\lib_helper::natsort($cs, 'name', 'modulescat');
             /*
             foreach($cs AS $c) {
                 $reply['children'][] = $c;
@@ -247,7 +246,7 @@ if (!$org) {
             $reply['modules'] = array();
             $ms = $DB->get_records_sql('SELECT * FROM {block_eduvidual_modules} WHERE categoryid=? AND active=1 ORDER BY name ASC', array($categoryid));
 
-            $reply['modules'] = block_eduvidual_lib_helper::natsort($ms, 'name', 'modules');
+            $reply['modules'] = \block_eduvidual\lib_helper::natsort($ms, 'name', 'modules');
             /*
             foreach($ms AS $m) {
                 $payload = json_decode($m->payload);
@@ -318,9 +317,7 @@ if (!$org) {
             $categoryid = optional_param('categoryid', 0, PARAM_INT);
             $sortmodules = array();
             $ms = $DB->get_records_sql('SELECT * FROM {block_eduvidual_modules} WHERE categoryid=? ORDER BY name ASC', array($categoryid));
-            require_once($CFG->dirroot . '/blocks/eduvidual/classes/lib_helper.php');
-            $reply['modules'] = block_eduvidual_lib_helper::natsort($ms, 'name');
-
+            $reply['modules'] = \block_eduvidual\lib_helper::natsort($ms, 'name');
             $reply['status'] = 'ok';
         break;
         case 'createmodule_payload':

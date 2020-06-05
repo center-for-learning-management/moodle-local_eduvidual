@@ -21,9 +21,99 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+namespace block_eduvidual;
+
 defined('MOODLE_INTERNAL') || die;
 
-class block_eduvidual_lib_helper {
+class lib_helper {
+    /**
+     * Duplicate a course.
+     * @param courseid to duplicate
+     * @param fullname
+     * @param shortname
+     * @param categoryid where the new course should be located.
+     * @param visiblity whether or not the new course should be visible.
+     **/
+    public static function duplicate_course($courseid, $fullname, $shortname, $categoryid, $visibility = 1, $options = array()) {
+        global $CFG, $DB, $USER;
+        // is that needed??? require_once($CFG->dirroot . '/course/externallib.php');
+
+        // Grant a role that allows course duplication in source and target category
+        $basecourse = $DB->get_record('course', array('id' => $courseid));
+        $sourcecontext = \context_course::instance($courseid);
+
+        $roletoassign = 1; // Manager
+        $revokesourcerole = true;
+
+        $roles = get_user_roles($sourcecontext, $USER->id, false);
+        foreach($roles AS $role) {
+            if ($role->roleid == $roletoassign) {
+                // User had this role before - we do not revoke!
+                $revokesourcerole = false;
+            }
+        }
+        role_assign($roletoassign, $USER->id, $sourcecontext->id);
+
+        // Create new course.
+        require_once($CFG->dirroot . '/course/lib.php');
+        $coursedata = $basecourse;
+        unset($coursedata->id);
+        unset($coursedata->idnumber);
+        unset($coursedata->sortorder);
+        $coursedata->fullname = $fullname;
+        $coursedata->shortname = $shortname;
+        $coursedata->category = $categoryid;
+        $coursedata->startdate = (date("m") < 6)?strtotime((date("Y")-1) . '0901000000'):strtotime(date("Y") . '0901000000');
+        $coursedata->summary = "";
+        foreach ($options AS $k => $option) {
+            $coursedata->{$k} = $option;
+        }
+        $course = \create_course($coursedata);
+        $targetcontext = \context_course::instance($course->id);
+
+        // ATTENTION - Revoking the role is MANDATORY and is done AFTER the roles are set in the course!
+        if (!empty($course->id)) {
+            // Do the import from basement.
+            require_once($CFG->dirroot . '/backup/util/includes/backup_includes.php');
+
+            // Make backup from basement.
+            $course_to_backup = $basecourse->id; // id of the course to backup.
+            $course_to_restore  = $course->id; // id of the target course.
+            $user_performing = $USER->id; // id of the user performing the backup.
+            //print_r($course);
+
+            $bc = new \backup_controller(\backup::TYPE_1COURSE, $course_to_backup, \backup::FORMAT_MOODLE,
+                                        \backup::INTERACTIVE_NO, \backup::MODE_IMPORT, $user_performing);
+            //$bc->get_plan()->get_setting('users')->set_value(0);
+            $bc->execute_plan();
+            $bc->get_results();
+            $bc->destroy();
+
+            $tempdestination = make_backup_temp_directory($bc->get_backupid(), false);
+            if (!file_exists($tempdestination) || !is_dir($tempdestination)) {
+                print_error('unknownbackupexporterror'); // shouldn't happen ever
+            }
+
+            require_once($CFG->dirroot . '/backup/util/includes/restore_includes.php');
+
+            // Transaction.
+            $transaction = $DB->start_delegated_transaction();
+
+            // Restore backup into course.
+            $rc = new \restore_controller($bc->get_backupid(), $course_to_restore,
+                    \backup::INTERACTIVE_NO, \backup::MODE_IMPORT, $user_performing,
+                    \backup::TARGET_EXISTING_DELETING);
+            if ($rc->get_status() == \backup::STATUS_REQUIRE_CONV) {
+                $rc->convert();
+            }
+            $rc->execute_precheck();
+            $rc->execute_plan();
+
+            // Commit.
+            $transaction->allow_commit();
+        }
+        return $course;
+    }
     /**
      * Makes a natural sort on an array of objects.
      * @param os The array.

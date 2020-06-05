@@ -65,4 +65,12 @@ $functions = array(
         'type'        => 'read',
         'ajax'        => 1,
     ),
+    'block_eduvidual_user_orgmenu' => array(
+        'classname'   => 'block_eduvidual_external_user',
+        'methodname'  => 'orgmenu',
+        'classpath'   => 'blocks/eduvidual/externallib/user.php',
+        'description' => 'Get orgspecific menu as html',
+        'type'        => 'read',
+        'ajax'        => 1,
+    ),
 );

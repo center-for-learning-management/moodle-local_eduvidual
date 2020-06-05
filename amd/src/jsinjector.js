@@ -18,6 +18,13 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'blo
             this.fakeBreadCrumb();
         },
         /**
+         * Clear session cache.
+         * @TODO: Not yet called by any script.
+         */
+        clearSessionStorage: function() {
+            sessionStorage.clear();
+        },
+        /**
          * We do not want to see the course shortname field.
          */
         courseEditPage: function(userid) {
@@ -55,6 +62,31 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'blo
             if (type == 'coursedelete') {
                 $('#page-content .continuebutton form').attr('action', URL.relativeUrl('/my'));
                 $('#page-content .continuebutton form input[name="categoryid"]').remove();
+            }
+        },
+        /**
+         * Inject org specific menu.
+         */
+        orgMenu: function(userid) {
+            var foruserid = sessionStorage.getItem('block_eduvidual_foruserid');
+            var menu = sessionStorage.getItem('block_eduvidual_orgmenu');
+
+            if (userid != foruserid) {
+                menu = false;
+            }
+            if (!menu) {
+                AJAX.call([{
+                    methodname: 'block_eduvidual_user_orgmenu',
+                    args: { userid: userid },
+                    done: function(menu) {
+                        sessionStorage.setItem('block_eduvidual_foruserid', userid);
+                        sessionStorage.setItem('block_eduvidual_orgmenu', menu);
+                        $('#page-wrapper>.navbar>ul:last-child').prepend(menu);
+                    },
+                    fail: NOTIFICATION.exception
+                }]);
+            } else {
+                $('#page-wrapper>.navbar>ul:last-child').prepend(menu);
             }
         },
         /**
