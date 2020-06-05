@@ -61,7 +61,17 @@ function block_eduvidual_before_standard_html_head() {
         ),
     );
     $PAGE->requires->js_call_amd("block_eduvidual/jsinjector", "run", array($data));
+
     $PAGE->requires->js_call_amd("block_eduvidual/jsinjector", "orgMenu", array($USER->id));
+    $cache = \cache::make('block_eduvidual', 'appcache');
+    $orgmenu = $cache->get('orgmenu');
+    if (empty($orgmenu)) {
+        $orgmenu = $OUTPUT->render_from_template('block_eduvidual/orgmenu', array('orgmenus' => \block_eduvidual\lib_helper::orgmenus()));
+        $cache->set('orgmenu', $orgmenu);
+    }
+    $PAGE->set_headingmenu($orgmenu);
+
+
     // Main.css changes some styles for eduvidual.
     $PAGE->requires->css('/blocks/eduvidual/style/main.css');
     // General boost-modifications.

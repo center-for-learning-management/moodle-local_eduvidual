@@ -137,4 +137,41 @@ class lib_helper {
         $reply['natsort_' . $debugname . '_sorted'] = $sorted;
         return $sorted;
     }
+    /**
+     * Build tree for orgmenus.
+     */
+    public static function orgmenus() {
+        global $CFG, $DB;
+        $orgmenus = array();
+        $fields = array("name", "url", "target", "roles");
+        $memberships = $DB->get_records('block_eduvidual_orgid_userid', array('userid' => $USER->id));
+        foreach($memberships as $membership){
+            $org = $DB->get_record('block_eduvidual_org', array('orgid' => $membership->orgid));
+            $entries = explode("\n", $org->orgmenu);
+            if (count($entries) > 0) {
+                $orgmenu = array(
+                    'entries' => array(),
+                    'name' => $org->name,
+                    'orgid' => $org->orgid,
+                    'url' => $CFG->wwwroot . '/course/index.php?categoryid=' . $org->categoryid,
+                    'urlmanagement' => ($membership->role == 'Manager') ? $CFG->wwwroot . '/blocks/eduvidual/pages/manage.php?orgid=' . $org->orgid : '',
+                );
+                foreach ($entries AS $entry) {
+                    $entry = explode("|", $entry);
+                    if (empty($entry[0])) continue;
+                    $o = array();
+                    foreach ($fields AS $k => $field) {
+                        $o[$field] = (!empty($entry[$k])) ? $entry[$k] : '';
+                    }
+                    if (empty($o['roles']) || strpos($membership->role, $o['roles']) > -1) {
+                        $orgmenu['entries'][] = $o;
+                    }
+                }
+                if (!empty($orgmenu['urlmanagement']) || count($orgmenu['entries']) > 0) {
+                    $orgmenus[] = $orgmenu;
+                }
+            }
+        }
+        return $orgmenu;
+    }
 }

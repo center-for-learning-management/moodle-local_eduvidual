@@ -81,12 +81,12 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'blo
                     done: function(menu) {
                         sessionStorage.setItem('block_eduvidual_foruserid', userid);
                         sessionStorage.setItem('block_eduvidual_orgmenu', menu);
-                        $('#page-wrapper>.navbar>ul:last-child').prepend(menu);
+                        $(menu).insertBefore($('#page-wrapper>.navbar div.usermenu').closest('li'));
                     },
                     fail: NOTIFICATION.exception
                 }]);
             } else {
-                $('#page-wrapper>.navbar>ul:last-child').prepend(menu);
+                $(menu).insertBefore($('#page-wrapper>.navbar div.usermenu').closest('li'));
             }
         },
         /**
