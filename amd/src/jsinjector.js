@@ -1,6 +1,7 @@
 define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'block_eduvidual/main'], function($, AJAX, NOTIFICATION, STR, URL, MAIN) {
     return {
         debug: false,
+        dashboardEnhanceInfo: {},
         run: function(data){
             console.log('block_eduvidual/jsinjector:run(data)', data);
             STR.get_strings([{ key: 'Accesscard', component: 'block_eduvidual' }]).then(function (s) {
@@ -33,6 +34,57 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'blo
             if ($('#fitem_id_shortname #id_shortname').val() == '') {
                 var d = new Date();
                 $('#fitem_id_shortname #id_shortname').val(userid + '-' + Date.now());
+            }
+        },
+        dashboardCourseLoaded: function() {
+            console.log('block_eduvidual/jsinjector:dashboardCourseLoaded()');
+            var JSI = this;
+            $('.dashboard-card-deck>.dashboard-card:not(.block-eduvidual-enhanced)').each(function() {
+                JSI.dashboardEnhanceCourse($(this));
+            });
+        },
+        dashboardEnhanceCourse: function(card) {
+            card.addClass('block-eduvidual-enhanced block-eduvidual-transition-all');
+            var JSI = this;
+            var courseid = +$(card).attr('data-course-id');
+            var footer = $(card).find('.dashboard-card-footer');
+            if (courseid > 0) {
+                if (typeof this.dashboardEnhanceInfo[courseid] !== 'undefined') {
+                    var info = this.dashboardEnhanceInfo[courseid];
+                    card.attr('id', 'dashboard-card-' + courseid);
+                    footer.empty().append(
+                        $('<a>')
+                            .html(info.label)
+                            .attr('href', '#')
+                            .attr('onclick', '$(\'#dashboard-card-' + courseid + '>*\').toggleClass(\'block-eduvidual-height-no\'); return false;')
+                    );
+                    card.append(
+                        $('<div>')
+                            .addClass('block-eduvidual-height-no')
+                            .append([
+                                $('<a>')
+                                    .html('hide')
+                                    .attr('href', '#')
+                                    .attr('onclick', '$(\'#dashboard-card-' + courseid + '>*\').toggleClass(\'block-eduvidual-height-no\'); return false;')
+                            ])
+                    );
+                } else {
+                    footer.empty();
+                    AJAX.call([{
+                        methodname: 'block_eduvidual_user_course_news',
+                        args: { courseid: courseid },
+                        done: function(reply) {
+                            console.log('got reply for courseid ' + courseid, reply);
+                            if (typeof reply.label !== 'undefined' && reply.label != '') {
+                                JSI.dashboardEnhanceInfo[courseid] = reply;
+                                JSI.dashboardEnhanceCourse(card);
+                            }
+                        },
+                        fail: NOTIFICATION.exception
+                    }]);
+                }
+            } else {
+                console.error('Courseid is empty', courseid);
             }
         },
         /**

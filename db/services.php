@@ -65,6 +65,14 @@ $functions = array(
         'type'        => 'read',
         'ajax'        => 1,
     ),
+    'block_eduvidual_user_course_news' => array(
+        'classname'   => 'block_eduvidual_external_user',
+        'methodname'  => 'course_news',
+        'classpath'   => 'blocks/eduvidual/externallib/user.php',
+        'description' => 'Retrieve news from course.',
+        'type'        => 'read',
+        'ajax'        => 1,
+    ),
     'block_eduvidual_user_orgmenu' => array(
         'classname'   => 'block_eduvidual_external_user',
         'methodname'  => 'orgmenu',

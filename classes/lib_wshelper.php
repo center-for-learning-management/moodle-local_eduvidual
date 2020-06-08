@@ -114,6 +114,22 @@ class lib_wshelper {
         error_log(print_r($result, 1));
         return $result;
     }
+    private static function override_core_course_external_get_enrolled_courses_by_timeline_classification($result) {
+        if (!empty($result['courses'])) {
+            foreach ($result['courses'] AS $id => &$course) {
+                if ($id == 0) {
+                    // We attempted to inject some code that modifies the layout and functionality of the course cards.
+                    // Integration of the course news turned out to be impossible since Moodle 3.7 (refer to https://github.com/moodleuulm/moodle-block_course_overview_campus/issues/35)
+                    // But we may keep this for other implementations, like the "upload course image popup" or similar.
+                    //$course->fullname .= "<script> require(['block_eduvidual/jsinjector'], function(jsi) { jsi.dashboardCourseLoaded(); } ); </script>";
+                }
+                $course->showshortname = false;
+                // We do not want to show the progress bar.
+                $course->hasprogress = false;
+            }
+        }
+        return $result;
+    }
     private static function override_core_enrol_external_get_potential_users($result) {
         return \block_eduvidual\locallib::filter_userlist($result, 'id', 'fullname');
     }
