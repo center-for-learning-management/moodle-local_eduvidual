@@ -34,6 +34,9 @@ class eduvidual_observer {
         //error_log(json_encode($data, JSON_NUMERIC_CHECK));
 
         if ($data->action == 'loggedin') {
+            // We shall clear our sessionStorage
+            $PAGE->requires->js_call_amd("block_eduvidual/jsinjector", "clearSessionStorage", array());
+            
             $user = $DB->get_record('user', array('id' => $data->userid));
             require_once($CFG->dirroot . '/user/profile/lib.php');
             profile_load_data($user);

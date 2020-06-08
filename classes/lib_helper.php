@@ -141,8 +141,7 @@ class lib_helper {
      * Build tree for orgmenus.
      */
     public static function orgmenus() {
-        global $CFG, $DB;
-        return;
+        global $CFG, $DB, $USER;
         $orgmenus = array();
         $fields = array("name", "url", "target", "roles");
         $memberships = $DB->get_records('block_eduvidual_orgid_userid', array('userid' => $USER->id));
@@ -173,6 +172,6 @@ class lib_helper {
                 }
             }
         }
-        return $orgmenu;
+        return $orgmenus;
     }
 }

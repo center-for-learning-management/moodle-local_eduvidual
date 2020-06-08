@@ -22,6 +22,7 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'blo
          * @TODO: Not yet called by any script.
          */
         clearSessionStorage: function() {
+            console.log('block_eduvidual/jsinjector:clearSessionStorage()');
             sessionStorage.clear();
         },
         /**
@@ -68,6 +69,7 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'blo
          * Inject org specific menu.
          */
         orgMenu: function(userid) {
+            console.log('block_eduvidual/jsinjector:orgMenu(userid)', userid);
             if (typeof userid == 'undefined' || userid == 0) return;
             var foruserid = sessionStorage.getItem('block_eduvidual_foruserid');
             var menu = sessionStorage.getItem('block_eduvidual_orgmenu');

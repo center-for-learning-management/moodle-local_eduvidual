@@ -61,10 +61,7 @@ function block_eduvidual_before_standard_html_head() {
         ),
     );
     $PAGE->requires->js_call_amd("block_eduvidual/jsinjector", "run", array($data));
-
-    if (!isguestuser($USER) && $USER->id > 0) {
-        $PAGE->requires->js_call_amd("block_eduvidual/jsinjector", "orgMenu", array($USER->id));
-    }
+    $PAGE->requires->js_call_amd("block_eduvidual/jsinjector", "orgMenu", array($USER->id));
 
     $cache = \cache::make('block_eduvidual', 'appcache');
     $orgmenu = $cache->get('orgmenu');

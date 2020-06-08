@@ -76,9 +76,13 @@ class lib_enrol {
      * @param boolean force (optional) the role to be assigned again, even if it is already set.
      */
     public static function role_set($userid, $org, $role, $force = false) {
-        global $CFG, $DB;
+        global $CFG, $DB, $PAGE, $USER;
         $enrol = false;
         $reply = array();
+
+        if ($USER->id == $userid) {
+            $PAGE->requires->js_call_amd("block_eduvidual/jsinjector", "clearSessionStorage", array());
+        }
 
         // Remove could be written in various cases.
         if (strtolower($role) == 'remove') $role = 'remove';
