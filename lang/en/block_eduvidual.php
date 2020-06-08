@@ -298,6 +298,9 @@ $string['invalid_type'] = 'Invalid Type!';
 $string['missing_permission'] = 'Missing Permission!';
 $string['open'] = 'open';
 
+$string['help_and_tutorials'] = 'Help & Tutorials';
+$string['imprint'] = 'Imprint';
+
 $string['mailregister:confirmation'] = 'Confirmation';
 $string['mailregister:confirmation:mailsent'] = 'Email was sent!';
 $string['mailregister:footer'] = 'Kind regards';
@@ -448,13 +451,13 @@ $string['or'] = 'or';
 $string['orgrole:role_already_in_use'] = 'Role already in use';
 $string['orgsizes:title'] = 'Filesystem Size';
 
-$string['login:direct'] = 'Direct login';
+$string['login:direct'] = 'use the direct login';
 $string['login:default'] = 'Default Login Page';
 $string['login:external'] = 'External';
 $string['login:external:description'] = 'Some schools are using the MNet-protocol to use their external Moodle system as authentication mechanism. These schools are listed here. If your school is not listed here, you do not need this page.';
 $string['login:failed'] = 'Login failed';
 $string['login:internal'] = 'Internal';
-$string['login:network_btn'] = 'Other Moodle (Network)';
+$string['login:network_btn'] = 'Eduvidual Network';
 $string['login:network'] = 'External login';
 $string['login:qrscan:btn'] = 'Login with QR Code';
 $string['login:qrscan:description'] = 'If you have not changed your password yet you can login using the QR Code printed on your accesscard.';
@@ -473,6 +476,8 @@ $string['preferences:usemode:switchmode'] = 'Switch to';
 $string['preferences:usemode:title'] = 'UI Mode';
 
 $string['print'] = 'Print';
+
+$string['privacy'] = 'Privacy';
 
 $string['privacy:metadata:privacy:metadata:block_eduvidual_courseshow'] = 'Stores for app-mode course list which courses you want to hide or show.';
 $string['privacy:metadata:privacy:metadata:block_eduvidual_orgid_userid'] = 'Stores your memberships and role in various organizations';
@@ -558,3 +563,5 @@ $string['user:preference:editor:tinymce'] = 'TinyMCE';
 $string['user:preference:editor:textarea'] = 'Unformatted text';
 $string['user:preference:editor:title'] = 'Preferred text-editor';
 $string['user:support:showbox'] = 'Help me!';
+
+$string['your_learning_environment'] = 'your personal learning environment';

@@ -298,6 +298,9 @@ $string['invalid_type'] = 'Ungültiger Typ!';
 $string['missing_permission'] = 'Fehlende Rechte!';
 $string['open'] = 'öffnen';
 
+$string['help_and_tutorials'] = 'Hilfe & Anleitungen';
+$string['imprint'] = 'Impressum';
+
 $string['mailregister:confirmation'] = 'Bestätigung';
 $string['mailregister:confirmation:mailsent'] = 'Die eMail wurde versendet!';
 $string['mailregister:footer'] = 'Mit freundlichen Grüßen';
@@ -448,13 +451,13 @@ $string['or'] = 'oder';
 $string['orgrole:role_already_in_use'] = 'Rolle wird bereits benutzt!';
 $string['orgsizes:title'] = 'Dateisystemgröße';
 
-$string['login:direct'] = 'Direkter Login';
+$string['login:direct'] = 'melden Sie sich direkt an:';
 $string['login:default'] = 'Standard Login Seite';
 $string['login:external'] = 'Externer Login';
 $string['login:external:description'] = 'Manche Schulen nutzen das MNet-Protokoll, um ein externes Moodle-System zur Authentifizierung zu verwenden. Falls Ihre Schule hier nicht gelistet ist, benötigen Sie diese Seite nicht.';
 $string['login:failed'] = 'Login fehlgeschlagen';
 $string['login:internal'] = 'Interner Login';
-$string['login:network_btn'] = 'eduvidual Verbund';
+$string['login:network_btn'] = 'Eduvidual Verbund';
 $string['login:network'] = 'Über Verbund';
 $string['login:qrscan:btn'] = 'Login mit QR Code';
 $string['login:qrscan:description'] = 'Falls Sie Ihr Passwort noch nicht geändert haben können Sie mit dem auf der Zugangskarte aufgedrucken QR Code einloggen.';
@@ -472,6 +475,8 @@ $string['preferences:usemode:switchmode'] = 'Wechsle zu';
 $string['preferences:usemode:title'] = 'UI Modus';
 
 $string['print'] = 'Drucken';
+
+$string['privacy'] = 'Datenschutz';
 
 $string['privacy:metadata:privacy:metadata:block_eduvidual_courseshow'] = 'Speichert für den app-Modus, welche Kurse der Kursliste angezeigt oder versteckt werden sollen.';
 $string['privacy:metadata:privacy:metadata:block_eduvidual_orgid_userid'] = 'Speichert die Zuordnung und Rolle in verschiedenen Schulen.';
@@ -555,3 +560,5 @@ $string['user:preference:editor:tinymce'] = 'TinyMCE';
 $string['user:preference:editor:textarea'] = 'Unformatierter Text';
 $string['user:preference:editor:title'] = 'Bevorzugter Texteditor';
 $string['user:support:showbox'] = 'Hilfe anfordern!';
+
+$string['your_learning_environment'] = 'deine persönliche Lernplattform';

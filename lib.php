@@ -61,6 +61,9 @@ function block_eduvidual_before_standard_html_head() {
         ),
     );
     $PAGE->requires->js_call_amd("block_eduvidual/jsinjector", "run", array($data));
+
+    /*
+    // No Org-Menu for the moment!
     $PAGE->requires->js_call_amd("block_eduvidual/jsinjector", "orgMenu", array($USER->id));
 
     $cache = \cache::make('block_eduvidual', 'appcache');
@@ -70,7 +73,7 @@ function block_eduvidual_before_standard_html_head() {
         $cache->set('orgmenu', $orgmenu);
     }
     $PAGE->set_headingmenu($orgmenu);
-
+    */
 
     // Main.css changes some styles for eduvidual.
     $PAGE->requires->css('/blocks/eduvidual/style/main.css');
@@ -109,6 +112,25 @@ function block_eduvidual_control_view_profile($user, $course = null, $usercontex
         return core_user::VIEWPROFILE_PREVENT;
     }
     return core_user::VIEWPROFILE_DO_NOT_PREVENT;
+}
+
+/**
+ * Extend Moodle Navigation.
+ */
+function block_eduvidual_extend_navigation($navigation) {
+    $orgs = \block_eduvidual\locallib::get_organisations();
+    if (count($orgs) == 0) return;
+
+    $nodehome = $navigation->get('home');
+    if (empty($nodehome)){
+        $nodehome = $navigation;
+    }
+
+    $label = get_string('browse_orgs', 'block_eduvidual');
+    $link = new moodle_url('/blocks/eduvidual/pages/categories.php');
+    $icon = new pix_icon('/i/withsubcat', '', '');
+    $nodemyorgs = $nodehome->add($label, $link, navigation_node::NODETYPE_LEAF, $label, 'browseorgs', $icon);
+    $nodemyorgs->showinflatnavigation = true;
 }
 
 /**
