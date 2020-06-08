@@ -32,11 +32,12 @@ class block_eduvidual_orgsizes extends \core\task\scheduled_task {
     }
 
     public function execute() {
-        global $DB;
+        global $CFG, $DB;
         $sql = "SELECT id,orgid,categoryid
                     FROM {block_eduvidual_org}
                     WHERE categoryid>0";
         $orgs = $DB->get_records_sql($sql, array());
+        require_once($CFG->dirroot . '/blocks/eduvidual/classes/lib_manage.php');
         foreach ($orgs AS $org) {
             $filesize = \block_eduvidual\lib_manage::get_category_filesize($org->categoryid);
             echo "Read $org->orgid for category $org->categoryid with size $filesize<br />\n";
