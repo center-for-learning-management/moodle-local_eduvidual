@@ -40,7 +40,7 @@ class block_eduvidual_external_user extends external_api {
         $PAGE->set_context(\context_system::instance());
         $orgmenus = \block_eduvidual\lib_helper::orgmenus();
 
-        return $OUTPUT->render_from_template('block_eduvidual/orgmenu', array('orgmenus' => $orgmenus));
+        return $OUTPUT->render_from_template('block_eduvidual/orgmenu', array('menuright' => 1, 'orgmenus' => $orgmenus));
     }
     public static function orgmenu_returns() {
         return new external_value(PARAM_RAW, 'Returns the orgmenu as html.');

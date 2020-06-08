@@ -68,13 +68,15 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'blo
          * Inject org specific menu.
          */
         orgMenu: function(userid) {
+            if (typeof userid == 'undefined' || userid == 0) return;
             var foruserid = sessionStorage.getItem('block_eduvidual_foruserid');
             var menu = sessionStorage.getItem('block_eduvidual_orgmenu');
 
             if (userid != foruserid) {
                 menu = false;
             }
-            if (!menu) {
+
+            if (typeof menu === 'undefined' || !menu) {
                 AJAX.call([{
                     methodname: 'block_eduvidual_user_orgmenu',
                     args: { userid: userid },
