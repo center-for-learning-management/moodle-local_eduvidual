@@ -82,7 +82,7 @@ class lib_wshelper {
     }
     private static function buffer_web_lib_ajax_getnavbranch($buffer) {
         $result = json_decode($buffer);
-        $orgs = local_eduvidual::get_organisations('*');
+        $orgs = \local_eduvidual\locallib::get_organisations('*');
         $categories = array();
         foreach($orgs AS $org) {
             $categories[] = $org->categoryid;

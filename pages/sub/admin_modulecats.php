@@ -42,7 +42,7 @@ if ($data = $categoryform->get_data()) {
             'maxfiles' => $categoryform->maxfiles
         )
     );
-    $files = local_eduvidual::list_area_files('modulecat', $categoryid, $context);
+    $files = \local_eduvidual\locallib::list_area_files('modulecat', $categoryid, $context);
 
     if (count($files) > 0) {
         $data->imageurl = $files[0]->url;
@@ -117,7 +117,7 @@ if (optional_param('import', 0, PARAM_INT) == 1) {
             $data->module, $context->id, 'local_eduvidual', 'module', $data->moduleid,
             array('subdirs' => $moduleform->subdirs, 'maxbytes' => $moduleform->maxbytes, 'maxfiles' => $moduleform->maxfiles)
         );
-        $files = local_eduvidual::list_area_files('module', $data->moduleid, $context);
+        $files = \local_eduvidual\locallib::list_area_files('module', $data->moduleid, $context);
         if (count($files) > 0) {
             $data->imageurl = $files[0]->url;
         } else {

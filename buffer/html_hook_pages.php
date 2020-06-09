@@ -60,8 +60,8 @@ if (!is_siteadmin() && strpos($_SERVER["SCRIPT_FILENAME"], '/course/editcategory
 // If we enter a course we are not enrolled in
 if (strpos($_SERVER["SCRIPT_FILENAME"], '/enrol/index.php') > 0) {
     $courseid = optional_param('id', 0, PARAM_INT);
-    $org = local_eduvidual::set_org_by_courseid($courseid);
-    if (!empty($org->orgid) && (local_eduvidual::get('orgrole') == 'Manager' || is_siteadmin())) {
+    $org = \local_eduvidual\locallib::set_org_by_courseid($courseid);
+    if (!empty($org->orgid) && (\local_eduvidual\locallib::get('orgrole') == 'Manager' || is_siteadmin())) {
         $box = pq('div[role="main"]');
         $btn = pq('<a>')->html(get_string('manage:enrolmeasteacher', 'local_eduvidual'))
                         ->addClass('btn ui-btn btn-primary')

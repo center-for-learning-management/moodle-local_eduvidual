@@ -24,11 +24,11 @@ require_once('../../../config.php');
 require_login();
 
 require_once($CFG->libdir . '/adminlib.php');
-require_once($CFG->dirroot . '/local/eduvidual/block_eduvidual.php');
+
 
 $current_orgid = optional_param('orgid', 0, PARAM_INT);
-$orgas = local_eduvidual::get_organisations('*');
-$checkedorg = local_eduvidual::get_organisations_check($orgas, $current_orgid);
+$orgas = \local_eduvidual\locallib::get_organisations('*');
+$checkedorg = \local_eduvidual\locallib::get_organisations_check($orgas, $current_orgid);
 
 $PAGE->set_url(new moodle_url('/local/eduvidual/pages/categories.php', array('orgid' => $current_orgid)));
 //$PAGE->set_cacheable(false);
@@ -36,7 +36,7 @@ $PAGE->set_url(new moodle_url('/local/eduvidual/pages/categories.php', array('or
 $PAGE->navbar->add(get_string('Browse_org', 'local_eduvidual'), new moodle_url('/local/eduvidual/pages/categories.php', array()));
 if (!empty($current_orgid) && !empty($checkedorg->name)) {
     $org = $checkedorg;
-    local_eduvidual::set_org($checkedorg->orgid);
+    \local_eduvidual\locallib::set_org($checkedorg->orgid);
     $PAGE->navbar->add($checkedorg->name, $PAGE->url);
     $PAGE->set_context(context_coursecat::instance($checkedorg->categoryid));
     $PAGE->set_pagelayout('coursecategory');
@@ -48,7 +48,7 @@ $PAGE->set_heading(get_string('categories:coursecategories', 'local_eduvidual'))
 $PAGE->set_title(get_string('categories:coursecategories', 'local_eduvidual'));
 $PAGE->requires->css('/local/eduvidual/style/main.css');
 
-local_eduvidual::print_app_header();
+echo $OUTPUT->header();
 
 if (empty($current_orgid)) {
     // Show list of my orgs.
@@ -77,14 +77,14 @@ if (empty($current_orgid)) {
     }
     $favorgid = \local_eduvidual\locallib::get_favorgid();
 
-    //$manageractions = local_eduvidual::get_actions('manage');
+    //$manageractions = \local_eduvidual\locallib::get_actions('manage');
     $memberships = array_values($DB->get_records_sql($sql, $params));
     foreach ($memberships AS &$membership) {
         $membership->isfavorite = ($membership->orgid == $favorgid);
         $membership->canmanage = is_siteadmin() || in_array($membership->role, array('Manager'));
         if ($membership->canmanage) {
             if (empty($managersactions)) {
-                $_actions = local_eduvidual::get_actions('manage', true);
+                $_actions = \local_eduvidual\locallib::get_actions('manage', true);
                 $actions = array_keys($_actions);
                 $managersactions = array();
                 foreach ($actions AS $action) {
@@ -112,10 +112,10 @@ if (empty($current_orgid)) {
     <h3 class="local_eduvidual_courses_title"><?php echo get_string('categories:coursecategories', 'local_eduvidual'); ?></h3>
     <div class="ul-eduvidual-courses" data-orgid="<?php echo $org->orgid; ?>">
     <?php
-    local_eduvidual::add_script_on_load('require(["local_eduvidual/user"], function(USER) { USER.loadCategory(' . $org->categoryid . '); });');
+    \local_eduvidual\locallib::add_script_on_load('require(["local_eduvidual/user"], function(USER) { USER.loadCategory(' . $org->categoryid . '); });');
     echo get_string('loading');
     ?></div>
     <?php
 }
 
-local_eduvidual::print_app_footer();
+echo $OUTPUT->footer();

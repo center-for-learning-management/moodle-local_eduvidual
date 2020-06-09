@@ -25,7 +25,7 @@ require_once('../../../config.php');
 require_login();
 
 require_once($CFG->libdir . '/adminlib.php');
-require_once($CFG->dirroot . '/local/eduvidual/block_eduvidual.php');
+
 
 $PAGE->set_context(context_system::instance());
 $PAGE->set_pagelayout('mydashboard');
@@ -34,7 +34,7 @@ $PAGE->set_title(get_string('user:merge_accounts', 'local_eduvidual'));
 $PAGE->set_heading(get_string('user:merge_accounts', 'local_eduvidual'));
 //$PAGE->set_cacheable(false);
 
-local_eduvidual::print_app_header();
+echo $OUTPUT->header();
 
 $users = $DB->get_records('user', array('email' => $USER->email, 'suspended' => 0));
 $keep = optional_param('user_keep', 0, PARAM_INT);
@@ -124,4 +124,4 @@ if (count(array_keys($users)) > 1) {
 }
 
 
-local_eduvidual::print_app_footer();
+echo $OUTPUT->footer();

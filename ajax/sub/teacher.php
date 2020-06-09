@@ -484,7 +484,7 @@ if (!$org) {
                     $path = explode('/', $category->path);
                     if ($path[1] == $org->categoryid) {
                         $context = \context_course::instance($course->id);
-                        $canedit = has_capability('moodle/course:update', $context) || is_siteadmin() || local_eduvidual::get('orgrole') == 'Manager';
+                        $canedit = has_capability('moodle/course:update', $context) || is_siteadmin() || \local_eduvidual\locallib::get('orgrole') == 'Manager';
                         if ($canedit) {
                             $roleid = 0;
                             switch(optional_param('role', '', PARAM_TEXT)) {

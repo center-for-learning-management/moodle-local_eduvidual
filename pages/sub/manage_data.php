@@ -22,7 +22,7 @@
 
 defined('MOODLE_INTERNAL') || die;
 $isadmin = is_siteadmin();
-$ismanager = in_array(local_eduvidual::get('role') == 'Manager';
+$ismanager = in_array(\local_eduvidual\locallib::get('role') == 'Manager';
 if (!$isadmin && !$ismanager) die;
 
 ?>

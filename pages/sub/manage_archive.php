@@ -60,7 +60,7 @@ $MANAGECATS = array();
 
 /*
 // This is used if we can archive for various organizations at once
-$orgas = local_eduvidual::get_organisations('Manager');
+$orgas = \local_eduvidual\locallib::get_organisations('Manager');
 foreach($orgas AS $orga) {
     $MANAGECATS[] = $orga->categoryid;
 }

@@ -22,7 +22,7 @@
 
 defined('MOODLE_INTERNAL') || die;
 
-require_once($CFG->dirroot . '/local/eduvidual/block_eduvidual.php');
+
 
 if (optional_param('import', 0, PARAM_INT) > 0) {
     require_once($CFG->dirroot . '/local/eduvidual/pages/sub/manage_usersimport.php');

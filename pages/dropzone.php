@@ -25,9 +25,9 @@ require_once('../../../config.php');
 require_login();
 
 require_once($CFG->libdir . '/adminlib.php');
-require_once($CFG->dirroot . '/local/eduvidual/block_eduvidual.php');
 
-local_eduvidual::set_context_auto();
+
+\local_eduvidual\locallib::set_context_auto();
 $PAGE->set_pagelayout('admin');
 $PAGE->set_url('/local/eduvidual/pages/dropzone.php', array());
 $PAGE->set_title('eduvidual Dropzone');
@@ -37,15 +37,15 @@ $PAGE->set_heading('eduvidual Dropzone');
 $PAGE->requires->css('/local/eduvidual/style/dropzone.css');
 $PAGE->requires->js('/local/eduvidual/js/dropzone.js');
 
-local_eduvidual::print_app_header();
+echo $OUTPUT->header();
 
 $roles = array('Manager');
 
-if (!in_array(local_eduvidual::get('role'), $roles) && !is_siteadmin()) {
+if (!in_array(\local_eduvidual\locallib::get('role'), $roles) && !is_siteadmin()) {
 	?>
 		<p class="alert alert-danger"><?php echo get_string('access_denied', 'local_eduvidual'); ?></p>
 	<?php
-	local_eduvidual::print_app_footer();
+	echo $OUTPUT->footer();
 	die();
 }
 
@@ -58,7 +58,7 @@ if (empty($dropzonepath)) {
     ?>
         <p class="alert alert-danger"><?php echo get_string('admin:dropzone:notset', 'local_eduvidual'); ?></p>
     <?php
-    local_eduvidual::print_app_footer();
+    echo $OUTPUT->footer();
     die();
 }
 // Just to be sure it is used as directory.

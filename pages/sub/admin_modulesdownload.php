@@ -25,7 +25,7 @@ require_once('../../../../config.php');
 require_login();
 
 require_once($CFG->libdir . '/adminlib.php');
-require_once($CFG->dirroot . '/local/eduvidual/block_eduvidual.php');
+
 
 if (!is_siteadmin()) {
     ?>

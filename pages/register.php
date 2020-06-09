@@ -25,7 +25,7 @@ require_once('../../../config.php');
 //require_login();
 
 require_once($CFG->libdir . '/adminlib.php');
-require_once($CFG->dirroot . '/local/eduvidual/block_eduvidual.php');
+
 
 $orgid = optional_param('orgid', 0, PARAM_INT);
 
@@ -36,7 +36,7 @@ $PAGE->set_title(get_string('Registration', 'local_eduvidual'));
 $PAGE->set_heading(get_string('Registration', 'local_eduvidual'));
 //$PAGE->set_cacheable(false);
 
-local_eduvidual::print_app_header();
+echo $OUTPUT->header();
 
 if ($USER->id > 1) {
     echo $OUTPUT->render_from_template(
@@ -60,4 +60,4 @@ if ($USER->id > 1) {
     );
 }
 
-local_eduvidual::print_app_footer();
+echo $OUTPUT->footer();

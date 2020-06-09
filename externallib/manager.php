@@ -37,8 +37,8 @@ class local_eduvidual_external_manager extends external_api {
         global $CFG, $OUTPUT, $PAGE;
         $params = self::validate_parameters(self::user_exportform_parameters(), array('orgid' => $orgid, 'userids' => $userids));
 
-        require_once($CFG->dirroot . '/local/eduvidual/block_eduvidual.php');
-        $org = local_eduvidual::set_org($orgid);
+        
+        $org = \local_eduvidual\locallib::set_org($orgid);
         $context = context_coursecat::instance($org->categoryid);
         $PAGE->set_context($context);
 
@@ -61,12 +61,12 @@ class local_eduvidual_external_manager extends external_api {
     public static function user_form($orgid, $userid) {
         global $CFG, $DB, $PAGE;
         $params = self::validate_parameters(self::user_form_parameters(), array('orgid' => $orgid, 'userid' => $userid));
-        require_once($CFG->dirroot . '/local/eduvidual/block_eduvidual.php');
-        local_eduvidual::set_org($params['orgid']);
+        
+        \local_eduvidual\locallib::set_org($params['orgid']);
 
         $membership = $DB->get_record('local_eduvidual_orgid_userid', $params);
 
-        if (empty($membership->id) || (local_eduvidual::get('orgrole') != 'Manager' && !is_siteadmin())) {
+        if (empty($membership->id) || (\local_eduvidual\locallib::get('orgrole') != 'Manager' && !is_siteadmin())) {
             // We are not allowed to to this!
             return get_string('missing_permission', 'local_eduvidual');
         } else {
@@ -94,15 +94,15 @@ class local_eduvidual_external_manager extends external_api {
     public static function user_update($orgid, $userid, $firstname, $lastname, $email) {
         global $CFG, $DB, $PAGE;
         $params = self::validate_parameters(self::user_update_parameters(), array('orgid' => $orgid, 'userid' => $userid, 'firstname' => $firstname, 'lastname' => $lastname, 'email' => $email));
-        require_once($CFG->dirroot . '/local/eduvidual/block_eduvidual.php');
-        local_eduvidual::set_org($params['orgid']);
+        
+        \local_eduvidual\locallib::set_org($params['orgid']);
         $membership = $DB->get_record('local_eduvidual_orgid_userid', array('orgid' => $params['orgid'], 'userid' => $params['userid']));
         $reply = (object)array(
             'message' => '',
             'subject' => '',
             'success' => 0,
         );
-        if (empty($membership->id) || (local_eduvidual::get('orgrole') != 'Manager' && !is_siteadmin())) {
+        if (empty($membership->id) || (\local_eduvidual\locallib::get('orgrole') != 'Manager' && !is_siteadmin())) {
             // We are not allowed to to this!
             $reply->message = get_string('missing_permission', 'local_eduvidual');
             $reply->subject = get_string('error');

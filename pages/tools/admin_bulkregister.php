@@ -22,7 +22,7 @@
 
 
 require_once('../../../../config.php');
-require_once($CFG->dirroot . '/local/eduvidual/block_eduvidual.php');
+
 
 $manageruserid = optional_param('manageruserid', 0, PARAM_INT);
 $orgids = optional_param('orgids', '', PARAM_TEXT);

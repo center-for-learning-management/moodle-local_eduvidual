@@ -404,7 +404,8 @@ class lib_enrol {
         );
         $roles['student'] = $roles['teacher'];
         $roles['parent'] = $roles['teacher'];
-        $context = \context_course::instance($org->courseid);
+        $context = \context_course::instance($org->courseid, IGNORE_MISSING);
+        if (empty($context->id)) return;
         if (is_enrolled($context, $userid)) {
             // Only switch role
             $roletoassign = $roles[$orgrole];

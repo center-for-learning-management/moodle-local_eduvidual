@@ -26,15 +26,15 @@ require_login();
 
 require_once($CFG->libdir . '/adminlib.php');
 require_once($CFG->libdir . '/dataformatlib.php');
-require_once($CFG->dirroot . '/local/eduvidual/block_eduvidual.php');
+
 
 $orgid = required_param('orgid', PARAM_INT);
 $userids = explode(',', required_param('userids', PARAM_TEXT));
 $dataformat = required_param('dataformat', PARAM_ALPHA);
 
-local_eduvidual::set_org($orgid);
+\local_eduvidual\locallib::set_org($orgid);
 
-if (local_eduvidual::get('orgrole') != "Manager" && !is_siteadmin()) {
+if (\local_eduvidual\locallib::get('orgrole') != "Manager" && !is_siteadmin()) {
     $OUTPUT->header();
     $OUTPUT->render_from_template('local_eduvidual/alert', array(
         'type' => 'warning',

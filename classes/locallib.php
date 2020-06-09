@@ -190,7 +190,7 @@ class locallib {
         }
         // We did not find this orgaid.
         // If there is a default one and in selection return this one.
-        $defaultorg = self::get('defaultorg');
+        $defaultorg = self::get_favorgid();
         if (isset($orgids[$defaultorg])) {
             return $orgids[$defaultorg];
         }
@@ -212,7 +212,7 @@ class locallib {
         if (!empty($r->role)) return $r->role;
     }
 
-    public static function get_orgsubcats($orgid, $key) {
+    public static function get_orgsubcats($orgid, $key, $payload = "") {
         global $DB, $USER;
         $org = $DB->get_record('local_eduvidual_org', array('orgid' => $orgid));
         if (empty($org->orgid)) return;
@@ -237,6 +237,7 @@ class locallib {
                 }
             }
         }
+        if (!empty($options)) $options = explode("\n", $options);
         return $options;
     }
 
@@ -462,5 +463,47 @@ class locallib {
             echo "\t\t<option value=\"" . $key . "\"" . (($key == $act)?' selected':'') . ">" . get_string($actions[$key], 'local_eduvidual') . "</option>\n";
         }
         echo "\t</select>\n";
+    }
+
+    /**
+     * Automatically sets the context based on the PAGE or current org
+     * Fall back to system-context if nothing else applies
+     * @param courseid to force
+    **/
+    public static function set_context_auto($courseid = 0, $categoryid = 0) {
+        global $COURSE, $org, $PAGE;
+
+        if ($courseid <= 1 && $PAGE->course->id > 1) {
+            $courseid = $PAGE->course->id;
+        } else if ($courseid <= 1 && $COURSE->id > 1) {
+            $courseid = $COURSE->id;
+        }
+        if ($categoryid <= 1 && isset($org->categoryid) && $org->categoryid > 1) {
+            $categoryid = $org->categoryid;
+        } else if ($categoryid <= 1 && $PAGE->course->category > 1) {
+            $categoryid = $PAGE->course->category;
+        } else if ($categoryid <= 1 && $COURSE->category > 1) {
+            $categoryid = $COURSE->category;
+        }
+
+        $PAGE->set_context(\context_system::instance());
+        if ($categoryid > 1) {
+            $PAGE->set_context(\context_coursecat::instance($categoryid));
+            $PAGE->set_pagelayout('coursecategory');
+            try { $PAGE->set_category_by_id($categoryid); } catch(\Exception $e) {}
+            $PAGE->navbar->add($org->name, new \moodle_url('/course/index.php', array('categoryid' => $org->categoryid)));
+            if ($org->categoryid != $categoryid) {
+                $category = $DB->get_record('course_categories', array('id' => $categoryid));
+                $PAGE->navbar->add($category->name, new \moodle_url('/course/index.php', array('categoryid' => $categoryid)));
+            }
+        }
+
+        if ($courseid > 1) {
+            $PAGE->set_context(\context_course::instance($courseid));
+            $PAGE->set_pagelayout('course');
+            try {  $PAGE->set_course(get_course($courseid)); } catch(\Exception $e) {}
+        }
+
+        //$PAGE->navbar->add('manage', $PAGE->url);
     }
 }

@@ -44,7 +44,7 @@ if (empty($org->mnetlogo)) {
 }
 
 echo $OUTPUT->render_from_template(
-    'local_eduvidual/manage_mnet' . ((is_siteadmin() ? '_isadmin': ''),
+    'local_eduvidual/manage_mnet' . (is_siteadmin() ? '_isadmin': ''),
     (object) array(
         'maildomain' => $org->maildomain,
         'maildomainteacher' => $org->maildomainteacher,

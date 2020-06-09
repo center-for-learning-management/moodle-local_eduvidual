@@ -307,7 +307,7 @@ class local_eduvidual_lib_import_compiler_user extends local_eduvidual_lib_impor
         } else {
             $obj->email = strtolower($obj->email);
             global $CFG;
-            require_once($CFG->dirroot . '/local/eduvidual/block_eduvidual.php');
+            
             if (empty($obj->username) || !is_siteadmin()) {
                 $obj->username = str_replace($dummydomain, '', $obj->email);
             }

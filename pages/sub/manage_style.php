@@ -40,7 +40,7 @@ if ($data = $form->get_data()) {
         $data->orgbanner, $context->id, 'local_eduvidual', 'orgbanner', $org->orgid,
         array('subdirs' => $form->subdirs, 'maxbytes' => $form->maxbytes, 'maxfiles' => 1)
     );
-    $files = local_eduvidual::list_area_files('orgbanner', $org->orgid, $context);
+    $files = \local_eduvidual\locallib::list_area_files('orgbanner', $org->orgid, $context);
     if (count($files) > 0) {
         $org->banner = $files[0]->url;
     } else {
@@ -70,7 +70,7 @@ $form->display();
 <?php
 if (optional_param('customcssstore', 0, PARAM_INT)) {
     $org->customcss = optional_param('customcss', '', PARAM_TEXT);
-    local_eduvidual::$org = $org;
+    \local_eduvidual\locallib::$org = $org;
     if ($DB->execute('UPDATE {local_eduvidual_org} SET customcss=? WHERE id=?', array($org->customcss, $org->id))) {
         echo "<p class=\"alert alert-success\">" . get_string('store:success', 'local_eduvidual') . "</p>";
     } else {

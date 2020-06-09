@@ -24,7 +24,7 @@ require_once('../../../config.php');
 require_login();
 
 require_once($CFG->libdir . '/adminlib.php');
-require_once($CFG->dirroot . '/local/eduvidual/block_eduvidual.php');
+
 
 $act = optional_param('act', '', PARAM_TEXT);
 $orgid = optional_param('orgid', 0, PARAM_INT);
@@ -39,24 +39,21 @@ $PAGE->requires->css('/local/eduvidual/style/manage.css');
 
 // Only allow a certain user group access to this script
 $allow = array("Manager");
-if (!in_array(local_eduvidual::get('role'), $allow) && !is_siteadmin()) {
-	local_eduvidual::print_app_header();
+if (!in_array(\local_eduvidual\locallib::get_highest_role(), $allow) && !is_siteadmin()) {
+	echo $OUTPUT->header();
 	?>
 		<p class="alert alert-danger"><?php get_string('access_denied', 'local_eduvidual'); ?></p>
 	<?php
-	local_eduvidual::print_app_footer();
+	echo $OUTPUT->footer();
 	exit;
 }
 
 // Used to determine if we can manage this org
 $current_orgid = optional_param('orgid', 0, PARAM_INT);
-$orgas = local_eduvidual::get_organisations('Manager');
-$org = local_eduvidual::get_organisations_check($orgas, $current_orgid);
-if ($org) {
-    local_eduvidual::set_org($org->orgid);
-}
+$orgas = \local_eduvidual\locallib::get_organisations('Manager');
+$org = \local_eduvidual\locallib::get_organisations_check($orgas, $current_orgid);
 
-local_eduvidual::set_context_auto(0, $org->categoryid);
+\local_eduvidual\locallib::set_context_auto(0, $org->categoryid);
 $PAGE->navbar->add(get_string('Management', 'local_eduvidual'), $PAGE->url);
 
 $act = optional_param('act', '', PARAM_TEXT);
@@ -84,14 +81,14 @@ switch($act) {
 $PAGE->set_title($org->name . ': ' . $title);
 $PAGE->set_heading($org->name . ': ' . $title);
 
-local_eduvidual::print_app_header();
+echo $OUTPUT->header();
 
 echo "<div class=\"grid-eq-2 ui-eduvidual\">\n";
 if (count($orgas) > 1) {
-    local_eduvidual::print_org_selector('Manager', $org->orgid);
+    \local_eduvidual\locallib::print_org_selector('Manager', $org->orgid);
 }
-$actions = local_eduvidual::get_actions('manage');
-local_eduvidual::print_act_selector($actions, $act);
+$actions = \local_eduvidual\locallib::get_actions('manage');
+\local_eduvidual\locallib::print_act_selector($actions, $act);
 echo "</div>\n";
 
 if ($org) {
@@ -102,6 +99,6 @@ if ($org) {
     }
 }
 
-local_eduvidual::print_app_footer();
+echo $OUTPUT->footer();
 
 // Below this line we only collect functions

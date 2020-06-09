@@ -22,7 +22,7 @@
 
 defined('MOODLE_INTERNAL') || die;
 
-$org = local_eduvidual::$org;
+$org = \local_eduvidual\locallib::$org;
 ?>
 
 <div class="card">
@@ -57,5 +57,5 @@ $org = local_eduvidual::$org;
 </div>
 <?php
 
-local_eduvidual::add_script_on_load('require(["local_eduvidual/teacher"], function(TEACHER) { TEACHER.user_search("#local_eduvidual_courses_courseusers_search", "courseusers", 1); });');
-local_eduvidual::add_script_on_load('require(["local_eduvidual/teacher"], function(TEACHER) { TEACHER.user_search("#local_eduvidual_courses_orgusers_search", "orgusers", 1); })');
+\local_eduvidual\locallib::add_script_on_load('require(["local_eduvidual/teacher"], function(TEACHER) { TEACHER.user_search("#local_eduvidual_courses_courseusers_search", "courseusers", 1); });');
+\local_eduvidual\locallib::add_script_on_load('require(["local_eduvidual/teacher"], function(TEACHER) { TEACHER.user_search("#local_eduvidual_courses_orgusers_search", "orgusers", 1); })');

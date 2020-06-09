@@ -24,11 +24,11 @@ require_once('../../../config.php');
 require_login();
 
 require_once($CFG->libdir . '/adminlib.php');
-require_once($CFG->dirroot . '/local/eduvidual/block_eduvidual.php');
+
 
 $id = optional_param('id', 0, PARAM_INT);
-local_eduvidual::set_org_by_courseid($id);
-local_eduvidual::set_context_auto($id);
+\local_eduvidual\locallib::set_org_by_courseid($id);
+\local_eduvidual\locallib::set_context_auto($id);
 
 $PAGE->set_pagelayout('mydashboard');
 $PAGE->set_url('/local/eduvidual/pages/courses.php', array());
@@ -37,7 +37,7 @@ $PAGE->set_heading(get_string('Courses', 'local_eduvidual'));
 //$PAGE->set_cacheable(false);
 
 if ($id == 0) {
-    local_eduvidual::print_app_header();
+    echo $OUTPUT->header();
     // Show overview of courses
     $courses = enrol_get_all_users_courses($USER->id, true);
     // Create a course_in_list object to use the get_course_overviewfiles() method.
@@ -49,8 +49,8 @@ if ($id == 0) {
             $shown = $DB->get_record('local_eduvidual_courseshow', array('userid' => $USER->id, 'courseid' => $course->id));
             $url = $CFG->wwwroot . "/course/view.php?id=" . $course->id;
             $context = context_course::instance($course->id);
-            $canviewinvisible = has_capability('moodle/course:update', $context) || is_siteadmin() || local_eduvidual::get('orgrole') == 'Manager';
-            if (true || local_eduvidual::$isapp) {
+            $canviewinvisible = has_capability('moodle/course:update', $context) || is_siteadmin() || \local_eduvidual\locallib::get('orgrole') == 'Manager';
+            if (true || \local_eduvidual\locallib::$isapp) {
                 $url = $CFG->wwwroot . "/local/eduvidual/pages/courses.php?id=" . $course->id;
             }
             // List course only if visible or we can edit
@@ -117,7 +117,7 @@ if ($id == 0) {
     $modinfo = get_fast_modinfo($course);
     $cms = $modinfo->get_cms();
     $PAGE->set_context($context);
-    local_eduvidual::print_app_header();
+    echo $OUTPUT->header();
 
     $isenrolled = is_enrolled($context, $USER->id, '', true);
     $canedit = has_capability('moodle/course:update', $context) || is_siteadmin();
@@ -200,4 +200,4 @@ if ($id == 0) {
         } // endif isenrolled
     } // endif enrol else
 }
-local_eduvidual::print_app_footer();
+echo $OUTPUT->footer();

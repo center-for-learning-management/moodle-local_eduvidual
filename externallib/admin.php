@@ -40,7 +40,7 @@ class local_eduvidual_external_admin extends external_api {
     public static function org_gps($lon1, $lon2, $lat1, $lat2, $includenonegroup, $advanceddata = 0) {
         global $CFG, $DB, $PAGE;
 
-        require_once($CFG->dirroot . '/local/eduvidual/block_eduvidual.php');
+        
         if (!is_siteadmin()) {
             return json_encode(array());
         }

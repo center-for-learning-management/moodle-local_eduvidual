@@ -24,7 +24,7 @@ require_once('../../../config.php');
 require_login();
 
 require_once($CFG->libdir . '/adminlib.php');
-require_once($CFG->dirroot . '/local/eduvidual/block_eduvidual.php');
+
 
 $PAGE->set_context(context_system::instance());
 $PAGE->set_pagelayout('mydashboard');
@@ -34,7 +34,7 @@ $PAGE->set_heading(get_string('Accesscard', 'local_eduvidual'));
 //$PAGE->set_cacheable(false);
 
 $PAGE->requires->css('/local/eduvidual/style/manage_bunch.css');
-local_eduvidual::print_app_header();
+echo $OUTPUT->header();
 //print_r($USER);
 
 if ($USER->id > 1 && !isguestuser($USER)) {
@@ -55,13 +55,13 @@ if ($USER->id > 1 && !isguestuser($USER)) {
                     <div class="contact"><?php echo $USER->email; ?></div>
                     <div class="header"><?php echo get_string('Accesscard', 'local_eduvidual'); ?></div>
                     <div class="avatar"><?php echo $OUTPUT->user_picture($USER, array('size' => 200)); ?></div>
-                    <!-- <div class="qr"><img src="<?php echo $CFG->wwwroot . '/local/eduvidual/pix/qr.php?txt=' . rawurlencode($USER->id . '#' . local_eduvidual::get('field_secret')); ?>" alt="QR" /></div> -->
+                    <!-- <div class="qr"><img src="<?php echo $CFG->wwwroot . '/local/eduvidual/pix/qr.php?txt=' . rawurlencode($USER->id . '#' . \local_eduvidual\locallib::get('field_secret')); ?>" alt="QR" /></div> -->
                     <div class="secret" style="display: flex; align-items: flex-end; justify-content: flex-end;">
                         <span class="uid"><?php echo $USER->id; ?></span>
                         <span class="hash">#</span>
-                        <span class="tan"><?php echo local_eduvidual::get('field_secret'); ?></span>
+                        <span class="tan"><?php echo \local_eduvidual\locallib::get('field_secret'); ?></span>
                     </div>
-                    <div class="roles"><?php echo local_eduvidual::get('role'); ?></div>
+                    <div class="roles"><?php echo \local_eduvidual\locallib::get('role'); ?></div>
                 </div>
             </div>
             <div>
@@ -86,4 +86,4 @@ if ($USER->id > 1 && !isguestuser($USER)) {
 }
 
 
-local_eduvidual::print_app_footer();
+echo $OUTPUT->footer();

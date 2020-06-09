@@ -20,7 +20,35 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die;
+require_once('../../../config.php');
+require_login();
+
+require_once($CFG->libdir . '/adminlib.php');
+
+$PAGE->set_url('/local/eduvidual/pages/createcourse.php', array());
+//$PAGE->set_cacheable(false);
+$PAGE->set_context(context_system::instance());
+
+// Only allow a certain user group access to this page
+$allow = array("Manager", "Teacher");
+if (!in_array(\local_eduvidual\locallib::get_highest_role(), $allow) && !is_siteadmin()) {
+    echo $OUTPUT->header();
+    echo $OUTPUT->render_from_template('local_eduvidual/alert', array(
+        'type' => 'danger',
+        'content' => get_string('access_denied', 'local_eduvidual'),
+    ));
+	echo $OUTPUT->footer();
+	exit;
+}
+
+// Used to determine if we can teach in this org
+$orgas = \local_eduvidual\locallib::get_organisations('Teacher');
+
+$PAGE->set_title(get_string('teacher:createcourse', 'local_eduvidual'));
+$PAGE->set_heading(get_string('teacher:createcourse', 'local_eduvidual'));
+
+$PAGE->navbar->add(get_string('teacher:createcourse', 'local_eduvidual'), $PAGE->url);
+echo $OUTPUT->header();
 
 $formsent = optional_param('formsent', 0, PARAM_INT);
 $orgs = \local_eduvidual\locallib::get_organisations('Teacher');
@@ -30,10 +58,7 @@ $subcat1 = optional_param('subcat1', '', PARAM_TEXT);
 $subcat2 = optional_param('subcat2', '', PARAM_TEXT);
 $subcat3 = optional_param('subcat3', '', PARAM_TEXT);
 $subcat4 = optional_param('subcat4', '', PARAM_TEXT);
-
 $basement = optional_param('basement', 0, PARAM_INT);
-
-
 
 $subcats1 = \local_eduvidual\locallib::get_orgsubcats($orgid, 'subcats1');
 $subcats2 = \local_eduvidual\locallib::get_orgsubcats($orgid, 'subcats2');
@@ -281,8 +306,7 @@ if ($formsent) {
     }
 }
 
-$PAGE->navbar->add(get_string('teacher:createcourse', 'local_eduvidual'), $PAGE->url);
-echo $OUTPUT->header();
+
 if (count($msg) > 0) {
     echo implode('', $msg);
 } else {
@@ -316,14 +340,14 @@ if (count($msg) > 0) {
             'has_subcats1' => empty($subcats1) ? 0 : 1,
             'has_subcats2' => empty($subcats2) ? 0 : 1,
             'has_subcats3' => empty($subcats3) ? 0 : 1,
-            'ismanager' => (\local_eduvidual\locallib::get_orgrole() == 'Manager') ? 1 : 0,
+            'ismanager' => (\local_eduvidual\locallib::get_highest_role() == 'Manager') ? 1 : 0,
             'multipleorgs' => (count($_orgs) > 1),
             'orgs' => $_orgs,
             'orgfirst' => $_orgs[0]->orgid,
             'subcats1' => $subcats1,
             'subcats2' => $subcats2,
             'subcats3' => $subcats3,
-            'subcats1lbl' => '', // @POTENTIAL TODO load default labels here.
+            'subcats1lbl' => '',
             'subcats2lbl' => '',
             'subcats3lbl' => '',
             'subcats4lbl' => '',
@@ -331,7 +355,9 @@ if (count($msg) > 0) {
             'subcats2org' => '',
             'subcats3org' => '',
             'subcats4org' => '',
-            'wwwroot' => $CFG->wwwroot . '/local/eduvidual/pages/teacher.php?act=createcourse',
+            'wwwroot' => $CFG->wwwroot,
         ));
     }
 }
+
+echo $OUTPUT->footer();

@@ -27,7 +27,7 @@ require_once('../../../config.php');
 require_login();
 
 require_once($CFG->libdir . '/adminlib.php');
-require_once($CFG->dirroot . '/local/eduvidual/block_eduvidual.php');
+
 
 
 $PAGE->set_context(context_system::instance());
@@ -36,7 +36,7 @@ $PAGE->set_url('/local/eduvidual/pages/token_mso365.php', array());
 $PAGE->set_title('Moodle Office 365 Webservices');
 $PAGE->set_heading('Moodle Office 365 Webservices');
 
-local_eduvidual::print_app_header();
+echo $OUTPUT->header();
 
 $service = $DB->get_record('external_services', array('name' => 'Moodle Office 365 Webservices'));
 if (empty($service->id)) {
@@ -59,4 +59,4 @@ if (empty($service->id)) {
 
 
 
-local_eduvidual::print_app_footer();
+echo $OUTPUT->footer();

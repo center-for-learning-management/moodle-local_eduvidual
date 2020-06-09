@@ -25,7 +25,7 @@ require_once('../../../config.php');
 require_login();
 
 require_once($CFG->libdir . '/adminlib.php');
-require_once($CFG->dirroot . '/local/eduvidual/block_eduvidual.php');
+
 
 $embed = optional_param('embed', 0, PARAM_INT);
 $act = optional_param('act', 'backgrounds', PARAM_TEXT);
@@ -41,7 +41,7 @@ $PAGE->set_heading(get_string('Preferences', 'local_eduvidual'));
 //$PAGE->set_cacheable(false);
 $PAGE->requires->css('/local/eduvidual/style/preferences.css');
 
-local_eduvidual::print_app_header();
+echo $OUTPUT->header();
 
 if ($embed || $act == 'backgrounds') {
     $background = get_user_preferences('local_eduvidual_background');
@@ -77,4 +77,4 @@ $context = \context_system::instance();
 if (has_capability('moodle/question:viewall', $context)) {
     require_once($CFG->dirroot . '/local/eduvidual/pages/preferences_teacher.php');
 } // if is teacher
-local_eduvidual::print_app_footer();
+echo $OUTPUT->footer();

@@ -42,6 +42,13 @@ function local_eduvidual_after_require_login() {
 function local_eduvidual_before_standard_html_head() {
     global $CFG, $CONTEXT, $COURSE, $DB, $OUTPUT, $PAGE, $USER;
 
+    // Main styles for eduvidual.
+    $PAGE->requires->css('/local/eduvidual/style/main.css');
+    $PAGE->requires->css('/local/eduvidual/style/spinner.css');
+    $PAGE->requires->css('/local/eduvidual/style/ui.css');
+    // General boost-modifications.
+    $PAGE->requires->css('/local/eduvidual/style/theme_boost.css');
+
     $org = \local_eduvidual\locallib::get_org_by_categoryid();
 
     if (strpos($_SERVER["SCRIPT_FILENAME"], '/enrol/otherusers.php') > 0) {
@@ -76,10 +83,6 @@ function local_eduvidual_before_standard_html_head() {
     $PAGE->set_headingmenu($orgmenu);
     */
 
-    // Main.css changes some styles for eduvidual.
-    $PAGE->requires->css('/local/eduvidual/style/main.css');
-    // General boost-modifications.
-    $PAGE->requires->css('/local/eduvidual/style/theme_boost.css');
     if (strpos($_SERVER["SCRIPT_FILENAME"], '/course/delete.php') > 0) {
         $PAGE->requires->js_call_amd("local_eduvidual/jsinjector", "modifyRedirectUrl", array('coursedelete'));
     }
@@ -129,7 +132,7 @@ function local_eduvidual_extend_navigation($navigation) {
 
     if (in_array($highestrole, array('Manager', 'Teacher'))) {
         $label = get_string('createcourse:here', 'local_eduvidual');
-        $link = new moodle_url('/local/eduvidual/pages/teacher.php', array('act' => 'createcourse'));
+        $link = new moodle_url('/local/eduvidual/pages/createcourse.php', array());
         $icon = new pix_icon('/t/cohort', '', '');
         $nodecreatecourse = $nodehome->add($label, $link, navigation_node::NODETYPE_LEAF, $label, 'createcourse', $icon);
         $nodecreatecourse->showinflatnavigation = true;
@@ -301,8 +304,8 @@ function local_eduvidual_pluginfile($course, $cm, $context, $filearea, $args, $f
     $restrict_to_org = array('orgfiles', 'orgbanner');
     if (in_array($filearea, $restrict_to_org)) {
         global $CFG;
-        require_once($CFG->dirroot . '/local/eduvidual/block_eduvidual.php');
-        $orgs = local_eduvidual::get_organisations('*');
+
+        $orgs = \local_eduvidual\locallib::get_organisations('*');
         $ok = false;
         foreach($orgs AS $org) {
             if ($org->orgid == $itemid) {

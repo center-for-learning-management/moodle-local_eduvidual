@@ -23,7 +23,7 @@
  require_once('../../../../config.php');
 
 require_once($CFG->libdir . '/adminlib.php');
-require_once($CFG->dirroot . '/local/eduvidual/block_eduvidual.php');
+
 
 $PAGE->set_context(context_system::instance());
 $PAGE->set_pagelayout('mydashboard');
@@ -36,7 +36,7 @@ $PAGE->requires->css('/local/eduvidual/style/login_mnet.css');
 if (!empty($SESSION->wantsurl)) $wantsurl = str_replace($CFG->wwwroot, "", $SESSION->wantsurl);
 if (empty($wantsurl)) $wantsurl = '/my';
 
-local_eduvidual::print_app_header();
+echo $OUTPUT->header();
 
 $context = context_system::instance();
 $fs = get_file_storage();
@@ -75,4 +75,4 @@ echo $OUTPUT->render_from_template(
         'hosts' => $hosts,
     )
 );
-local_eduvidual::print_app_footer();
+echo $OUTPUT->footer();

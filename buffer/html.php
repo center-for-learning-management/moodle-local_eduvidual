@@ -30,7 +30,7 @@ if (!class_exists('phpQuery', true)) {
 }
 try {
     // Load available organistions
-    $orgs = local_eduvidual::get_organisations('*');
+    $orgs = \local_eduvidual\locallib::get_organisations('*');
     $orgids = array();
     foreach($orgs AS $org) {
         $orgids[] = $org->orgid;
@@ -38,13 +38,13 @@ try {
     $doc = phpQuery::newDocumentHTML($buffer);
     if ($PAGE->context->contextlevel == CONTEXT_COURSE) {
         //echo "set org by courseid " . $PAGE->course->id;
-        local_eduvidual::set_org_by_courseid($PAGE->course->id);
+        \local_eduvidual\locallib::set_org_by_courseid($PAGE->course->id);
     } elseif ($PAGE->context->contextlevel == CONTEXT_COURSECAT && isset($PAGE->category) && isset($PAGE->category->id)) {
         //echo "set org by categoryid " . $PAGE->category->id;
-        local_eduvidual::set_org_by_categoryid($PAGE->category->id);
+        \local_eduvidual\locallib::set_org_by_categoryid($PAGE->category->id);
     }
 
-    $org = local_eduvidual::get('org');
+    $org = \local_eduvidual\locallib::get('org');
 
     require($CFG->dirroot . '/local/eduvidual/buffer/html_hook_login.php');
     require($CFG->dirroot . '/local/eduvidual/buffer/html_hook_pages.php');

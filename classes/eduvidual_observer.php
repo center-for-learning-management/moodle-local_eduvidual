@@ -24,7 +24,7 @@
 namespace local_eduvidual;
 
 defined('MOODLE_INTERNAL') || die;
-require_once($CFG->dirroot . '/local/eduvidual/block_eduvidual.php');
+
 
 class eduvidual_observer {
     public static function event($event) {

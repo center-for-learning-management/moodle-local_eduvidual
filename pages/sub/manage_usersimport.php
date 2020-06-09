@@ -24,7 +24,7 @@
 
 defined('MOODLE_INTERNAL') || die;
 
-if (local_eduvidual::get('orgrole') != "Manager" && !is_siteadmin()) {
+if (\local_eduvidual\locallib::get('orgrole') != "Manager" && !is_siteadmin()) {
     ?>
     <p class="alert alert-warning"><?php echo get_string('js:missing_permission', 'local_eduvidual'); ?></p>
     <?php

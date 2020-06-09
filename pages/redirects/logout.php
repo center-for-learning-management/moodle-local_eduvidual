@@ -21,7 +21,7 @@
  */
 
 require_once('../../../../config.php');
-require_once($CFG->dirroot . '/local/eduvidual/block_eduvidual.php');
+
 
 $PAGE->set_context(context_system::instance());
 require_login();
