@@ -106,7 +106,7 @@ function local_eduvidual_before_standard_html_head() {
     $inject_styles[] = "</style>";
 
     $inject_styles = array("<style type=\"text/css\" id=\"local_eduvidual_style_org\">");
-    $inject_styles[] = $org->customcss;
+    if (!empty($org->customcss)) $inject_styles[] = $org->customcss;
     $inject_styles[] = "</style>";
 
     return implode("\n", $inject_styles);

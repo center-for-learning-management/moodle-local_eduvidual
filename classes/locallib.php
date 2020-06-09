@@ -155,7 +155,7 @@ class locallib {
         $ctx = $DB->get_record('context', array('id' => $ctxid));
         if (empty($ctx->id)) return;
         $path = explode("/", $ctx->path);
-        if (count($path) < 2) return;
+        if (count($path) < 3) return;
         $rootctx = $DB->get_record('context', array('id' => $path[2]));
         return $DB->get_record('local_eduvidual_org', array('categoryid' => $rootctx->instanceid));
     }
