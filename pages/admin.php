@@ -23,15 +23,12 @@
 require_once('../../../config.php');
 require_login();
 
-require_once($CFG->libdir . '/adminlib.php');
-
-
 $act = optional_param('act', '', PARAM_TEXT);
 if (empty($act)) {
     $act = 'backgrounds';
 }
 
-\local_eduvidual\locallib::set_context_auto();
+$PAGE->set_context(\context_system::instance());
 $PAGE->set_pagelayout('admin');
 $PAGE->set_url('/local/eduvidual/pages/admin.php', array('act' => $act));
 $PAGE->set_title(get_string('Administration', 'local_eduvidual'));

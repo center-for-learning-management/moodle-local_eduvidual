@@ -321,7 +321,7 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'loc
 
                     Object.keys(orgs).forEach(function(i){
                         if (ADMIN.refresh_identifier != refresh_identifier) return; // Immediately abort!
-                        orgs[i].url = URL.relativeUrl('/local/eduvidual/pages/categories.php?orgid=' + orgs[i].orgid); // Set an url for this marker.
+                        orgs[i].url = URL.relativeUrl('/local/eduvidual/pages/myorgs.php?orgid=' + orgs[i].orgid); // Set an url for this marker.
 
                         var orgtype = orgs[i].orgid.toString().split('').pop();
                         var districttype = orgs[i].orgid.toString().split('')[0];
@@ -333,13 +333,13 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'loc
                             counts.both++;
                             orgs[i].classes += ' both';
                             orgs[i].layer = 2;
-                            orgs[i].url = URL.relativeUrl('/local/eduvidual/pages/categories.php?orgid=' + orgs[i].orgid);
+                            orgs[i].url = URL.relativeUrl('/local/eduvidual/pages/myorgs.php?orgid=' + orgs[i].orgid);
                         } else if(orgs[i].authenticated == 1) {
                             col = 'green';
                             counts.eduv++;
                             orgs[i].classes += ' eduv';
                             orgs[i].layer = 3;
-                            orgs[i].url = URL.relativeUrl('/local/eduvidual/pages/categories.php?orgid=' + orgs[i].orgid);
+                            orgs[i].url = URL.relativeUrl('/local/eduvidual/pages/myorgs.php?orgid=' + orgs[i].orgid);
                         } else if(orgs[i].lpf != null){
                             col = 'blue';
                             counts.lpf++;

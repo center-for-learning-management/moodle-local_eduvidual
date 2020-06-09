@@ -29,8 +29,8 @@ require_once($CFG->dirroot . "/local/eduvidual/classes/manage_files_form.php");
 // This variable is used within the form-object for the label text of orgfiles
 $_url = '/pluginfile.php/1/local_eduvidual/orgfiles/' . $org->orgid . '/<i>filename</i>';
 
-$form = new local_eduvidual_manage_files_form(null, null, 'post', '_self', array('data-ajax' => 'false'), true);
-$context = context_system::instance();
+$form = new \local_eduvidual_manage_files_form(null, null, 'post', '_self', array('data-ajax' => 'false'), true);
+$context = \context_system::instance();
 if ($data = $form->get_data()) {
     file_save_draft_area_files(
         $data->orgfiles, $context->id, 'local_eduvidual', 'orgfiles', $org->orgid,
@@ -70,8 +70,8 @@ $form->display();
 <?php
 if (optional_param('customcssstore', 0, PARAM_INT)) {
     $org->customcss = optional_param('customcss', '', PARAM_TEXT);
-    \local_eduvidual\locallib::$org = $org;
-    if ($DB->execute('UPDATE {local_eduvidual_org} SET customcss=? WHERE id=?', array($org->customcss, $org->id))) {
+
+    if ($DB->set_field('local_eduvidual_org', 'customcss', $org->customcss, array('orgid' => $org->orgid))) {
         echo "<p class=\"alert alert-success\">" . get_string('store:success', 'local_eduvidual') . "</p>";
     } else {
         echo "<p class=\"alert alert-warning\">" . get_string('store:error', 'local_eduvidual') . "</p>";

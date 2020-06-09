@@ -22,7 +22,7 @@
 
 defined('MOODLE_INTERNAL') || die;
 $isadmin = is_siteadmin();
-$ismanager = in_array(\local_eduvidual\locallib::get('role') == 'Manager';
+$ismanager = \local_eduvidual\locallib::get_highest_role() == 'Manager';
 if (!$isadmin && !$ismanager) die;
 
 ?>
@@ -32,8 +32,8 @@ if (!$isadmin && !$ismanager) die;
 if ($org->orgid > 0) {
     require_once($CFG->dirroot . "/local/eduvidual/classes/manage_data_form.php");
 
-    $form = new local_eduvidual_manage_data_form(null, null, 'post', '_self', array('data-ajax' => 'false'), true);
-    $context = context_system::instance();
+    $form = new \local_eduvidual_manage_data_form(null, null, 'post', '_self', array('data-ajax' => 'false'), true);
+    $context = \context_system::instance();
     if ($data = $form->get_data()) {
         // Store all fields from $data to $org
         //$org->mnetid = $data->mnetid;

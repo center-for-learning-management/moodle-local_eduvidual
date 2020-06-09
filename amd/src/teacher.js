@@ -90,7 +90,7 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/templates'
                                 var o = $('#' + uniqid + '-' + keys);
                                 var parent = o.parent();
 
-                                if (typeof result[keym] !== 'undefined' && result[keym].length > 0) {
+                                if (result[keym] !== null && result[keym].length > 0) {
                                     if (!o.is('select')) {
                                         o.remove();
                                         var o = $('<select>')

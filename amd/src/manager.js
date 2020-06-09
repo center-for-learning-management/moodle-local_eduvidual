@@ -384,7 +384,7 @@ define(['jquery', 'core/ajax', 'core/modal_events', 'core/modal_factory', 'core/
                 });
 				if (o.result.status=='ok') {
                     if (typeof o.payload.parent === 'undefined') {
-                        // Called by categories.php and update AJAX
+                        // Called by myorgs.php and update AJAX
                         require(['local_eduvidual/user'], function(USER) {
                             USER.loadCategory(o.data.parentid, o.data.orgid);
                         });
@@ -450,7 +450,7 @@ define(['jquery', 'core/ajax', 'core/modal_events', 'core/modal_factory', 'core/
                 });
                 if (o.result.status=='ok') {
                     if (typeof o.payload.parent === 'undefined') {
-                        // Called by categories.php and update AJAX
+                        // Called by myorgs.php and update AJAX
                         require(['local_eduvidual/user'], function(USER) {
                             USER.loadCategory((typeof o.result.removedcat !== 'undefined')?o.result.removedcat.parent:o.result.editedcat.id, o.data.orgid);
                         });

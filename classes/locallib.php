@@ -68,22 +68,22 @@ class locallib {
         switch($module) {
             case 'admin':
                 $actions['backgrounds'] = 'admin:backgrounds:title';
-                $actions['blockfooter'] = 'admin:blockfooter:title';
+                //$actions['blockfooter'] = 'admin:blockfooter:title';
                 $actions['coursestuff'] = 'admin:coursestuff:title';
                 $actions['defaultroles'] = 'defaultroles:title';
-                $actions['explevel'] = 'explevel:title';
+                //$actions['explevel'] = 'explevel:title';
                 $actions['map'] = 'admin:map';
-                $actions['modulecats'] = 'admin:modulecats:title';
+                //$actions['modulecats'] = 'admin:modulecats:title';
                 $actions['orgs'] = 'admin:orgs:title';
                 $actions['phplist'] = 'admin:phplist:title';
                 $actions['stats'] = 'admin:stats:title';
-                $actions['termsofuse'] = 'admin:termsofuse:title';
+                //$actions['termsofuse'] = 'admin:termsofuse:title';
             break;
             case 'manage':
-                $actions['archive'] = 'manage:archive';
-                $actions['categories'] = 'manage:categories';
+                //$actions['archive'] = 'manage:archive';
+                //$actions['categories'] = 'manage:categories';
                 $actions['mnet'] = 'manage:mnet:action';
-                $actions['orgmenu'] = 'manage:orgmenu:title';
+                //$actions['orgmenu'] = 'manage:orgmenu:title';
                 $actions['style'] = 'manage:style';
                 $actions['subcats'] = 'manage:subcats:title';
                 $actions['users'] = 'manage:users';
@@ -91,7 +91,7 @@ class locallib {
                     $actions['stats'] = 'manage:stats';
             break;
             case 'teacher':
-                $actions['createmodule'] = 'teacher:createmodule';
+                //$actions['createmodule'] = 'teacher:createmodule';
                 $actions['createcourse'] = 'teacher:createcourse';
             break;
         }
@@ -135,6 +135,7 @@ class locallib {
         if (empty($categoryid)) {
             $categoryid = $COURSE->category;
         }
+
         $category = $DB->get_record('context', array('contextlevel' => CONTEXT_COURSECAT, 'instanceid' => $categoryid), '*', IGNORE_MISSING);
         if (empty($category->id)) return false;
         $path = explode('/', $category->path);
@@ -142,6 +143,21 @@ class locallib {
 
         // Get organisation by top level course category.
         return $DB->get_record('local_eduvidual_org', array('categoryid' => $catcontext->instanceid));
+    }
+
+    /**
+     * Get the current org by a context.
+     * @param ctxid (optional) context id, if empty will use $PAGE->context->id
+     */
+    public static function get_org_by_context($ctxid = 0) {
+        global $CONTEXT, $DB, $PAGE;
+        if (empty($ctxid)) $ctxid = $PAGE->context->id;
+        $ctx = $DB->get_record('context', array('id' => $ctxid));
+        if (empty($ctx->id)) return;
+        $path = explode("/", $ctx->path);
+        if (count($path) < 2) return;
+        $rootctx = $DB->get_record('context', array('id' => $path[2]));
+        return $DB->get_record('local_eduvidual_org', array('categoryid' => $rootctx->instanceid));
     }
 
     /**
@@ -237,7 +253,6 @@ class locallib {
                 }
             }
         }
-        if (!empty($options)) $options = explode("\n", $options);
         return $options;
     }
 
@@ -407,6 +422,24 @@ class locallib {
     }
 
     /**
+     * List all files from a certain file area
+     */
+    public static function list_area_files($areaname, $itemid, $context = false) {
+        if (!$context) {
+            $context = context_system::instance();
+        }
+        $files = array();
+        $fs = get_file_storage();
+        $files_ = $fs->get_area_files($context->id, 'block_eduvidual', $areaname, $itemid);
+        foreach ($files_ as $file) {
+            if (str_replace('.', '', $file->get_filename()) != ""){
+                $file->url = '' . moodle_url::make_pluginfile_url($file->get_contextid(), $file->get_component(), $file->get_filearea(), $file->get_itemid(), $file->get_filepath(), $file->get_filename());
+                $files[] = $file;
+            }
+        }
+        return $files;
+    }
+    /**
      * Show a selector for all organistions a user has
      * @param role Role that is required ('Teacher', 'Manager', '*')
      * @param orgid org that should be selected. if not given tries to retrieve orgid via optional_param.
@@ -463,47 +496,5 @@ class locallib {
             echo "\t\t<option value=\"" . $key . "\"" . (($key == $act)?' selected':'') . ">" . get_string($actions[$key], 'local_eduvidual') . "</option>\n";
         }
         echo "\t</select>\n";
-    }
-
-    /**
-     * Automatically sets the context based on the PAGE or current org
-     * Fall back to system-context if nothing else applies
-     * @param courseid to force
-    **/
-    public static function set_context_auto($courseid = 0, $categoryid = 0) {
-        global $COURSE, $org, $PAGE;
-
-        if ($courseid <= 1 && $PAGE->course->id > 1) {
-            $courseid = $PAGE->course->id;
-        } else if ($courseid <= 1 && $COURSE->id > 1) {
-            $courseid = $COURSE->id;
-        }
-        if ($categoryid <= 1 && isset($org->categoryid) && $org->categoryid > 1) {
-            $categoryid = $org->categoryid;
-        } else if ($categoryid <= 1 && $PAGE->course->category > 1) {
-            $categoryid = $PAGE->course->category;
-        } else if ($categoryid <= 1 && $COURSE->category > 1) {
-            $categoryid = $COURSE->category;
-        }
-
-        $PAGE->set_context(\context_system::instance());
-        if ($categoryid > 1) {
-            $PAGE->set_context(\context_coursecat::instance($categoryid));
-            $PAGE->set_pagelayout('coursecategory');
-            try { $PAGE->set_category_by_id($categoryid); } catch(\Exception $e) {}
-            $PAGE->navbar->add($org->name, new \moodle_url('/course/index.php', array('categoryid' => $org->categoryid)));
-            if ($org->categoryid != $categoryid) {
-                $category = $DB->get_record('course_categories', array('id' => $categoryid));
-                $PAGE->navbar->add($category->name, new \moodle_url('/course/index.php', array('categoryid' => $categoryid)));
-            }
-        }
-
-        if ($courseid > 1) {
-            $PAGE->set_context(\context_course::instance($courseid));
-            $PAGE->set_pagelayout('course');
-            try {  $PAGE->set_course(get_course($courseid)); } catch(\Exception $e) {}
-        }
-
-        //$PAGE->navbar->add('manage', $PAGE->url);
     }
 }

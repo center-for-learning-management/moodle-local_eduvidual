@@ -30,12 +30,12 @@ if ($org->mnetid > 0) {
     $org->mnetname = '';
 }
 
-$context = context_system::instance();
+$context = \context_system::instance();
 $fs = get_file_storage();
 $files = $fs->get_area_files($context->id, 'local_eduvidual', 'mnetlogo', $org->orgid);
 foreach ($files as $file) {
     if (str_replace('.', '', $file->get_filename()) != ""){
-        $org->mnetlogo = moodle_url::make_pluginfile_url($file->get_contextid(), $file->get_component(), $file->get_filearea(), $file->get_itemid(), $file->get_filepath(), $file->get_filename());
+        $org->mnetlogo = \moodle_url::make_pluginfile_url($file->get_contextid(), $file->get_component(), $file->get_filearea(), $file->get_itemid(), $file->get_filepath(), $file->get_filename());
     }
 }
 
@@ -59,8 +59,8 @@ echo $OUTPUT->render_from_template(
 if (is_siteadmin()) {
     require_once($CFG->dirroot . "/local/eduvidual/classes/manage_mnet_form.php");
 
-    $form = new local_eduvidual_manage_mnet_form(null, null, 'post', '_self', array('data-ajax' => 'false'), true);
-    $context = context_system::instance();
+    $form = new \local_eduvidual_manage_mnet_form(null, null, 'post', '_self', array('data-ajax' => 'false'), true);
+    $context = \context_system::instance();
     if ($data = $form->get_data()) {
         $org->mnetid = $data->mnetid;
         $DB->update_record('local_eduvidual_org', $org);

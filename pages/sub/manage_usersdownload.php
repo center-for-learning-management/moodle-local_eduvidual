@@ -32,9 +32,7 @@ $orgid = required_param('orgid', PARAM_INT);
 $userids = explode(',', required_param('userids', PARAM_TEXT));
 $dataformat = required_param('dataformat', PARAM_ALPHA);
 
-\local_eduvidual\locallib::set_org($orgid);
-
-if (\local_eduvidual\locallib::get('orgrole') != "Manager" && !is_siteadmin()) {
+if (\local_eduvidual\locallib::get_orgrole($orgid) != "Manager" && !is_siteadmin()) {
     $OUTPUT->header();
     $OUTPUT->render_from_template('local_eduvidual/alert', array(
         'type' => 'warning',

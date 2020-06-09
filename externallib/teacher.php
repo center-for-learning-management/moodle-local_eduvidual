@@ -41,20 +41,23 @@ class local_eduvidual_external_teacher extends external_api {
         $params = self::validate_parameters(self::createcourse_selections_parameters(), array('orgid' => $orgid, 'subcat1' => $subcat1, 'subcat2' => $subcat2, 'subcat3' => $subcat3));
 
         $orgas = \local_eduvidual\locallib::get_organisations('Teacher');
-        $org = $DB->get_record('local_eduvidual_org', array('orgid' => $params['orgid']));
+        $org = \local_eduvidual\locallib::get_organisations_check($orgas, $params['orgid']);
+
         $seltree = array(
+            'org' => $org,
+            'orgid' => $org->orgid,
             'orgids' => $orgas,
-            'subcats1' => \local_eduvidual\locallib::get_orgsubcats($params['orgid'], 'subcats1'),
+            'subcats1' => \local_eduvidual\locallib::get_orgsubcats($org->orgid, 'subcats1'),
             'subcats1lbl' => $org->subcats1lbl,
             'subcats2lbl' => $org->subcats2lbl,
             'subcats3lbl' => $org->subcats3lbl,
             'subcats4lbl' => $org->subcats4lbl,
         );
         if (!empty($params['subcat1'])) {
-            $seltree['subcats2'] = \local_eduvidual\locallib::get_orgsubcats($params['orgid'], 'subcats2', $params['subcat1']);
+            $seltree['subcats2'] = \local_eduvidual\locallib::get_orgsubcats($org->orgid, 'subcats2', $params['subcat1']);
         }
         if (!empty($params['subcat2'])) {
-            $seltree['subcats3'] = \local_eduvidual\locallib::get_orgsubcats($params['orgid'], 'subcats3', $params['subcat2']);
+            $seltree['subcats3'] = \local_eduvidual\locallib::get_orgsubcats($org->orgid, 'subcats3', $params['subcat2']);
         }
 
         for ($a = 1; $a <= 3; $a++) {

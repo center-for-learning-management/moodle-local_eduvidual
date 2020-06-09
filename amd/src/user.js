@@ -127,7 +127,7 @@ define(
         result: function(o) {
             if (o.data.act == 'accesscode') {
                 if (o.result.status == 'ok') {
-                    top.location.href = URL.fileUrl("/local/eduvidual/pages/categories.php", "") + '?orgid=' + o.result.orgid;
+                    top.location.href = URL.fileUrl("/local/eduvidual/pages/myorgs.php", "") + '?orgid=' + o.result.orgid;
                 }
             }
             if (o.data.act == 'autologin') {

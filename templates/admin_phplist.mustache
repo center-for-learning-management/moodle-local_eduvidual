@@ -21,8 +21,9 @@
 {{#syncmessages}}
     {{> local_eduvidual/alert }}
 {{/syncmessages}}
-<a href="{{wwwroot}}/local/eduvidual/pages/admin.php?act=phplist&sync=1" class="btn ui-btn btn-primary">{{#str}} admin:phplist:sync, local_eduvidual {{/str}}</a>
-
+<div>
+    <a href="{{wwwroot}}/local/eduvidual/pages/admin.php?act=phplist&sync=1" class="btn ui-btn btn-primary">{{#str}} admin:phplist:sync, local_eduvidual {{/str}}</a>
+</div>
 {{#configs}}
     <label for="local_eduvidual_admin_phplist_{{field}}">{{field}}</label>
     <input type="{{type}}" id="local_eduvidual_admin_phplist_{{field}}" style="width: 100%;"

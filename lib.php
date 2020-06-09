@@ -49,7 +49,7 @@ function local_eduvidual_before_standard_html_head() {
     // General boost-modifications.
     $PAGE->requires->css('/local/eduvidual/style/theme_boost.css');
 
-    $org = \local_eduvidual\locallib::get_org_by_categoryid();
+    $org = \local_eduvidual\locallib::get_org_by_context();
 
     if (strpos($_SERVER["SCRIPT_FILENAME"], '/enrol/otherusers.php') > 0) {
         redirect($CFG->wwwroot . '/user/index.php?id=' . optional_param('id', 0, PARAM_INT));
@@ -90,21 +90,25 @@ function local_eduvidual_before_standard_html_head() {
 
     // Now inject organisation-specific resources.
     $inject_styles = array("<style type=\"text/css\" id=\"local_eduvidual_style_userextra\">");
-
-    if (!empty($org->orgbanner)) {
-        $inject_styles[] = "body #page-header .card { background-image: url(" . $org->orgbanner . ") !important; }";
-    }
     $background = get_user_preferences('local_eduvidual_background');
     if (!isguestuser($USER) && !empty($background)) {
         $inject_styles[] = "body { background: url(" . $background . ") no-repeat center center fixed; background-size: cover !important; }";
-    }
-    if (!empty($org->customcss)) {
-        $inject_styles[] = $org->customcss;
     }
     if (!empty($extra->background)) {
         $inject_styles[] = "body { background-image: url(" . $extra->background . "); background-position: center; background-size: cover; }";
     }
     $inject_styles[] = "</style>";
+
+    $inject_styles = array("<style type=\"text/css\" id=\"local_eduvidual_style_orgbanner\">");
+    if (!empty($org->orgbanner)) {
+        $inject_styles[] = "body #page-header .card { background-image: url(" . $org->orgbanner . ") !important; }";
+    }
+    $inject_styles[] = "</style>";
+
+    $inject_styles = array("<style type=\"text/css\" id=\"local_eduvidual_style_org\">");
+    $inject_styles[] = $org->customcss;
+    $inject_styles[] = "</style>";
+
     return implode("\n", $inject_styles);
 }
 
@@ -139,7 +143,7 @@ function local_eduvidual_extend_navigation($navigation) {
     }
 
     $label = get_string('Browse_org', 'local_eduvidual');
-    $link = new moodle_url('/local/eduvidual/pages/categories.php');
+    $link = new moodle_url('/local/eduvidual/pages/myorgs.php');
     $icon = new pix_icon('/i/withsubcat', '', '');
     $nodemyorgs = $nodehome->add($label, $link, navigation_node::NODETYPE_LEAF, $label, 'browseorgs', $icon);
     $nodemyorgs->showinflatnavigation = true;

@@ -38,8 +38,8 @@ if ($id != 0) {
         );
     }
     require_once($CFG->dirroot . '/local/eduvidual/classes/local_eduvidual_admin_termsofuse_form.php');
-    $form = new local_eduvidual_admin_termsofuse_form();
-    $context = context_system::instance();
+    $form = new \local_eduvidual_admin_termsofuse_form();
+    $context = \context_system::instance();
     if ($data = $form->get_data()) {
         if ($termsofuse->locked > 0) {
             // These terms had already been active and should hence be stored as a derivative

@@ -49,11 +49,11 @@ if (!in_array(\local_eduvidual\locallib::get_highest_role(), $allow) && !is_site
 }
 
 // Used to determine if we can manage this org
-$current_orgid = optional_param('orgid', 0, PARAM_INT);
+$orgid = optional_param('orgid', 0, PARAM_INT);
 $orgas = \local_eduvidual\locallib::get_organisations('Manager');
-$org = \local_eduvidual\locallib::get_organisations_check($orgas, $current_orgid);
+$org = \local_eduvidual\locallib::get_organisations_check($orgas, $orgid);
 
-\local_eduvidual\locallib::set_context_auto(0, $org->categoryid);
+$PAGE->set_context(\context_coursecat::instance($org->categoryid));
 $PAGE->navbar->add(get_string('Management', 'local_eduvidual'), $PAGE->url);
 
 $act = optional_param('act', '', PARAM_TEXT);

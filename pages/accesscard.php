@@ -26,7 +26,7 @@ require_login();
 require_once($CFG->libdir . '/adminlib.php');
 
 
-$PAGE->set_context(context_system::instance());
+$PAGE->set_context(\context_system::instance());
 $PAGE->set_pagelayout('mydashboard');
 $PAGE->set_url('/local/eduvidual/pages/accesscard.php', array());
 $PAGE->set_title(get_string('Accesscard', 'local_eduvidual'));
@@ -61,7 +61,7 @@ if ($USER->id > 1 && !isguestuser($USER)) {
                         <span class="hash">#</span>
                         <span class="tan"><?php echo \local_eduvidual\locallib::get('field_secret'); ?></span>
                     </div>
-                    <div class="roles"><?php echo \local_eduvidual\locallib::get('role'); ?></div>
+                    <div class="roles"><?php echo \local_eduvidual\locallib::get_orgrole($org->orgid); ?></div>
                 </div>
             </div>
             <div>
