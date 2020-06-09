@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package    block_eduvidual
+ * @package    local_eduvidual
  * @copyright  2019 Digital Education Society (http://www.dibig.at)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -23,4 +23,4 @@
 defined('MOODLE_INTERNAL') || die;
 if (!is_siteadmin()) die;
 
-echo $OUTPUT->render_from_template('block_eduvidual/admin_orgs', array());
+echo $OUTPUT->render_from_template('local_eduvidual/admin_orgs', array());

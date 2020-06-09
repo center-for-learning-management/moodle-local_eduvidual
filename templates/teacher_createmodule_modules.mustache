@@ -23,8 +23,8 @@
 
 
 <div id="{{uniqid}}-tab-0">
-    <h3>{{#str}} teacher:createmodule:selectmodule, block_eduvidual {{/str}}</h3>
-    <div id="block_eduvidual_teacher_createmodule" data-orgid="{{orgid}}" data-courseid="{{courseid}}" data-sectionid="{{sectionid}}">
+    <h3>{{#str}} teacher:createmodule:selectmodule, local_eduvidual {{/str}}</h3>
+    <div id="local_eduvidual_teacher_createmodule" data-orgid="{{orgid}}" data-courseid="{{courseid}}" data-sectionid="{{sectionid}}">
         {{#str}} loading {{/str}}
     </div>
 </div>
@@ -51,18 +51,18 @@
             {{#str}} eduthek_header, block_edupublisher{{/str}}
         </label>
         -->
-        <input type="button" value="{{#str}} search {{/str}}" onclick="require(['block_eduvidual/teacher'], function(TEACHER) { TEACHER.createModuleSearch('{{uniqid}}'); });" />
+        <input type="button" value="{{#str}} search {{/str}}" onclick="require(['local_eduvidual/teacher'], function(TEACHER) { TEACHER.createModuleSearch('{{uniqid}}'); });" />
     </form>
 
-    <div id="block_eduvidual_teacher_createmodule_publisher" data-orgid="{{orgid}}" data-courseid="{{courseid}}" data-sectionid="{{sectionid}}">
+    <div id="local_eduvidual_teacher_createmodule_publisher" data-orgid="{{orgid}}" data-courseid="{{courseid}}" data-sectionid="{{sectionid}}">
         {{#str}} loading {{/str}}
     </div>
 </div>
 {{/publishercanuse}}{{/publisherexists}}
 
 {{#js}}
-    require(["block_eduvidual/teacher"], function(TEACHER) { TEACHER.loadCategory(0); });
+    require(["local_eduvidual/teacher"], function(TEACHER) { TEACHER.loadCategory(0); });
     {{#showpublisher}}
-    require(["block_eduvidual/teacher"], function(TEACHER) { TEACHER.createModuleSearch('{{uniqid}}'); });
+    require(["local_eduvidual/teacher"], function(TEACHER) { TEACHER.createModuleSearch('{{uniqid}}'); });
     {{/showpublisher}}
 {{/js}}

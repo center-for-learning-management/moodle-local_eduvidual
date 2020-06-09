@@ -20,7 +20,7 @@
      * THEREFORE WE DROPPED THIS SCRIPT.
      */
   }}
-<div style="position: fixed; top: 0; right: 0; bottom: 0; left: 0; z-index: -1; background-image: url({{wwwroot}}/blocks/eduvidual/pix/bg-default.jpg) !important;"></div>
+<div style="position: fixed; top: 0; right: 0; bottom: 0; left: 0; z-index: -1; background-image: url({{wwwroot}}/local/eduvidual/pix/bg-default.jpg) !important;"></div>
 
 <div class="row justify-content-center">
     <div class="col-xl-6 col-sm-8 ">
@@ -40,9 +40,9 @@
                             </a>
                         </div>
                         <div class="potentialidp" style="margin-bottom: 3px; padding-bottom: 3px; border-bottom: 1px dashed darkgray;">
-                            <a class="btn btn-secondary btn-block" id="eduvidual-btn-sso-verbund" href="{{wwwroot}}/blocks/eduvidual/pages/login_mnet.php?wantsurl=" data-ajax="false">
+                            <a class="btn btn-secondary btn-block" id="eduvidual-btn-sso-verbund" href="{{wwwroot}}/local/eduvidual/pages/login_mnet.php?wantsurl=" data-ajax="false">
                                 <img src="{{wwwroot}}/pix/i/mnethost.svg" alt="" width="24" height="24">
-                                <span> {{#str}} login:network_btn, block_eduvidual {{/str}}</span>
+                                <span> {{#str}} login:network_btn, local_eduvidual {{/str}}</span>
                             </a>
                         </div>
                         <div style="margin-bottom: 3px; padding-bottom: 3px; border-bottom: 1px dashed darkgray;">
@@ -57,7 +57,7 @@
                         </div>
                         <div style="margin-bottom: 3px; padding-bottom: 3px; border-bottom: 1px dashed darkgray;">
                             <form class="mt-3" action="{{wwwroot}}/login/index.php" method="post" id="login" data-ajax="false">
-                                <p>{{#str}} or, block_eduvidual {{/str}}</p>
+                                <p>{{#str}} or, local_eduvidual {{/str}}</p>
                                 <input id="anchor" type="hidden" name="anchor" value="">
                                 <script>document.getElementById('anchor').value = location.hash;</script>
                                 <!-- <input type="hidden" name="logintoken" value="11G3ExwFjMV6AkKlSKZSfKxkUJEf55e7"> -->
@@ -86,12 +86,12 @@
                     <div class="col-md-5">
                         <div>
                             <a href="{{wwwroot}}/login/verify_age_location.php" class="btn btn-secondary btn-block" style="margin-bottom: 3px; padding-bottom: 3px; border-bottom: 1px dashed darkgray;" data-ajax="false">
-                                {{#str}} register:individual, block_eduvidual {{/str}}
+                                {{#str}} register:individual, local_eduvidual {{/str}}
                             </a>
                         </div>
                         <div>
-                            <a href="{{wwwroot}}/blocks/eduvidual/pages/register.php" class="btn btn-secondary btn-block" style="margin-bottom: 3px; padding-bottom: 3px; border-bottom: 1px dashed darkgray;" data-ajax="false">
-                                {{#str}} register:org, block_eduvidual {{/str}}
+                            <a href="{{wwwroot}}/local/eduvidual/pages/register.php" class="btn btn-secondary btn-block" style="margin-bottom: 3px; padding-bottom: 3px; border-bottom: 1px dashed darkgray;" data-ajax="false">
+                                {{#str}} register:org, local_eduvidual {{/str}}
                             </a>
                         </div>
                         {{#uses_edusupport}}

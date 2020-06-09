@@ -15,19 +15,19 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package    block_eduvidual
+ * @package    local_eduvidual
  * @copyright  2018 Digital Education Society (http://www.dibig.at)
  * @author     Robert Schrenk
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-//namespace block_eduvidual;
+//namespace local_eduvidual;
 
 defined('MOODLE_INTERNAL') || die;
 
 require_once($CFG->libdir . "/formslib.php");
 
-class block_eduvidual_admin_module_form extends moodleform {
+class local_eduvidual_admin_module_form extends moodleform {
     var $maxbytes = 1024*1024;
     var $areamaxbytes = 10485760;
     var $maxfiles = 1;
@@ -47,23 +47,23 @@ class block_eduvidual_admin_module_form extends moodleform {
         $mform->setType('id', PARAM_INT);
 
         // General Data
-        $mform->addElement('header', 'generaldata', get_string('admin:module:generaldata', 'block_eduvidual'));
+        $mform->addElement('header', 'generaldata', get_string('admin:module:generaldata', 'local_eduvidual'));
         //$mform->setExpanded('generaldata');
         $mform->addElement('text', 'name', get_string('name'));
         $mform->setType('name', PARAM_TEXT);
-        $mform->addElement('text', 'type', get_string('admin:module:type', 'block_eduvidual'));
+        $mform->addElement('text', 'type', get_string('admin:module:type', 'local_eduvidual'));
         $mform->setType('type', PARAM_TEXT);
         $mform->addElement('textarea', 'description', get_string('description'));
         $mform->setType('description', PARAM_TEXT);
-        $mform->addElement('html', get_string('admin:module:payload:jsoneditor', 'block_eduvidual'));
-        $mform->addElement('textarea', 'payload', get_string('admin:module:payload', 'block_eduvidual'), 'wrap="virtual" rows="20" cols="50"');
+        $mform->addElement('html', get_string('admin:module:payload:jsoneditor', 'local_eduvidual'));
+        $mform->addElement('textarea', 'payload', get_string('admin:module:payload', 'local_eduvidual'), 'wrap="virtual" rows="20" cols="50"');
         $mform->setType('payload', PARAM_RAW);
         $mform->addElement('selectyesno', 'active', get_string('visible'));
         $mform->setType('active', PARAM_INT);
         $mform->closeHeaderBefore('buttonar');
 
         // Image
-        $mform->addElement('filemanager', 'module', get_string('admin:module:filearealabel', 'block_eduvidual'), null,
+        $mform->addElement('filemanager', 'module', get_string('admin:module:filearealabel', 'local_eduvidual'), null,
                     array(
                         'subdirs' => $this->subdirs, 'maxbytes' => $this->maxbytes, 'areamaxbytes' => $this->areamaxbytes,
                         'maxfiles' => $this->maxfiles, 'accepted_types' => array('image') //, 'return_types'=> FILE_INTERNAL | FILE_EXTERNAL
@@ -71,20 +71,20 @@ class block_eduvidual_admin_module_form extends moodleform {
                 );
 
         // LTI Data
-        $mform->addElement('header', 'ltidata', get_string('admin:module:ltidata', 'block_eduvidual'));
+        $mform->addElement('header', 'ltidata', get_string('admin:module:ltidata', 'local_eduvidual'));
         //$mform->setExpanded('ltidata');
-        $mform->addElement('text', 'lticartridge', get_string('admin:module:lticartridge', 'block_eduvidual'));
+        $mform->addElement('text', 'lticartridge', get_string('admin:module:lticartridge', 'local_eduvidual'));
         $mform->setType('lticartridge', PARAM_TEXT);
-        $mform->addElement('text', 'ltilaunch', get_string('admin:module:ltilaunch', 'block_eduvidual'));
+        $mform->addElement('text', 'ltilaunch', get_string('admin:module:ltilaunch', 'local_eduvidual'));
         $mform->setType('ltilaunch', PARAM_TEXT);
-        $mform->addElement('text', 'ltisecret', get_string('admin:module:ltisecret', 'block_eduvidual'));
+        $mform->addElement('text', 'ltisecret', get_string('admin:module:ltisecret', 'local_eduvidual'));
         $mform->setType('ltisecret', PARAM_TEXT);
-        $mform->addElement('text', 'ltiresourcekey', get_string('admin:module:ltiresourcekey', 'block_eduvidual'));
+        $mform->addElement('text', 'ltiresourcekey', get_string('admin:module:ltiresourcekey', 'local_eduvidual'));
         $mform->setType('ltiresourcekey', PARAM_TEXT);
-        $mform->setDefault('ltiresourcekey', get_config('block_eduvidual', 'ltiresourcekey'));
+        $mform->setDefault('ltiresourcekey', get_config('local_eduvidual', 'ltiresourcekey'));
         $mform->closeHeaderBefore('buttonar');
 
-        $mform->addElement('submit', null, get_string('admin:module:files:send', 'block_eduvidual'));
+        $mform->addElement('submit', null, get_string('admin:module:files:send', 'local_eduvidual'));
         //$this->add_action_buttons();
     }
     //Custom validation should be added here

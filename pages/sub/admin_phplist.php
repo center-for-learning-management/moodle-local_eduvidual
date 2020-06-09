@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package    block_eduvidual
+ * @package    local_eduvidual
  * @copyright  2018 Digital Education Society (http://www.dibig.at)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -23,8 +23,8 @@
 defined('MOODLE_INTERNAL') || die;
 if (!is_siteadmin()) die;
 
-$orgcoursebasement = get_config('block_eduvidual', 'orgcoursebasement');
-$basements = \block_eduvidual\lib_enrol::get_course_basements('system');
+$orgcoursebasement = get_config('local_eduvidual', 'orgcoursebasement');
+$basements = \local_eduvidual\lib_enrol::get_course_basements('system');
 $keys = array_keys($basements);
 $orgcoursebasements = array();
 
@@ -53,13 +53,13 @@ foreach($configs AS $config) {
     $params['configs'][] = array(
         'field' => $config,
         'type' => ($config == 'dbpass') ? 'password' : 'text',
-        'content' => get_config('block_eduvidual', 'phplist_' . $config),
+        'content' => get_config('local_eduvidual', 'phplist_' . $config),
     );
 }
 
 if (optional_param('sync', 0, PARAM_INT) == 1) {
-    require_once($CFG->dirroot . '/blocks/eduvidual/classes/lib_phplist.php');
-    $params['syncmessages'] = block_eduvidual_lib_phplist::sync();
+    require_once($CFG->dirroot . '/local/eduvidual/classes/lib_phplist.php');
+    $params['syncmessages'] = local_eduvidual_lib_phplist::sync();
     /*
     $params['syncmessages'] = array(
         'type' => 'success',
@@ -69,4 +69,4 @@ if (optional_param('sync', 0, PARAM_INT) == 1) {
 }
 
 
-echo $OUTPUT->render_from_template('block_eduvidual/admin_phplist', $params);
+echo $OUTPUT->render_from_template('local_eduvidual/admin_phplist', $params);

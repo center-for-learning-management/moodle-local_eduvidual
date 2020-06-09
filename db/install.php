@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package    block_eduvidual
+ * @package    local_eduvidual
  * @copyright  2017 Digital Education Society (http://www.dibig.at)
  * @author     Robert Schrenk
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -23,12 +23,16 @@
 
 defined('MOODLE_INTERNAL') || die;
 
-function xmldb_block_eduvidual_install(){
+function xmldb_local_eduvidual_install(){
     global $DB;
+
     $obj = new \stdClass;
     $obj->name = 'eduvidual internal';
     $obj->sortorder = 1;
-    $catid = $DB->insert_record('user_info_category', $obj, true);
+    $chk = $DB->get_record('user_info_category', array('name' => $obj->name));
+    if (empty($chk->id)) {
+        $catid = $DB->insert_record('user_info_category', $obj, true);
+    }
 
     $obj = new \stdClass;
     $obj->categoryid = $catid;
@@ -50,8 +54,13 @@ function xmldb_block_eduvidual_install(){
     $obj->param3 = 0;
     $obj->param4 = '';
     $obj->param5 = '';
-    $id = $DB->insert_record('user_info_field', $obj, true);
-    set_config('fieldid_secret', $id, 'block_eduvidual');
+
+    $chk = $DB->get_record('user_info_field', array('shortname' => $obj->shortname));
+    if (empty($chk->id)) {
+        $id = $DB->insert_record('user_info_field', $obj, true);
+    }
+    set_config('fieldid_secret', $id, 'local_eduvidual');
+
 
     $obj = new \stdClass;
     $obj->categoryid = $catid;
@@ -73,6 +82,11 @@ function xmldb_block_eduvidual_install(){
     $obj->param3 = 0;
     $obj->param4 = '';
     $obj->param5 = '';
-    $id = $DB->insert_record('user_info_field', $obj, true);
-    set_config('fieldid_supportflag', $id, 'block_eduvidual');
+
+    $chk = $DB->get_record('user_info_field', array('shortname' => $obj->shortname));
+    if (empty($chk->id)) {
+        $id = $DB->insert_record('user_info_field', $obj, true);
+    }
+
+    set_config('fieldid_supportflag', $id, 'local_eduvidual');
 }

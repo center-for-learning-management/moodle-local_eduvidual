@@ -1,5 +1,5 @@
 {
-    "name": "moodle-block_eduvidual",
+    "name": "moodle-local_eduvidual",
     "license": "GPL-3.0",
     "devDependencies": {
         "grunt": "^1.0.3",

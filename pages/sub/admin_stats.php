@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package    block_eduvidual
+ * @package    local_eduvidual
  * @copyright  2018 Digital Education Society (http://www.dibig.at)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -72,10 +72,10 @@ for ($z = 0; $z < 2; $z++) {
 
     switch($z) {
         case 0:
-            $STATS[$z]['label'] = get_string('admin:stats:states', 'block_eduvidual');
+            $STATS[$z]['label'] = get_string('admin:stats:states', 'local_eduvidual');
             $rest = (($restriction > -1) ? "AND RIGHT(orgid, 1) = " . $restriction : "");
             $sql = "SELECT LEFT(orgid,1) AS ord, count(id) AS cnt
-                        FROM {block_eduvidual_org}
+                        FROM {local_eduvidual_org}
                         WHERE orgid LIKE '______'
                             $rest
                         GROUP BY ord
@@ -83,7 +83,7 @@ for ($z = 0; $z < 2; $z++) {
             $all = $DB->get_records_sql($sql, array());
 
             $sql = "SELECT LEFT(orgid,1) AS ord, count(id) AS cnt
-                        FROM {block_eduvidual_org}
+                        FROM {local_eduvidual_org}
                         WHERE orgid LIKE '______'
                             $rest
                             AND authenticated=1
@@ -92,7 +92,7 @@ for ($z = 0; $z < 2; $z++) {
             $registered = $DB->get_records_sql($sql, array());
 
             $sql = "SELECT LEFT(orgid,1) AS ord, count(id) AS cnt
-                        FROM {block_eduvidual_org}
+                        FROM {local_eduvidual_org}
                         WHERE orgid LIKE '______'
                             $rest
                             AND lpf IS NOT NULL
@@ -101,7 +101,7 @@ for ($z = 0; $z < 2; $z++) {
             $lpf = $DB->get_records_sql($sql, array());
 
             $sql = "SELECT LEFT(orgid,1) AS ord, count(id) AS cnt
-                        FROM {block_eduvidual_org}
+                        FROM {local_eduvidual_org}
                         WHERE orgid LIKE '______'
                             $rest
                             AND lpf IS NOT NULL
@@ -111,11 +111,11 @@ for ($z = 0; $z < 2; $z++) {
             $lpfeduv = $DB->get_records_sql($sql, array());
         break;
         case 1:
-            $STATS[$z]['label'] = get_string('admin:stats:types', 'block_eduvidual');
+            $STATS[$z]['label'] = get_string('admin:stats:types', 'local_eduvidual');
             $rest = (($restriction > -1) ? "AND LEFT(orgid, 1) = " . $restriction : "");
 
             $sql = "SELECT RIGHT(orgid,1) AS ord, count(id) AS cnt
-                        FROM {block_eduvidual_org}
+                        FROM {local_eduvidual_org}
                         WHERE orgid LIKE '______'
                             $rest
                         GROUP BY ord
@@ -123,7 +123,7 @@ for ($z = 0; $z < 2; $z++) {
             $all = $DB->get_records_sql($sql, array());
 
             $sql = "SELECT RIGHT(orgid,1) AS ord, count(id) AS cnt
-                        FROM {block_eduvidual_org}
+                        FROM {local_eduvidual_org}
                         WHERE orgid LIKE '______'
                             $rest
                             AND authenticated=1
@@ -132,7 +132,7 @@ for ($z = 0; $z < 2; $z++) {
             $registered = $DB->get_records_sql($sql, array());
 
             $sql = "SELECT RIGHT(orgid,1) AS ord, count(id) AS cnt
-                        FROM {block_eduvidual_org}
+                        FROM {local_eduvidual_org}
                         WHERE orgid LIKE '______'
                             $rest
                             AND lpf IS NOT NULL
@@ -141,7 +141,7 @@ for ($z = 0; $z < 2; $z++) {
             $lpf = $DB->get_records_sql($sql, array());
 
             $sql = "SELECT RIGHT(orgid,1) AS ord, count(id) AS cnt
-                        FROM {block_eduvidual_org}
+                        FROM {local_eduvidual_org}
                         WHERE orgid LIKE '______'
                             $rest
                             AND lpf IS NOT NULL
@@ -203,4 +203,4 @@ $o = array(
     'stats' => $STATS,
 );
 
-echo $OUTPUT->render_from_template('block_eduvidual/admin_stats', $o);
+echo $OUTPUT->render_from_template('local_eduvidual/admin_stats', $o);

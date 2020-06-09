@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package    block_eduvidual
+ * @package    local_eduvidual
  * @copyright  2017 Digital Education Society (http://www.dibig.at)
  *             2020 onwards Center for Learning Management (http://www.lernmanagement.at)
  * @author     Robert Schrenk
@@ -28,7 +28,7 @@ defined('MOODLE_INTERNAL') || die;
 
 if (file_exists("$CFG->libdir/phpspreadsheet/vendor/autoload.php")) {
     require_once("$CFG->libdir/phpspreadsheet/vendor/autoload.php");
-    block_eduvidual_lib_import::$variant = 'phpspreadsheet';
+    local_eduvidual_lib_import::$variant = 'phpspreadsheet';
     /**
      * ATTENTION, by default we got an error that Reader\Xls could not be loaded.
      * We had to change the reader for type "Xls" to Reader\Xlsx in IOFactory.php
@@ -37,10 +37,10 @@ if (file_exists("$CFG->libdir/phpspreadsheet/vendor/autoload.php")) {
     // Fall back to PHPExcel, that was used prior to Moodle 3.8
     // This is obsolete soon.
     require_once("$CFG->libdir/phpexcel/PHPExcel.php");
-    block_eduvidual_lib_import::$variant = 'phpexcel';
+    local_eduvidual_lib_import::$variant = 'phpexcel';
 }
 
-class block_eduvidual_lib_import {
+class local_eduvidual_lib_import {
     var $fields = array();
     var $rowobjects = array();
     var $compiler;
@@ -75,7 +75,7 @@ class block_eduvidual_lib_import {
         $colids = array();
         $this->rowobjects = array();
 
-        switch(block_eduvidual_lib_import::$variant) {
+        switch(local_eduvidual_lib_import::$variant) {
             case 'phpexcel':
                 $spreadsheet = PHPExcel_IOFactory::load($filepath);
                 $sheet = $spreadsheet->getSheet(0);
@@ -229,11 +229,11 @@ class block_eduvidual_lib_import {
     }
 }
 
-abstract class block_eduvidual_lib_import_compiler {
+abstract class local_eduvidual_lib_import_compiler {
     abstract public function compile($obj);
 }
 
-class block_eduvidual_lib_import_compiler_module extends block_eduvidual_lib_import_compiler {
+class local_eduvidual_lib_import_compiler_module extends local_eduvidual_lib_import_compiler {
     public function compile($module) {
         $payload = new stdClass();
         $payload->processed = false;
@@ -264,7 +264,7 @@ class block_eduvidual_lib_import_compiler_module extends block_eduvidual_lib_imp
     }
 }
 
-class block_eduvidual_lib_import_compiler_user extends block_eduvidual_lib_import_compiler {
+class local_eduvidual_lib_import_compiler_user extends local_eduvidual_lib_import_compiler {
     var $lasts = 0;
     public function compile($obj) {
         global $CFG, $DB, $org;
@@ -279,12 +279,12 @@ class block_eduvidual_lib_import_compiler_user extends block_eduvidual_lib_impor
             $payload->action = 'Create';
         }
         if (empty($obj->firstname)) {
-            $colors = file($CFG->dirroot . '/blocks/eduvidual/templates/names.colors', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+            $colors = file($CFG->dirroot . '/local/eduvidual/templates/names.colors', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
             $color_key = array_rand($colors, 1);
             $obj->firstname = $colors[$color_key];
         }
         if (empty($obj->lastname)) {
-            $animals = file($CFG->dirroot . '/blocks/eduvidual/templates/names.animals', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+            $animals = file($CFG->dirroot . '/local/eduvidual/templates/names.animals', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
             $animal_key = array_rand($animals, 1);
             $obj->lastname = $animals[$animal_key];
         }
@@ -307,7 +307,7 @@ class block_eduvidual_lib_import_compiler_user extends block_eduvidual_lib_impor
         } else {
             $obj->email = strtolower($obj->email);
             global $CFG;
-            require_once($CFG->dirroot . '/blocks/eduvidual/block_eduvidual.php');
+            require_once($CFG->dirroot . '/local/eduvidual/block_eduvidual.php');
             if (empty($obj->username) || !is_siteadmin()) {
                 $obj->username = str_replace($dummydomain, '', $obj->email);
             }
@@ -329,7 +329,7 @@ class block_eduvidual_lib_import_compiler_user extends block_eduvidual_lib_impor
             $payload->action = 'Invalid role';
         }
         if (!empty($obj->id)) {
-            $ismember = $DB->get_record('block_eduvidual_orgid_userid', array('orgid' => $org->orgid, 'userid' => $obj->id));
+            $ismember = $DB->get_record('local_eduvidual_orgid_userid', array('orgid' => $org->orgid, 'userid' => $obj->id));
             if ($ismember->userid != $obj->id) {
                 $payload->processed = false;
                 $payload->action = 'Not in your organisation!';

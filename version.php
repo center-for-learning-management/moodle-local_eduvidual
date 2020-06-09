@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package    block_eduvidual
+ * @package    local_eduvidual
  * @copyright  2018 Digital Education Society (http://www.dibig.at),
  *             2020 and ongoing Center for Learning Management (http://www.lernmanagement.at)
  * @author     Robert Schrenk
@@ -26,6 +26,6 @@ defined('MOODLE_INTERNAL') || die;
 
 $plugin->version  = 2020060601;
 $plugin->requires = 2019111803;  // Requires Moodle 3.8.3.
-$plugin->component = 'block_eduvidual';
+$plugin->component = 'local_eduvidual';
 $plugin->release = '1.4 (Build: 2020060601)';
 $plugin->maturity = MATURITY_STABLE;

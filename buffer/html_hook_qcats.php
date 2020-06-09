@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package    block_eduvidual
+ * @package    local_eduvidual
  * @copyright  2018 Digital Education Society (http://www.dibig.at)
  * @author     Robert Schrenk
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -23,9 +23,9 @@
 
 defined('MOODLE_INTERNAL') || die;
 
-$questioncategories = explode(",", get_config('block_eduvidual', 'questioncategories'));
+$questioncategories = explode(",", get_config('local_eduvidual', 'questioncategories'));
 $userqcats = array();
-$userwants = $DB->get_records('block_eduvidual_userqcats', array('userid' => $USER->id));
+$userwants = $DB->get_records('local_eduvidual_userqcats', array('userid' => $USER->id));
 foreach($userwants AS $qcat) {
     $userqcats[] = $qcat->categoryid;
 }

@@ -15,41 +15,41 @@
     along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
   }}
 
-<div class="block_eduvidual_admin_defaultroles">
-    <h4>{{#str}} defaultroles:course:title, block_eduvidual {{/str}}</h4>
-    <p>{{#str}} defaultroles:course:description, block_eduvidual {{/str}}</p>
+<div class="local_eduvidual_admin_defaultroles">
+    <h4>{{#str}} defaultroles:course:title, local_eduvidual {{/str}}</h4>
+    <p>{{#str}} defaultroles:course:description, local_eduvidual {{/str}}</p>
 
     {{#rolestoset_course}}
         <h5>{{rolename}}</h5>
         <select
-            id="block_eduvidual_admin_defaultrole{{roleidentifier}}"
-            onchange="var e = this; require(['block_eduvidual/admin'], function(ADMIN) { ADMIN.defaultrole('{{roleidentifier}}', e.value); }); return false;">
+            id="local_eduvidual_admin_defaultrole{{roleidentifier}}"
+            onchange="var e = this; require(['local_eduvidual/admin'], function(ADMIN) { ADMIN.defaultrole('{{roleidentifier}}', e.value); }); return false;">
             {{#options}}
             <option value="{{id}}"{{selected}}>{{#name}}{{name}}{{/name}}{{^name}}{{shortname}}{{/name}}</option>
             {{/options}}
         </select>
     {{/rolestoset_course}}
 
-    <h4>{{#str}} defaultroles:orgcategory:title, block_eduvidual {{/str}}</h4>
-    <p>{{#str}} defaultroles:orgcategory:description, block_eduvidual {{/str}}</p>
+    <h4>{{#str}} defaultroles:orgcategory:title, local_eduvidual {{/str}}</h4>
+    <p>{{#str}} defaultroles:orgcategory:description, local_eduvidual {{/str}}</p>
     {{#rolestoset_org}}
         <h5>{{rolename}}</h5>
         <select
-            id="block_eduvidual_admin_orgrole{{roleidentifier}}"
-            onchange="var e = this; require(['block_eduvidual/admin'], function(ADMIN) { ADMIN.orgrole('{{roleidentifier}}', e.value); }); return false;">
+            id="local_eduvidual_admin_orgrole{{roleidentifier}}"
+            onchange="var e = this; require(['local_eduvidual/admin'], function(ADMIN) { ADMIN.orgrole('{{roleidentifier}}', e.value); }); return false;">
             {{#options}}
             <option value="{{id}}"{{selected}}>{{#name}}{{name}}{{/name}}{{^name}}{{shortname}}{{/name}}</option>
             {{/options}}
         </select>
     {{/rolestoset_org}}
 
-    <h4>{{#str}} defaultroles:global:title, block_eduvidual {{/str}}</h4>
-    <p>{{#str}} defaultroles:global:description, block_eduvidual {{/str}}</p>
+    <h4>{{#str}} defaultroles:global:title, local_eduvidual {{/str}}</h4>
+    <p>{{#str}} defaultroles:global:description, local_eduvidual {{/str}}</p>
     {{#rolestoset_global}}
         <h5>{{rolename}}</h5>
         <select
-            id="block_eduvidual_admin_globalrole{{roleidentifier}}"
-            onchange="var e = this; require(['block_eduvidual/admin'], function(ADMIN) { ADMIN.globalrole('{{roleidentifier}}', e.value); }); return false;">
+            id="local_eduvidual_admin_globalrole{{roleidentifier}}"
+            onchange="var e = this; require(['local_eduvidual/admin'], function(ADMIN) { ADMIN.globalrole('{{roleidentifier}}', e.value); }); return false;">
             {{#options}}
             <option value="{{id}}"{{selected}}>{{#name}}{{name}}{{/name}}{{^name}}{{shortname}}{{/name}}</option>
             {{/options}}

@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package    block_eduvidual
+ * @package    local_eduvidual
  * @copyright  2018 Digital Education Society (http://www.dibig.at)
  *             2020 Center for Learningmanagement (http://www.lernmanagement.at)
  * @author     Robert Schrenk
@@ -24,16 +24,16 @@
 
 defined('MOODLE_INTERNAL') || die;
 
-if (block_eduvidual::get('orgrole') != "Manager" && !is_siteadmin()) {
+if (local_eduvidual::get('orgrole') != "Manager" && !is_siteadmin()) {
     ?>
-    <p class="alert alert-warning"><?php echo get_string('js:missing_permission', 'block_eduvidual'); ?></p>
+    <p class="alert alert-warning"><?php echo get_string('js:missing_permission', 'local_eduvidual'); ?></p>
     <?php
     exit;
 }
 
-require_once($CFG->dirroot . '/blocks/eduvidual/classes/lib_import.php');
-$helper = new block_eduvidual_lib_import();
-$compiler = new block_eduvidual_lib_import_compiler_user();
+require_once($CFG->dirroot . '/local/eduvidual/classes/lib_import.php');
+$helper = new local_eduvidual_lib_import();
+$compiler = new local_eduvidual_lib_import_compiler_user();
 $helper->set_compiler($compiler);
 
 if (optional_param('datavalidated', 0, PARAM_INT) == 1) {
@@ -42,8 +42,8 @@ if (optional_param('datavalidated', 0, PARAM_INT) == 1) {
     $nextusers = array();
     $exportuserids = array();
     ?>
-    <p class="alert alert-info"><?php echo get_string('manage:createuserspreadsheet:import:downloadfile', 'block_eduvidual'); ?></p>
-    <form action="<?php echo $CFG->wwwroot; ?>/blocks/eduvidual/pages/sub/manage_usersdownload.php" method="post" enctype="multipart/form-data" class="no-spinner">
+    <p class="alert alert-info"><?php echo get_string('manage:createuserspreadsheet:import:downloadfile', 'local_eduvidual'); ?></p>
+    <form action="<?php echo $CFG->wwwroot; ?>/local/eduvidual/pages/sub/manage_usersdownload.php" method="post" enctype="multipart/form-data" class="no-spinner">
         <input type="hidden" name="orgid" value="<?php echo $org->orgid; ?>" />
         <input type="hidden" name="act" value="users" />
         <table border="1" width="100%">
@@ -85,9 +85,9 @@ if (optional_param('datavalidated', 0, PARAM_INT) == 1) {
                     update_internal_user_password($u, $user->password, false);
                 }
 
-                \block_eduvidual\lib_enrol::role_set($u->id, $org, $user->role);
+                \local_eduvidual\lib_enrol::role_set($u->id, $org, $user->role);
                 if (!empty($user->bunch) && strtolower($user->role) != 'remove') {
-                    \block_eduvidual\lib_enrol::bunch_set($u->id, $org, $user->bunch);
+                    \local_eduvidual\lib_enrol::bunch_set($u->id, $org, $user->bunch);
                 }
                 if (strtolower($user->role) == 'remove') {
                     echo 'Removed #' . $u->id;
@@ -108,7 +108,7 @@ if (optional_param('datavalidated', 0, PARAM_INT) == 1) {
                 $u->calendartype = 'gregorian';
 
                 $u->id = user_create_user($u, false, false);
-                $user->secret = \block_eduvidual\locallib::get_user_secret($u->id);
+                $user->secret = \local_eduvidual\locallib::get_user_secret($u->id);
                 if (empty($user->password)) {
                     $user->password = $user->secret;
                 }
@@ -122,11 +122,11 @@ if (optional_param('datavalidated', 0, PARAM_INT) == 1) {
                         'userid' => $u->id,
                         'bunch' => $user->bunch,
                     );
-                    $DB->insert_record('block_eduvidual_userbunches', $userbunch);
+                    $DB->insert_record('local_eduvidual_userbunches', $userbunch);
                 }
 
-                \block_eduvidual\lib_enrol::role_set($user->id, $org, $user->role);
-                \block_eduvidual\lib_enrol::choose_background($user->id);
+                \local_eduvidual\lib_enrol::role_set($user->id, $org, $user->role);
+                \local_eduvidual\lib_enrol::choose_background($user->id);
                 // Trigger event.
                 \core\event\user_created::create_from_userid($user->id)->trigger();
                 if ($user->id > 0) {
@@ -157,24 +157,24 @@ if (optional_param('datavalidated', 0, PARAM_INT) == 1) {
     ?>
         </table>
         <div class="grid-eq-2">
-            <a href="#" onclick="require(['block_eduvidual/manager'], function(M) { M.exportUserPopup('<?php echo $org->orgid; ?>', '<?php echo implode(',', $exportuserids); ?>'); }); return false;" class="btn btn-primary">
+            <a href="#" onclick="require(['local_eduvidual/manager'], function(M) { M.exportUserPopup('<?php echo $org->orgid; ?>', '<?php echo implode(',', $exportuserids); ?>'); }); return false;" class="btn btn-primary">
                 <img src="<?php echo $CFG->wwwroot; ?>/pix/i/export.svg" alt="export" />
-                <?php echo get_string('export', 'block_eduvidual'); ?>
+                <?php echo get_string('export', 'local_eduvidual'); ?>
             </a>
-            <a href="<?php echo $CFG->wwwroot . '/blocks/eduvidual/pages/manage_bunch.php?orgid=' . $org->orgid; ?>" target="_blank" class="btn ui-btn">
+            <a href="<?php echo $CFG->wwwroot . '/local/eduvidual/pages/manage_bunch.php?orgid=' . $org->orgid; ?>" target="_blank" class="btn ui-btn">
                 <img src="<?php echo $CFG->wwwroot; ?>/pix/t/print.svg" alt="print" />
-                <?php echo get_string('manage:users:printcards', 'block_eduvidual'); ?>
+                <?php echo get_string('manage:users:printcards', 'local_eduvidual'); ?>
             </a>
         </div>
-        <a href="<?php echo $CFG->wwwroot; ?>/blocks/eduvidual/pages/manage.php?orgid=<?php echo $org->orgid; ?>" class="btn btn-primary">
+        <a href="<?php echo $CFG->wwwroot; ?>/local/eduvidual/pages/manage.php?orgid=<?php echo $org->orgid; ?>" class="btn btn-primary">
             <?php echo get_string('back'); ?>
         </a>
         <?php echo $helper->print_hidden_form(); ?>
     </form>
     <?php
-} elseif (isset($_FILES['block_eduvidual_manage_usersimport'])) {
+} elseif (isset($_FILES['local_eduvidual_manage_usersimport'])) {
     $helper->set_fields(array('id', 'username', 'email', 'firstname', 'lastname', 'role', 'bunch'));
-    $helper->load_file($_FILES['block_eduvidual_manage_usersimport']['tmp_name']);
+    $helper->load_file($_FILES['local_eduvidual_manage_usersimport']['tmp_name']);
     $objs = $helper->get_rowobjects();
     $fields = $helper->get_fields();
     ?>
@@ -209,19 +209,19 @@ if (optional_param('datavalidated', 0, PARAM_INT) == 1) {
         <input type="hidden" name="import" value="1" />
         <input type="hidden" name="datavalidated" value="1" />
         <?php echo $helper->print_hidden_form(); ?>
-        <input type="submit" value="<?php echo get_string('manage:createuserspreadsheet:import:datavalidated', 'block_eduvidual'); ?>" />
+        <input type="submit" value="<?php echo get_string('manage:createuserspreadsheet:import:datavalidated', 'local_eduvidual'); ?>" />
     </form>
 
     <?php
 } else {
     ?>
     <ul>
-        <li>id:<br /><?php echo get_string('manage:createuserspreadsheet:import:description:id', 'block_eduvidual'); ?></li>
-        <li>firstname:<br /><?php echo get_string('manage:createuserspreadsheet:import:description:firstname', 'block_eduvidual'); ?></li>
-        <li>lastname:<br /><?php echo get_string('manage:createuserspreadsheet:import:description:lastname', 'block_eduvidual'); ?></li>
-        <li>email:<br /><?php echo get_string('manage:createuserspreadsheet:import:description:email', 'block_eduvidual'); ?></li>
-        <li>role:<br /><?php echo get_string('manage:createuserspreadsheet:import:description:role', 'block_eduvidual'); ?></li>
-        <li>bunch:<br /><?php echo get_string('manage:createuserspreadsheet:import:description:bunch', 'block_eduvidual'); ?></li>
+        <li>id:<br /><?php echo get_string('manage:createuserspreadsheet:import:description:id', 'local_eduvidual'); ?></li>
+        <li>firstname:<br /><?php echo get_string('manage:createuserspreadsheet:import:description:firstname', 'local_eduvidual'); ?></li>
+        <li>lastname:<br /><?php echo get_string('manage:createuserspreadsheet:import:description:lastname', 'local_eduvidual'); ?></li>
+        <li>email:<br /><?php echo get_string('manage:createuserspreadsheet:import:description:email', 'local_eduvidual'); ?></li>
+        <li>role:<br /><?php echo get_string('manage:createuserspreadsheet:import:description:role', 'local_eduvidual'); ?></li>
+        <li>bunch:<br /><?php echo get_string('manage:createuserspreadsheet:import:description:bunch', 'local_eduvidual'); ?></li>
     </ul>
     <?php
 }

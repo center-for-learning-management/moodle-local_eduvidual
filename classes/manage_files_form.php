@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package    block_eduvidual
+ * @package    local_eduvidual
  * @copyright  2017 Digital Education Society (http://www.dibig.at)
  * @author     Robert Schrenk
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -25,7 +25,7 @@ defined('MOODLE_INTERNAL') || die;
 
 require_once($CFG->libdir . "/formslib.php");
 
-class block_eduvidual_manage_files_form extends moodleform {
+class local_eduvidual_manage_files_form extends moodleform {
     var $maxbytes = 1024*1024;
     var $areamaxbytes = 10485760;
     var $maxfiles = 10;
@@ -38,23 +38,23 @@ class block_eduvidual_manage_files_form extends moodleform {
         $mform->addElement('hidden', 'act', 'style');
         $mform->setType('act', PARAM_TEXT);
 
-        $mform->addElement('header', 'orgbannerlbl', get_string('manage:style:orgbanner:header', 'block_eduvidual'));
-        $mform->addElement('filemanager', 'orgbanner', get_string('manage:style:orgbanner:filearealabel', 'block_eduvidual'), null,
+        $mform->addElement('header', 'orgbannerlbl', get_string('manage:style:orgbanner:header', 'local_eduvidual'));
+        $mform->addElement('filemanager', 'orgbanner', get_string('manage:style:orgbanner:filearealabel', 'local_eduvidual'), null,
             array(
                 'subdirs' => $this->subdirds, 'maxbytes' => $this->maxbytes, 'areamaxbytes' => $this->areamaxbytes,
                 'maxfiles' => 1, 'accepted_types' => array('image') //, 'return_types'=> FILE_INTERNAL | FILE_EXTERNAL
             )
         );
 
-        $mform->addElement('header', 'orgfileslbl', get_string('manage:style:orgfiles:header', 'block_eduvidual'));
-        $mform->addElement('filemanager', 'orgfiles', get_string('manage:style:orgfiles:filearealabel', 'block_eduvidual', array('url' => $_url)), null,
+        $mform->addElement('header', 'orgfileslbl', get_string('manage:style:orgfiles:header', 'local_eduvidual'));
+        $mform->addElement('filemanager', 'orgfiles', get_string('manage:style:orgfiles:filearealabel', 'local_eduvidual', array('url' => $_url)), null,
             array(
                 'subdirs' => $this->subdirds, 'maxbytes' => $this->maxbytes, 'areamaxbytes' => $this->areamaxbytes,
                 'maxfiles' => $this->maxfiles, 'accepted_types' => array('image') //, 'return_types'=> FILE_INTERNAL | FILE_EXTERNAL
             )
         );
 
-        $mform->addElement('submit', null, get_string('manage:style:files:send', 'block_eduvidual'));
+        $mform->addElement('submit', null, get_string('manage:style:files:send', 'local_eduvidual'));
         //$this->add_action_buttons();
     }
     //Custom validation should be added here

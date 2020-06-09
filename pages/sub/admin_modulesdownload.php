@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package    block_eduvidual
+ * @package    local_eduvidual
  * @copyright  2018 Digital Education Society (http://www.dibig.at)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -25,15 +25,15 @@ require_once('../../../../config.php');
 require_login();
 
 require_once($CFG->libdir . '/adminlib.php');
-require_once($CFG->dirroot . '/blocks/eduvidual/block_eduvidual.php');
+require_once($CFG->dirroot . '/local/eduvidual/block_eduvidual.php');
 
 if (!is_siteadmin()) {
     ?>
-    <p class="alert alert-warning"><?php echo get_string('js:missing_permission', 'block_eduvidual'); ?></p>
+    <p class="alert alert-warning"><?php echo get_string('js:missing_permission', 'local_eduvidual'); ?></p>
     <?php
 }
 
-require_once($CFG->dirroot . '/blocks/eduvidual/classes/lib_import.php');
-$helper = new block_eduvidual_lib_import();
+require_once($CFG->dirroot . '/local/eduvidual/classes/lib_import.php');
+$helper = new local_eduvidual_lib_import();
 $helper->load_post();
 $helper->download('modules_' . date("Ymd-His"));

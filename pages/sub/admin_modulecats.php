@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package    block_eduvidual
+ * @package    local_eduvidual
  * @copyright  2018 Digital Education Society (http://www.dibig.at)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -24,25 +24,25 @@ defined('MOODLE_INTERNAL') || die;
 if (!is_siteadmin()) die;
 
 // IF THE CATEGORYFORM WAS SENT STORE RESULT
-require_once($CFG->dirroot . "/blocks/eduvidual/classes/admin_modulecat_form.php");
+require_once($CFG->dirroot . "/local/eduvidual/classes/admin_modulecat_form.php");
 
-$categoryform = new block_eduvidual_admin_modulecat_form(null, null, 'post', '_self', array('data-ajax' => 'false'), true);
+$categoryform = new local_eduvidual_admin_modulecat_form(null, null, 'post', '_self', array('data-ajax' => 'false'), true);
 $context = context_system::instance();
 if ($data = $categoryform->get_data()) {
     $categoryid = optional_param('id', 0, PARAM_INT);
     if ($categoryid == -1) {
         // Create record to retrieve a categoryid BEFORE we store the image
-        $categoryid = $DB->insert_record('block_eduvidual_modulescat', $data, true);
+        $categoryid = $DB->insert_record('local_eduvidual_modulescat', $data, true);
         $data->categoryid = $categoryid;
     }
     file_save_draft_area_files(
-        $data->modulecat, $context->id, 'block_eduvidual', 'modulecat', $categoryid,
+        $data->modulecat, $context->id, 'local_eduvidual', 'modulecat', $categoryid,
         array(
             'subdirs' => $categoryform->subdirs, 'maxbytes' => $categoryform->maxbytes,
             'maxfiles' => $categoryform->maxfiles
         )
     );
-    $files = block_eduvidual::list_area_files('modulecat', $categoryid, $context);
+    $files = local_eduvidual::list_area_files('modulecat', $categoryid, $context);
 
     if (count($files) > 0) {
         $data->imageurl = $files[0]->url;
@@ -51,8 +51,8 @@ if ($data = $categoryform->get_data()) {
     }
 
     // Now update with the imageurl included
-    $DB->update_record('block_eduvidual_modulescat', $data);
-    echo "<p class=\"alert alert-success\">" . get_string('store:success', 'block_eduvidual') . "</p>";
+    $DB->update_record('local_eduvidual_modulescat', $data);
+    echo "<p class=\"alert alert-success\">" . get_string('store:success', 'local_eduvidual') . "</p>";
 }
 
 $categoryid = optional_param('categoryid', -1, PARAM_INT);
@@ -66,34 +66,34 @@ if ($parentid > -1) {
 
 ?>
 
-<div class="block_eduvidual_admin_modulescat-wrapper">
-    <div class="__block_eduvidual_admin_modulescat_cat">
-        <h4><?php echo get_string('admin:modulecats:title', 'block_eduvidual'); ?></h4>
+<div class="local_eduvidual_admin_modulescat-wrapper">
+    <div class="__local_eduvidual_admin_modulescat_cat">
+        <h4><?php echo get_string('admin:modulecats:title', 'local_eduvidual'); ?></h4>
         <ul>
             <li>
                 Root
                 <a href="<?php echo $PAGE->url; ?>?act=modulecats&parentid=0" class="btn-check ui-mini">
                     <img src="/pix/t/add.svg" alt="<?php echo get_string('add'); ?>" />
                 </a>
-                <?php block_eduvidual_admin_modulecats_printtree(0, $categoryid); ?>
+                <?php local_eduvidual_admin_modulecats_printtree(0, $categoryid); ?>
             </li>
         </ul>
         <a href="<?php echo $PAGE->url . '?act=' . $act . '&import=1'; ?>"><?php echo get_string('import'); ?></a>
     </div>
-    <div class="__block_eduvidual_admin_modulescat_module">
+    <div class="__local_eduvidual_admin_modulescat_module">
 <?php
 
 if ($categoryid > -1) {
-    include($CFG->dirroot . '/blocks/eduvidual/pages/sub/admin_module.php');
+    include($CFG->dirroot . '/local/eduvidual/pages/sub/admin_module.php');
 }
 ?>
     </div>
-    <div id="block_eduvidual_admin_modulecat_form" data-categoryid="<?php echo $categoryid; ?>" data-parentid="<?php echo $parentid; ?>">
+    <div id="local_eduvidual_admin_modulecat_form" data-categoryid="<?php echo $categoryid; ?>" data-parentid="<?php echo $parentid; ?>">
 <?php
 if ($categoryid > -1 || $parentid > -1) {
     ?>
     <?php
-    include($CFG->dirroot . '/blocks/eduvidual/pages/sub/admin_modulecat.php');
+    include($CFG->dirroot . '/local/eduvidual/pages/sub/admin_modulecat.php');
 }
 ?>
     </div>
@@ -101,39 +101,39 @@ if ($categoryid > -1 || $parentid > -1) {
 <?php
 
 if (optional_param('import', 0, PARAM_INT) == 1) {
-    require_once($CFG->dirroot . '/blocks/eduvidual/pages/sub/admin_modulesimport.php');
+    require_once($CFG->dirroot . '/local/eduvidual/pages/sub/admin_modulesimport.php');
 } elseif($moduleid > 0 || $moduleid == -1) {
-    require_once($CFG->dirroot . "/blocks/eduvidual/classes/admin_module_form.php");
+    require_once($CFG->dirroot . "/local/eduvidual/classes/admin_module_form.php");
 
-    $moduleform = new block_eduvidual_admin_module_form(null, null, 'post', '_self', array('data-ajax' => 'false'), true);
+    $moduleform = new local_eduvidual_admin_module_form(null, null, 'post', '_self', array('data-ajax' => 'false'), true);
     $context = context_system::instance();
     if ($data = $moduleform->get_data()) {
         if ($data->moduleid == -1) {
-            $moduleid = $DB->insert_record('block_eduvidual_modules', $data, true);
+            $moduleid = $DB->insert_record('local_eduvidual_modules', $data, true);
             $data->moduleid = $moduleid;
             $data->id = $data->moduleid;
         }
         file_save_draft_area_files(
-            $data->module, $context->id, 'block_eduvidual', 'module', $data->moduleid,
+            $data->module, $context->id, 'local_eduvidual', 'module', $data->moduleid,
             array('subdirs' => $moduleform->subdirs, 'maxbytes' => $moduleform->maxbytes, 'maxfiles' => $moduleform->maxfiles)
         );
-        $files = block_eduvidual::list_area_files('module', $data->moduleid, $context);
+        $files = local_eduvidual::list_area_files('module', $data->moduleid, $context);
         if (count($files) > 0) {
             $data->imageurl = $files[0]->url;
         } else {
             $data->imageurl = '';
         }
-        require_once($CFG->dirroot . '/blocks/eduvidual/classes/module_compiler.php');
-        $data = block_eduvidual_module_compiler::get_payload($data);
-        $DB->update_record('block_eduvidual_modules', $data);
-        echo "<p class=\"alert alert-success\">" . get_string('store:success', 'block_eduvidual') . "</p>";
+        require_once($CFG->dirroot . '/local/eduvidual/classes/module_compiler.php');
+        $data = local_eduvidual_module_compiler::get_payload($data);
+        $DB->update_record('local_eduvidual_modules', $data);
+        echo "<p class=\"alert alert-success\">" . get_string('store:success', 'local_eduvidual') . "</p>";
     }
 
     $context = context_system::instance();
     $draftitemid = file_get_submitted_draft_itemid('module');
-    file_prepare_draft_area($draftitemid, $context->id, 'block_eduvidual', 'module', $moduleid,
+    file_prepare_draft_area($draftitemid, $context->id, 'local_eduvidual', 'module', $moduleid,
         array('subdirs' => $moduleform->subdirs, 'maxbytes' => $moduleform->maxbytes, 'maxfiles' => $moduleform->maxfiles));
-    $entry = $DB->get_record('block_eduvidual_modules', array('id' => $moduleid));
+    $entry = $DB->get_record('local_eduvidual_modules', array('id' => $moduleid));
     $entry->act = $act;
     $entry->categoryid = $categoryid;
     $entry->modulecat = $draftitemid;
@@ -141,7 +141,7 @@ if (optional_param('import', 0, PARAM_INT) == 1) {
     $entry->moduleid = $moduleid;
     $entry->module = $draftitemid;
     if (empty($entry->ltiresourcekey)) {
-        $entry->ltiresourcekey = get_config('block_eduvidual', 'ltiresourcekey');
+        $entry->ltiresourcekey = get_config('local_eduvidual', 'ltiresourcekey');
     }
     //$entry->payload = base64_decode($entry->payload);
     $moduleform->set_data($entry);
@@ -160,15 +160,15 @@ if (optional_param('import', 0, PARAM_INT) == 1) {
  * @param categoryid categoryid to print (changes with recursions)
  * @param _categoryid categoryid that was received with optional_param (stays the same)
 **/
-function block_eduvidual_admin_modulecats_printtree($categoryid, $_categoryid) {
+function local_eduvidual_admin_modulecats_printtree($categoryid, $_categoryid) {
     global $DB, $PAGE;
-    $cats = $DB->get_records_sql('SELECT id,name,active FROM {block_eduvidual_modulescat} WHERE parentid=? ORDER BY name ASC', array($categoryid));
+    $cats = $DB->get_records_sql('SELECT id,name,active FROM {local_eduvidual_modulescat} WHERE parentid=? ORDER BY name ASC', array($categoryid));
     if (count($cats) > 0) echo "<ul>";
     foreach($cats AS $cat) {
         echo "\t<li data-categoryid=\"" . $cat->id . "\" class=\"" . (($cat->active)?'active':'inactive') . (($cat->id == $_categoryid)?' current':'') . "\">\n";
         echo "\t\t<a href=\"" . $PAGE->url . "?act=modulecats&categoryid=" . $cat->id . "\">" . $cat->name . "</a>\n";
         echo "<a href=\"" . $PAGE->url . "?act=modulecats&parentid=" . $cat->id . "\" class=\"btn-check ui-mini\"><img src=\"/pix/t/add.svg\" alt=\"" . get_string('add') . "\" /></a>\n";
-        block_eduvidual_admin_modulecats_printtree($cat->id, $_categoryid);
+        local_eduvidual_admin_modulecats_printtree($cat->id, $_categoryid);
         echo "\t</li>\n";
     }
     if (count($cats) > 0) echo "</ul>";

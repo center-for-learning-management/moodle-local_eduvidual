@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package    block_eduvidual
+ * @package    local_eduvidual
  * @copyright  2018 Digital Education Society (http://www.dibig.at)
  * @author     Robert Schrenk
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -26,11 +26,11 @@ defined('MOODLE_INTERNAL') || die;
 global $CFG, $COURSE, $DB, $PAGE, $SESSION, $USER;
 
 if (!class_exists('phpQuery', true)) {
-    require_once($CFG->dirroot . '/blocks/eduvidual/vendor/somesh/php-query/phpQuery/phpQuery.php');
+    require_once($CFG->dirroot . '/local/eduvidual/vendor/somesh/php-query/phpQuery/phpQuery.php');
 }
 try {
     // Load available organistions
-    $orgs = block_eduvidual::get_organisations('*');
+    $orgs = local_eduvidual::get_organisations('*');
     $orgids = array();
     foreach($orgs AS $org) {
         $orgids[] = $org->orgid;
@@ -38,19 +38,19 @@ try {
     $doc = phpQuery::newDocumentHTML($buffer);
     if ($PAGE->context->contextlevel == CONTEXT_COURSE) {
         //echo "set org by courseid " . $PAGE->course->id;
-        block_eduvidual::set_org_by_courseid($PAGE->course->id);
+        local_eduvidual::set_org_by_courseid($PAGE->course->id);
     } elseif ($PAGE->context->contextlevel == CONTEXT_COURSECAT && isset($PAGE->category) && isset($PAGE->category->id)) {
         //echo "set org by categoryid " . $PAGE->category->id;
-        block_eduvidual::set_org_by_categoryid($PAGE->category->id);
+        local_eduvidual::set_org_by_categoryid($PAGE->category->id);
     }
 
-    $org = block_eduvidual::get('org');
+    $org = local_eduvidual::get('org');
 
-    require($CFG->dirroot . '/blocks/eduvidual/buffer/html_hook_login.php');
-    require($CFG->dirroot . '/blocks/eduvidual/buffer/html_hook_pages.php');
+    require($CFG->dirroot . '/local/eduvidual/buffer/html_hook_login.php');
+    require($CFG->dirroot . '/local/eduvidual/buffer/html_hook_pages.php');
 
     if ($PAGE->context->contextlevel == CONTEXT_COURSE && $PAGE->course->id > 1 && count(pq('.section-modchooser')) > 0) {
-        require($CFG->dirroot . '/blocks/eduvidual/buffer/html_hook_enhance_courseedit.php');
+        require($CFG->dirroot . '/local/eduvidual/buffer/html_hook_enhance_courseedit.php');
     }
 
     /**
@@ -59,7 +59,7 @@ try {
     $qcatslevel10 = pq('div.questioncategories.contextlevel10');
     $localized_coresystem = get_string('coresystem');
     if (pq($qcatslevel10)->length() > 0 || pq('optgroup[label="' . $localized_coresystem . '"]')->length() > 0) {
-        require($CFG->dirroot . '/blocks/eduvidual/buffer/html_hook_qcats.php');
+        require($CFG->dirroot . '/local/eduvidual/buffer/html_hook_qcats.php');
     }
 
     $buffer = $doc->htmlOuter();

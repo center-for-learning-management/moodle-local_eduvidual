@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package    block_eduvidual
+ * @package    local_eduvidual
  * @copyright  2018 Digital Education Society (http://www.dibig.at)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -23,9 +23,9 @@
 defined('MOODLE_INTERNAL') || die;
 if (!is_siteadmin()) die;
 
-$modules = $DB->get_records_sql('SELECT * FROM {block_eduvidual_modules} WHERE categoryid=? ORDER BY name ASC', array($categoryid));
+$modules = $DB->get_records_sql('SELECT * FROM {local_eduvidual_modules} WHERE categoryid=? ORDER BY name ASC', array($categoryid));
 ?>
-<h4><?php echo get_string('admin:modules:title', 'block_eduvidual'); ?></h4>
+<h4><?php echo get_string('admin:modules:title', 'local_eduvidual'); ?></h4>
 <ul>
     <li>
         <a href="<?php echo $PAGE->url . '?act=' . $act . '&categoryid=' . $categoryid . '&moduleid=-1'; ?>"><?php echo get_string('create'); ?></a>

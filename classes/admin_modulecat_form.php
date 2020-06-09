@@ -15,19 +15,19 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package    block_eduvidual
+ * @package    local_eduvidual
  * @copyright  2017 Digital Education Society (http://www.dibig.at)
  * @author     Robert Schrenk
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-//namespace block_eduvidual;
+//namespace local_eduvidual;
 
 defined('MOODLE_INTERNAL') || die;
 
 require_once($CFG->libdir . "/formslib.php");
 
-class block_eduvidual_admin_modulecat_form extends moodleform {
+class local_eduvidual_admin_modulecat_form extends moodleform {
     var $maxbytes = 1024*1024;
     var $areamaxbytes = 10485760;
     var $maxfiles = 1;
@@ -45,7 +45,7 @@ class block_eduvidual_admin_modulecat_form extends moodleform {
         $mform->setType('id', PARAM_INT);
 
         // General Data
-        $mform->addElement('header', 'generaldata', get_string('admin:modulecat:generaldata', 'block_eduvidual'));
+        $mform->addElement('header', 'generaldata', get_string('admin:modulecat:generaldata', 'local_eduvidual'));
         //$mform->setExpanded('generaldata');
         $mform->addElement('text', 'name', get_string('name'));
         $mform->setType('name', PARAM_TEXT);
@@ -55,13 +55,13 @@ class block_eduvidual_admin_modulecat_form extends moodleform {
         $mform->setType('active', PARAM_INT);
         //$mform->closeHeaderBefore('buttonar');
 
-        $mform->addElement('filemanager', 'modulecat', get_string('admin:modulecat:filearealabel', 'block_eduvidual'), null,
+        $mform->addElement('filemanager', 'modulecat', get_string('admin:modulecat:filearealabel', 'local_eduvidual'), null,
                     array(
                         'subdirs' => $this->subdirs, 'maxbytes' => $this->maxbytes, 'areamaxbytes' => $this->areamaxbytes,
                         'maxfiles' => $this->maxfiles, 'accepted_types' => array('image') //, 'return_types'=> FILE_INTERNAL | FILE_EXTERNAL
                     )
                 );
-        $mform->addElement('submit', null, get_string('admin:modulecat:files:send', 'block_eduvidual'));
+        $mform->addElement('submit', null, get_string('admin:modulecat:files:send', 'local_eduvidual'));
         //$this->add_action_buttons();
     }
     //Custom validation should be added here

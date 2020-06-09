@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package    block_eduvidual
+ * @package    local_eduvidual
  * @copyright  2018 Digital Education Society (http://www.dibig.at)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -24,9 +24,9 @@ defined('MOODLE_INTERNAL') || die;
 if (!is_siteadmin()) die;
 
 echo $OUTPUT->render_from_template(
-    'block_eduvidual/admin_blockfooter',
+    'local_eduvidual/admin_blockfooter',
     (object) array(
-        'navbar' => get_config('block_eduvidual', 'navbar'),
-        'blockfooter' => get_config('block_eduvidual', 'blockfooter')
+        'navbar' => get_config('local_eduvidual', 'navbar'),
+        'blockfooter' => get_config('local_eduvidual', 'blockfooter')
     )
 );

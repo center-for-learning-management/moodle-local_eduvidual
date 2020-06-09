@@ -15,19 +15,21 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package    block_eduvidual
+ * @package    local_eduvidual
  * @copyright  2017 Digital Education Society (http://www.dibig.at)
  * @author     Robert Schrenk
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+namespace local_eduvidual;
+
 defined('MOODLE_INTERNAL') || die;
 
-class block_eduvidual_module_compiler {
+class module_compiler {
     public static function get_payload($data) {
         global $CFG;
         if ($data->type == 'lti') {
-            $payload = file_get_contents($CFG->dirroot . '/blocks/eduvidual/templates/module_lti.mustache');
+            $payload = file_get_contents($CFG->dirroot . '/local/eduvidual/templates/module_lti.mustache');
             $vars = array(
                 'lang:title' => get_string('name'),
                 'lang:description' => get_string('description'),
@@ -59,7 +61,7 @@ class block_eduvidual_module_compiler {
         return $data;
     }
     public static function compile($type, $data, $defaults) {
-        $item = new stdClass();
+        $item = new \stdClass();
         // mandatory items according to https://github.com/moodle/moodle/blob/master/course/tests/courselib_test.php line 199
         $item->modulename = $type;
         $item->section = 0;
@@ -147,7 +149,7 @@ class block_eduvidual_module_compiler {
                 $item->showdescriptionlaunch = 1;
                 $item->typeid = 0;
                 $item->launchcontainer = 4;
-                $item->resourcekey = get_config('block_eduvidual', 'ltiresourcekey');
+                $item->resourcekey = get_config('local_eduvidual', 'ltiresourcekey');
                 $item->instructorcustomparameters = '';
                 $item->instructorchoiceacceptgrades = 1;
                 $item->instructorchoicesendname = 1;
@@ -216,7 +218,7 @@ class block_eduvidual_module_compiler {
     public static function create($item){
         global $CFG, $USER;
 
-        $context = context_course::instance($item->course);
+        $context = \context_course::instance($item->course);
         $roletoassign = 1; // Manager
         $revokerole = true;
         $roles = get_user_roles($context, $USER->id, false);

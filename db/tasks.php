@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package    block_eduvidual
+ * @package    local_eduvidual
  * @copyright  2018 Digital Education Society (http://www.dibig.at)
  * @author     Robert Schrenk
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -25,7 +25,7 @@ defined('MOODLE_INTERNAL') || die;
 
 $tasks = array(
     array(
-        'classname' => 'block_eduvidual\task\block_eduvidual_cron',
+        'classname' => 'local_eduvidual\task\local_eduvidual_cron',
         'blocking' => 0,
         'minute' => '*',
         'hour' => '*',
@@ -34,7 +34,7 @@ $tasks = array(
         'month' => '*',
     ),
     array(
-        'classname' => 'block_eduvidual\task\block_eduvidual_orgsizes',
+        'classname' => 'local_eduvidual\task\local_eduvidual_orgsizes',
         'blocking' => 0,
         'minute' => 0,
         'hour' => 3,
@@ -43,7 +43,7 @@ $tasks = array(
         'month' => '*',
     ),
     array(
-        'classname' => 'block_eduvidual\task\block_eduvidual_trashbin',
+        'classname' => 'local_eduvidual\task\local_eduvidual_trashbin',
         'blocking' => 0,
         'minute' => 0,
         'hour' => 0,

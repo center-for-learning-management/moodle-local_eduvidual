@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package    block_eduvidual
+ * @package    local_eduvidual
  * @copyright  2018 Digital Education Society (http://www.dibig.at)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -45,8 +45,8 @@ $rolestoset_global = array(
     array('roleidentifier' => 'teacher'),
 );
 foreach($rolestoset_course AS &$roletoset) {
-    $defaultrole = get_config('block_eduvidual', 'defaultrole' . $roletoset['roleidentifier']);
-    $roletoset['rolename'] = get_string('defaultroles:course:' . $roletoset['roleidentifier'], 'block_eduvidual');
+    $defaultrole = get_config('local_eduvidual', 'defaultrole' . $roletoset['roleidentifier']);
+    $roletoset['rolename'] = get_string('defaultroles:course:' . $roletoset['roleidentifier'], 'local_eduvidual');
     $roletoset['options'] = unserialize(serialize($potentialroles_course));
     foreach($roletoset['options'] AS &$option) {
         if ($defaultrole == $option->id) {
@@ -55,8 +55,8 @@ foreach($rolestoset_course AS &$roletoset) {
     }
 }
 foreach($rolestoset_org AS &$roletoset) {
-    $defaultrole = get_config('block_eduvidual', 'defaultorgrole' . $roletoset['roleidentifier']);
-    $roletoset['rolename'] = get_string('defaultroles:orgcategory:' . $roletoset['roleidentifier'], 'block_eduvidual');
+    $defaultrole = get_config('local_eduvidual', 'defaultorgrole' . $roletoset['roleidentifier']);
+    $roletoset['rolename'] = get_string('defaultroles:orgcategory:' . $roletoset['roleidentifier'], 'local_eduvidual');
     $roletoset['options'] = unserialize(serialize($potentialroles_org));
     foreach($roletoset['options'] AS &$option) {
         if ($defaultrole == $option->id) {
@@ -65,8 +65,8 @@ foreach($rolestoset_org AS &$roletoset) {
     }
 }
 foreach($rolestoset_global AS &$roletoset) {
-    $defaultrole = get_config('block_eduvidual', 'defaultglobalrole' . $roletoset['roleidentifier']);
-    $roletoset['rolename'] = get_string('defaultroles:global:' . $roletoset['roleidentifier'], 'block_eduvidual');
+    $defaultrole = get_config('local_eduvidual', 'defaultglobalrole' . $roletoset['roleidentifier']);
+    $roletoset['rolename'] = get_string('defaultroles:global:' . $roletoset['roleidentifier'], 'local_eduvidual');
     $roletoset['options'] = unserialize(serialize($potentialroles_global));
     foreach($roletoset['options'] AS &$option) {
         if ($defaultrole == $option->id) {
@@ -75,7 +75,7 @@ foreach($rolestoset_global AS &$roletoset) {
     }
 }
 
-echo $OUTPUT->render_from_template('block_eduvidual/admin_defaultroles', array(
+echo $OUTPUT->render_from_template('local_eduvidual/admin_defaultroles', array(
     'rolestoset_course' => $rolestoset_course,
     'rolestoset_org' => $rolestoset_org,
     'rolestoset_global' => $rolestoset_global,

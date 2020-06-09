@@ -15,42 +15,42 @@
     along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 }}
 
-<h3>{{#str}} registration:title, block_eduvidual {{/str}}</h3>
+<h3>{{#str}} registration:title, local_eduvidual {{/str}}</h3>
 
-<p>{{#str}} registration:description, block_eduvidual {{/str}}</p>
-<div id="block_eduvidual_registration_stage-0">
-    <input type="text" id="eduvidual_registration_orgid" placeholder="{{#str}} accesscard:orgid, block_eduvidual {{/str}}" onkeyup="require(['block_eduvidual/register'], function(REGISTER) { REGISTER.check(); });"
+<p>{{#str}} registration:description, local_eduvidual {{/str}}</p>
+<div id="local_eduvidual_registration_stage-0">
+    <input type="text" id="eduvidual_registration_orgid" placeholder="{{#str}} accesscard:orgid, local_eduvidual {{/str}}" onkeyup="require(['local_eduvidual/register'], function(REGISTER) { REGISTER.check(); });"
       {{#orgid}} value="{{orgid}}" {{/orgid}} />
 </div>
-<div id="block_eduvidual_registration_stage-0-error" style="display: none;">
-    <p class="alert alert-warning">{{#str}} registration:alreadyregistered, block_eduvidual {{/str}}</p>
+<div id="local_eduvidual_registration_stage-0-error" style="display: none;">
+    <p class="alert alert-warning">{{#str}} registration:alreadyregistered, local_eduvidual {{/str}}</p>
 </div>
-<div id="block_eduvidual_registration_stage-1" style="display: none;">
+<div id="local_eduvidual_registration_stage-1" style="display: none;">
     <hr />
-    <p>{{#str}} registration:stage1, block_eduvidual {{/str}}</p>
+    <p>{{#str}} registration:stage1, local_eduvidual {{/str}}</p>
     <p id="eduvidual_registration_mail" style="font-weight: bold;"></p>
     {{#registrationsupport}}
-        <p>{{#str}} registration:stage1:supportinfo, block_eduvidual, {{{registrationsupport}}} {{/str}}</p>
+        <p>{{#str}} registration:stage1:supportinfo, local_eduvidual, {{{registrationsupport}}} {{/str}}</p>
     {{/registrationsupport}}
-    <input type="button" onclick="require(['block_eduvidual/register'], function(REGISTER) { REGISTER.request(); });" value="1.) {{#str}} registration:request, block_eduvidual {{/str}}" />
+    <input type="button" onclick="require(['local_eduvidual/register'], function(REGISTER) { REGISTER.request(); });" value="1.) {{#str}} registration:request, local_eduvidual {{/str}}" />
     <hr />
-    <p>{{#str}} registration:stage2, block_eduvidual {{/str}}</p>
-    <label for="eduvidual_registration_name">{{#str}} registration:token, block_eduvidual {{/str}}</label>
-    <input type="text" id="eduvidual_registration_token" value="" placeholder="{{#str}} registration:token, block_eduvidual {{/str}}" />
-    <label for="eduvidual_registration_name">{{#str}} registration:name, block_eduvidual {{/str}}</label>
-    <p class="alert alert-info">{{#str}} registration:name:description, block_eduvidual {{/str}}</p>
+    <p>{{#str}} registration:stage2, local_eduvidual {{/str}}</p>
+    <label for="eduvidual_registration_name">{{#str}} registration:token, local_eduvidual {{/str}}</label>
+    <input type="text" id="eduvidual_registration_token" value="" placeholder="{{#str}} registration:token, local_eduvidual {{/str}}" />
+    <label for="eduvidual_registration_name">{{#str}} registration:name, local_eduvidual {{/str}}</label>
+    <p class="alert alert-info">{{#str}} registration:name:description, local_eduvidual {{/str}}</p>
     <input type="text" id="eduvidual_registration_name" value="" maxlength="30"
-        placeholder="{{#str}} registration:name, block_eduvidual {{/str}}"
+        placeholder="{{#str}} registration:name, local_eduvidual {{/str}}"
         onkeypress="if(this.value.length > 30) { this.value = this.value.substring(0, 30); return false; }"/>
-    <input type="button" onclick="require(['block_eduvidual/register'], function(REGISTER) { REGISTER.validate(); });" value="2.) {{#str}} registration:validate, block_eduvidual {{/str}}" />
+    <input type="button" onclick="require(['local_eduvidual/register'], function(REGISTER) { REGISTER.validate(); });" value="2.) {{#str}} registration:validate, local_eduvidual {{/str}}" />
 </div>
-<div id="block_eduvidual_registration_stage-2" style="display: none;">
-    <p>{{#str}} registration:success, block_eduvidual {{/str}}</p>
-    <a href="#" id="block_eduvidual_registration_homecategory"></a>
+<div id="local_eduvidual_registration_stage-2" style="display: none;">
+    <p>{{#str}} registration:success, local_eduvidual {{/str}}</p>
+    <a href="#" id="local_eduvidual_registration_homecategory"></a>
 </div>
 
 {{#orgid}}
     {{#js}}
-    require(['block_eduvidual/register'], function(REGISTER) { REGISTER.check(); });
+    require(['local_eduvidual/register'], function(REGISTER) { REGISTER.check(); });
     {{/js}}
 {{/orgid}}

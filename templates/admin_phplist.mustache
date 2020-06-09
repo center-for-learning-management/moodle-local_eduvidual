@@ -15,16 +15,16 @@
     along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 }}
 
-<h4>{{#str}} admin:phplist:title, block_eduvidual {{/str}}</h4>
-<p>{{#str}} admin:phplist:description, block_eduvidual {{/str}}</p>
+<h4>{{#str}} admin:phplist:title, local_eduvidual {{/str}}</h4>
+<p>{{#str}} admin:phplist:description, local_eduvidual {{/str}}</p>
 
 {{#syncmessages}}
-    {{> block_eduvidual/alert }}
+    {{> local_eduvidual/alert }}
 {{/syncmessages}}
-<a href="{{wwwroot}}/blocks/eduvidual/pages/admin.php?act=phplist&sync=1" class="btn ui-btn btn-primary">{{#str}} admin:phplist:sync, block_eduvidual {{/str}}</a>
+<a href="{{wwwroot}}/local/eduvidual/pages/admin.php?act=phplist&sync=1" class="btn ui-btn btn-primary">{{#str}} admin:phplist:sync, local_eduvidual {{/str}}</a>
 
 {{#configs}}
-    <label for="block_eduvidual_admin_phplist_{{field}}">{{field}}</label>
-    <input type="{{type}}" id="block_eduvidual_admin_phplist_{{field}}" style="width: 100%;"
-           onchange="var el = this; require(['block_eduvidual/admin'], function(ADMIN) { ADMIN.phpListConfig('{{field}}', el); });" value="{{content}}">
+    <label for="local_eduvidual_admin_phplist_{{field}}">{{field}}</label>
+    <input type="{{type}}" id="local_eduvidual_admin_phplist_{{field}}" style="width: 100%;"
+           onchange="var el = this; require(['local_eduvidual/admin'], function(ADMIN) { ADMIN.phpListConfig('{{field}}', el); });" value="{{content}}">
 {{/configs}}

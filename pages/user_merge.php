@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package    block_eduvidual
+ * @package    local_eduvidual
  * @copyright  2018 Digital Education Society (http://www.dibig.at)
  * @author     Robert Schrenk
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -25,23 +25,23 @@ require_once('../../../config.php');
 require_login();
 
 require_once($CFG->libdir . '/adminlib.php');
-require_once($CFG->dirroot . '/blocks/eduvidual/block_eduvidual.php');
+require_once($CFG->dirroot . '/local/eduvidual/block_eduvidual.php');
 
 $PAGE->set_context(context_system::instance());
 $PAGE->set_pagelayout('mydashboard');
-$PAGE->set_url('/blocks/eduvidual/pages/user_merge.php', array());
-$PAGE->set_title(get_string('user:merge_accounts', 'block_eduvidual'));
-$PAGE->set_heading(get_string('user:merge_accounts', 'block_eduvidual'));
+$PAGE->set_url('/local/eduvidual/pages/user_merge.php', array());
+$PAGE->set_title(get_string('user:merge_accounts', 'local_eduvidual'));
+$PAGE->set_heading(get_string('user:merge_accounts', 'local_eduvidual'));
 //$PAGE->set_cacheable(false);
 
-block_eduvidual::print_app_header();
+local_eduvidual::print_app_header();
 
 $users = $DB->get_records('user', array('email' => $USER->email, 'suspended' => 0));
 $keep = optional_param('user_keep', 0, PARAM_INT);
 if ($keep > 0) {
     $user_to_keep = $DB->get_record('user', array('id' => $keep));
     echo $OUTPUT->render_from_template(
-        'block_eduvidual/user_merge_keep',
+        'local_eduvidual/user_merge_keep',
         $user_to_keep
     );
 
@@ -57,14 +57,14 @@ if ($keep > 0) {
         // Continue when this is the user we want to keep
         if ($user->id == $keep) continue;
         echo $OUTPUT->render_from_template(
-            'block_eduvidual/user_merge_merge',
+            'local_eduvidual/user_merge_merge',
             $user
         );
         list($fromuser, $oumessage) = $mus->verify_user($user->id, 'id');
         list($touser, $numessage) = $mus->verify_user($user_to_keep->id, 'id');
         if ($fromuser === NULL || $touser === NULL) {
             echo $OUTPUT->render_from_template(
-                'block_eduvidual/alert',
+                'local_eduvidual/alert',
                 (object) array('content' => $oumessage . '<br />' . $numessage, 'type' => 'warning')
             );
         } else {
@@ -113,15 +113,15 @@ if (count(array_keys($users)) > 1) {
 
 
     echo $OUTPUT->render_from_template(
-        'block_eduvidual/user_merge',
+        'local_eduvidual/user_merge',
         $params
     );
 } else {
     echo $OUTPUT->render_from_template(
-        'block_eduvidual/user_merge_ok',
+        'local_eduvidual/user_merge_ok',
         $params
     );
 }
 
 
-block_eduvidual::print_app_footer();
+local_eduvidual::print_app_footer();

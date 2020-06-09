@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package    block_eduvidual
+ * @package    local_eduvidual
  * @copyright  2018 Digital Education Society (http://www.dibig.at)
  * @author     Robert Schrenk
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -24,16 +24,14 @@
 defined('MOODLE_INTERNAL') || die;
 
 $current_orgid = optional_param('orgid', 0, PARAM_INT);
-$orgas = block_eduvidual::get_organisations('*');
+$orgas = \local_eduvidual\locallib::get_organisations('*');
 if (count($orgas) == 1 && $current_orgid == 0) {
 	foreach($orgas AS $orga) {
 		$current_orgid = $orga->orgid;
 	}
 }
-$org = block_eduvidual::get_organisations_check($orgas, $current_orgid);
-if (isset($org->orgid) && $org->orgid > 0) {
-    block_eduvidual::set_org($org->orgid);
-}
+$org = \local_eduvidual\locallib::get_organisations_check($orgas, $current_orgid);
+
 $act = optional_param('act', '', PARAM_TEXT);
 switch ($act) {
     case 'accesscode':
@@ -42,7 +40,7 @@ switch ($act) {
         } else {
             $orgid = optional_param('orgid', 0, PARAM_INT);
             $code = optional_param('code', '', PARAM_TEXT);
-            $entries = $DB->get_records('block_eduvidual_org_codes', array('orgid' => $orgid, 'code' => $code));
+            $entries = $DB->get_records('local_eduvidual_org_codes', array('orgid' => $orgid, 'code' => $code));
             if (count($entries) > 0) {
                 $role = '';
                 foreach($entries AS $entry) {
@@ -52,7 +50,7 @@ switch ($act) {
                 }
                 if (!empty($role)) {
                     // Code is ok - enrol user
-                    $reply['enrolment'] = \block_eduvidual\lib_enrol::role_set($USER->id, $orgid, $role);
+                    $reply['enrolment'] = \local_eduvidual\lib_enrol::role_set($USER->id, $orgid, $role);
                     $reply['orgid'] = $orgid;
                     $reply['status'] = 'ok';
                 } else {
@@ -85,7 +83,7 @@ switch ($act) {
                 $iprestriction = getremoteaddr();
                 $validuntil = time() + 60;
                 $reply['key'] = create_user_key('tool_mobile', $userid, null, $iprestriction, $validuntil);
-                $autologinurl = new moodle_url("/$CFG->admin/tool/mobile/autologin.php");
+                $autologinurl = new \moodle_url("/$CFG->admin/tool/mobile/autologin.php");
                 $reply['autologinurl'] = $autologinurl->out(false);
                 $reply['status'] = 'ok';
             } else  {
@@ -102,14 +100,14 @@ switch ($act) {
         $reply['categories'] = array();
         $reply['courses'] = array();
         $reply['status'] = 'ok';
-        $reply['role'] = block_eduvidual::get('role');
-        $reply['orgrole'] = block_eduvidual::get('orgrole');
+        $reply['role'] = \local_eduvidual\locallib::get_highest_role();
+        $reply['orgrole'] = \local_eduvidual\locallib::get_orgrole($org->orgid);
         $reply['orgid'] = $org->orgid;
         $reply['orgcategoryid'] = $org->categoryid;
         $cats = $DB->get_records_sql('SELECT * FROM {course_categories} WHERE parent=? AND path LIKE ? ORDER BY name ASC', array($categoryid, '/' . $org->categoryid . '%'));
         foreach($cats AS $cat) {
             if ($cat->visible == 0) {
-                if (!in_array(block_eduvidual::get('role'), array('Manager')) && !is_siteadmin()) {
+                if (!in_array(\local_eduvidual\locallib::get_highest_role(), array('Manager')) && !is_siteadmin()) {
                     continue;
                 }
             }
@@ -118,15 +116,15 @@ switch ($act) {
         $courses = $DB->get_records_sql('SELECT * FROM {course} WHERE category=? ORDER BY fullname ASC', array($categoryid));
         foreach($courses AS $course) {
             if ($course->visible == 0) {
-                $context = context_course::instance($course->id);
-                if (!has_capability('moodle/course:update', $context) && !in_array(block_eduvidual::get('role'), array('Manager')) && !is_siteadmin()) {
+                $context = \context_course::instance($course->id);
+                if (!has_capability('moodle/course:update', $context) && !in_array(\local_eduvidual\locallib::get_highest_role(), array('Manager')) && !is_siteadmin()) {
                     continue;
                 }
             }
             // Create a course_in_list object to use the get_course_overviewfiles() method.
             require_once($CFG->libdir . '/coursecatlib.php');
             //$reply['coursecatlib'] = $CFG->libdir . '/coursecatlib.php';
-            $_course = new course_in_list($course);
+            $_course = new \course_in_list($course);
 
             $course->image = '';
             foreach ($_course->get_course_overviewfiles() as $file) {
@@ -159,10 +157,10 @@ switch ($act) {
             if ($courseid > 0) {
                 if ($setto) {
                     // Set hidden
-                    $DB->insert_record('block_eduvidual_courseshow', $data);
+                    $DB->insert_record('local_eduvidual_courseshow', $data);
                 } else {
                     // Remove hidden
-                    $DB->delete_records('block_eduvidual_courseshow', (array)$data);
+                    $DB->delete_records('local_eduvidual_courseshow', (array)$data);
                 }
                 $reply['status'] = 'ok';
             }
@@ -172,12 +170,12 @@ switch ($act) {
         if (isguestuser($USER)) {
             $reply['error'] = 'guestuser:nopermission';
         } else {
-            $validorgas = block_eduvidual::get_organisations('*');
+            $validorgas = \local_eduvidual\locallib::get_organisations('*');
             $orgid = optional_param('orgid', 0, PARAM_INT);
-            $org = block_eduvidual::get_organisations_check($validorgas, $orgid);
+            $org = \local_eduvidual\locallib::get_organisations_check($validorgas, $orgid);
 
             if (isset($org) && $org->orgid == $orgid) {
-				$chk = set_user_preference('block_eduvidual_defaultorg', $orgid);
+				$chk = set_user_preference('local_eduvidual_defaultorg', $orgid);
                 $reply['status'] = ($chk) ? 'ok' : 'error';
             } else {
                 $reply['error'] = 'invalid_org';
@@ -187,23 +185,22 @@ switch ($act) {
     case 'login':
         $token = optional_param('token', '', PARAM_ALPHANUM);
         $userid = optional_param('userid', 0, PARAM_INT);
-        $entry = $DB->get_record('block_eduvidual_usertoken', array('token' => $token, 'userid' => $userid));
+        $entry = $DB->get_record('local_eduvidual_usertoken', array('token' => $token, 'userid' => $userid));
         if ($entry && $entry->userid > 0) {
             $entry->used = time();
-            $DB->update_record('block_eduvidual_usertoken', $entry);
+            $DB->update_record('local_eduvidual_usertoken', $entry);
 
             // Do the login magic
-            $user = core_user::get_user($entry->userid, '*', MUST_EXIST);
-            core_user::require_active_user($user, true, true);
+            $user = \core_user::get_user($entry->userid, '*', MUST_EXIST);
+            \core_user::require_active_user($user, true, true);
             // Do the user log-in.
             if (!$user = get_complete_user_data('id', $user->id)) {
-                throw new moodle_exception('cannotfinduser', '', '', $user->id);
+                throw new \moodle_exception('cannotfinduser', '', '', $user->id);
             }
             complete_user_login($user);
             \core\session\manager::apply_concurrent_login_limit($user->id, session_id());
             $reply['status'] = 'ok';
             $reply['userid'] = $USER->id;
-            block_eduvidual::set_is_app(1);
         } else {
             $reply['error'] = 'invalid token';
         }

@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
-* @package    block_eduvidual
+* @package    local_eduvidual
 * @copyright  2018 Digital Education Society (http://www.dibig.at)
 * @author     Robert Schrenk
 * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -24,25 +24,25 @@
 defined('MOODLE_INTERNAL') || die;
 
 if (!is_siteadmin()) {
-    $reply['error'] = get_string('access_denied', 'block_eduvidual');
+    $reply['error'] = get_string('access_denied', 'local_eduvidual');
 } else {
     $act = optional_param('act', '', PARAM_TEXT);
     switch ($act) {
         case 'allmanagerscourses':
             $allmanagerscourses = optional_param('allmanagerscourses', '', PARAM_TEXT);
-            if (set_config('allmanagerscourses', $allmanagerscourses, 'block_eduvidual')) {
+            if (set_config('allmanagerscourses', $allmanagerscourses, 'local_eduvidual')) {
                 $reply['status'] = 'ok';
             }
         break;
         case 'blockfooter':
             $blockfooter = optional_param('blockfooter', '', PARAM_TEXT);
-            if (set_config('blockfooter', $blockfooter, 'block_eduvidual')) {
+            if (set_config('blockfooter', $blockfooter, 'local_eduvidual')) {
                 $reply['status'] = 'ok';
             }
         break;
         case 'coursebasements':
             $coursebasements = optional_param('coursebasements', '', PARAM_TEXT);
-            if (set_config('coursebasements', $coursebasements, 'block_eduvidual')) {
+            if (set_config('coursebasements', $coursebasements, 'local_eduvidual')) {
                 $reply['status'] = 'ok';
             }
         break;
@@ -51,7 +51,7 @@ if (!is_siteadmin()) {
             $type = optional_param('type', '', PARAM_TEXT);
             $types = array('parent', 'student', 'teacher');
             if (in_array($type, $types)) {
-                set_config('defaultrole' . $type, $role, 'block_eduvidual');
+                set_config('defaultrole' . $type, $role, 'local_eduvidual');
                 $reply['status'] = 'ok';
             } else {
                 $reply['error'] = 'invalid_type';
@@ -60,11 +60,11 @@ if (!is_siteadmin()) {
         case 'dropzonepath':
             $dropzonepath = optional_param('dropzonepath', '', PARAM_TEXT);
             if (empty($dropzonepath)) {
-                set_config('dropzonepath', '', 'block_eduvidual');
+                set_config('dropzonepath', '', 'local_eduvidual');
                 $reply['status'] = 'ok';
             } elseif (is_dir($dropzonepath)) {
                 if (is_writable($dropzonepath)) {
-                    if (set_config('dropzonepath', $dropzonepath, 'block_eduvidual')) {
+                    if (set_config('dropzonepath', $dropzonepath, 'local_eduvidual')) {
                         $reply['status'] = 'ok';
                     } else {
                         $reply['status'] = 'Could not set config!';
@@ -76,7 +76,7 @@ if (!is_siteadmin()) {
         break;
         case 'ltiresourcekey':
             $ltiresourcekey = optional_param('ltiresourcekey', '', PARAM_TEXT);
-            if (set_config('ltiresourcekey', $ltiresourcekey, 'block_eduvidual')) {
+            if (set_config('ltiresourcekey', $ltiresourcekey, 'local_eduvidual')) {
                 $reply['status'] = 'ok';
             }
         break;
@@ -85,8 +85,8 @@ if (!is_siteadmin()) {
             if (!empty($search)) $search = '%' . $search . '%';
             $fields = array('id', 'categoryid', 'city', 'country', 'orgid', 'name', 'mail', 'phone', 'street', 'zip');
             $sql = "SELECT o." . implode(',o.', $fields) . ",og.lon,og.lat
-                        FROM {block_eduvidual_org} o
-                            LEFT JOIN {block_eduvidual_org_gps} og ON o.orgid=og.orgid
+                        FROM {local_eduvidual_org} o
+                            LEFT JOIN {local_eduvidual_org_gps} og ON o.orgid=og.orgid
                         WHERE o." . implode(' LIKE ? OR o.', $fields);
             $params = array();
             foreach($fields AS $field) {
@@ -120,7 +120,7 @@ if (!is_siteadmin()) {
                 $reply['errors_reasons'][] = 'no valid mail';
             }
 
-            $checkorg = $DB->get_record('block_eduvidual_org', array('orgid' => $params['orgid']));
+            $checkorg = $DB->get_record('local_eduvidual_org', array('orgid' => $params['orgid']));
             if (empty($params['id']) && !empty($checkorg->orgid) && $checkorg->id != $params['id']) {
                 $valid = false;
                 $reply['errors'][] = 'orgid';
@@ -128,31 +128,31 @@ if (!is_siteadmin()) {
             }
             if ($valid) {
                 if (!empty($params['id'])) {
-                    $org = $DB->get_record('block_eduvidual_org', array('id' => $params['id']));
+                    $org = $DB->get_record('local_eduvidual_org', array('id' => $params['id']));
                     foreach ($fields AS $field) {
                         $org->{$field} = $params[$field];
                     }
-                    $DB->update_record('block_eduvidual_org', $org);
+                    $DB->update_record('local_eduvidual_org', $org);
                     $reply['status'] = 'ok';
                 } else {
-                    $params['subcats1'] = get_string('createcourse:subcat1:defaults', 'block_eduvidual');
+                    $params['subcats1'] = get_string('createcourse:subcat1:defaults', 'local_eduvidual');
                     $params['subcats2'] = '';
                     $params['subcats3'] = '';
                     $params['customcss'] = '';
 
-                    $id = $DB->insert_record('block_eduvidual_org', $params, true);
+                    $id = $DB->insert_record('local_eduvidual_org', $params, true);
                     if ($id > 0) {
                         $reply['status'] = 'ok';
                     }
                 }
                 if (!empty($params['lat']) && !empty($params['lon'])) {
-                    $gps = $DB->get_record('block_eduvidual_org_gps', array('orgid' => $org->orgid));
+                    $gps = $DB->get_record('local_eduvidual_org_gps', array('orgid' => $org->orgid));
                     if (!empty($gps->id)) {
                         $gps->lat = $params['lat'];
                         $gps->lon = $params['lon'];
                         $gps->modified = time();
                         $gps->failed = 0;
-                        $DB->update_record('block_eduvidual_org_gps', $gps);
+                        $DB->update_record('local_eduvidual_org_gps', $gps);
                     } else {
                         $gps = (object) array(
                             'orgid' => $org->orgid,
@@ -161,10 +161,10 @@ if (!is_siteadmin()) {
                             'modified' => time(),
                             'failed' => 0,
                         );
-                        $DB->insert_record('block_eduvidual_org_gps', $gps);
+                        $DB->insert_record('local_eduvidual_org_gps', $gps);
                     }
                 } else {
-                    $DB->delete_records('block_eduvidual_org_gps', array('orgid' => $params['orgid']));
+                    $DB->delete_records('local_eduvidual_org_gps', array('orgid' => $params['orgid']));
                 }
             } else {
                 $reply['status'] = 'error';
@@ -174,13 +174,13 @@ if (!is_siteadmin()) {
         case 'phplistconfig':
             $field = optional_param('field', '', PARAM_TEXT);
             $content = optional_param('content', '', PARAM_TEXT);
-            if (!empty($field) && set_config('phplist_' . $field, $content, 'block_eduvidual')) {
+            if (!empty($field) && set_config('phplist_' . $field, $content, 'local_eduvidual')) {
                 $reply['status'] = 'ok';
             }
         break;
         case 'protectedorgs':
             $protectedorgs = optional_param('protectedorgs', '', PARAM_TEXT);
-            if (set_config('protectedorgs', $protectedorgs, 'block_eduvidual')) {
+            if (set_config('protectedorgs', $protectedorgs, 'local_eduvidual')) {
                 $reply['status'] = 'ok';
             }
         break;
@@ -194,21 +194,21 @@ if (!is_siteadmin()) {
                 $roleinuse = false;
                 foreach ($types AS $testtype) {
                     if ($testtype == $type) continue;
-                    if (get_config('block_eduvidual', 'defaultorgrole' . $testtype) == $role) {
+                    if (get_config('local_eduvidual', 'defaultorgrole' . $testtype) == $role) {
                         $roleinuse = true;
                     };
                 }
                 if (!$roleinuse) {
-                    $previousrole = get_config('block_eduvidual', 'defaultorgrole' . $type);
+                    $previousrole = get_config('local_eduvidual', 'defaultorgrole' . $type);
                     //$reply['previousrole'] = $previousrole;
                     if (!empty($previousrole)) {
                         // We remove the previously set roles.
                         //$reply['unassigning'] = array();
-                        $members = $DB->get_records('block_eduvidual_orgid_userid', array('role' => ucfirst($type)), 'orgid ASC', '*');
+                        $members = $DB->get_records('local_eduvidual_orgid_userid', array('role' => ucfirst($type)), 'orgid ASC', '*');
                         $orgid = 0; $contextid = 0;
                         foreach ($members AS $member) {
                             if ($member->orgid != $orgid) {
-                                $org = $DB->get_record('block_eduvidual_org', array('orgid' => $member->orgid));
+                                $org = $DB->get_record('local_eduvidual_org', array('orgid' => $member->orgid));
                                 if (empty($org->categoryid)) continue; // Skip this org - no category.
                                 $context = \context_coursecat::instance($org->categoryid, IGNORE_MISSING);
                                 $contextid = $context->id;
@@ -219,31 +219,31 @@ if (!is_siteadmin()) {
                         }
                     }
                     if (!empty($role)) {
-                        set_config('defaultorgrole' . $type, $role, 'block_eduvidual');
+                        set_config('defaultorgrole' . $type, $role, 'local_eduvidual');
                         //$reply['assigning'] = array();
-                        $members = $DB->get_records('block_eduvidual_orgid_userid', array('role' => ucfirst($type)), 'orgid ASC', '*');
+                        $members = $DB->get_records('local_eduvidual_orgid_userid', array('role' => ucfirst($type)), 'orgid ASC', '*');
                         $orgid = 0; $contextid = 0;
                         foreach ($members AS $member) {
                             if ($member->orgid != $orgid) {
-                                $org = $DB->get_record('block_eduvidual_org', array('orgid' => $member->orgid));
+                                $org = $DB->get_record('local_eduvidual_org', array('orgid' => $member->orgid));
                                 if (empty($org->categoryid)) continue; // Skip this org - no category.
                                 $context = \context_coursecat::instance($org->categoryid, IGNORE_MISSING);
                                 $contextid = $context->id;
                             }
                             if (empty($contextid)) continue;
                             // Check if this user still exists.
-                            $user = core_user::get_user($member->userid, 'id,deleted', IGNORE_MISSING);
+                            $user = \core_user::get_user($member->userid, 'id,deleted', IGNORE_MISSING);
                             if (empty($user->id) || $user->deleted) continue;
                             //$reply['assigning'][] = $member->userid . ' / ' . $contextid;
                             role_assign($role, $member->userid, $contextid);
                         }
                     } else {
                         // How to remove a plugin-config?
-                        //remove_config('defaultorgrole' . $type, 'block_eduvidual');
+                        //remove_config('defaultorgrole' . $type, 'local_eduvidual');
                     }
                     $reply['status'] = 'ok';
                 } else {
-                    $reply['error'] = get_string('orgrole:role_already_in_use', 'block_eduvidual');
+                    $reply['error'] = get_string('orgrole:role_already_in_use', 'local_eduvidual');
                 }
 
 
@@ -261,13 +261,13 @@ if (!is_siteadmin()) {
                 $roleinuse = false;
                 foreach ($types AS $testtype) {
                     if ($testtype == $type) continue;
-                    if (get_config('block_eduvidual', 'defaultglobalrole' . $testtype) == $role) {
+                    if (get_config('local_eduvidual', 'defaultglobalrole' . $testtype) == $role) {
                         $roleinuse = true;
                     };
                 }
                 if (!$roleinuse) {
                     $context = \context_system::instance();
-                    $previousrole = get_config('block_eduvidual', 'defaultglobalrole' . $type);
+                    $previousrole = get_config('local_eduvidual', 'defaultglobalrole' . $type);
                     //$reply['previousrole'] = $previousrole;
                     if (!empty($previousrole)) {
                         // We remove the previously set roles.
@@ -277,23 +277,23 @@ if (!is_siteadmin()) {
                         }
                     }
                     if (!empty($role)) {
-                        set_config('defaultglobalrole' . $type, $role, 'block_eduvidual');
+                        set_config('defaultglobalrole' . $type, $role, 'local_eduvidual');
                         //$reply['assigning'] = array();
-                        $members = $DB->get_records('block_eduvidual_orgid_userid', array('role' => ucfirst($type)));
+                        $members = $DB->get_records('local_eduvidual_orgid_userid', array('role' => ucfirst($type)));
                         foreach ($members AS $member) {
                             // Check if this user still exists.
-                            $user = core_user::get_user($member->userid, 'id,deleted', IGNORE_MISSING);
+                            $user = \core_user::get_user($member->userid, 'id,deleted', IGNORE_MISSING);
                             if (empty($user->id) || $user->deleted) continue;
                             //$reply['assigning'][] = $member->userid . ' / ' . $contextid;
                             role_assign($role, $member->userid, $context->id);
                         }
                     } else {
                         // How to remove a plugin-config?
-                        //remove_config('defaultglobalrole' . $type, 'block_eduvidual');
+                        //remove_config('defaultglobalrole' . $type, 'local_eduvidual');
                     }
                     $reply['status'] = 'ok';
                 } else {
-                    $reply['error'] = get_string('defaultroles:global:inuse', 'block_eduvidual');
+                    $reply['error'] = get_string('defaultroles:global:inuse', 'local_eduvidual');
                 }
             } else {
                 $reply['error'] = 'config_not_set';
@@ -301,13 +301,13 @@ if (!is_siteadmin()) {
         break;
         case 'modifylogin':
             $setto = optional_param('setto', 0, PARAM_INT);
-            if (set_config('modifylogin', $setto, 'block_eduvidual')) {
+            if (set_config('modifylogin', $setto, 'local_eduvidual')) {
                 $reply['status'] = 'ok';
             }
         break;
         case 'modulecatform':
             $categoryid = optional_param('categoryid', 0, PARAM_INT);
-            $reply['category'] = $DB->get_record('block_eduvidual_modulescat', array('id' => $categoryid));
+            $reply['category'] = $DB->get_record('local_eduvidual_modulescat', array('id' => $categoryid));
             $reply['status'] = (isset($reply['category']) && isset($reply['category']->id))?'ok':'error';
         break;
         case 'modulecatstore':
@@ -315,7 +315,7 @@ if (!is_siteadmin()) {
             $parentid = optional_param('parentid', -1, PARAM_INT);
             $entry = new \stdClass;
             if ($categoryid > 0) {
-                $entry = $DB->get_record('block_eduvidual_modulescat', array('id' => $categoryid));
+                $entry = $DB->get_record('local_eduvidual_modulescat', array('id' => $categoryid));
             } else {
                 if ($parentid > -1) {
                     $entry->parentid = $parentid;
@@ -328,9 +328,9 @@ if (!is_siteadmin()) {
             $entry->description = optional_param('description', '', PARAM_TEXT);
             $chk = false;
             if ($categoryid > -1) {
-                $chk = $DB->update_record('block_eduvidual_modulescat', $entry);
+                $chk = $DB->update_record('local_eduvidual_modulescat', $entry);
             } else {
-                $entry->id = $DB->insert_record('block_eduvidual_modulescat', $entry, true);
+                $entry->id = $DB->insert_record('local_eduvidual_modulescat', $entry, true);
                 $chk =  ($entry->id > 0);
             }
             if ($chk) {
@@ -342,7 +342,7 @@ if (!is_siteadmin()) {
             $moolevels = optional_param_array('moolevels', NULL, PARAM_INT);
             // Set to 0 if you require at least one!
             if (count($moolevels) > -1) {
-                set_config('moolevels', implode(",", $moolevels), 'block_eduvidual');
+                set_config('moolevels', implode(",", $moolevels), 'local_eduvidual');
                 $reply['status'] = 'ok';
             } else {
                 $reply['error'] = 'config_not_set';
@@ -350,15 +350,15 @@ if (!is_siteadmin()) {
         break;
         case 'navbar':
             $navbar = optional_param('navbar', '', PARAM_TEXT);
-            if (set_config('navbar', $navbar, 'block_eduvidual')) {
+            if (set_config('navbar', $navbar, 'local_eduvidual')) {
                 $reply['status'] = 'ok';
             }
         break;
         case 'orgcoursebasement':
             $basement = optional_param('basement', 0, PARAM_INT);
 
-            if (\block_eduvidual\lib_enrol::is_valid_course_basement('system', $basement)) {
-                set_config('orgcoursebasement', $basement, 'block_eduvidual');
+            if (\local_eduvidual\lib_enrol::is_valid_course_basement('system', $basement)) {
+                set_config('orgcoursebasement', $basement, 'local_eduvidual');
                 $reply['status'] = 'ok';
             } else {
                 $reply['error'] = 'invalid_orgcoursebasement';
@@ -368,7 +368,7 @@ if (!is_siteadmin()) {
             $questioncategories = optional_param_array('questioncategories', NULL, PARAM_INT);
             // Set to 0 if you require at least one!
             if (count($questioncategories) > -1) {
-                set_config('questioncategories', implode(",", $questioncategories), 'block_eduvidual');
+                set_config('questioncategories', implode(",", $questioncategories), 'local_eduvidual');
                 $reply['status'] = 'ok';
             } else {
                 $reply['error'] = 'config_not_set';
@@ -376,25 +376,25 @@ if (!is_siteadmin()) {
         break;
         case 'requirecapability':
             $requirecapability = optional_param('requirecapability', 0, PARAM_INT);
-            if (set_config('requirecapability', $requirecapability, 'block_eduvidual')) {
+            if (set_config('requirecapability', $requirecapability, 'local_eduvidual')) {
                 $reply['status'] = 'ok';
             }
         break;
         case 'registrationcc':
             $registrationcc = optional_param('registrationcc', '', PARAM_TEXT);
-            if (set_config('registrationcc', $registrationcc, 'block_eduvidual')) {
+            if (set_config('registrationcc', $registrationcc, 'local_eduvidual')) {
                 $reply['status'] = 'ok';
             }
         break;
         case 'registrationsupport':
             $registrationsupport = optional_param('registrationsupport', '', PARAM_TEXT);
-            if (set_config('registrationsupport', $registrationsupport, 'block_eduvidual')) {
+            if (set_config('registrationsupport', $registrationsupport, 'local_eduvidual')) {
                 $reply['status'] = 'ok';
             }
         break;
         case 'trashcategory':
             $category = optional_param('trashcategory', 0, PARAM_TEXT);
-            set_config('trashcategory', $category, 'block_eduvidual');
+            set_config('trashcategory', $category, 'local_eduvidual');
             $reply['status'] = 'ok';
         break;
         default:

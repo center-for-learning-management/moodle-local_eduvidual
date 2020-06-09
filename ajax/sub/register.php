@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package    block_eduvidual
+ * @package    local_eduvidual
  * @copyright  2018 Digital Education Society (http://www.dibig.at)
  * @author     Robert Schrenk
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -34,7 +34,7 @@ if ($USER->id > 1) {
              * Should return if orgid is valid
             */
             $orgid = optional_param('orgid', -1, PARAM_INT);
-            $org = $DB->get_record('block_eduvidual_org', array('orgid' => $orgid));
+            $org = $DB->get_record('local_eduvidual_org', array('orgid' => $orgid));
             if (isset($org->orgid) && $org->orgid == $orgid) {
                 $reply['status'] = 'ok';
                 $reply['name'] = substr($org->name, 0, 30);
@@ -50,11 +50,11 @@ if ($USER->id > 1) {
              * Should return if mail was sent successfully
             */
             $orgid = optional_param('orgid', -1, PARAM_INT);
-            $org = $DB->get_record('block_eduvidual_org', array('orgid' => $orgid, 'authenticated' => 0));
+            $org = $DB->get_record('local_eduvidual_org', array('orgid' => $orgid, 'authenticated' => 0));
 
             if (isset($org->orgid) && $org->orgid == $orgid) {
                 $org->authtan = substr(md5(date('Y-m-d H:i:s') . rand(0, 99999)), 0, 10);
-                $DB->update_record('block_eduvidual_org', $org);
+                $DB->update_record('local_eduvidual_org', $org);
 
                 $touser = new \stdClass();
                 $touser->email = $org->mail;
@@ -68,16 +68,16 @@ if ($USER->id > 1) {
                 $touser->middlename = "";
                 $touser->alternatename = "";
 
-                $fromuser = core_user::get_support_user();
+                $fromuser = \core_user::get_support_user();
 
                 $messagehtml = $OUTPUT->render_from_template(
-                    'block_eduvidual/register_mail_authtan',
+                    'local_eduvidual/register_mail_authtan',
                     (object) array(
                         'authtan' => $org->authtan,
                         'email' => $USER->email,
                         'orgid' => $org->orgid,
-                        'registrationurl' => $CFG->wwwroot . '/blocks/eduvidual/pages/register.php',
-                        'subject' => get_string('mailregister:header', 'block_eduvidual'),
+                        'registrationurl' => $CFG->wwwroot . '/local/eduvidual/pages/register.php',
+                        'subject' => get_string('mailregister:header', 'local_eduvidual'),
                         'userfullname' => $USER->firstname . ' ' . $USER->lastname,
                         'userid' => $USER->id,
                         'wwwroot' => $CFG->wwwroot,
@@ -85,11 +85,11 @@ if ($USER->id > 1) {
                 );
 
                 $messagetext = html_to_text($messagehtml);
-                $subject = get_string('mailregister:subject' , 'block_eduvidual');
+                $subject = get_string('mailregister:subject' , 'local_eduvidual');
                 email_to_user($touser, $fromuser, $subject, $messagetext, $messagehtml, "", true);
 
                 // Sending a short statement to CC-Users
-                $ccmails = explode(',', get_config('block_eduvidual', 'registrationcc'));
+                $ccmails = explode(',', get_config('local_eduvidual', 'registrationcc'));
                 if (count($ccmails) > 0) {
                     foreach($ccmails AS $ccmail) {
                         if (!filter_var($ccmail, FILTER_VALIDATE_EMAIL)) continue;
@@ -111,7 +111,7 @@ if ($USER->id > 1) {
             $orgid = optional_param('orgid', -1, PARAM_INT);
             $authtan = optional_param('token', '', PARAM_TEXT);
             $name = substr(optional_param('name', '', PARAM_TEXT), 0, 30);
-            $test = $DB->get_record('block_eduvidual_org', array('name' => $name));
+            $test = $DB->get_record('local_eduvidual_org', array('name' => $name));
             if (strlen($name) <= 5) {
                 $reply['status'] = 'error';
                 $reply['error'] = 'err_name_too_short';
@@ -119,11 +119,11 @@ if ($USER->id > 1) {
                 $reply['status'] = 'error';
                 $reply['error'] = 'err_name_already_taken';
             } else {
-                $org = $DB->get_record('block_eduvidual_org', array('orgid' => $orgid, 'authtan' => $authtan));
+                $org = $DB->get_record('local_eduvidual_org', array('orgid' => $orgid, 'authtan' => $authtan));
 
                 if (isset($org->orgid) && $org->orgid == $orgid) {
                     $org->name = $name;
-                    $DB->set_field('block_eduvidual_org', 'name', $name, array('orgid' => $org->orgid));
+                    $DB->set_field('local_eduvidual_org', 'name', $name, array('orgid' => $org->orgid));
 
                     require_once($CFG->dirroot . '/lib/coursecatlib.php');
                     require_once($CFG->dirroot . '/course/externallib.php');
@@ -134,9 +134,9 @@ if ($USER->id > 1) {
                         $data->name = $org->name;
                         $data->description = $org->name;
                         $data->idnumber = $org->orgid;
-                        $category = coursecat::create($data);
+                        $category = \coursecat::create($data);
                         $org->categoryid = $category->id;
-                        $DB->set_field('block_eduvidual_org', 'categoryid', $org->categoryid, array('orgid' => $org->orgid));
+                        $DB->set_field('local_eduvidual_org', 'categoryid', $org->categoryid, array('orgid' => $org->orgid));
                     }
 
                     $reply["name"] = $org->name;
@@ -144,14 +144,14 @@ if ($USER->id > 1) {
 
                     if (empty($org->courseid)) {
                         // Create an org-course for this org
-                        $orgcoursebasement = get_config('block_eduvidual', 'orgcoursebasement');
+                        $orgcoursebasement = get_config('local_eduvidual', 'orgcoursebasement');
                         $basement = $DB->get_record('course', array('id' => $orgcoursebasement));
 
                         $reply["orgcourse"] = $basement;
                         if (!empty($basement->id)) {
                             // Grant a role that allows course duplication in source and target category
-                            $sourcecontext = context_coursecat::instance($basement->category);
-                            $targetcontext = context_coursecat::instance($org->categoryid);
+                            $sourcecontext = \context_coursecat::instance($basement->category);
+                            $targetcontext = \context_coursecat::instance($org->categoryid);
                             $roletoassign = 1; // Manager
                             $revokesourcerole = true;
                             $revoketargetrole = true;
@@ -176,9 +176,9 @@ if ($USER->id > 1) {
                             role_assign($roletoassign, $USER->id, $targetcontext->id);
 
                             // Duplicate course
-                            $course = core_course_external::duplicate_course($basement->id, 'Digitaler Schulhof (' . $org->orgid . ')', $org->orgid, $org->categoryid, true);
+                            $course = \core_course_external::duplicate_course($basement->id, 'Digitaler Schulhof (' . $org->orgid . ')', $org->orgid, $org->categoryid, true);
                             $org->courseid = $course["id"];
-                            $DB->set_field('block_eduvidual_org', 'courseid', $org->courseid, array('orgid' => $org->orgid));
+                            $DB->set_field('local_eduvidual_org', 'courseid', $org->courseid, array('orgid' => $org->orgid));
                             $course['summary'] = '<p>Digitaler Schulhof der Schule ' . $org->name . '</p>';
                             $DB->update_record('course', $course);
 
@@ -195,25 +195,25 @@ if ($USER->id > 1) {
                     }
 
                     if (!empty($org->courseid)) {
-                        $reply['roleset'] = \block_eduvidual\lib_enrol::role_set($USER->id, $org, 'Manager');
+                        $reply['roleset'] = \local_eduvidual\lib_enrol::role_set($USER->id, $org, 'Manager');
 
                         $messagehtml = $OUTPUT->render_from_template(
-                            'block_eduvidual/register_mail_completed',
+                            'local_eduvidual/register_mail_completed',
                             (object) array(
                                 'categoryurl' => $CFG->wwwroot . '/course/index.php?categoryid=' . $org->categoryid,
                                 'managerscourseurl' => $CFG->wwwroot . '/course/view.php?id=398',
                                 'orgid' => $org->orgid,
                                 'orgname' => $org->name,
-                                'subject' => get_string('mailregister:2:header', 'block_eduvidual'),
+                                'subject' => get_string('mailregister:2:header', 'local_eduvidual'),
                                 'wwwroot' => $CFG->wwwroot,
                             )
                         );
 
                         $messagetext = html_to_text($messagehtml);
 
-                        $subject = get_string('mailregister:2:subject' , 'block_eduvidual');
+                        $subject = get_string('mailregister:2:subject' , 'local_eduvidual');
 
-                        $fromuser = core_user::get_support_user();
+                        $fromuser = \core_user::get_support_user();
 
                         $touser = new \stdClass();
                         $touser->email = '';
@@ -228,7 +228,7 @@ if ($USER->id > 1) {
                         $touser->alternatename = "";
 
                         // Sending a short statement to CC-Users
-                        $ccmails = explode(',', get_config('block_eduvidual', 'registrationcc'));
+                        $ccmails = explode(',', get_config('local_eduvidual', 'registrationcc'));
                         if (count($ccmails) > 0) {
                             foreach($ccmails AS $ccmail) {
                                 if (!filter_var($ccmail, FILTER_VALIDATE_EMAIL)) continue;
@@ -238,8 +238,8 @@ if ($USER->id > 1) {
                         }
                         $org->authenticated = 1;
                         $org->authtan = '';
-                        $DB->set_field('block_eduvidual_org', 'authenticated', 1, array('orgid' => $org->orgid));
-                        $DB->set_field('block_eduvidual_org', 'authtan', '', array('orgid' => $org->orgid));
+                        $DB->set_field('local_eduvidual_org', 'authenticated', 1, array('orgid' => $org->orgid));
+                        $DB->set_field('local_eduvidual_org', 'authtan', '', array('orgid' => $org->orgid));
                         $reply['status'] = 'ok';
                     } else {
                         $reply['status'] = 'error';
@@ -253,5 +253,5 @@ if ($USER->id > 1) {
         break;
     }
 } else {
-    $reply['error'] = get_string('registration:loginfirst', 'block_eduvidual');
+    $reply['error'] = get_string('registration:loginfirst', 'local_eduvidual');
 }

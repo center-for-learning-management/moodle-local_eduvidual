@@ -15,13 +15,13 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package    block_eduvidual
+ * @package    local_eduvidual
  * @copyright  2020 Center for Learning Management (https://www.lernmanagement.at)
  * @author     Robert Schrenk
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace block_eduvidual;
+namespace local_eduvidual;
 
 defined('MOODLE_INTERNAL') || die;
 
@@ -35,7 +35,7 @@ class lib_wshelper {
         if (method_exists(__CLASS__, $func)) {
             error_log('Buffer function ' . $func . ' called');
             ob_start();
-            register_shutdown_function('\block_eduvidual\lib_wshelper::buffer_modify');
+            register_shutdown_function('\local_eduvidual\lib_wshelper::buffer_modify');
         } else {
             error_log('Buffer function ' . $func . ' not found');
             return false;
@@ -75,14 +75,14 @@ class lib_wshelper {
         $result = json_decode($buffer);
         if (!empty($result->results)) {
             if (!empty($result->results[0]->users)) {
-                $result->results[0]->users = \block_eduvidual\locallib::filter_userlist($result->results[0]->users, 'id', 'name');
+                $result->results[0]->users = \local_eduvidual\locallib::filter_userlist($result->results[0]->users, 'id', 'name');
             }
         }
         echo json_encode($result, JSON_NUMERIC_CHECK);
     }
     private static function buffer_web_lib_ajax_getnavbranch($buffer) {
         $result = json_decode($buffer);
-        $orgs = block_eduvidual::get_organisations('*');
+        $orgs = local_eduvidual::get_organisations('*');
         $categories = array();
         foreach($orgs AS $org) {
             $categories[] = $org->categoryid;
@@ -121,7 +121,7 @@ class lib_wshelper {
                     // We attempted to inject some code that modifies the layout and functionality of the course cards.
                     // Integration of the course news turned out to be impossible since Moodle 3.7 (refer to https://github.com/moodleuulm/moodle-block_course_overview_campus/issues/35)
                     // But we may keep this for other implementations, like the "upload course image popup" or similar.
-                    //$course->fullname .= "<script> require(['block_eduvidual/jsinjector'], function(jsi) { jsi.dashboardCourseLoaded(); } ); </script>";
+                    //$course->fullname .= "<script> require(['local_eduvidual/jsinjector'], function(jsi) { jsi.dashboardCourseLoaded(); } ); </script>";
                 }
                 $course->showshortname = false;
                 // We do not want to show the progress bar.
@@ -131,7 +131,7 @@ class lib_wshelper {
         return $result;
     }
     private static function override_core_enrol_external_get_potential_users($result) {
-        return \block_eduvidual\locallib::filter_userlist($result, 'id', 'fullname');
+        return \local_eduvidual\locallib::filter_userlist($result, 'id', 'fullname');
     }
     private static function override_core_get_fragment($result) {
         if (!empty($result[0]->args->component) && $result[0]->args->component == 'mod_quiz') {
@@ -142,7 +142,7 @@ class lib_wshelper {
     /* THIS WSFUNCTION IS MARKED AS OBSOLETE. WE KEEP IT IF OLDER PLUGINS STILL USE IT */
     private static function override_core_message_data_for_messagearea_search_users($result) {
         if (!empty($result->data[0]->noncontacts)) {
-            $result->data[0]->noncontacts = \block_eduvidual\locallib::filter_userlist($result->data[0]->noncontacts, 'userid', 'fullname');
+            $result->data[0]->noncontacts = \local_eduvidual\locallib::filter_userlist($result->data[0]->noncontacts, 'userid', 'fullname');
         }
         return $result;
     }

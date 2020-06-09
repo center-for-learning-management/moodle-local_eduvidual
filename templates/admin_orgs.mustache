@@ -14,23 +14,23 @@
     You should have received a copy of the GNU General Public License
     along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
   }}
-<div class="block_eduvidual_admin_orgs">
-    <h4>{{#str}} admin:orgs:title, block_eduvidual {{/str}}</h4>
-    <p>{{#str}} admin:orgs:description, block_eduvidual {{/str}}</p>
+<div class="local_eduvidual_admin_orgs">
+    <h4>{{#str}} admin:orgs:title, local_eduvidual {{/str}}</h4>
+    <p>{{#str}} admin:orgs:description, local_eduvidual {{/str}}</p>
 
     <div class="grid-eq-2">
         <div>
-            <input type="text" onkeyup="require(['block_eduvidual/admin'], function(ADMIN) { ADMIN.manageorgs_search('{{uniqid}}') });" id="{{uniqid}}-search" style="width: 100%;" />
+            <input type="text" onkeyup="require(['local_eduvidual/admin'], function(ADMIN) { ADMIN.manageorgs_search('{{uniqid}}') });" id="{{uniqid}}-search" style="width: 100%;" />
             <ul id="{{uniqid}}-list" data-role="listview"></ul>
         </div>
         <div><form id="{{uniqid}}-form">
             <div class="grid-eq-2">
-                <a href="#" onclick="require(['block_eduvidual/admin'], function(ADMIN) { ADMIN.manageorgs_store('{{uniqid}}') }); return false;"
+                <a href="#" onclick="require(['local_eduvidual/admin'], function(ADMIN) { ADMIN.manageorgs_store('{{uniqid}}') }); return false;"
                    class="btn btn-primary" id="{{uniqid}}-store">
                     {{#pix}} t/approve, core {{/pix}}
-                    {{#str}} store, block_eduvidual {{/str}}
+                    {{#str}} store, local_eduvidual {{/str}}
                 </a>
-                <a href="#" onclick="require(['block_eduvidual/admin'], function(ADMIN) { ADMIN.manageorgs_reset('{{uniqid}}') }); return false;"
+                <a href="#" onclick="require(['local_eduvidual/admin'], function(ADMIN) { ADMIN.manageorgs_reset('{{uniqid}}') }); return false;"
                    class="btn btn-primary" id="{{uniqid}}-reset">
                     {{#pix}} t/add, core {{/pix}}
                     {{#str}} new {{/str}}
@@ -40,34 +40,34 @@
                 <a href="#" class="btn btn-primary" style="display: none;"
                     onclick="window.location.href = '{{wwwroot}}/course/index.php?categoryid=' + $(this).attr('data-orig'); return false;" id="{{uniqid}}-field-categoryid">
                     {{#pix}} i/course, core {{/pix}}
-                    {{#str}} admin:orgs:fields:categoryid, block_eduvidual {{/str}}
+                    {{#str}} admin:orgs:fields:categoryid, local_eduvidual {{/str}}
                 </a>
                 <a href="#" class="btn btn-primary" style="display: none;"
-                    onclick="window.location.href = '{{wwwroot}}/blocks/eduvidual/pages/manage.php?orgid=' + $(this).attr('data-orig'); return false;" id="{{uniqid}}-field-manage">
+                    onclick="window.location.href = '{{wwwroot}}/local/eduvidual/pages/manage.php?orgid=' + $(this).attr('data-orig'); return false;" id="{{uniqid}}-field-manage">
                     {{#pix}} i/course, core {{/pix}}
-                    {{#str}} manage, block_eduvidual {{/str}}
+                    {{#str}} manage, local_eduvidual {{/str}}
                 </a>
             </div>
             <input type="hidden" id="{{uniqid}}-field-id" />
-            <label for="{{uniqid}}-field-orgid">{{#str}} admin:orgs:fields:orgid, block_eduvidual {{/str}}</label>
+            <label for="{{uniqid}}-field-orgid">{{#str}} admin:orgs:fields:orgid, local_eduvidual {{/str}}</label>
             <input type="text" id="{{uniqid}}-field-orgid" style="width: 100%;" />
-            <label for="{{uniqid}}-field-name">{{#str}} admin:orgs:fields:name, block_eduvidual {{/str}}</label>
+            <label for="{{uniqid}}-field-name">{{#str}} admin:orgs:fields:name, local_eduvidual {{/str}}</label>
             <input type="text" id="{{uniqid}}-field-name" style="width: 100%;" />
-            <label for="{{uniqid}}-field-mail">{{#str}} admin:orgs:fields:mail, block_eduvidual {{/str}}</label>
+            <label for="{{uniqid}}-field-mail">{{#str}} admin:orgs:fields:mail, local_eduvidual {{/str}}</label>
             <input type="text" id="{{uniqid}}-field-mail" style="width: 100%;" />
-            <label for="{{uniqid}}-field-phone">{{#str}} admin:orgs:fields:phone, block_eduvidual {{/str}}</label>
+            <label for="{{uniqid}}-field-phone">{{#str}} admin:orgs:fields:phone, local_eduvidual {{/str}}</label>
             <input type="text" id="{{uniqid}}-field-phone" style="width: 100%;" />
-            <label for="{{uniqid}}-field-street">{{#str}} admin:orgs:fields:street, block_eduvidual {{/str}}</label>
+            <label for="{{uniqid}}-field-street">{{#str}} admin:orgs:fields:street, local_eduvidual {{/str}}</label>
             <input type="text" id="{{uniqid}}-field-street" style="width: 100%;" />
-            <label for="{{uniqid}}-field-zip">{{#str}} admin:orgs:fields:zip, block_eduvidual {{/str}}</label>
+            <label for="{{uniqid}}-field-zip">{{#str}} admin:orgs:fields:zip, local_eduvidual {{/str}}</label>
             <input type="text" id="{{uniqid}}-field-zip" style="width: 100%;" />
-            <label for="{{uniqid}}-field-city">{{#str}} admin:orgs:fields:city, block_eduvidual {{/str}}</label>
+            <label for="{{uniqid}}-field-city">{{#str}} admin:orgs:fields:city, local_eduvidual {{/str}}</label>
             <input type="text" id="{{uniqid}}-field-city" style="width: 100%;" />
-            <label for="{{uniqid}}-field-country">{{#str}} admin:orgs:fields:country, block_eduvidual {{/str}}</label>
+            <label for="{{uniqid}}-field-country">{{#str}} admin:orgs:fields:country, local_eduvidual {{/str}}</label>
             <input type="text" id="{{uniqid}}-field-country" style="width: 100%;" />
-            <label for="{{uniqid}}-field-lon">{{#str}} admin:orgs:fields:lon, block_eduvidual {{/str}}</label>
+            <label for="{{uniqid}}-field-lon">{{#str}} admin:orgs:fields:lon, local_eduvidual {{/str}}</label>
             <input type="text" id="{{uniqid}}-field-lon" style="width: 100%;" />
-            <label for="{{uniqid}}-field-lat">{{#str}} admin:orgs:fields:lat, block_eduvidual {{/str}}</label>
+            <label for="{{uniqid}}-field-lat">{{#str}} admin:orgs:fields:lat, local_eduvidual {{/str}}</label>
             <input type="text" id="{{uniqid}}-field-lat" style="width: 100%;" />
             <div>
                 <a href="#"

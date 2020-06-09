@@ -16,20 +16,20 @@
 }}
 
 <div class="ui-eduvidual">
-    <p class="alert alert-warning">{{#str}} manage:mnet:adminonly, block_eduvidual {{/str}}</p>
+    <p class="alert alert-warning">{{#str}} manage:mnet:adminonly, local_eduvidual {{/str}}</p>
 
-    <h5>{{#str}} manage:maildomain, block_eduvidual {{/str}}</h5>
-    <p>{{#str}} manage:maildomain:description, block_eduvidual {{/str}}</p>
+    <h5>{{#str}} manage:maildomain, local_eduvidual {{/str}}</h5>
+    <p>{{#str}} manage:maildomain:description, local_eduvidual {{/str}}</p>
     <a class="btn btn-primary btn-block" href="#"
-        onclick="var btn = this; require(['block_eduvidual/manager'], function(MANAGER) { MANAGER.maildomain_apply({{orgid}}, btn); }); return false;">
-        {{#str}} manage:mnet:enrol, block_eduvidual {{/str}}
+        onclick="var btn = this; require(['local_eduvidual/manager'], function(MANAGER) { MANAGER.maildomain_apply({{orgid}}, btn); }); return false;">
+        {{#str}} manage:mnet:enrol, local_eduvidual {{/str}}
     </a>
-    <label for="block_eduvidual_manage_maildomain">{{#str}} Student, block_eduvidual {{/str}}</label>
-    <input id="block_eduvidual_manage_maildomain" value="{{maildomain}}"
-           onkeyup="var inp = this; require(['block_eduvidual/manager'], function(MANAGER) { MANAGER.maildomain(inp, {{orgid}}, ''); });" />
-    <label for="block_eduvidual_manage_maildomain_teacher">{{#str}} Teacher, block_eduvidual {{/str}}</label>
-    <input id="block_eduvidual_manage_maildomain_teacher" value="{{maildomainteacher}}"
-           onkeyup="var inp = this; require(['block_eduvidual/manager'], function(MANAGER) { MANAGER.maildomain(inp, {{orgid}}, 'teacher'); });" />
+    <label for="local_eduvidual_manage_maildomain">{{#str}} Student, local_eduvidual {{/str}}</label>
+    <input id="local_eduvidual_manage_maildomain" value="{{maildomain}}"
+           onkeyup="var inp = this; require(['local_eduvidual/manager'], function(MANAGER) { MANAGER.maildomain(inp, {{orgid}}, ''); });" />
+    <label for="local_eduvidual_manage_maildomain_teacher">{{#str}} Teacher, local_eduvidual {{/str}}</label>
+    <input id="local_eduvidual_manage_maildomain_teacher" value="{{maildomainteacher}}"
+           onkeyup="var inp = this; require(['local_eduvidual/manager'], function(MANAGER) { MANAGER.maildomain(inp, {{orgid}}, 'teacher'); });" />
 
-    <h5>{{#str}} manage:mnet, block_eduvidual {{/str}}</h5>
+    <h5>{{#str}} manage:mnet, local_eduvidual {{/str}}</h5>
 </div>

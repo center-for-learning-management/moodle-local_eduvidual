@@ -1,4 +1,4 @@
-define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'block_eduvidual/main'], function($, AJAX, NOTIFICATION, STR, URL, MAIN) {
+define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'local_eduvidual/main'], function($, AJAX, NOTIFICATION, STR, URL, MAIN) {
     return {
         debug: 1,
         debug_gps: 1,
@@ -11,12 +11,12 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'blo
         **/
         allmanagerscourses: function() {
             if (this.debug > 0) console.log('ADMIN.allmanagerscourses()');
-            require(['block_eduvidual/main'], function(MAIN) {
+            require(['local_eduvidual/main'], function(MAIN) {
                 MAIN.watchValue({
-                    target: '#block_eduvidual_admin_allmanagerscourses',
+                    target: '#local_eduvidual_admin_allmanagerscourses',
                     run: function() {
                         var o = this;
-                        require(['block_eduvidual/main'], function(MAIN) {
+                        require(['local_eduvidual/main'], function(MAIN) {
                             MAIN.connect({ module: 'admin', act: 'allmanagerscourses', allmanagerscourses: $(o.target).val() }, { signalItem: $(o.target) });
                         });
                     }
@@ -28,12 +28,12 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'blo
         **/
         blockfooter: function(notimeout) {
             if (this.debug > 0) console.log('ADMIN.blockfooter()');
-            require(['block_eduvidual/main'], function(MAIN) {
+            require(['local_eduvidual/main'], function(MAIN) {
                 MAIN.watchValue({
-                    target: '#block_eduvidual_admin_blockfooter',
+                    target: '#local_eduvidual_admin_blockfooter',
                     run: function() {
                         var o = this;
-                        require(['block_eduvidual/main'], function(MAIN) {
+                        require(['local_eduvidual/main'], function(MAIN) {
                             MAIN.connect({ module: 'admin', act: 'blockfooter', blockfooter: $(o.target).val() }, { signalItem: $(o.target) });
                         });
                     }
@@ -45,12 +45,12 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'blo
         **/
         navbar: function() {
             if (this.debug > 0) console.log('ADMIN.navbar()');
-            require(['block_eduvidual/main'], function(MAIN) {
+            require(['local_eduvidual/main'], function(MAIN) {
                 MAIN.watchValue({
-                    target: '#block_eduvidual_admin_navbar',
+                    target: '#local_eduvidual_admin_navbar',
                     run: function() {
                         var o = this;
-                        require(['block_eduvidual/main'], function(MAIN) {
+                        require(['local_eduvidual/main'], function(MAIN) {
                             MAIN.connect({ module: 'admin', act: 'navbar', navbar: $(o.target).val() }, { signalItem: $(o.target) });
                         });
                     }
@@ -63,12 +63,12 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'blo
         **/
         coursebasements: function() {
             if (this.debug > 0) console.log('ADMIN.coursebasements()');
-            require(['block_eduvidual/main'], function(MAIN) {
+            require(['local_eduvidual/main'], function(MAIN) {
                 MAIN.watchValue({
-                    target: '#block_eduvidual_admin_coursebasements',
+                    target: '#local_eduvidual_admin_coursebasements',
                     run: function() {
                         var o = this;
-                        require(['block_eduvidual/main'], function(MAIN) {
+                        require(['local_eduvidual/main'], function(MAIN) {
                             MAIN.connect({ module: 'admin', act: 'coursebasements', coursebasements: $(o.target).val() }, { signalItem: $(o.target) });
                         });
                     }
@@ -82,8 +82,8 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'blo
         **/
         defaultrole: function(type, role) {
             if (this.debug > 0) console.log('ADMIN.defaultrole(type, role)', type, role);
-            require(['block_eduvidual/main'], function(MAIN) {
-                MAIN.connect({ module: 'admin', act: 'defaultrole', type: type, role: role }, { signalItem: $('#block_eduvidual_admin_defaultrole' + type) });
+            require(['local_eduvidual/main'], function(MAIN) {
+                MAIN.connect({ module: 'admin', act: 'defaultrole', type: type, role: role }, { signalItem: $('#local_eduvidual_admin_defaultrole' + type) });
             });
         },
         /**
@@ -91,12 +91,12 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'blo
         **/
         dropZonePath: function() {
             if (this.debug > 0) console.log('ADMIN.dropZonePath()');
-            require(['block_eduvidual/main'], function(MAIN) {
+            require(['local_eduvidual/main'], function(MAIN) {
                 MAIN.watchValue({
-                    target: '#block_eduvidual_admin_dropzonepath',
+                    target: '#local_eduvidual_admin_dropzonepath',
                     run: function() {
                         var o = this;
-                        require(['block_eduvidual/main'], function(MAIN) {
+                        require(['local_eduvidual/main'], function(MAIN) {
                             MAIN.connect({ module: 'admin', act: 'dropzonepath', dropzonepath: $(o.target).val() }, { signalItem: $(o.target) });
                         });
                     }
@@ -108,12 +108,12 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'blo
         **/
         ltiresourcekey: function() {
             if (this.debug > 0) console.log('ADMIN.ltiresourcekey()');
-            require(['block_eduvidual/main'], function(MAIN) {
+            require(['local_eduvidual/main'], function(MAIN) {
                 MAIN.watchValue({
-                    target: '#block_eduvidual_admin_ltiresourcekey',
+                    target: '#local_eduvidual_admin_ltiresourcekey',
                     run: function() {
                         var o = this;
-                        require(['block_eduvidual/main'], function(MAIN) {
+                        require(['local_eduvidual/main'], function(MAIN) {
                             MAIN.connect({ module: 'admin', act: 'ltiresourcekey', ltiresourcekey: $(o.target).val() }, { signalItem: $(o.target) });
                         });
                     }
@@ -127,7 +127,7 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'blo
          */
         manageorgs_open: function(uniqid, id) {
             var container = $('#' + uniqid + '-form');
-            $(container).find('.block_eduvidual_signal_error').removeClass('block_eduvidual_signal_error');
+            $(container).find('.local_eduvidual_signal_error').removeClass('local_eduvidual_signal_error');
             var org = this.cache_orgs[id];
             if (typeof org !== 'undefined') {
                 var fields = Object.keys(org);
@@ -163,12 +163,12 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'blo
          * @param uniqid of the template.
          */
         manageorgs_search: function(uniqid) {
-            require(['block_eduvidual/main'], function(MAIN) {
+            require(['local_eduvidual/main'], function(MAIN) {
                 MAIN.watchValue({
                     target: '#' + uniqid + '-search',
                     run: function() {
                         var o = this;
-                        require(['block_eduvidual/main'], function(MAIN) {
+                        require(['local_eduvidual/main'], function(MAIN) {
                             MAIN.connect({ module: 'admin', act: 'manageorgs_search', search: $(o.target).val() }, { signalItem: $(o.target), uniqid: uniqid });
                         });
                     }
@@ -181,7 +181,7 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'blo
          */
         manageorgs_store: function(uniqid) {
             var container = $('#' + uniqid + '-form');
-            $(container).find('.block_eduvidual_signal_error').removeClass('block_eduvidual_signal_error');
+            $(container).find('.local_eduvidual_signal_error').removeClass('local_eduvidual_signal_error');
             var fields = {};
             container.find('input').each(function(){
                 if (typeof $(this).attr('id') !== 'undefined' && $(this).attr('id') != '') {
@@ -189,20 +189,20 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'blo
                     fields[field] = $(this).val();
                 }
             });
-            require(['block_eduvidual/main'], function(MAIN) {
+            require(['local_eduvidual/main'], function(MAIN) {
                 MAIN.connect({ module: 'admin', act: 'manageorgs_store', fields: fields }, { signalItem: $('#' + uniqid + '-store'), uniqid: uniqid });
             });
         },
         orgrole: function(type, role) {
             if (this.debug > 0) console.log('ADMIN.orgrole(type, role)', type, role);
-            require(['block_eduvidual/main'], function(MAIN) {
-                MAIN.connect({ module: 'admin', act: 'orgrole', type: type, role: role }, { signalItem: $('#block_eduvidual_admin_orgrole' + type) });
+            require(['local_eduvidual/main'], function(MAIN) {
+                MAIN.connect({ module: 'admin', act: 'orgrole', type: type, role: role }, { signalItem: $('#local_eduvidual_admin_orgrole' + type) });
             });
         },
         globalrole: function(type, role) {
             if (this.debug > 0) console.log('ADMIN.globalrole(type, role)', type, role);
-            require(['block_eduvidual/main'], function(MAIN) {
-                MAIN.connect({ module: 'admin', act: 'globalrole', type: type, role: role }, { signalItem: $('#block_eduvidual_admin_globalrole' + type) });
+            require(['local_eduvidual/main'], function(MAIN) {
+                MAIN.connect({ module: 'admin', act: 'globalrole', type: type, role: role }, { signalItem: $('#local_eduvidual_admin_globalrole' + type) });
             });
         },
         /**
@@ -212,8 +212,8 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'blo
         **/
         modifylogin: function(setto) {
             if (this.debug > 0) console.log('ADMIN.modifylogin(setto)', setto);
-            require(['block_eduvidual/main'], function(MAIN) {
-                MAIN.connect({ module: 'admin', act: 'modifylogin', setto: setto }, { signalItem: $('#block_eduvidual_admin_modifylogin') });
+            require(['local_eduvidual/main'], function(MAIN) {
+                MAIN.connect({ module: 'admin', act: 'modifylogin', setto: setto }, { signalItem: $('#local_eduvidual_admin_modifylogin') });
             });
         },
         /**
@@ -221,7 +221,7 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'blo
         * @param categoryid CategoryID to load
         **/
         moduleCatForm: function(categoryid) {
-            require(['block_eduvidual/main'], function(MAIN) {
+            require(['local_eduvidual/main'], function(MAIN) {
                 MAIN.connect({ module: 'admin', act: 'modulecatform', categoryid: categoryid });
             });
         },
@@ -231,7 +231,7 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'blo
             $.each($("input[name='moolevels[]']:checked"), function() {
                 moolevels.push($(this).val());
             });
-            require(['block_eduvidual/main'], function(MAIN) {
+            require(['local_eduvidual/main'], function(MAIN) {
                 MAIN.connect({ module: 'admin', act: 'moolevels', moolevels: moolevels }, { signalItem: $(sender).parent() });
             });
         },
@@ -247,7 +247,7 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'blo
             var ADMIN = this;
             ADMIN.refresh_identifier++;
             var refresh_identifier = ADMIN.refresh_identifier;
-            if (typeof uniqid === 'undefined') uniqid = $('.block_eduvidual_admin_map').attr('id');
+            if (typeof uniqid === 'undefined') uniqid = $('.local_eduvidual_admin_map').attr('id');
             if (typeof lon1 === 'undefined') lon1 = -200;
             if (typeof lon2 === 'undefined') lon2 = 200;
             if (typeof lat1 === 'undefined') lat1 = -200;
@@ -255,7 +255,7 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'blo
 
             console.log('ADMIN.org_gps(uniqid, lon1, lon2, lat1, lat2)',uniqid, lon1, lon2, lat1, lat2);
             var includenonegroup = $('#' + uniqid + '-include-nonegroup').prop('checked') ? 1 : 0;
-            var method = 'block_eduvidual_admin_org_gps';
+            var method = 'local_eduvidual_admin_org_gps';
             var data = { lon1: lon1, lon2: lon2, lat1: lat1, lat2: lat2, includenonegroup: includenonegroup, advanceddata: 0 };
             if (typeof ADMIN.map !== 'undefined') {
                 ADMIN.map.remove();
@@ -321,7 +321,7 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'blo
 
                     Object.keys(orgs).forEach(function(i){
                         if (ADMIN.refresh_identifier != refresh_identifier) return; // Immediately abort!
-                        orgs[i].url = URL.relativeUrl('/blocks/eduvidual/pages/categories.php?orgid=' + orgs[i].orgid); // Set an url for this marker.
+                        orgs[i].url = URL.relativeUrl('/local/eduvidual/pages/categories.php?orgid=' + orgs[i].orgid); // Set an url for this marker.
 
                         var orgtype = orgs[i].orgid.toString().split('').pop();
                         var districttype = orgs[i].orgid.toString().split('')[0];
@@ -333,13 +333,13 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'blo
                             counts.both++;
                             orgs[i].classes += ' both';
                             orgs[i].layer = 2;
-                            orgs[i].url = URL.relativeUrl('/blocks/eduvidual/pages/categories.php?orgid=' + orgs[i].orgid);
+                            orgs[i].url = URL.relativeUrl('/local/eduvidual/pages/categories.php?orgid=' + orgs[i].orgid);
                         } else if(orgs[i].authenticated == 1) {
                             col = 'green';
                             counts.eduv++;
                             orgs[i].classes += ' eduv';
                             orgs[i].layer = 3;
-                            orgs[i].url = URL.relativeUrl('/blocks/eduvidual/pages/categories.php?orgid=' + orgs[i].orgid);
+                            orgs[i].url = URL.relativeUrl('/local/eduvidual/pages/categories.php?orgid=' + orgs[i].orgid);
                         } else if(orgs[i].lpf != null){
                             col = 'blue';
                             counts.lpf++;
@@ -359,7 +359,7 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'blo
                             if (orgs[i].lat < smallest_lat) smallest_lat = orgs[i].lat;
                             if (orgs[i].lat > biggest_lat) biggest_lat = orgs[i].lat;
                         }
-                        orgs[i].marker = URL.relativeUrl('/blocks/eduvidual/pix/google-maps-pin-' + col + '.svg#' + orgs[i].classes + '#' + orgs[i].layer);
+                        orgs[i].marker = URL.relativeUrl('/local/eduvidual/pix/google-maps-pin-' + col + '.svg#' + orgs[i].classes + '#' + orgs[i].layer);
 
                     });
 
@@ -376,8 +376,8 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'blo
                     $('#' + uniqid + '-map').css('height', width / 4 * 3 + 'px');
 
                     var icon = L.icon({
-                        iconUrl: URL.relativeUrl('/blocks/eduvidual/pix/google-maps-pin-blue.svg'),
-                        iconRetinaUrl: URL.relativeUrl('/blocks/eduvidual/pix/google-maps-pin-blue.svg'),
+                        iconUrl: URL.relativeUrl('/local/eduvidual/pix/google-maps-pin-blue.svg'),
+                        iconRetinaUrl: URL.relativeUrl('/local/eduvidual/pix/google-maps-pin-blue.svg'),
                         iconSize: [29, 24],
                         iconAnchor: [9, 21],
                         popupAnchor: [0, -14]
@@ -576,8 +576,8 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'blo
         **/
         orgcoursebasement: function(basement) {
             if (this.debug > 0) console.log('ADMIN.orgcoursebasement(basement)', basement);
-            require(['block_eduvidual/main'], function(MAIN) {
-                MAIN.connect({ module: 'admin', act: 'orgcoursebasement', basement: basement }, { signalItem: $('#block_eduvidual_admin_orgcoursebasement') });
+            require(['local_eduvidual/main'], function(MAIN) {
+                MAIN.connect({ module: 'admin', act: 'orgcoursebasement', basement: basement }, { signalItem: $('#local_eduvidual_admin_orgcoursebasement') });
             });
         },
         /**
@@ -586,12 +586,12 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'blo
         **/
         phpListConfig: function(field, el) {
             if (this.debug > 0) console.log('ADMIN.phpListConfig(field, el)', field, el);
-            require(['block_eduvidual/main'], function(MAIN) {
+            require(['local_eduvidual/main'], function(MAIN) {
                 MAIN.watchValue({
-                    target: '#block_eduvidual_admin_phplist_' + field,
+                    target: '#local_eduvidual_admin_phplist_' + field,
                     run: function() {
                         var o = this;
-                        require(['block_eduvidual/main'], function(MAIN) {
+                        require(['local_eduvidual/main'], function(MAIN) {
                             MAIN.connect({ module: 'admin', act: 'phplistconfig', field: field, content: $(el).val() }, { signalItem: $(o.target) });
                         });
                     }
@@ -603,12 +603,12 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'blo
         **/
         protectedorgs: function() {
             if (this.debug > 0) console.log('ADMIN.protectedorgs()');
-            require(['block_eduvidual/main'], function(MAIN) {
+            require(['local_eduvidual/main'], function(MAIN) {
                 MAIN.watchValue({
-                    target: '#block_eduvidual_admin_protectedorgs',
+                    target: '#local_eduvidual_admin_protectedorgs',
                     run: function() {
                         var o = this;
-                        require(['block_eduvidual/main'], function(MAIN) {
+                        require(['local_eduvidual/main'], function(MAIN) {
                             MAIN.connect({ module: 'admin', act: 'protectedorgs', protectedorgs: $(o.target).val() }, { signalItem: $(o.target) });
                         });
                     }
@@ -621,18 +621,18 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'blo
             $.each($("input[name='questioncategories[]']:checked"), function() {
                 questioncategories.push($(this).val());
             });
-            require(['block_eduvidual/main'], function(MAIN) {
+            require(['local_eduvidual/main'], function(MAIN) {
                 MAIN.connect({ module: 'admin', act: 'questioncategories', questioncategories: questioncategories }, { signalItem: $(sender).parent() });
             });
         },
         registrationcc: function() {
             if (this.debug > 0) console.log('ADMIN.registrationcc()');
-            require(['block_eduvidual/main'], function(MAIN) {
+            require(['local_eduvidual/main'], function(MAIN) {
                 MAIN.watchValue({
-                    target: '#block_eduvidual_admin_registrationcc',
+                    target: '#local_eduvidual_admin_registrationcc',
                     run: function() {
                         var o = this;
-                        require(['block_eduvidual/main'], function(MAIN) {
+                        require(['local_eduvidual/main'], function(MAIN) {
                             MAIN.connect({ module: 'admin', act: 'registrationcc', registrationcc: $(o.target).val() }, { signalItem: $(o.target) });
                         });
                     }
@@ -641,12 +641,12 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'blo
         },
         registrationsupport: function() {
             if (this.debug > 0) console.log('ADMIN.registrationsupport()');
-            require(['block_eduvidual/main'], function(MAIN) {
+            require(['local_eduvidual/main'], function(MAIN) {
                 MAIN.watchValue({
-                    target: '#block_eduvidual_admin_registrationsupport',
+                    target: '#local_eduvidual_admin_registrationsupport',
                     run: function() {
                         var o = this;
-                        require(['block_eduvidual/main'], function(MAIN) {
+                        require(['local_eduvidual/main'], function(MAIN) {
                             MAIN.connect({ module: 'admin', act: 'registrationsupport', registrationsupport: $(o.target).val() }, { signalItem: $(o.target) });
                         });
                     }
@@ -660,13 +660,13 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'blo
         **/
         requireCapability: function(val) {
             if (this.debug > 0) console.log('ADMIN.requireCapability(val)', val);
-            require(['block_eduvidual/main'], function(MAIN) {
-                MAIN.connect({ module: 'admin', act: 'requirecapability', requirecapability: val }, { signalItem: $('#block_eduvidual_admin_requirecapability') });
+            require(['local_eduvidual/main'], function(MAIN) {
+                MAIN.connect({ module: 'admin', act: 'requirecapability', requirecapability: val }, { signalItem: $('#local_eduvidual_admin_requirecapability') });
             });
         },
         result: function(o) {
             if (o.data.act == 'blockfooter') {
-                $('#block_eduvidual_footer').html(o.data.blockfooter);
+                $('#local_eduvidual_footer').html(o.data.blockfooter);
             }
             if (o.data.act == 'coursebasements') {
                 // Refresh page to enforce a reload of basements in selectmenu
@@ -687,7 +687,7 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'blo
                                     $('<a>')
                                       .html(org.name + ' (' + org.orgid + ')')
                                       .attr('href', '#')
-                                      .attr('onclick', "require(['block_eduvidual/admin'], function(ADMIN) { ADMIN.manageorgs_open('" + o.payload.uniqid + "', " + org.id + "); });")
+                                      .attr('onclick', "require(['local_eduvidual/admin'], function(ADMIN) { ADMIN.manageorgs_open('" + o.payload.uniqid + "', " + org.id + "); });")
                                 )
                             );
                         }
@@ -698,33 +698,33 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'blo
                 if (typeof o.result.errors !== 'undefined' && o.result.errors.length > 0) {
                     for (var a = 0; a < o.result.errors.length; a++) {
                         var error = o.result.errors[a];
-                        $('#' + o.payload.uniqid + '-field-' + error).addClass('block_eduvidual_signal_error');
+                        $('#' + o.payload.uniqid + '-field-' + error).addClass('local_eduvidual_signal_error');
                     }
                 }
             }
             if (o.data.act == 'modulecatstore') {
-                require(['block_eduvidual/main'], function(MAIN) {
-                    MAIN.confirmed('#block_eduvidual_admin_modulecat_form', (o.result.status=='ok'));
+                require(['local_eduvidual/main'], function(MAIN) {
+                    MAIN.confirmed('#local_eduvidual_admin_modulecat_form', (o.result.status=='ok'));
                     var cat = o.result.category;
                     console.log('There is a category', cat);
                     if (o.result.status == 'ok' && typeof cat.id !== 'undefined' && cat.id > 0) {
                         if (o.data.categoryid == -1) {
-                            //console.log('Going to', BLOCK_EDUVIDUAL_WWWROOT + '/blocks/eduvidual/pages/admin.php?act=modulecats&categoryid=' + cat.id);
-                            //location.href = BLOCK_EDUVIDUAL_WWWROOT + 'blocks/eduvidual/pages/admin.php?act=modulecats&categoryid=' + cat.id;
-                            MAIN.navigate(URL.fileUrl('/blocks/eduvidual/pages/admin.php?act=modulecats&categoryid=' + cat.id, ''));
+                            //console.log('Going to', local_eduvidual_WWWROOT + '/local/eduvidual/pages/admin.php?act=modulecats&categoryid=' + cat.id);
+                            //location.href = local_eduvidual_WWWROOT + 'local/eduvidual/pages/admin.php?act=modulecats&categoryid=' + cat.id;
+                            MAIN.navigate(URL.fileUrl('/local/eduvidual/pages/admin.php?act=modulecats&categoryid=' + cat.id, ''));
                             return;
                         } else {
                             console.log('Category just updated');
                             $('li[data-categoryid="' + cat.id + '"]>a:first-child').html(cat.name).removeClass('inactive').removeClass('active').addClass((cat.active == 1)?'active':'inactive');
-                            $('#block_eduvidual_admin_modulecat_form').attr('data-categoryid', cat.id).attr('data-parentid', cat.parentid).css('display', 'block');
-                            $('#block_eduvidual_admin_modulecat_form input[name="categoryid"]').val(cat.id);
-                            $('#block_eduvidual_admin_modulecat_form_active').val(cat.active);
-                            $('#block_eduvidual_admin_modulecat_form_name').val(cat.name);
-                            $('#block_eduvidual_admin_modulecat_form_description').val(cat.description);
-                            $('#block_eduvidual_admin_modulecat_form_imageurl').val(cat.imageurl);
+                            $('#local_eduvidual_admin_modulecat_form').attr('data-categoryid', cat.id).attr('data-parentid', cat.parentid).css('display', 'block');
+                            $('#local_eduvidual_admin_modulecat_form input[name="categoryid"]').val(cat.id);
+                            $('#local_eduvidual_admin_modulecat_form_active').val(cat.active);
+                            $('#local_eduvidual_admin_modulecat_form_name').val(cat.name);
+                            $('#local_eduvidual_admin_modulecat_form_description').val(cat.description);
+                            $('#local_eduvidual_admin_modulecat_form_imageurl').val(cat.imageurl);
                         }
                     }
-                    $('#block_eduvidual_admin_modulecat_form_active').trigger('create');
+                    $('#local_eduvidual_admin_modulecat_form_active').trigger('create');
                 });
             }
         },
@@ -746,12 +746,12 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'blo
         **/
         trashcategory: function() {
             if (this.debug > 0) console.log('ADMIN.trashcategory()');
-            require(['block_eduvidual/main'], function(MAIN) {
+            require(['local_eduvidual/main'], function(MAIN) {
                 MAIN.watchValue({
-                    target: '#block_eduvidual_admin_trashcategory',
+                    target: '#local_eduvidual_admin_trashcategory',
                     run: function() {
                         var o = this;
-                        require(['block_eduvidual/main'], function(MAIN) {
+                        require(['local_eduvidual/main'], function(MAIN) {
                             MAIN.connect({ module: 'admin', act: 'trashcategory', trashcategory: $(o.target).val() }, { signalItem: $(o.target) });
                         });
                     }

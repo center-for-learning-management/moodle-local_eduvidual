@@ -15,13 +15,13 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package    block_eduvidual
+ * @package    local_eduvidual
  * @copyright  2017-2020 Digital Education Society (http://www.dibig.at)
  * @author     Robert Schrenk
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace block_eduvidual;
+namespace local_eduvidual;
 
 defined('MOODLE_INTERNAL') || die;
 
@@ -34,12 +34,12 @@ class lib_enrol {
         if (empty($bunch)) return;
 
         // Store bunch in eduvidual-plugin
-        $curbunch = $DB->get_record('block_eduvidual_userbunches', array('orgid' => $org->orgid, 'userid' => $userid));
+        $curbunch = $DB->get_record('local_eduvidual_userbunches', array('orgid' => $org->orgid, 'userid' => $userid));
         if (!empty($curbunch->id)) {
-            $DB->set_field('block_eduvidual_userbunches', 'bunch', $bunch, array('orgid' => $org->orgid, 'userid' => $userid));
+            $DB->set_field('local_eduvidual_userbunches', 'bunch', $bunch, array('orgid' => $org->orgid, 'userid' => $userid));
         } else {
             $curbunch = (object) array('orgid' => $org->orgid, 'bunch' => $bunch, 'userid' => $userid);
-            $DB->insert_record('block_eduvidual_userbunches', $curbunch);
+            $DB->insert_record('local_eduvidual_userbunches', $curbunch);
         }
 
         // Sync bunch to cohorts
@@ -81,7 +81,7 @@ class lib_enrol {
         $reply = array();
 
         if ($USER->id == $userid) {
-            $PAGE->requires->js_call_amd("block_eduvidual/jsinjector", "clearSessionStorage", array());
+            $PAGE->requires->js_call_amd("local_eduvidual/jsinjector", "clearSessionStorage", array());
         }
 
         // Remove could be written in various cases.
@@ -92,12 +92,12 @@ class lib_enrol {
 
         // If org was given by orgid, load object from database.
         if (is_numeric($org)) {
-            $org =  $DB->get_record('block_eduvidual_org', array('orgid' => $org));
+            $org =  $DB->get_record('local_eduvidual_org', array('orgid' => $org));
         }
         // We can only proceed if this is a valid org.
         if (!empty($org->orgid)) {
             // Get our current role.
-            $current = $DB->get_record('block_eduvidual_orgid_userid', array('orgid' => $org->orgid, 'userid' => $userid));
+            $current = $DB->get_record('local_eduvidual_orgid_userid', array('orgid' => $org->orgid, 'userid' => $userid));
 
             // If we are removing the user, we have to remove a bunch and cohorts as well.
             if ($role == 'remove') {
@@ -110,7 +110,7 @@ class lib_enrol {
                     // Remove alle roles that were given in coursecat.
                     $orgroles = array('manager', 'teacher', 'student', 'parent');
                     foreach ($orgroles AS $orgrole) {
-                        $catrole = get_config('block_eduvidual', 'defaultorgrole' . strtolower($orgrole));
+                        $catrole = get_config('local_eduvidual', 'defaultorgrole' . strtolower($orgrole));
                         if (!empty($catrole)) {
                             role_unassign($catrole, $userid, $orgcatcontext->id);
                         }
@@ -123,8 +123,8 @@ class lib_enrol {
                 }
 
                 // Now remove our eduvidual-membership.
-                $DB->delete_records('block_eduvidual_userbunches', array('orgid' => $org->orgid, 'userid' => $userid));
-                $DB->delete_records('block_eduvidual_orgid_userid', array('orgid' => $org->orgid, 'userid' => $userid));
+                $DB->delete_records('local_eduvidual_userbunches', array('orgid' => $org->orgid, 'userid' => $userid));
+                $DB->delete_records('local_eduvidual_orgid_userid', array('orgid' => $org->orgid, 'userid' => $userid));
             } else {
                 // Set our roles in this org.
                 if (!empty($current->orgid) && $current->role == $role && !$force) {
@@ -135,23 +135,23 @@ class lib_enrol {
 
                     // Add our eduvidual-membership
                     if (!empty($current->id)) {
-                        $DB->set_field('block_eduvidual_orgid_userid', 'role', $role, array('orgid' => $org->orgid, 'userid' => $userid));
+                        $DB->set_field('local_eduvidual_orgid_userid', 'role', $role, array('orgid' => $org->orgid, 'userid' => $userid));
                     } else {
                         $data = array('orgid' => $org->orgid, 'userid' => $userid, 'role' => $role);
-                        $DB->insert_record('block_eduvidual_orgid_userid', $data);
+                        $DB->insert_record('local_eduvidual_orgid_userid', $data);
                     }
 
                     // Add user to orgcategory
                     $orgcatcontext = \context_coursecat::instance($org->categoryid, IGNORE_MISSING);
                     if (!empty($orgcatcontext->id)) {
-                        $coursecatrolenew = get_config('block_eduvidual', 'defaultorgrole' . strtolower($role));
+                        $coursecatrolenew = get_config('local_eduvidual', 'defaultorgrole' . strtolower($role));
                         if (!empty($coursecatrolenew)) {
                             role_assign($coursecatrolenew, $userid, $orgcatcontext->id);
                         }
                         // If our old role differs, we should unassign it.
                         if (!empty($current->role)) {
                             // Check course category context
-                            $coursecatroleold = get_config('block_eduvidual', 'defaultorgrole' . strtolower($current->role));
+                            $coursecatroleold = get_config('local_eduvidual', 'defaultorgrole' . strtolower($current->role));
 
                             if ($coursecatroleold != $coursecatrolenew) {
                                 role_unassign($coursecatroleold, $userid, $orgcatcontext->id);
@@ -170,21 +170,21 @@ class lib_enrol {
         // Check for managers courses.
         if ($role == 'Manager' || (!empty($current->role) && $current->role == 'Manager')) {
             // We are now manager of have been manager before.
-            $managerroles = array_keys($DB->get_records_sql('SELECT id FROM {block_eduvidual_orgid_userid} WHERE userid=? AND role=?', array($userid, 'Manager')));
-            $setrole = (count($managerroles) > 0) ? get_config('block_eduvidual', 'defaultrolestudent') : -1;
-            $allmanagerscourses = explode(',', get_config('block_eduvidual', 'allmanagerscourses'));
+            $managerroles = array_keys($DB->get_records_sql('SELECT id FROM {local_eduvidual_orgid_userid} WHERE userid=? AND role=?', array($userid, 'Manager')));
+            $setrole = (count($managerroles) > 0) ? get_config('local_eduvidual', 'defaultrolestudent') : -1;
+            $allmanagerscourses = explode(',', get_config('local_eduvidual', 'allmanagerscourses'));
             self::course_manual_enrolments($allmanagerscourses, array($userid), $setrole);
         }
 
         // Check for global roles.
         $globalroles = array(
-            'manager' => get_config('block_eduvidual', 'defaultglobalrolemanager'),
-            'teacher' => get_config('block_eduvidual', 'defaultglobalroleteacher'),
-            'student' => get_config('block_eduvidual', 'defaultglobalrolestudent'),
-            'parent' => get_config('block_eduvidual', 'defaultglobalroleparent'),
+            'manager' => get_config('local_eduvidual', 'defaultglobalrolemanager'),
+            'teacher' => get_config('local_eduvidual', 'defaultglobalroleteacher'),
+            'student' => get_config('local_eduvidual', 'defaultglobalrolestudent'),
+            'parent' => get_config('local_eduvidual', 'defaultglobalroleparent'),
         );
         $sql = "SELECT DISTINCT(role) AS role
-                    FROM {block_eduvidual_orgid_userid}
+                    FROM {local_eduvidual_orgid_userid}
                     WHERE userid=?";
         $hasroles = array_values($DB->get_records_sql($sql, array($userid)));
         $syscontext = \context_system::instance();
@@ -201,8 +201,8 @@ class lib_enrol {
             }
         }
 
-        require_once($CFG->dirroot . '/blocks/eduvidual/classes/lib_phplist.php');
-        \block_eduvidual_lib_phplist::check_user_role($userid);
+        require_once($CFG->dirroot . '/local/eduvidual/classes/lib_phplist.php');
+        \local_eduvidual_lib_phplist::check_user_role($userid);
         return $reply;
     }
 
@@ -215,7 +215,7 @@ class lib_enrol {
         global $DB;
         $context = \context_system::instance();
         $fs = get_file_storage();
-        $files = $fs->get_area_files($context->id, 'block_eduvidual', 'backgrounds_cards', 0);
+        $files = $fs->get_area_files($context->id, 'local_eduvidual', 'backgrounds_cards', 0);
         $urls = array();
         foreach ($files as $file) {
             if (str_replace('.', '', $file->get_filename()) != ""){
@@ -228,7 +228,7 @@ class lib_enrol {
             $bgurl = $urls[array_rand($urls, 1)];
         }
         if ($userid > 0 && !isguestuser($userid)) {
-            set_user_preference('block_eduvidual_backgroundcard', $bgurl, $userid);
+            set_user_preference('local_eduvidual_backgroundcard', $bgurl, $userid);
         }
         return $bgurl;
     }
@@ -242,7 +242,7 @@ class lib_enrol {
         global $DB, $USER;
         $courses = array();
         if ($type == 'system' || $type == 'all') {
-            $coursebasements = explode(",", get_config('block_eduvidual', 'coursebasements'));
+            $coursebasements = explode(",", get_config('local_eduvidual', 'coursebasements'));
             foreach($coursebasements AS $cb) {
                 $category = $DB->get_record('course_categories', array('id' => $cb));
                 $courses[$category->name] = array();
@@ -255,7 +255,7 @@ class lib_enrol {
         }
         if ($type == 'user' || $type == 'all') {
             $_courses = enrol_get_all_users_courses($USER->id, true);
-            $selflbl = get_string('teacher:coursebasements:ofuser', 'block_eduvidual');
+            $selflbl = get_string('teacher:coursebasements:ofuser', 'local_eduvidual');
             $courses[$selflbl] = array();
             $coursesbyname = array();
             foreach ($_courses AS $c) {
@@ -399,8 +399,8 @@ class lib_enrol {
         if (!in_array($orgrole, $valid)) return;
         // Enrol into organization course as student or teacher (if it is a manager!!)
         $roles = array(
-            'manager' => get_config('block_eduvidual', 'defaultroleteacher'),
-            'teacher' => get_config('block_eduvidual', 'defaultrolestudent'),
+            'manager' => get_config('local_eduvidual', 'defaultroleteacher'),
+            'teacher' => get_config('local_eduvidual', 'defaultrolestudent'),
         );
         $roles['student'] = $roles['teacher'];
         $roles['parent'] = $roles['teacher'];
@@ -432,11 +432,11 @@ class lib_enrol {
             return false;
         } elseif ($chk->deleted == 1) {
             // Remove this user from any eduvidual-lists
-            $DB->delete_records('block_eduvidual_courseshow', array('userid' => $userid));
-            $DB->delete_records('block_eduvidual_orgid_userid', array('userid' => $userid));
-            $DB->delete_records('block_eduvidual_userbunches', array('userid' => $userid));
-            $DB->delete_records('block_eduvidual_userqcats', array('userid' => $userid));
-            $DB->delete_records('block_eduvidual_usertoken', array('userid' => $userid));
+            $DB->delete_records('local_eduvidual_courseshow', array('userid' => $userid));
+            $DB->delete_records('local_eduvidual_orgid_userid', array('userid' => $userid));
+            $DB->delete_records('local_eduvidual_userbunches', array('userid' => $userid));
+            $DB->delete_records('local_eduvidual_userqcats', array('userid' => $userid));
+            $DB->delete_records('local_eduvidual_usertoken', array('userid' => $userid));
             return false;
         } else {
             return true;

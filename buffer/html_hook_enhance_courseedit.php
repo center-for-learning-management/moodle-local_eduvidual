@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package    block_eduvidual
+ * @package    local_eduvidual
  * @copyright  2018 Digital Education Society (http://www.dibig.at)
  * @author     Robert Schrenk
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -39,7 +39,7 @@ $module_allow = array("Manager", "Teacher");
 $addresource_o = (object) array(
     'courseid' => $COURSE->id,
     'orgid' => $org->orgid,
-    'modulecanuse' => in_array(block_eduvidual::get('role'), $module_allow) || is_siteadmin(),
+    'modulecanuse' => in_array(local_eduvidual::get('role'), $module_allow) || is_siteadmin(),
     'publishercanuse' => $publishercanuse,
     'publisherexists' => $publisherexists,
     'section' => 0,
@@ -50,16 +50,16 @@ $addresource_o = (object) array(
 if (count(pq('.section-modchooser')) == 1 && $optional_section > -1) {
     // We only see optional_section
     $addresource_o->section = $optional_section;
-    pq('.section-modchooser:eq(0)')->append($OUTPUT->render_from_template('block_eduvidual/module_create',$addresource_o));
+    pq('.section-modchooser:eq(0)')->append($OUTPUT->render_from_template('local_eduvidual/module_create',$addresource_o));
 } elseif (count(pq('.section-modchooser')) == 2 && $optional_section > -1) {
     // We see section 0 and optional_section
-    pq('.section-modchooser:eq(0)')->append($OUTPUT->render_from_template('block_eduvidual/module_create',$addresource_o));
+    pq('.section-modchooser:eq(0)')->append($OUTPUT->render_from_template('local_eduvidual/module_create',$addresource_o));
     $addresource_o->section = $optional_section;
-    pq('.section-modchooser:eq(1)')->append($OUTPUT->render_from_template('block_eduvidual/module_create',$addresource_o));
+    pq('.section-modchooser:eq(1)')->append($OUTPUT->render_from_template('local_eduvidual/module_create',$addresource_o));
 } else {
     // We see all sections
     foreach(pq('.section-modchooser') AS $chooser) {
-        pq($chooser)->append($OUTPUT->render_from_template('block_eduvidual/module_create',$addresource_o));
+        pq($chooser)->append($OUTPUT->render_from_template('local_eduvidual/module_create',$addresource_o));
         $addresource_o->section++;
     }
 }

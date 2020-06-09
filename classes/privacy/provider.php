@@ -15,13 +15,13 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package    block_eduvidual
+ * @package    local_eduvidual
  * @copyright  2019 Digital Education Society (http://www.dibig.at)
  * @author     Robert Schrenk
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace block_eduvidual\privacy;
+namespace local_eduvidual\privacy;
 use core_privacy\local\metadata\collection;
 
 defined('MOODLE_INTERNAL') || die;
@@ -29,36 +29,36 @@ defined('MOODLE_INTERNAL') || die;
 class provider implements \core_privacy\local\metadata\provider {
     public static function get_metadata(collection $collection) : collection {
         $collection->add_database_table(
-            'block_eduvidual_courseshow',
+            'local_eduvidual_courseshow',
              array(),
-            'privacy:metadata:privacy:metadata:block_eduvidual_courseshow'
+            'privacy:metadata:privacy:metadata:local_eduvidual_courseshow'
         );
         $collection->add_database_table(
-            'block_eduvidual_orgid_userid',
+            'local_eduvidual_orgid_userid',
              array(),
-            'privacy:metadata:privacy:metadata:block_eduvidual_orgid_userid'
+            'privacy:metadata:privacy:metadata:local_eduvidual_orgid_userid'
         );
         $collection->add_database_table(
-            'block_eduvidual_userbunch',
+            'local_eduvidual_userbunch',
              array(
-                'orgid' => 'privacy:metadata:block_eduvidual_userbunch:orgid',
-                'bunch' => 'privacy:metadata:block_eduvidual_userbunch:bunch',
+                'orgid' => 'privacy:metadata:local_eduvidual_userbunch:orgid',
+                'bunch' => 'privacy:metadata:local_eduvidual_userbunch:bunch',
             ),
-            'privacy:metadata:privacy:metadata:block_eduvidual_userbunch'
+            'privacy:metadata:privacy:metadata:local_eduvidual_userbunch'
         );
         $collection->add_database_table(
-            'block_eduvidual_userqcats',
+            'local_eduvidual_userqcats',
              array(),
-            'privacy:metadata:privacy:metadata:block_eduvidual_userqcats'
+            'privacy:metadata:privacy:metadata:local_eduvidual_userqcats'
         );
         $collection->add_database_table(
-            'block_eduvidual_usertoken',
+            'local_eduvidual_usertoken',
              array(
-                'token' => 'privacy:metadata:block_eduvidual_usertoken:token',
-                'created' => 'privacy:metadata:block_eduvidual_usertoken:created',
-                'used' => 'privacy:metadata:block_eduvidual_usertoken:used',
+                'token' => 'privacy:metadata:local_eduvidual_usertoken:token',
+                'created' => 'privacy:metadata:local_eduvidual_usertoken:created',
+                'used' => 'privacy:metadata:local_eduvidual_usertoken:used',
             ),
-            'privacy:metadata:privacy:metadata:block_eduvidual_usertoken'
+            'privacy:metadata:privacy:metadata:local_eduvidual_usertoken'
         );
         return $collection;
     }
@@ -71,23 +71,23 @@ class provider implements \core_privacy\local\metadata\provider {
     public static function get_contexts_for_userid(int $userid) : contextlist {
         $contextlist = new \core_privacy\local\request\contextlist();
 
-        $sql = "SELECT * FROM {block_eduvidual_courseshow} WHERE userid=?";
+        $sql = "SELECT * FROM {local_eduvidual_courseshow} WHERE userid=?";
         $params = ['userid' => $userid ];
         $contextlist->add_from_sql($sql, $params);
 
-        $sql = "SELECT * FROM {block_eduvidual_orgid_userid} WHERE userid=?";
+        $sql = "SELECT * FROM {local_eduvidual_orgid_userid} WHERE userid=?";
         $params = ['userid' => $userid ];
         $contextlist->add_from_sql($sql, $params);
 
-        $sql = "SELECT * FROM {block_eduvidual_userbunch} WHERE userid=?";
+        $sql = "SELECT * FROM {local_eduvidual_userbunch} WHERE userid=?";
         $params = ['userid' => $userid ];
         $contextlist->add_from_sql($sql, $params);
 
-        $sql = "SELECT * FROM {block_eduvidual_userqcats} WHERE userid=?";
+        $sql = "SELECT * FROM {local_eduvidual_userqcats} WHERE userid=?";
         $params = ['userid' => $userid ];
         $contextlist->add_from_sql($sql, $params);
 
-        $sql = "SELECT * FROM {block_eduvidual_usertoken} WHERE userid=?";
+        $sql = "SELECT * FROM {local_eduvidual_usertoken} WHERE userid=?";
         $params = ['userid' => $userid ];
         $contextlist->add_from_sql($sql, $params);
 

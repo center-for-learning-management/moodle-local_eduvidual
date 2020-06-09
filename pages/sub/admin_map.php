@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package    block_eduvidual
+ * @package    local_eduvidual
  * @copyright  2018 Digital Education Society (http://www.dibig.at)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -24,7 +24,7 @@ defined('MOODLE_INTERNAL') || die;
 if (!is_siteadmin()) die;
 $updatedb = optional_param('updatedb', 0, PARAM_INT);
 if ($updatedb == 0) {
-    echo $OUTPUT->render_from_template('block_eduvidual/admin_map', array(
+    echo $OUTPUT->render_from_template('local_eduvidual/admin_map', array(
         "filters_count" => 3,
         "filters" => array(
             array(
@@ -33,26 +33,26 @@ if ($updatedb == 0) {
                     array(
                         "checked" => true,
                         "key" => "eduv",
-                        "label" => get_string("admin:map:eduv", "block_eduvidual"),
-                        "icon" => $OUTPUT->image_icon('google-maps-pin-green', 'pin', 'block_eduvidual'),
+                        "label" => get_string("admin:map:eduv", "local_eduvidual"),
+                        "icon" => $OUTPUT->image_icon('google-maps-pin-green', 'pin', 'local_eduvidual'),
                     ),
                     array(
                         "checked" => true,
                         "key" => "both",
-                        "label" => get_string("admin:map:both", "block_eduvidual"),
-                        "icon" => $OUTPUT->image_icon('google-maps-pin-orange', 'pin', 'block_eduvidual'),
+                        "label" => get_string("admin:map:both", "local_eduvidual"),
+                        "icon" => $OUTPUT->image_icon('google-maps-pin-orange', 'pin', 'local_eduvidual'),
                     ),
                     array(
                         "checked" => true,
                         "key" => "lpf",
-                        "label" => get_string("admin:map:lpf", "block_eduvidual"),
-                        "icon" => $OUTPUT->image_icon('google-maps-pin-blue', 'pin', 'block_eduvidual'),
+                        "label" => get_string("admin:map:lpf", "local_eduvidual"),
+                        "icon" => $OUTPUT->image_icon('google-maps-pin-blue', 'pin', 'local_eduvidual'),
                     ),
                     array(
                         "checked" => true,
                         "key" => "none",
-                        "label" => get_string("admin:map:none", "block_eduvidual"),
-                        "icon" => $OUTPUT->image_icon('google-maps-pin-lightgray', 'pin', 'block_eduvidual'),
+                        "label" => get_string("admin:map:none", "local_eduvidual"),
+                        "icon" => $OUTPUT->image_icon('google-maps-pin-lightgray', 'pin', 'local_eduvidual'),
                     ),
                 ),
             ),
@@ -161,42 +161,42 @@ if ($updatedb == 0) {
     ));
 } else {
     echo "<h3>Updating GPS-Data</h3><ul>\n";
-    $mapquestkey = get_config('block_eduvidual', 'mapquest_apikey');
-    $googlekey = get_config('block_eduvidual', 'google_apikey');
+    $mapquestkey = get_config('local_eduvidual', 'mapquest_apikey');
+    $googlekey = get_config('local_eduvidual', 'google_apikey');
 
     /*
     if ($usemapquest && empty($mapquestkey)) {
-        echo $OUTPUT->render_from_template('block_eduvidual/alert', array(
-            'content' => get_string('admin:map:mapquest:apikey:description', 'block_eduvidual'),
+        echo $OUTPUT->render_from_template('local_eduvidual/alert', array(
+            'content' => get_string('admin:map:mapquest:apikey:description', 'local_eduvidual'),
             'type' => 'warning',
             'url' => '/admin/settings.php?section=blocksettingeduvidual',
         ));
-        echo $OUTPUT->render_from_template('block_eduvidual/alert', array(
-            'content' => get_string('admin:map:nominatim:directly', 'block_eduvidual'),
+        echo $OUTPUT->render_from_template('local_eduvidual/alert', array(
+            'content' => get_string('admin:map:nominatim:directly', 'local_eduvidual'),
             'type' => 'warning',
-            'url' => '/blocks/eduvidual/pages/admin.php?act=map&updatedb=1&limit=' . $limit,
+            'url' => '/local/eduvidual/pages/admin.php?act=map&updatedb=1&limit=' . $limit,
         ));
     } elseif ($usegoogle && empty($googlekey)) {
-        echo $OUTPUT->render_from_template('block_eduvidual/alert', array(
-            'content' => get_string('admin:map:google:apikey:description', 'block_eduvidual'),
+        echo $OUTPUT->render_from_template('local_eduvidual/alert', array(
+            'content' => get_string('admin:map:google:apikey:description', 'local_eduvidual'),
             'type' => 'warning',
             'url' => '/admin/settings.php?section=blocksettingeduvidual',
         ));
-        echo $OUTPUT->render_from_template('block_eduvidual/alert', array(
-            'content' => get_string('admin:map:nominatim:directly', 'block_eduvidual'),
+        echo $OUTPUT->render_from_template('local_eduvidual/alert', array(
+            'content' => get_string('admin:map:nominatim:directly', 'local_eduvidual'),
             'type' => 'warning',
-            'url' => '/blocks/eduvidual/pages/admin.php?act=map&updatedb=1&limit=' . $limit,
+            'url' => '/local/eduvidual/pages/admin.php?act=map&updatedb=1&limit=' . $limit,
         ));
     } else {
     */
         if (optional_param('resetfailed', 0, PARAM_INT) == 1) {
-            $DB->execute("UPDATE {block_eduvidual_org_gps} SET failed=0", array());
+            $DB->execute("UPDATE {local_eduvidual_org_gps} SET failed=0", array());
         }
         // Only update orgs that have not been updated in the last week!
         $since = time() - 60*60*24*7;
         $limit = optional_param('limit', 500, PARAM_INT);
         $sql = "SELECT o.orgid,o.street,o.zip,o.city,o.district,o.country
-                    FROM {block_eduvidual_org} o, {block_eduvidual_org_gps} og
+                    FROM {local_eduvidual_org} o, {local_eduvidual_org_gps} og
                     WHERE o.orgid=og.orgid
                         AND o.orgid LIKE ?
                         AND og.modified < ?
@@ -254,14 +254,14 @@ if ($updatedb == 0) {
                 }
                 echo "<li>Retrieved data from " . $service . " for <a href=\"" . $searchurl . "\" target=\"_blank\">" . $orgid . "</a></li>\n";
 
-                $testorg = $DB->get_record('block_eduvidual_org_gps', array('orgid' => $orgid));
+                $testorg = $DB->get_record('local_eduvidual_org_gps', array('orgid' => $orgid));
                 if (!empty($data->lat) && !empty($data->lon)) {
                     echo "<li>Retrieved from " . $service . " for " . $orgid . " lon " . $data->lon . " lat " . $data->lat . "</li>";
                     if (!empty($testorg->id)) {
                         $testorg->lat = $data->lat;
                         $testorg->lon = $data->lon;
                         $testorg->modified = time();
-                        $DB->update_record('block_eduvidual_org_gps', $testorg);
+                        $DB->update_record('local_eduvidual_org_gps', $testorg);
                         echo "<li>Updated " . $orgid . "</li>";
                     } else {
                         $testorg = (object) array(
@@ -271,7 +271,7 @@ if ($updatedb == 0) {
                             'modified' => time(),
                             'failed' => 0,
                         );
-                        $DB->insert_record('block_eduvidual_org_gps', $testorg);
+                        $DB->insert_record('local_eduvidual_org_gps', $testorg);
                         echo "<li>Inserted " . $orgid . "</li>";
                     }
                     // Escape foreach
@@ -282,7 +282,7 @@ if ($updatedb == 0) {
                         echo "<li>This was the last service. Flag as failed.</li>";
                         if (!empty($testorg->id)) {
                             $testorg->failed = time();
-                            $DB->update_record('block_eduvidual_org_gps', $testorg);
+                            $DB->update_record('local_eduvidual_org_gps', $testorg);
                         } else {
                             $testorg = (object) array(
                                 'orgid' => $orgid,
@@ -291,7 +291,7 @@ if ($updatedb == 0) {
                                 'modified' => 0,
                                 'failed' => time(),
                             );
-                            $DB->insert_record('block_eduvidual_org_gps', $testorg);
+                            $DB->insert_record('local_eduvidual_org_gps', $testorg);
                         }
                     }
                 }

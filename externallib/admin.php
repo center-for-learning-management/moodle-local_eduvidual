@@ -15,8 +15,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package    block_edusupport
+ * @package    local_eduvidual
  * @copyright  2018 Digital Education Society (http://www.dibig.at)
+ *             2020 onwards Zentrum für Lernmanagement (http://www.lernmanagement.at)
  * @author     Robert Schrenk
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -25,7 +26,7 @@ defined('MOODLE_INTERNAL') || die;
 
 require_once($CFG->libdir . "/externallib.php");
 
-class block_eduvidual_external_admin extends external_api {
+class local_eduvidual_external_admin extends external_api {
     public static function org_gps_parameters() {
         return new external_function_parameters(array(
             'lon1' => new external_value(PARAM_FLOAT, 'longitude to start rectangle'),
@@ -39,7 +40,7 @@ class block_eduvidual_external_admin extends external_api {
     public static function org_gps($lon1, $lon2, $lat1, $lat2, $includenonegroup, $advanceddata = 0) {
         global $CFG, $DB, $PAGE;
 
-        require_once($CFG->dirroot . '/blocks/eduvidual/block_eduvidual.php');
+        require_once($CFG->dirroot . '/local/eduvidual/block_eduvidual.php');
         if (!is_siteadmin()) {
             return json_encode(array());
         }
@@ -50,8 +51,8 @@ class block_eduvidual_external_admin extends external_api {
         }
         $sql = "SELECT og.orgid,og.lon,og.lat,o.name,o.authenticated,o.lpf,o.lpfgroup
                     $advanceddata
-                    FROM {block_eduvidual_org_gps} og,
-                        {block_eduvidual_org} o
+                    FROM {local_eduvidual_org_gps} og,
+                        {local_eduvidual_org} o
                     WHERE o.orgid=og.orgid
                         AND lon>? AND lon<?
                         AND lat>? AND lat<?";

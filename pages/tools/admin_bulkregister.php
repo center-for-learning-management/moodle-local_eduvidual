@@ -15,23 +15,23 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package    block_eduvidual
+ * @package    local_eduvidual
  * @copyright  2018 Digital Education Society (http://www.dibig.at)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 
 require_once('../../../../config.php');
-require_once($CFG->dirroot . '/blocks/eduvidual/block_eduvidual.php');
+require_once($CFG->dirroot . '/local/eduvidual/block_eduvidual.php');
 
 $manageruserid = optional_param('manageruserid', 0, PARAM_INT);
 $orgids = optional_param('orgids', '', PARAM_TEXT);
 
 $PAGE->set_context(context_system::instance());
 $PAGE->set_pagelayout('admin');
-$PAGE->set_url('/blocks/eduvidual/pages/admin.php', array());
-$PAGE->set_title(get_string('Administration', 'block_eduvidual'));
-$PAGE->set_heading(get_string('Administration', 'block_eduvidual'));
+$PAGE->set_url('/local/eduvidual/pages/admin.php', array());
+$PAGE->set_title(get_string('Administration', 'local_eduvidual'));
+$PAGE->set_heading(get_string('Administration', 'local_eduvidual'));
 
 require_login();
 
@@ -43,7 +43,7 @@ if (!empty($orgids) && !empty($manageruserid)) {
     $orgs = explode("\n", $orgids);
     foreach ($orgs AS $orgid) {
         $orgid = trim($orgid);
-        $org = $DB->get_record('block_eduvidual_org', array('orgid' => $orgid));
+        $org = $DB->get_record('local_eduvidual_org', array('orgid' => $orgid));
 
         if (!empty($org->orgid)) {
             $msgs[] = "Registering $org->orgid with name $org->name<br />";
@@ -60,19 +60,19 @@ if (!empty($orgids) && !empty($manageruserid)) {
                 $category = coursecat::create($data);
                 $org->categoryid = $category->id;
                 $msgs[] = "=> Created category $org->categoryid<br />";
-                $DB->set_field('block_eduvidual_org', 'categoryid', $org->categoryid, array('orgid' => $org->orgid));
+                $DB->set_field('local_eduvidual_org', 'categoryid', $org->categoryid, array('orgid' => $org->orgid));
             }
 
             if (empty($org->courseid)) {
                 // Create an org-course for this org
-                $orgcoursebasement = get_config('block_eduvidual', 'orgcoursebasement');
+                $orgcoursebasement = get_config('local_eduvidual', 'orgcoursebasement');
                 $basement = $DB->get_record('course', array('id' => $orgcoursebasement));
 
                 if (!empty($basement->id)) {
                     // Duplicate course
                     $course = core_course_external::duplicate_course($basement->id, 'Digitaler Schulhof (' . $org->orgid . ')', $org->orgid, $org->categoryid, true);
                     $org->courseid = $course["id"];
-                    $DB->set_field('block_eduvidual_org', 'courseid', $org->courseid, array('orgid' => $org->orgid));
+                    $DB->set_field('local_eduvidual_org', 'courseid', $org->courseid, array('orgid' => $org->orgid));
                     $course['summary'] = '<p>Digitaler Schulhof der Schule ' . $org->name . '</p>';
                     $DB->update_record('course', $course);
                 }
@@ -81,12 +81,12 @@ if (!empty($orgids) && !empty($manageruserid)) {
 
             if (!empty($org->courseid)) {
                 $msgs[] = "=> Setting up roles<br />";
-                \block_eduvidual\lib_enrol::role_set($manageruserid, $org, 'Manager');
+                \local_eduvidual\lib_enrol::role_set($manageruserid, $org, 'Manager');
 
                 $org->authenticated = 1;
                 $org->authtan = '';
-                $DB->set_field('block_eduvidual_org', 'authenticated', 1, array('orgid' => $org->orgid));
-                $DB->set_field('block_eduvidual_org', 'authtan', '', array('orgid' => $org->orgid));
+                $DB->set_field('local_eduvidual_org', 'authenticated', 1, array('orgid' => $org->orgid));
+                $DB->set_field('local_eduvidual_org', 'authtan', '', array('orgid' => $org->orgid));
             }
         }
     }
@@ -95,7 +95,7 @@ if (!empty($orgids) && !empty($manageruserid)) {
 
 echo $OUTPUT->header();
 if (count($msgs) > 0) {
-    echo $OUTPUT->render_from_template('block_eduvidual/alert', array('content' => implode('', $msgs)));
+    echo $OUTPUT->render_from_template('local_eduvidual/alert', array('content' => implode('', $msgs)));
 }
-echo $OUTPUT->render_from_template('block_eduvidual/admin_bulkregister', array('manageruserid' => $manageruserid, 'orgids' => $orgids));
+echo $OUTPUT->render_from_template('local_eduvidual/admin_bulkregister', array('manageruserid' => $manageruserid, 'orgids' => $orgids));
 echo $OUTPUT->footer();

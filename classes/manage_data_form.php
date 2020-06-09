@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package    block_eduvidual
+ * @package    local_eduvidual
  * @copyright  2017 Digital Education Society (http://www.dibig.at)
  * @author     Robert Schrenk
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -25,7 +25,7 @@ defined('MOODLE_INTERNAL') || die;
 
 require_once($CFG->libdir . "/formslib.php");
 
-class block_eduvidual_manage_data_form extends moodleform {
+class local_eduvidual_manage_data_form extends moodleform {
     var $restrict_admin_edit = array('name', 'categoryid', 'courseid', 'mnetid'); // Fields that can only be modified by an admin
     var $restrict_admin_view = array('cap_type', 'cap_users', 'cap_course', 'cap_space'); // Fields that can only be modified by an admin
 
@@ -51,12 +51,12 @@ class block_eduvidual_manage_data_form extends moodleform {
         $mform->setType('act', PARAM_TEXT);
         $mnets = $DB->get_records_sql('SELECT id,name,wwwroot FROM {mnet_host} WHERE deleted=0 ORDER BY name ASC, wwwroot ASC', array());
         $options = array();
-        $options[0] = get_string('manage:mnet:selectnone', 'block_eduvidual');
+        $options[0] = get_string('manage:mnet:selectnone', 'local_eduvidual');
         foreach($mnets AS $mnet) {
             $options[$mnet->id] = $mnet->name . ' (' . $mnet->wwwroot . ')';
         }
-        $mform->addElement('select', 'mnetid', get_string('manage:mnet', 'block_eduvidual'), $options);
-        $mform->addElement('filemanager', 'mnetlogo', get_string('manage:mnet:filearealabel', 'block_eduvidual'), null,
+        $mform->addElement('select', 'mnetid', get_string('manage:mnet', 'local_eduvidual'), $options);
+        $mform->addElement('filemanager', 'mnetlogo', get_string('manage:mnet:filearealabel', 'local_eduvidual'), null,
                     array(
                         'subdirs' => $this->subdirds, 'maxbytes' => $this->maxbytes, 'areamaxbytes' => $this->areamaxbytes,
                         'maxfiles' => $this->maxfiles, 'accepted_types' => array('image') //, 'return_types'=> FILE_INTERNAL | FILE_EXTERNAL
@@ -103,7 +103,7 @@ class block_eduvidual_manage_data_form extends moodleform {
                 	20	mnetid
                 */
 
-        $mform->addElement('submit', null, get_string('manage:mnet:send', 'block_eduvidual'));
+        $mform->addElement('submit', null, get_string('manage:mnet:send', 'local_eduvidual'));
         //$this->add_action_buttons();
     }
     //Custom validation should be added here

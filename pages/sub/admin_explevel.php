@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package    block_eduvidual
+ * @package    local_eduvidual
  * @copyright  2018 Digital Education Society (http://www.dibig.at)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -28,7 +28,7 @@ $params = (object) array(
     'questioncategories' => array()
 );
 
-$moolevels = explode(",", get_config('block_eduvidual', 'moolevels'));
+$moolevels = explode(",", get_config('local_eduvidual', 'moolevels'));
 $options = array(); //"<option value=\"\">" . get_string('none') . "</option>");
 $result = $DB->get_records_sql('SELECT r.* FROM {role} AS r, {role_context_levels} AS rcl WHERE r.id=rcl.roleid  AND rcl.contextlevel = 10 ORDER BY name ASC', array());
 foreach($result AS $role) {
@@ -39,7 +39,7 @@ foreach($result AS $role) {
     );
 }
 
-$questioncategories = explode(",", get_config('block_eduvidual', 'questioncategories'));
+$questioncategories = explode(",", get_config('local_eduvidual', 'questioncategories'));
 $options = array(); //"<option value=\"\">" . get_string('none') . "</option>");
 $top = $DB->get_record('question_categories', array('contextid' => 1, 'parent' => 0));
 $result = $DB->get_records_sql('SELECT id,name FROM {question_categories} WHERE contextid=? AND parent=? ORDER BY name ASC', array(1, $top->id));
@@ -70,14 +70,14 @@ if (count($types) > 0) {
             'ids_to_set' => $ids_to_set[$a],
         );
     }
-    set_config('formmodificators', json_encode($formmodificators, JSON_NUMERIC_CHECK), 'block_eduvidual');
-    echo $OUTPUT->render_from_template('block_eduvidual/alert', array(
-        'content' => get_string('store:success', 'block_eduvidual'),
+    set_config('formmodificators', json_encode($formmodificators, JSON_NUMERIC_CHECK), 'local_eduvidual');
+    echo $OUTPUT->render_from_template('local_eduvidual/alert', array(
+        'content' => get_string('store:success', 'local_eduvidual'),
         'type' => 'success',
     ));
 }
 
-$params->formmodificators = json_decode(get_config('block_eduvidual', 'formmodificators'));
+$params->formmodificators = json_decode(get_config('local_eduvidual', 'formmodificators'));
 if (empty($params->formmodificators)) {
     // Set a default value.
     $params->formmodificators = (object)array(
@@ -95,6 +95,6 @@ foreach ($params->formmodificators AS &$formmodificator) {
 }
 
 echo $OUTPUT->render_from_template(
-    'block_eduvidual/admin_explevel',
+    'local_eduvidual/admin_explevel',
     $params
 );

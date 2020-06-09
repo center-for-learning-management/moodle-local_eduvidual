@@ -1,12 +1,12 @@
-define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'block_eduvidual/main'], function($, AJAX, NOTIFICATION, STR, URL, MAIN) {
+define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'local_eduvidual/main'], function($, AJAX, NOTIFICATION, STR, URL, MAIN) {
     return {
         debug: false,
         dashboardEnhanceInfo: {},
         run: function(data){
-            console.log('block_eduvidual/jsinjector:run(data)', data);
-            STR.get_strings([{ key: 'Accesscard', component: 'block_eduvidual' }]).then(function (s) {
+            console.log('local_eduvidual/jsinjector:run(data)', data);
+            STR.get_strings([{ key: 'Accesscard', component: 'local_eduvidual' }]).then(function (s) {
                 $('.usermenu .dropdown a[href$="/user/preferences.php"]').after(
-                    $('<a>').attr('href', URL.relativeUrl('blocks/eduvidual/pages/accesscard.php'))
+                    $('<a>').attr('href', URL.relativeUrl('local/eduvidual/pages/accesscard.php'))
                             .addClass('dropdown-item menu-action').attr('role', 'menuitem')
                             .attr('data-title', 'moodle,accesscard').attr('aria-labelledby', 'actionmenuaction-accesscard')
                             .attr('data-ajax', 'false').append([
@@ -15,7 +15,7 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'blo
                             ])
                 );
             });
-            $("a[href*='/login/logout.php?sesskey']").attr('href', URL.relativeUrl('/blocks/eduvidual/pages/redirects/logout.php'));
+            $("a[href*='/login/logout.php?sesskey']").attr('href', URL.relativeUrl('/local/eduvidual/pages/redirects/logout.php'));
             this.fakeBreadCrumb();
         },
         /**
@@ -23,7 +23,7 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'blo
          * @TODO: Not yet called by any script.
          */
         clearSessionStorage: function() {
-            console.log('block_eduvidual/jsinjector:clearSessionStorage()');
+            console.log('local_eduvidual/jsinjector:clearSessionStorage()');
             sessionStorage.clear();
         },
         /**
@@ -37,14 +37,14 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'blo
             }
         },
         dashboardCourseLoaded: function() {
-            console.log('block_eduvidual/jsinjector:dashboardCourseLoaded()');
+            console.log('local_eduvidual/jsinjector:dashboardCourseLoaded()');
             var JSI = this;
-            $('.dashboard-card-deck>.dashboard-card:not(.block-eduvidual-enhanced)').each(function() {
+            $('.dashboard-card-deck>.dashboard-card:not(.local-eduvidual-enhanced)').each(function() {
                 JSI.dashboardEnhanceCourse($(this));
             });
         },
         dashboardEnhanceCourse: function(card) {
-            card.addClass('block-eduvidual-enhanced block-eduvidual-transition-all');
+            card.addClass('local-eduvidual-enhanced local-eduvidual-transition-all');
             var JSI = this;
             var courseid = +$(card).attr('data-course-id');
             var footer = $(card).find('.dashboard-card-footer');
@@ -56,22 +56,22 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'blo
                         $('<a>')
                             .html(info.label)
                             .attr('href', '#')
-                            .attr('onclick', '$(\'#dashboard-card-' + courseid + '>*\').toggleClass(\'block-eduvidual-height-no\'); return false;')
+                            .attr('onclick', '$(\'#dashboard-card-' + courseid + '>*\').toggleClass(\'local-eduvidual-height-no\'); return false;')
                     );
                     card.append(
                         $('<div>')
-                            .addClass('block-eduvidual-height-no')
+                            .addClass('local-eduvidual-height-no')
                             .append([
                                 $('<a>')
                                     .html('hide')
                                     .attr('href', '#')
-                                    .attr('onclick', '$(\'#dashboard-card-' + courseid + '>*\').toggleClass(\'block-eduvidual-height-no\'); return false;')
+                                    .attr('onclick', '$(\'#dashboard-card-' + courseid + '>*\').toggleClass(\'local-eduvidual-height-no\'); return false;')
                             ])
                     );
                 } else {
                     footer.empty();
                     AJAX.call([{
-                        methodname: 'block_eduvidual_user_course_news',
+                        methodname: 'local_eduvidual_user_course_news',
                         args: { courseid: courseid },
                         done: function(reply) {
                             console.log('got reply for courseid ' + courseid, reply);
@@ -111,7 +111,7 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'blo
          * In some cases, we want other redirections.
          */
         modifyRedirectUrl: function(type) {
-            if (this.debug) console.log('block_eduvidual/jsinjector:modifyRedirectUrl(type)', type);
+            if (this.debug) console.log('local_eduvidual/jsinjector:modifyRedirectUrl(type)', type);
             if (type == 'coursedelete') {
                 $('#page-content .continuebutton form').attr('action', URL.relativeUrl('/my'));
                 $('#page-content .continuebutton form input[name="categoryid"]').remove();
@@ -121,10 +121,10 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'blo
          * Inject org specific menu.
          */
         orgMenu: function(userid) {
-            console.log('block_eduvidual/jsinjector:orgMenu(userid)', userid);
+            console.log('local_eduvidual/jsinjector:orgMenu(userid)', userid);
             if (typeof userid == 'undefined' || userid == 0) return;
-            var foruserid = sessionStorage.getItem('block_eduvidual_foruserid');
-            var menu = sessionStorage.getItem('block_eduvidual_orgmenu');
+            var foruserid = sessionStorage.getItem('local_eduvidual_foruserid');
+            var menu = sessionStorage.getItem('local_eduvidual_orgmenu');
 
             if (userid != foruserid) {
                 menu = false;
@@ -132,11 +132,11 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'blo
 
             if (typeof menu === 'undefined' || !menu) {
                 AJAX.call([{
-                    methodname: 'block_eduvidual_user_orgmenu',
+                    methodname: 'local_eduvidual_user_orgmenu',
                     args: { userid: userid },
                     done: function(menu) {
-                        sessionStorage.setItem('block_eduvidual_foruserid', userid);
-                        sessionStorage.setItem('block_eduvidual_orgmenu', menu);
+                        sessionStorage.setItem('local_eduvidual_foruserid', userid);
+                        sessionStorage.setItem('local_eduvidual_orgmenu', menu);
                         $(menu).insertBefore($('#page-wrapper>.navbar div.usermenu').closest('li'));
                     },
                     fail: NOTIFICATION.exception

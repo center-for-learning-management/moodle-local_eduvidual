@@ -15,8 +15,8 @@
     along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 }}
 
-{{> block_eduvidual/mail_header }}
-<p>{{#str}} mailregister:text, block_eduvidual, { "orgid": "{{orgid}}", "sitename": "{{sitename}}", "userfullname": "{{userfullname}}", "userid": "{{userid}}", "wwwroot": "{{wwwroot}}"} {{/str}}</p>
+{{> local_eduvidual/mail_header }}
+<p>{{#str}} mailregister:text, local_eduvidual, { "orgid": "{{orgid}}", "sitename": "{{sitename}}", "userfullname": "{{userfullname}}", "userid": "{{userid}}", "wwwroot": "{{wwwroot}}"} {{/str}}</p>
 <pre style="text-align: center; font-weight: bold; margin: 5px 0px;">{{authtan}}</pre>
-<p>{{#str}} mailregister:proceed, block_eduvidual, { "registrationurl": "{{registrationurl}}"} {{/str}}</p>
-{{> block_eduvidual/mail_footer }}
+<p>{{#str}} mailregister:proceed, local_eduvidual, { "registrationurl": "{{registrationurl}}"} {{/str}}</p>
+{{> local_eduvidual/mail_footer }}

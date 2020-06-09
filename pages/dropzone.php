@@ -16,7 +16,7 @@
 
 /**
  * Links and settings
- * @package    block_eduvidual
+ * @package    local_eduvidual
  * @copyright  2018 Digital Education Society (http://www.dibig.at)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -25,27 +25,27 @@ require_once('../../../config.php');
 require_login();
 
 require_once($CFG->libdir . '/adminlib.php');
-require_once($CFG->dirroot . '/blocks/eduvidual/block_eduvidual.php');
+require_once($CFG->dirroot . '/local/eduvidual/block_eduvidual.php');
 
-block_eduvidual::set_context_auto();
+local_eduvidual::set_context_auto();
 $PAGE->set_pagelayout('admin');
-$PAGE->set_url('/blocks/eduvidual/pages/dropzone.php', array());
+$PAGE->set_url('/local/eduvidual/pages/dropzone.php', array());
 $PAGE->set_title('eduvidual Dropzone');
 $PAGE->set_heading('eduvidual Dropzone');
 //$PAGE->set_cacheable(false);
 
-$PAGE->requires->css('/blocks/eduvidual/style/dropzone.css');
-$PAGE->requires->js('/blocks/eduvidual/js/dropzone.js');
+$PAGE->requires->css('/local/eduvidual/style/dropzone.css');
+$PAGE->requires->js('/local/eduvidual/js/dropzone.js');
 
-block_eduvidual::print_app_header();
+local_eduvidual::print_app_header();
 
 $roles = array('Manager');
 
-if (!in_array(block_eduvidual::get('role'), $roles) && !is_siteadmin()) {
+if (!in_array(local_eduvidual::get('role'), $roles) && !is_siteadmin()) {
 	?>
-		<p class="alert alert-danger"><?php echo get_string('access_denied', 'block_eduvidual'); ?></p>
+		<p class="alert alert-danger"><?php echo get_string('access_denied', 'local_eduvidual'); ?></p>
 	<?php
-	block_eduvidual::print_app_footer();
+	local_eduvidual::print_app_footer();
 	die();
 }
 
@@ -53,12 +53,12 @@ $reponame = 'u' . $USER->id;
 $repolabel = fullname($USER);
 // From now on we will use a user-specific dropzone-Path
 $dropzonepath = $CFG->dataroot . '/repository/' . $reponame;
-//$dropzonepath = get_config('block_eduvidual', 'dropzonepath');
+//$dropzonepath = get_config('local_eduvidual', 'dropzonepath');
 if (empty($dropzonepath)) {
     ?>
-        <p class="alert alert-danger"><?php echo get_string('admin:dropzone:notset', 'block_eduvidual'); ?></p>
+        <p class="alert alert-danger"><?php echo get_string('admin:dropzone:notset', 'local_eduvidual'); ?></p>
     <?php
-    block_eduvidual::print_app_footer();
+    local_eduvidual::print_app_footer();
     die();
 }
 // Just to be sure it is used as directory.
@@ -122,7 +122,7 @@ if (isset($_FILES["dropfile"])) {
 	<li>Führen Sie die Wiederherstellung wie gewohnt aus</li>
 	<li>Löschen Sie Ihre Sicherungsdatei auf dieser Seite wieder (wird jeden Tag auch automatisch gemacht)</li>
 </ol>
-<form action="<?php echo $CFG->wwwroot; ?>/blocks/eduvidual/pages/dropzone.php" method="post" id="eduvidual-dropzone">
+<form action="<?php echo $CFG->wwwroot; ?>/local/eduvidual/pages/dropzone.php" method="post" id="eduvidual-dropzone">
 	<input type="hidden" name="stamp" value="<?php echo substr(md5(date("i:s")), 0, 4); ?>" />
 </form>
 <p>

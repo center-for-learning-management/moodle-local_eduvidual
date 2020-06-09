@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package    block_eduvidual
+ * @package    local_eduvidual
  * @copyright  2020 Center for Learning Management (www.lernmanagement.at)
  * @author     Marianne Täubl (HTML+CSS), Robert Schrenk (PHP)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -27,11 +27,11 @@ $edushare = optional_param('edushare', 0, PARAM_INT);
 
 $PAGE->set_context(context_system::instance());
 $PAGE->set_pagelayout('login');
-$PAGE->set_url('/blocks/eduvidual/pages/login.php', array('edushare' => $edushare));
+$PAGE->set_url('/local/eduvidual/pages/login.php', array('edushare' => $edushare));
 $PAGE->set_title(get_string('login'));
 $PAGE->set_heading(get_string('login'));
 
-$PAGE->requires->css('/blocks/eduvidual/style/login.css');
+$PAGE->requires->css('/local/eduvidual/style/login.css');
 
 $PAGE->add_body_class('login-index');
 
@@ -42,7 +42,7 @@ $PAGE->add_body_class('login-index');
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<title>Moodle Startseite: Hier können Sie sich anmelden</title>
-		<link rel="stylesheet" href="<?php echo $CFG->wwwroot; ?>/blocks/eduvidual/style/login.css">
+		<link rel="stylesheet" href="<?php echo $CFG->wwwroot; ?>/local/eduvidual/style/login.css">
 		<!-- BOOTSTRAP -->
 		<!-- Latest compiled and minified CSS -->
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
@@ -58,32 +58,32 @@ $PAGE->add_body_class('login-index');
 		<div id="page" class="container ">
 
 			<header class="container justify-content-center">
-				<img src="<?php echo $CFG->wwwroot; ?>/blocks/eduvidual/pix/icon.svg" alt="eduvidual Logo">
-				<h1>eduvidual - <?php echo get_string('your_learning_environment', 'block_eduvidual'); ?></h1>
+				<img src="<?php echo $CFG->wwwroot; ?>/local/eduvidual/pix/icon.svg" alt="eduvidual Logo">
+				<h1>eduvidual - <?php echo get_string('your_learning_environment', 'local_eduvidual'); ?></h1>
 			</header>
 
 			<main class="page-wrapper justify-content-center">
 				<div class="login_buttons">
 				<div class="row justify-content-md-center">
 	                <div class="col-lg-6 col-sm-12">
-						<a href="<?php echo $CFG->wwwroot; ?>/blocks/eduvidual/pages/redirects/login_microsoft.php" title="Microsoft" id="eduvidual-btn-sso-microsoft" data-ajax="false"
+						<a href="<?php echo $CFG->wwwroot; ?>/local/eduvidual/pages/redirects/login_microsoft.php" title="Microsoft" id="eduvidual-btn-sso-microsoft" data-ajax="false"
 						   class="btn btn-block" type="button" name="microsoft">
-								<img src="<?php echo $CFG->wwwroot; ?>/blocks/eduvidual/pix/logo_microsoft.svg" width="20" alt="Microsoft">&nbsp;Microsoft
+								<img src="<?php echo $CFG->wwwroot; ?>/local/eduvidual/pix/logo_microsoft.svg" width="20" alt="Microsoft">&nbsp;Microsoft
 						</a>
 					</div>
 					<div class="col-lg-6 col-sm-12">
-						<a href="<?php echo $CFG->wwwroot; ?>/blocks/eduvidual/pages/redirects/login_mnet.php" title="<?php echo get_string('login:network_btn', 'block_eduvidual'); ?>" id="eduvidual-btn-sso-eduverbund" data-ajax="false"
+						<a href="<?php echo $CFG->wwwroot; ?>/local/eduvidual/pages/redirects/login_mnet.php" title="<?php echo get_string('login:network_btn', 'local_eduvidual'); ?>" id="eduvidual-btn-sso-eduverbund" data-ajax="false"
 						   class="btn btn-block" type="button" name="edu_verbund">
-								<img src="<?php echo $CFG->wwwroot; ?>/pix/i/mnethost.svg" width="20" alt="<?php echo get_string('login:network_btn', 'block_eduvidual'); ?>">&nbsp;<?php echo get_string('login:network_btn', 'block_eduvidual'); ?>
+								<img src="<?php echo $CFG->wwwroot; ?>/pix/i/mnethost.svg" width="20" alt="<?php echo get_string('login:network_btn', 'local_eduvidual'); ?>">&nbsp;<?php echo get_string('login:network_btn', 'local_eduvidual'); ?>
 						</a>
 					</div>
 				</div>
 
 				<div class="row justify-content-md-center">
 	                <div class="col-lg-6 col-sm-12">
-						<a href="<?php echo $CFG->wwwroot; ?>/blocks/eduvidual/pages/redirects/login_google.php" title="Google" id="eduvidual-btn-sso-google" data-ajax="false"
+						<a href="<?php echo $CFG->wwwroot; ?>/local/eduvidual/pages/redirects/login_google.php" title="Google" id="eduvidual-btn-sso-google" data-ajax="false"
 						 class="btn btn-block" type="button" name="google">
-								<img src="<?php echo $CFG->wwwroot; ?>/blocks/eduvidual/pix/logo_google.svg" width="20" alt="Google">&nbsp;Google
+								<img src="<?php echo $CFG->wwwroot; ?>/local/eduvidual/pix/logo_google.svg" width="20" alt="Google">&nbsp;Google
 						</a>
 					</div>
 					<?php
@@ -92,7 +92,7 @@ $PAGE->add_body_class('login-index');
 		         	<div class="col-lg-6 col-sm-12">
 						<a href="<?php echo $CFG->wwwroot; ?>/auth/shibboleth_link/login.php?idp=https%3A%2F%2Ffederation.portal.at%2Fidp_metadata.xml" title="Portal.at" id="eduvidual-btn-sso-portal" data-ajax="false"
 							class="btn btn-block" type="button" name="portal">
-								<img src="<?php echo $CFG->wwwroot; ?>/blocks/eduvidual/pix/logo_portalat.png" width="20" alt="Portal.at">&nbsp;Portal.at
+								<img src="<?php echo $CFG->wwwroot; ?>/local/eduvidual/pix/logo_portalat.png" width="20" alt="Portal.at">&nbsp;Portal.at
 						</a>
 					</div>
 					<?php
@@ -106,7 +106,7 @@ $PAGE->add_body_class('login-index');
 	                <div class="col-lg-6 col-sm-12">
 						<a href="<?php echo $CFG->wwwroot; ?>/auth/shibboleth_link/login.php?idp=https%3A%2F%2Fwww.eduidam.at%2Fidp_metadata.xml" title="edu.IDAM" id="eduvidual-btn-sso-iam" data-ajax="false"
 						 class="btn btn-block" type="button" name="edu.IDAM" >
-						 	<img src="<?php echo $CFG->wwwroot; ?>/blocks/eduvidual/pix/logo_eduidam.png" width="20" alt="edu.IDAM">&nbsp;edu.IDAM
+						 	<img src="<?php echo $CFG->wwwroot; ?>/local/eduvidual/pix/logo_eduidam.png" width="20" alt="edu.IDAM">&nbsp;edu.IDAM
 						</a>
 					</div>
 					<?php
@@ -122,7 +122,7 @@ $PAGE->add_body_class('login-index');
 					<div class="divider-text">
 						<div class="separator"><?php echo get_string('adverbfor_or', 'user'); ?></div>
 
-						<p><?php echo get_string('login:direct', 'block_eduvidual') ?></p>
+						<p><?php echo get_string('login:direct', 'local_eduvidual') ?></p>
 					</div>
 
 				</div>
@@ -160,14 +160,14 @@ $PAGE->add_body_class('login-index');
 	                <div class="col-lg-4 col-sm-12">
 						<a href="<?php echo $CFG->wwwroot; ?>/login/verify_age_location.php" title="reg-einzelperson" data-ajax="false">
 							<button class="btn-block btn-grey" type="button" name="Als Einzelperson registrieren" id="reg-einzelperson">
-								<?php echo get_string('register:individual', 'block_eduvidual'); ?>
+								<?php echo get_string('register:individual', 'local_eduvidual'); ?>
 							</button>
 						</a>
 					</div>
 					<div class="col-lg-4 col-sm-12">
-						<a href="<?php echo $CFG->wwwroot; ?>/blocks/eduvidual/pages/register.php" title="reg-schule"  data-ajax="false">
+						<a href="<?php echo $CFG->wwwroot; ?>/local/eduvidual/pages/register.php" title="reg-schule"  data-ajax="false">
 							<button class="btn-block btn-grey" type="button" name="Als Schule registrieren" id="reg-schule">
-								<?php echo get_string('register:org', 'block_eduvidual'); ?>
+								<?php echo get_string('register:org', 'local_eduvidual'); ?>
 							</button>
 						</a>
 					</div>
@@ -192,17 +192,17 @@ $PAGE->add_body_class('login-index');
 					<ul class="nav justify-content-center">
 						<li class="nav-item">
 							<a href="https://www.eduvidual.at/course/view.php?id=606&section=3" class="nav-link">
-								<?php echo get_string('help_and_tutorials', 'block_eduvidual'); ?>
+								<?php echo get_string('help_and_tutorials', 'local_eduvidual'); ?>
 							</a>
 						</li>
 						<li class="nav-item">
 							<a href="https://www.eduvidual.at/static/imprint.html" class="nav-link">
-								<?php echo get_string('imprint', 'block_eduvidual'); ?>
+								<?php echo get_string('imprint', 'local_eduvidual'); ?>
 							</a>
 						</li>
 						<li class="nav-item">
 							<a href="<?php echo $CFG->wwwroot; ?>/" class="nav-link">
-								<?php echo get_string('privacy', 'block_eduvidual'); ?>
+								<?php echo get_string('privacy', 'local_eduvidual'); ?>
 							</a>
 						</li>
 					</ul>

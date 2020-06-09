@@ -16,16 +16,16 @@
 }}
 
 <div class="ui-eduvidual">
-    <p class="alert alert-warning">{{#str}} manage:mnet:adminonly, block_eduvidual {{/str}}</p>
+    <p class="alert alert-warning">{{#str}} manage:mnet:adminonly, local_eduvidual {{/str}}</p>
 
-    <h5>{{#str}} manage:maildomain, block_eduvidual {{/str}}</h5>
-    <p>{{#str}} manage:maildomain:description, block_eduvidual {{/str}}</p>
-    <label for="block_eduvidual_manage_maildomain">{{#str}} Student, block_eduvidual {{/str}}</label>
-    <pre>{{maildomain}}{{^maildomain}}{{#str}} n_a, block_eduvidual {{/str}}{{/maildomain}}</pre>
-    <label for="block_eduvidual_manage_maildomain_teacher">{{#str}} Teacher, block_eduvidual {{/str}}</label>
-    <pre>{{maildomainteacher}}{{^maildomainteacher}}{{#str}} n_a, block_eduvidual {{/str}}{{/maildomainteacher}}</pre>
+    <h5>{{#str}} manage:maildomain, local_eduvidual {{/str}}</h5>
+    <p>{{#str}} manage:maildomain:description, local_eduvidual {{/str}}</p>
+    <label for="local_eduvidual_manage_maildomain">{{#str}} Student, local_eduvidual {{/str}}</label>
+    <pre>{{maildomain}}{{^maildomain}}{{#str}} n_a, local_eduvidual {{/str}}{{/maildomain}}</pre>
+    <label for="local_eduvidual_manage_maildomain_teacher">{{#str}} Teacher, local_eduvidual {{/str}}</label>
+    <pre>{{maildomainteacher}}{{^maildomainteacher}}{{#str}} n_a, local_eduvidual {{/str}}{{/maildomainteacher}}</pre>
 
-    <h5>{{#str}} manage:mnet, block_eduvidual {{/str}}</h5>
+    <h5>{{#str}} manage:mnet, local_eduvidual {{/str}}</h5>
     {{#mnetname}}
         <table border="0">
             <tr>
@@ -38,6 +38,6 @@
         </table>
     {{/mnetname}}
     {{^mnetname}}
-        <pre>{{#str}} n_a, block_eduvidual {{/str}}</pre>
+        <pre>{{#str}} n_a, local_eduvidual {{/str}}</pre>
     {{/mnetname}}
 </div>

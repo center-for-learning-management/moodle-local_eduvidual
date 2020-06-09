@@ -15,13 +15,14 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package   block_eduvidual
+ * @package   local_eduvidual
  * @copyright 2017 Digital Education Society (http://www.dibig.at)
  * @author    Robert Schrenk
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 $string['pluginname'] = 'eduvidual';
+$string['pluginname:settings'] = 'eduvidual Konfiguration';
 $string['manage'] = 'eduvidual Management-Interface';
 
 $string['access_denied'] = 'Zugriff nicht gestattet';
@@ -84,7 +85,7 @@ $string['admin:formmodificator:removenotice'] = 'Sie können eine Zeile entferne
 $string['admin:formmodificator:roleids'] = 'Rollen-IDs';
 $string['admin:formmodificator:types'] = 'Typen';
 $string['admin:globalfiles:title'] = 'Globale Dateien';
-$string['admin:globalfiles:description'] = 'Global verfügbare Dateien hochladen. Der Dateipfad lautet wie folgt: /pluginfile.php/1/block_eduvidual/globalfiles/0/{verzeichnisse}/{dateiname}';
+$string['admin:globalfiles:description'] = 'Global verfügbare Dateien hochladen. Der Dateipfad lautet wie folgt: /pluginfile.php/1/local_eduvidual/globalfiles/0/{verzeichnisse}/{dateiname}';
 $string['admin:ltiresourcekey:title'] = 'Standard LTI Resource Key';
 $string['admin:ltiresourcekey:description'] = 'Falls Sie LTI Ressourcen mit eduvidual verwalten, stellen Sie sicher, dass Sie überall denselben LTI Resource Key setzen. Sie können den Standardwert hier setzen.';
 $string['admin:map'] = 'Interaktive Schulkarte';
@@ -229,7 +230,7 @@ $string['defaultroles:refreshroles'] = 'Rollen in Kurskategorien neu setzen';
 $string['edutube:edutubeauthurl'] = 'eduTube Auth URL';
 $string['edutube:edutubeauthtoken'] = 'eduTube Auth Token';
 $string['edutube:invalid_url'] = 'Ungültige URL erhalten ({$a->url}). Weiterleitung zu edutube.at leider nicht möglich!';
-$string['edutube:no_org'] = 'Entschuldigung, leider wurde Ihnen an keiner Schule eine Rolle als Schüler/in oder Lehrer/in zugewiesen. Bitte kontaktieren Sie die Ansprechpersonen Ihrer Schule, damit man Ihnen die notwendigen Rechte zuweist!<br /><br />Falls Ihre Schule noch nicht in eduvidual.at registriert wurde, können Sie diesen Schritt über die <a href="{$a->wwwroot}/blocks/eduvidual/pages/register.php">Registrierung</a> nachholen und sofort auch edutube.at nutzen!';
+$string['edutube:no_org'] = 'Entschuldigung, leider wurde Ihnen an keiner Schule eine Rolle als Schüler/in oder Lehrer/in zugewiesen. Bitte kontaktieren Sie die Ansprechpersonen Ihrer Schule, damit man Ihnen die notwendigen Rechte zuweist!<br /><br />Falls Ihre Schule noch nicht in eduvidual.at registriert wurde, können Sie diesen Schritt über die <a href="{$a->wwwroot}/local/eduvidual/pages/register.php">Registrierung</a> nachholen und sofort auch edutube.at nutzen!';
 $string['edutube:title'] = 'eduTube';
 $string['edutube:missing_configuration'] = 'eduTube wurde noch nicht konfiguriert';
 
@@ -272,10 +273,10 @@ $string['createcourse:coursenameemptyerror'] = 'Kursname ist leer';
 $string['createcourse:created'] = 'Kurs erfolgreich erstellt';
 $string['createcourse:createerror'] = 'Kurs konnte nicht erstellt werden';
 $string['createcourse:extra'] = 'Extra';
-$string['createcourse:hint_orgclasses'] = 'Hinweis: Als eduvidual-Manager/in können Sie verfügbare Klassen und Gegenstände im <a href="/blocks/eduvidual/pages/manage.php?act=classes">Management-Interface</a> festlegen!';
+$string['createcourse:hint_orgclasses'] = 'Hinweis: Als eduvidual-Manager/in können Sie verfügbare Klassen und Gegenstände im <a href="/local/eduvidual/pages/manage.php?act=classes">Management-Interface</a> festlegen!';
 $string['createcourse:invalidbasement'] = 'Ungültige Vorlage';
 $string['createcourse:org'] = 'Schule';
-$string['createcourse:here'] = 'Hier Kurs erstellen';
+$string['createcourse:here'] = 'Kurs erstellen';
 $string['createcourse:name'] = 'Name des Kurses';
 $string['createcourse:nameinfo'] = 'Wir empfehlen einen Namen, der das Schuljahr der Erstellung und eine Gruppenbezeichnung bzw. den Gegenstand beinhaltet. So behalten Sie über mehrere Schuljahre hinweg den Überblick!';
 $string['createcourse:nametooshort'] = 'Name zu kurz';
@@ -304,7 +305,7 @@ $string['imprint'] = 'Impressum';
 $string['mailregister:confirmation'] = 'Bestätigung';
 $string['mailregister:confirmation:mailsent'] = 'Die eMail wurde versendet!';
 $string['mailregister:footer'] = 'Mit freundlichen Grüßen';
-$string['mailregister:footer:signature'] = '<img src="https://www.eduvidual.at/pluginfile.php/1/block_eduvidual/globalfiles/0/_sys/register/signature.png" width="200" alt="" /><br />Robert Schrenk';
+$string['mailregister:footer:signature'] = '<img src="https://www.eduvidual.at/pluginfile.php/1/local_eduvidual/globalfiles/0/_sys/register/signature.png" width="200" alt="" /><br />Robert Schrenk';
 $string['mailregister:header'] = 'Registrierung';
 $string['mailregister:proceed'] = 'Um mit der Registrierung fortzufahren klicken Sie bitte diesen <a href="{$a->registrationurl}" target="_blank">Link</a>!';
 $string['mailregister:text'] = '<a href="{$a->wwwroot}/user/profile.php?id={$a->userid}">{$a->userfullname}</a> möchte Ihre Schule mit der Kennzahl <b>{$a->orgid}</b> in der Plattform <a href="{$a->wwwroot}" target="_blank">{$a->sitename}</a> registrieren. Um die Registrierung abzuschließen, benötigt er/sie den Inhalt dieser e-Mail. Bitte leiten Sie diese Nachricht daher weiter, wenn Sie damit einverstanden sind.<br /><br />Um die Registrierung abzuschließen geben Sie bitte den folgenden Token bei der Registrierung an:';
@@ -313,7 +314,7 @@ $string['mailregister:2:gotocategory'] = 'Der Bereich für Ihre Organisation bef
 $string['mailregister:2:header'] = 'Registrierung abgeschlossen';
 $string['mailregister:2:text'] = 'Die Registrierung Ihrer Organisation {$a->orgid} ist abgeschlossen. Mehr Informationen zur Verwaltung Ihres Schul-Bereichs finden Sie im Kurs für <a href="{$a->managerscourseurl}">eduvidual-Manager/innen</a>!';
 $string['mailregister:2:footer'] = 'Mit freundlichen Grüßen';
-$string['mailregister:2:footer:signature'] = '<img src="https://www.eduvidual.at/pluginfile.php/1/block_eduvidual/globalfiles/0/_sys/register/signature.png" width="200" alt="" /><br />Robert Schrenk';
+$string['mailregister:2:footer:signature'] = '<img src="https://www.eduvidual.at/pluginfile.php/1/local_eduvidual/globalfiles/0/_sys/register/signature.png" width="200" alt="" /><br />Robert Schrenk';
 $string['mailregister:2:subject'] = 'Registrierung abgeschlossen';
 
 $string['mainmenu'] = 'Hauptmenü';
@@ -321,7 +322,7 @@ $string['mainmenu'] = 'Hauptmenü';
 $string['manage:accesscodes'] = 'Zugangscode';
 $string['manage:accesscodes:create'] = 'Zugangscode erstellen';
 $string['manage:accesscodes:code'] = 'Code oder Passphrase';
-$string['manage:accesscodes:description'] = 'Sie können verschiedene Zugangscodes erstellen, mit denen die Nutzer/innen Ihrer Schule sich selbst zur Schule über die Funktion "<a href="{$a->wwwroot}/blocks/eduvidual/pages/accesscard.php">Zugangskarte</a>" hinzufügen können!';
+$string['manage:accesscodes:description'] = 'Sie können verschiedene Zugangscodes erstellen, mit denen die Nutzer/innen Ihrer Schule sich selbst zur Schule über die Funktion "<a href="{$a->wwwroot}/local/eduvidual/pages/accesscard.php">Zugangskarte</a>" hinzufügen können!';
 $string['manage:accesscodes:issuer'] = 'Aussteller/in';
 $string['manage:accesscodes:issuer:short'] = 'von';
 $string['manage:accesscodes:maturity'] = 'Ablauf (YYYY-mm-dd HH:ii:ss)';
@@ -478,20 +479,20 @@ $string['print'] = 'Drucken';
 
 $string['privacy'] = 'Datenschutz';
 
-$string['privacy:metadata:privacy:metadata:block_eduvidual_courseshow'] = 'Speichert für den app-Modus, welche Kurse der Kursliste angezeigt oder versteckt werden sollen.';
-$string['privacy:metadata:privacy:metadata:block_eduvidual_orgid_userid'] = 'Speichert die Zuordnung und Rolle in verschiedenen Schulen.';
-$string['privacy:metadata:privacy:metadata:block_eduvidual_userbunch'] = 'Wird von Organisationen verwendet, um Nutzer/innen für den Ausdruck von Zugangskarten zu gruppieren.';
-$string['privacy:metadata:privacy:metadata:block_eduvidual_userbunch:orgid'] = 'Die Schulkennzahl';
-$string['privacy:metadata:privacy:metadata:block_eduvidual_userbunch:bunch'] = 'Die Gruppenbezeichnung';
-$string['privacy:metadata:privacy:metadata:block_eduvidual_userextra'] = 'Persönliche Zusatzeinstellungen';
-$string['privacy:metadata:privacy:metadata:block_eduvidual_userextra:background'] = 'Der persönliche Hintergrund';
-$string['privacy:metadata:privacy:metadata:block_eduvidual_userextra:backgroundcard'] = 'Der Hintergrund der Zugangskarte';
-$string['privacy:metadata:privacy:metadata:block_eduvidual_userextra:defaultorg'] = 'Die standardmäßig ausgewählte Schule (sofern jemand in mehreren Schulen tätig ist)';
-$string['privacy:metadata:privacy:metadata:block_eduvidual_userqcats'] = 'Die Kernsystem-Fragenkategorien, die angezeigt werden sollen.';
-$string['privacy:metadata:privacy:metadata:block_eduvidual_usertoken'] = 'Nutzertoken für den automatischen Login';
-$string['privacy:metadata:privacy:metadata:block_eduvidual_usertoken:token'] = 'Der Token';
-$string['privacy:metadata:privacy:metadata:block_eduvidual_usertoken:created'] = 'Der Zeitpunkt der Erstellung des Tokens';
-$string['privacy:metadata:privacy:metadata:block_eduvidual_usertoken:used'] = 'Der Zeitpunkt der Einlösung des Tokens';
+$string['privacy:metadata:privacy:metadata:local_eduvidual_courseshow'] = 'Speichert für den app-Modus, welche Kurse der Kursliste angezeigt oder versteckt werden sollen.';
+$string['privacy:metadata:privacy:metadata:local_eduvidual_orgid_userid'] = 'Speichert die Zuordnung und Rolle in verschiedenen Schulen.';
+$string['privacy:metadata:privacy:metadata:local_eduvidual_userbunch'] = 'Wird von Organisationen verwendet, um Nutzer/innen für den Ausdruck von Zugangskarten zu gruppieren.';
+$string['privacy:metadata:privacy:metadata:local_eduvidual_userbunch:orgid'] = 'Die Schulkennzahl';
+$string['privacy:metadata:privacy:metadata:local_eduvidual_userbunch:bunch'] = 'Die Gruppenbezeichnung';
+$string['privacy:metadata:privacy:metadata:local_eduvidual_userextra'] = 'Persönliche Zusatzeinstellungen';
+$string['privacy:metadata:privacy:metadata:local_eduvidual_userextra:background'] = 'Der persönliche Hintergrund';
+$string['privacy:metadata:privacy:metadata:local_eduvidual_userextra:backgroundcard'] = 'Der Hintergrund der Zugangskarte';
+$string['privacy:metadata:privacy:metadata:local_eduvidual_userextra:defaultorg'] = 'Die standardmäßig ausgewählte Schule (sofern jemand in mehreren Schulen tätig ist)';
+$string['privacy:metadata:privacy:metadata:local_eduvidual_userqcats'] = 'Die Kernsystem-Fragenkategorien, die angezeigt werden sollen.';
+$string['privacy:metadata:privacy:metadata:local_eduvidual_usertoken'] = 'Nutzertoken für den automatischen Login';
+$string['privacy:metadata:privacy:metadata:local_eduvidual_usertoken:token'] = 'Der Token';
+$string['privacy:metadata:privacy:metadata:local_eduvidual_usertoken:created'] = 'Der Zeitpunkt der Erstellung des Tokens';
+$string['privacy:metadata:privacy:metadata:local_eduvidual_usertoken:used'] = 'Der Zeitpunkt der Einlösung des Tokens';
 
 $string['qrscan:cameratoobject'] = 'Richten Sie nun die Kamera auf den QR Code!';
 $string['questioncategoryfilter:label'] = 'Kategoriefilter';

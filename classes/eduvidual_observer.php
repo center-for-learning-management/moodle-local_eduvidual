@@ -15,16 +15,16 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package    block_eduvidual
+ * @package    local_eduvidual
  * @copyright  2017 Digital Education Society (http://www.dibig.at)
  * @author     Robert Schrenk
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace block_eduvidual;
+namespace local_eduvidual;
 
 defined('MOODLE_INTERNAL') || die;
-require_once($CFG->dirroot . '/blocks/eduvidual/block_eduvidual.php');
+require_once($CFG->dirroot . '/local/eduvidual/block_eduvidual.php');
 
 class eduvidual_observer {
     public static function event($event) {
@@ -35,25 +35,25 @@ class eduvidual_observer {
 
         if ($data->action == 'loggedin') {
             // We shall clear our sessionStorage
-            $PAGE->requires->js_call_amd("block_eduvidual/jsinjector", "clearSessionStorage", array());
+            $PAGE->requires->js_call_amd("local_eduvidual/jsinjector", "clearSessionStorage", array());
             
             $user = $DB->get_record('user', array('id' => $data->userid));
             require_once($CFG->dirroot . '/user/profile/lib.php');
             profile_load_data($user);
             //error_log(json_encode($user, JSON_NUMERIC_CHECK));
 
-            if (!empty(get_config('block_eduvidual', 'phplist_dbhost'))) {
+            if (!empty(get_config('local_eduvidual', 'phplist_dbhost'))) {
                 // Check for phplist-lists.
-                require_once($CFG->dirroot . '/blocks/eduvidual/classes/lib_phplist.php');
-                \block_eduvidual_lib_phplist::check_users_authtype(array($USER));
-                \block_eduvidual_lib_phplist::check_user_role($USER->id);
+                require_once($CFG->dirroot . '/local/eduvidual/classes/lib_phplist.php');
+                \local_eduvidual_lib_phplist::check_users_authtype(array($USER));
+                \local_eduvidual_lib_phplist::check_user_role($USER->id);
             }
 
 
             // We only check for roles managed by profile for mnet accounts
             if ($user->auth == 'mnet') {
                 $org;
-                $orgs_ = $DB->get_records('block_eduvidual_org', array('mnetid' => $user->mnethostid));
+                $orgs_ = $DB->get_records('local_eduvidual_org', array('mnetid' => $user->mnethostid));
                 // Create Array of orgs that use this mnethost.
                 $orgs = array();
                 $orgids = array();
@@ -62,7 +62,7 @@ class eduvidual_observer {
                     $orgids[] = $org->orgid;
                 }
                 if ($user->mnethostid == 3) {
-                    $additionalorg = $DB->get_record('block_eduvidual_org', array('orgid' => '601457'));
+                    $additionalorg = $DB->get_record('local_eduvidual_org', array('orgid' => '601457'));
                     $orgs[] = $additionalorg;
                     $orgids[] = $additionalorg->orgid;
                 }
@@ -97,10 +97,10 @@ class eduvidual_observer {
                 $DB->update_record('user', $user);
 
                 // Proceed only if we still have a valid institution.
-                //$org = $DB->get_record('oer_block_eduvidual_org', array('orgid' => $user->institution));
+                //$org = $DB->get_record('oer_local_eduvidual_org', array('orgid' => $user->institution));
                 if (!empty($org->orgid) && $org->orgid == $user->institution) {
                     // Check if we already have a role.
-                    $currentrole = $DB->get_record('block_eduvidual_orgid_userid', array('orgid' => $org->orgid, 'userid' => $user->id));
+                    $currentrole = $DB->get_record('local_eduvidual_orgid_userid', array('orgid' => $org->orgid, 'userid' => $user->id));
                     // If department is empty default to Student
                     $setrole = $user->department;
                     $roles = array('Manager', 'Teacher', 'Student', 'Parent');
@@ -108,7 +108,7 @@ class eduvidual_observer {
                         $setrole = 'Student';
                     }
                     if (!empty($setrole)) {
-                        $reply = \block_eduvidual\lib_enrol::role_set($user->id, $org, $setrole);
+                        $reply = \local_eduvidual\lib_enrol::role_set($user->id, $org, $setrole);
                         $success = isset($reply['enrolments']) ? count($reply['enrolments']) : 0;
                         if ($debug) error_log('Set role from mnet: ' . $setrole . ' on user ' . $user->id . ' for org ' . $org->orgid . ' => ' . $success . ' enrolments done');
                         //error_log(print_r($reply, 1));
@@ -126,10 +126,10 @@ class eduvidual_observer {
             $maildomain = explode('@', strtolower($user->email));
             $maildomain = '@' . $maildomain[1];
             if (strlen($maildomain) > 3) {
-                //error_log('SELECT * FROM oer_block_eduvidual_org WHERE maildomain="' . $maildomain . '" OR maildomainteacher="' . $maildomain . '"');
-                $chkorgs = $DB->get_records_sql('SELECT * FROM {block_eduvidual_org} WHERE maildomain LIKE ? OR maildomainteacher LIKE ?', array('%' . $maildomain . '%', '%' . $maildomain . '%'));
+                //error_log('SELECT * FROM oer_local_eduvidual_org WHERE maildomain="' . $maildomain . '" OR maildomainteacher="' . $maildomain . '"');
+                $chkorgs = $DB->get_records_sql('SELECT * FROM {local_eduvidual_org} WHERE maildomain LIKE ? OR maildomainteacher LIKE ?', array('%' . $maildomain . '%', '%' . $maildomain . '%'));
                 foreach($chkorgs AS $chkorg) {
-                    $member = $DB->get_record('block_eduvidual_orgid_userid', array('orgid' => $chkorg->orgid, 'userid' => $user->id));
+                    $member = $DB->get_record('local_eduvidual_orgid_userid', array('orgid' => $chkorg->orgid, 'userid' => $user->id));
                     if (!isset($member->role) || empty($member->role)) {
                         $setrole = (strpos($chkorg->maildomainteacher, $maildomain) !== false) ? 'Teacher': 'Student';
                         if (!isset($reply['enrolments'])) {
@@ -137,7 +137,7 @@ class eduvidual_observer {
                         }
                         if ($member->role == 'Manager') $setrole = 'Manager';
                         if ($debug) error_log('Set role from maildomain ' . $maildomain . ': ' . $setrole . ' on user ' . $user->id . ' for org ' . $chkorg->orgid);
-                        $reply['enrolments'][] = \block_eduvidual\lib_enrol::role_set($user->id, $chkorg, $setrole);
+                        $reply['enrolments'][] = \local_eduvidual\lib_enrol::role_set($user->id, $chkorg, $setrole);
                     }
                 }
             }
@@ -149,8 +149,8 @@ class eduvidual_observer {
             // This caused an issue with oauth providers (redirect loop).
             // Therefore, if auth is oauth2 we will set dummy names.
             if ($USER->auth == 'oauth2') {
-                $colors = file($CFG->dirroot . '/blocks/eduvidual/templates/names.colors', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-                $animals = file($CFG->dirroot . '/blocks/eduvidual/templates/names.animals', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+                $colors = file($CFG->dirroot . '/local/eduvidual/templates/names.colors', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+                $animals = file($CFG->dirroot . '/local/eduvidual/templates/names.animals', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
                 $color_key = array_rand($colors, 1);
                 $animal_key = array_rand($animals, 1);
                 $USER->firstname = $colors[$color_key];

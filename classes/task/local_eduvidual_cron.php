@@ -15,35 +15,32 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package    block_eduvidual
- * @copyright  2020 Center for Learning Management (www.lernmanagement.at)
+ * @package    local_edumessenger
+ * @copyright  2017 Digital Education Society (http://www.dibig.at)
  * @author     Robert Schrenk
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace block_eduvidual\task;
+namespace local_eduvidual\task;
 
 defined('MOODLE_INTERNAL') || die;
 
-class block_eduvidual_orgsizes extends \core\task\scheduled_task {
+class local_eduvidual_cron extends \core\task\scheduled_task {
     public function get_name() {
         // Shown in admin screens.
-        return get_string('orgsizes:title', 'block_eduvidual');
+        return get_string('cron:title', 'local_eduvidual');
     }
 
     public function execute() {
-        global $CFG, $DB;
-        $sql = "SELECT id,orgid,categoryid
-                    FROM {block_eduvidual_org}
-                    WHERE categoryid>0";
-        $orgs = $DB->get_records_sql($sql, array());
-        require_once($CFG->dirroot . '/blocks/eduvidual/classes/lib_manage.php');
-        foreach ($orgs AS $org) {
-            $filesize = \block_eduvidual\lib_manage::get_category_filesize($org->categoryid);
-            echo "Read $org->orgid for category $org->categoryid with size $filesize<br />\n";
-            if (!empty($filesize)) {
-                $DB->set_field('block_eduvidual_org', 'orgsize', $filesize, array('categoryid' => $org->categoryid));
-            }
+        global $DB, $PAGE;
+        $PAGE->set_context(\context_system::instance());
+
+        // All Users having role "repofilesystem"
+        $roleid = 15;
+        $sql = "SELECT userid, contextid FROM {role_assignments} WHERE roleid=?";
+        $results = $DB->get_records_sql($sql, array($roleid));
+        foreach($results AS $row) {
+            \role_unassign($roleid, $row->userid, $row->contextid);
         }
     }
 }

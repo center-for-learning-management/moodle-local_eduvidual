@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package    block_eduvidual
+ * @package    local_eduvidual
  * @copyright  2018 Digital Education Society (http://www.dibig.at)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -24,19 +24,19 @@ require_once('../../../config.php');
 require_login();
 
 require_once($CFG->libdir . '/adminlib.php');
-require_once($CFG->dirroot . '/blocks/eduvidual/block_eduvidual.php');
+require_once($CFG->dirroot . '/local/eduvidual/block_eduvidual.php');
 
 $current_orgid = optional_param('orgid', 0, PARAM_INT);
-$orgas = block_eduvidual::get_organisations('*');
-$checkedorg = block_eduvidual::get_organisations_check($orgas, $current_orgid);
+$orgas = local_eduvidual::get_organisations('*');
+$checkedorg = local_eduvidual::get_organisations_check($orgas, $current_orgid);
 
-$PAGE->set_url(new moodle_url('/blocks/eduvidual/pages/categories.php', array('orgid' => $current_orgid)));
+$PAGE->set_url(new moodle_url('/local/eduvidual/pages/categories.php', array('orgid' => $current_orgid)));
 //$PAGE->set_cacheable(false);
 
-$PAGE->navbar->add(get_string('Browse_org', 'block_eduvidual'), new moodle_url('/blocks/eduvidual/pages/categories.php', array()));
+$PAGE->navbar->add(get_string('Browse_org', 'local_eduvidual'), new moodle_url('/local/eduvidual/pages/categories.php', array()));
 if (!empty($current_orgid) && !empty($checkedorg->name)) {
     $org = $checkedorg;
-    block_eduvidual::set_org($checkedorg->orgid);
+    local_eduvidual::set_org($checkedorg->orgid);
     $PAGE->navbar->add($checkedorg->name, $PAGE->url);
     $PAGE->set_context(context_coursecat::instance($checkedorg->categoryid));
     $PAGE->set_pagelayout('coursecategory');
@@ -44,24 +44,24 @@ if (!empty($current_orgid) && !empty($checkedorg->name)) {
     $PAGE->set_context(context_system::instance());
     $PAGE->set_pagelayout('standard');
 }
-$PAGE->set_heading(get_string('categories:coursecategories', 'block_eduvidual'));
-$PAGE->set_title(get_string('categories:coursecategories', 'block_eduvidual'));
-$PAGE->requires->css('/blocks/eduvidual/style/main.css');
+$PAGE->set_heading(get_string('categories:coursecategories', 'local_eduvidual'));
+$PAGE->set_title(get_string('categories:coursecategories', 'local_eduvidual'));
+$PAGE->requires->css('/local/eduvidual/style/main.css');
 
-block_eduvidual::print_app_header();
+local_eduvidual::print_app_header();
 
 if (empty($current_orgid)) {
     // Show list of my orgs.
     if (is_siteadmin() && optional_param('showall', 0, PARAM_INT) == 1) {
         $sql = "SELECT orgid,'Administrator' AS role,name,categoryid,orgsize
-                FROM {block_eduvidual_org}
+                FROM {local_eduvidual_org}
                 WHERE authenticated=1
                 ORDER BY orgid ASC, name ASC";
         $params = array();
     } else {
         $sql = "SELECT ou.orgid,ou.role,o.name,o.categoryid,o.orgsize
-                FROM {block_eduvidual_org} o,
-                     {block_eduvidual_orgid_userid} ou
+                FROM {local_eduvidual_org} o,
+                     {local_eduvidual_orgid_userid} ou
                 WHERE o.orgid=ou.orgid
                     AND ou.userid=?
                 ORDER BY o.orgid ASC, o.name ASC";
@@ -70,38 +70,38 @@ if (empty($current_orgid)) {
 
     if (!empty($favorite = optional_param('favorite', 0, PARAM_INT))) {
         if ($favorite < 0) {
-            \unset_user_preference('block_eduvidual_favorgid');
+            \unset_user_preference('local_eduvidual_favorgid');
         } else {
-            \set_user_preference('block_eduvidual_favorgid', $favorite);
+            \set_user_preference('local_eduvidual_favorgid', $favorite);
         }
     }
-    $favorgid = \block_eduvidual\locallib::get_favorgid();
+    $favorgid = \local_eduvidual\locallib::get_favorgid();
 
-    //$manageractions = block_eduvidual::get_actions('manage');
+    //$manageractions = local_eduvidual::get_actions('manage');
     $memberships = array_values($DB->get_records_sql($sql, $params));
     foreach ($memberships AS &$membership) {
         $membership->isfavorite = ($membership->orgid == $favorgid);
         $membership->canmanage = is_siteadmin() || in_array($membership->role, array('Manager'));
         if ($membership->canmanage) {
             if (empty($managersactions)) {
-                $_actions = block_eduvidual::get_actions('manage', true);
+                $_actions = local_eduvidual::get_actions('manage', true);
                 $actions = array_keys($_actions);
                 $managersactions = array();
                 foreach ($actions AS $action) {
                     $managersactions[] = array(
                         'name' => $_actions[$action],
-                        'url' => $CFG->wwwroot . '/blocks/eduvidual/pages/manage.php?act=' . $action,
+                        'url' => $CFG->wwwroot . '/local/eduvidual/pages/manage.php?act=' . $action,
                     );
                 }
             }
             $membership->actions = $managersactions;
             $membership->hasactions = true;
-            require_once($CFG->dirroot . '/blocks/eduvidual/lib_manage.php');
-            $membership->filesize = \block_eduvidual\lib_manage::readable_filesize($membership->orgsize);
+            require_once($CFG->dirroot . '/local/eduvidual/lib_manage.php');
+            $membership->filesize = \local_eduvidual\lib_manage::readable_filesize($membership->orgsize);
         }
-        $membership->role = get_string('role:' . $membership->role, 'block_eduvidual');
+        $membership->role = get_string('role:' . $membership->role, 'local_eduvidual');
     }
-    echo $OUTPUT->render_from_template('block_eduvidual/user_orgs', array(
+    echo $OUTPUT->render_from_template('local_eduvidual/user_orgs', array(
         'hasmultiple' => count($memberships) > 1,
         'isadmin' => is_siteadmin(),
         'memberships' => $memberships,
@@ -109,13 +109,13 @@ if (empty($current_orgid)) {
     ));
 } else {
     ?>
-    <h3 class="block_eduvidual_courses_title"><?php echo get_string('categories:coursecategories', 'block_eduvidual'); ?></h3>
+    <h3 class="local_eduvidual_courses_title"><?php echo get_string('categories:coursecategories', 'local_eduvidual'); ?></h3>
     <div class="ul-eduvidual-courses" data-orgid="<?php echo $org->orgid; ?>">
     <?php
-    block_eduvidual::add_script_on_load('require(["block_eduvidual/user"], function(USER) { USER.loadCategory(' . $org->categoryid . '); });');
+    local_eduvidual::add_script_on_load('require(["local_eduvidual/user"], function(USER) { USER.loadCategory(' . $org->categoryid . '); });');
     echo get_string('loading');
     ?></div>
     <?php
 }
 
-block_eduvidual::print_app_footer();
+local_eduvidual::print_app_footer();

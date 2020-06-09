@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package    block_eduvidual
+ * @package    local_eduvidual
  * @copyright  2018 Digital Education Society (http://www.dibig.at)
  * @author     Robert Schrenk
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -26,11 +26,11 @@ defined('MOODLE_INTERNAL') || die;
 global $CFG, $DB, $PAGE, $SESSION, $SITE, $USER;
 
 if (strpos($_SERVER["SCRIPT_FILENAME"], '/login/index.php') > 0 && ($USER->id <= 1 || isguestuser($USER))) {
-    if (get_config('block_eduvidual', 'modifylogin') == 1) {
+    if (get_config('local_eduvidual', 'modifylogin') == 1) {
         $wwwroot = str_replace('www.eduvidual.org', 'www.eduvidual.at', $CFG->wwwroot);
 
         // Must be included manually as the eduvidual_block is not active on the login page.
-        pq('head')->append(pq('<link rel="stylesheet" href="' . $CFG->wwwroot . '/blocks/eduvidual/style/main.css"></link>'));
+        pq('head')->append(pq('<link rel="stylesheet" href="' . $CFG->wwwroot . '/local/eduvidual/style/main.css"></link>'));
         pq('body')->addClass('eduvidual-default-bg');
 
         // Append the sitename to our header.
@@ -67,9 +67,9 @@ if (strpos($_SERVER["SCRIPT_FILENAME"], '/login/index.php') > 0 && ($USER->id <=
                 pq('.potentialidp a[title="Microsoft"]')->clone()->attr('id', 'eduvidual-btn-sso-microsoft')
             );
             //$href = pq($buttons[$b['MICROSOFT']])->find('a')->attr('href');
-            $href = $wwwroot . '/blocks/eduvidual/pages/login_microsoft.php';
+            $href = $wwwroot . '/local/eduvidual/pages/login_microsoft.php';
             pq($buttons[$b['MICROSOFT']])->find('a')->attr('href', $href);
-            //pq($buttons[$b['MICROSOFT']])->find('a')->attr('href', $wwwroot . '/blocks/eduvidual/pages/login_microsoft.php');
+            //pq($buttons[$b['MICROSOFT']])->find('a')->attr('href', $wwwroot . '/local/eduvidual/pages/login_microsoft.php');
         }
 
         if (count(pq('.potentialidp a[title="Google"]')) > 0) {
@@ -77,9 +77,9 @@ if (strpos($_SERVER["SCRIPT_FILENAME"], '/login/index.php') > 0 && ($USER->id <=
                 pq('.potentialidp a[title="Google"]')->clone()->attr('id', 'eduvidual-btn-sso-google')
             );
             //$href = pq($buttons[$b['GOOGLE']])->find('a')->attr('href');
-            $href = $wwwroot . '/blocks/eduvidual/pages/login_google.php';
+            $href = $wwwroot . '/local/eduvidual/pages/login_google.php';
             pq($buttons[$b['GOOGLE']])->find('a')->attr('href', $href);
-            //pq($buttons[$b['GOOGLE']])->find('a')->attr('href', $wwwroot . '/blocks/eduvidual/pages/login_google.php');
+            //pq($buttons[$b['GOOGLE']])->find('a')->attr('href', $wwwroot . '/local/eduvidual/pages/login_google.php');
         }
 
         if (count(pq('.potentialidp a[href*="/auth/mnet/"]')) > 0) {
@@ -88,9 +88,9 @@ if (strpos($_SERVER["SCRIPT_FILENAME"], '/login/index.php') > 0 && ($USER->id <=
             $mnetbtn = pq('<a>')
                 ->attr('class', 'btn btn-secondary btn-block')
                 ->attr('id', 'eduvidual-btn-sso-verbund')
-                ->attr('href', $wwwroot . '/blocks/eduvidual/pages/login_mnet.php')->addClass('btn');
+                ->attr('href', $wwwroot . '/local/eduvidual/pages/login_mnet.php')->addClass('btn');
             $img = pq('<img>')->attr('src', '/pix/i/mnethost.svg')->attr('alt', '')->attr('width', '24')->attr('height', '24');
-            $span = pq('<span>')->html(' ' . get_string('login:network_btn', 'block_eduvidual'));
+            $span = pq('<span>')->html(' ' . get_string('login:network_btn', 'local_eduvidual'));
             pq($mnetbtn)->append($img)->append($span);
             $buttons[$b['MNET']] = pq('<div class="btn-eduviduallogin">')->addClass('potentialidp')->append($mnetbtn);
         }
@@ -107,15 +107,15 @@ if (strpos($_SERVER["SCRIPT_FILENAME"], '/login/index.php') > 0 && ($USER->id <=
         }
 
         $buttons[$b['REGISTER']] = pq('<div class="btn-eduviduallogin">')
-            ->append(pq('<a>')->attr('href', $wwwroot . '/blocks/eduvidual/pages/check_js.php?forwardto=' . urlencode('/login/verify_age_location.php'))
+            ->append(pq('<a>')->attr('href', $wwwroot . '/local/eduvidual/pages/check_js.php?forwardto=' . urlencode('/login/verify_age_location.php'))
             //->append(pq('<a>')->attr('href', $wwwroot . '/login/verify_age_location.php')
                     ->addClass('btn btn-secondary btn-block')
-                    ->append(pq('<span>')->html(get_string('register:individual', 'block_eduvidual')))
+                    ->append(pq('<span>')->html(get_string('register:individual', 'local_eduvidual')))
             );
         $buttons[$b['REGISTERORG']] = pq('<div class="btn-eduviduallogin">')
-            ->append(pq('<a>')->attr('href', $wwwroot . '/blocks/eduvidual/pages/register.php')
+            ->append(pq('<a>')->attr('href', $wwwroot . '/local/eduvidual/pages/register.php')
                     ->addClass('btn btn-secondary btn-block')
-                    ->append(pq('<span>')->html(get_string('register:org', 'block_eduvidual'))->attr('style', 'height: 24px;'))
+                    ->append(pq('<span>')->html(get_string('register:org', 'local_eduvidual'))->attr('style', 'height: 24px;'))
             );
         $buttons[$b['HELP']] = pq('<div class="btn-eduviduallogin">')
             ->append(pq('<a>')->attr('href', $wwwroot . get_config('block_edusupport', 'relativeurlsupportarea'))
@@ -128,13 +128,13 @@ if (strpos($_SERVER["SCRIPT_FILENAME"], '/login/index.php') > 0 && ($USER->id <=
         $buttons[$b['EDUIDAM']] = pq('<div class="btn-eduviduallogin ' . $hidden . '">')
             ->append(pq('<a>')->attr('href', $wwwroot . '/auth/shibboleth_link/login.php?idp=' . urlencode('https://www.eduidam.at/idp_metadata.xml'))
                     ->addClass('btn btn-secondary btn-block')
-                    ->append(pq('<img>')->attr('src', $CFG->wwwroot . '/blocks/eduvidual/pix/logo_eduidam.png')->attr('height', '24')->attr('alt', 'eduIDAM'))
+                    ->append(pq('<img>')->attr('src', $CFG->wwwroot . '/local/eduvidual/pix/logo_eduidam.png')->attr('height', '24')->attr('alt', 'eduIDAM'))
                     ->append(pq('<span>')->html('&nbsp;edu.IDAM')->attr('style', 'height: 24px;'))
             );
         $buttons[$b['PORTAL']] = pq('<div class="btn-eduviduallogin ' . $hidden . '">')
             ->append(pq('<a>')->attr('href', $wwwroot . '/auth/shibboleth_link/login.php?idp=' . urlencode('https://federation.portal.at/idp_metadata.xml'))
                     ->addClass('btn btn-secondary btn-block')
-                    ->append(pq('<img>')->attr('src', $CFG->wwwroot . '/blocks/eduvidual/pix/logo_portalat.png')->attr('height', '24')->attr('alt', 'eduIDAM'))
+                    ->append(pq('<img>')->attr('src', $CFG->wwwroot . '/local/eduvidual/pix/logo_portalat.png')->attr('height', '24')->attr('alt', 'eduIDAM'))
                     ->append(pq('<span>')->html('&nbsp;Portal.at')->attr('style', 'height: 24px;'))
             );
         $buttons[$b['IMPRINT']] = pq('<div class="btn-eduviduallogin">')

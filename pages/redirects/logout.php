@@ -15,13 +15,13 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package    block_eduvidual
+ * @package    local_eduvidual
  * @copyright  2018 Digital Education Society (http://www.dibig.at)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 require_once('../../../../config.php');
-require_once($CFG->dirroot . '/blocks/eduvidual/block_eduvidual.php');
+require_once($CFG->dirroot . '/local/eduvidual/block_eduvidual.php');
 
 $PAGE->set_context(context_system::instance());
 require_login();
@@ -42,7 +42,7 @@ redirect($url);
     <head>
         <title><?php echo get_string('logout'); ?></title>
         <script>
-            //localStorage.removeItem('block_eduvidual_originallocation');
+            //localStorage.removeItem('local_eduvidual_originallocation');
             top.location.href = "<?php echo $url; ?>";
         </script>
     </head>

@@ -15,19 +15,19 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package    block_eduvidual
+ * @package    local_eduvidual
  * @copyright  2017 Digital Education Society (http://www.dibig.at)
  * @author     Robert Schrenk
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-//namespace block_eduvidual;
+//namespace local_eduvidual;
 
 defined('MOODLE_INTERNAL') || die;
 
 require_once($CFG->libdir . "/formslib.php");
 
-class block_eduvidual_admin_backgrounds_cards_form extends moodleform {
+class local_eduvidual_admin_backgrounds_cards_form extends moodleform {
     var $maxbytes = 1024*1024;
     var $areamaxbytes = 10485760*10;
     var $maxfiles = 500;
@@ -35,13 +35,13 @@ class block_eduvidual_admin_backgrounds_cards_form extends moodleform {
     function definition() {
         global $CFG;
         $mform = $this->_form;
-        $mform->addElement('filemanager', 'backgrounds_cards', get_string('admin:backgrounds:filearealabel', 'block_eduvidual'), null,
+        $mform->addElement('filemanager', 'backgrounds_cards', get_string('admin:backgrounds:filearealabel', 'local_eduvidual'), null,
                     array(
                         'subdirs' => $this->subdirs, 'maxbytes' => $this->maxbytes, 'areamaxbytes' => $this->areamaxbytes,
                         'maxfiles' => $this->maxfiles, 'accepted_types' => array('image') //, 'return_types'=> FILE_INTERNAL | FILE_EXTERNAL
                     )
                 );
-        $mform->addElement('submit', null, get_string('admin:backgrounds:files:send', 'block_eduvidual'));
+        $mform->addElement('submit', null, get_string('admin:backgrounds:files:send', 'local_eduvidual'));
         //$this->add_action_buttons();
     }
     //Custom validation should be added here

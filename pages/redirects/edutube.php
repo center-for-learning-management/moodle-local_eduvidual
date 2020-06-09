@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package    block_eduvidual
+ * @package    local_eduvidual
  * @copyright  2018 Digital Education Society (http://www.dibig.at)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -27,18 +27,18 @@ require_login();
 
 $PAGE->set_context(context_system::instance());
 $PAGE->set_pagelayout('dashboard');
-$PAGE->set_url('/blocks/eduvidual/pages/redirects/edutube.php', array());
-$PAGE->set_title(get_string('edutube:title', 'block_eduvidual'));
-$PAGE->set_heading(get_string('edutube:title', 'block_eduvidual'));
+$PAGE->set_url('/local/eduvidual/pages/redirects/edutube.php', array());
+$PAGE->set_title(get_string('edutube:title', 'local_eduvidual'));
+$PAGE->set_heading(get_string('edutube:title', 'local_eduvidual'));
 
-$authurl= get_config('block_eduvidual', 'edutubeauthurl');
-$authtoken = get_config('block_eduvidual', 'edutubeauthtoken');
+$authurl= get_config('local_eduvidual', 'edutubeauthurl');
+$authtoken = get_config('local_eduvidual', 'edutubeauthtoken');
 
 
 if (empty($authurl) || empty($authtoken)) {
     echo $OUTPUT->header();
-    echo $OUTPUT->render_from_template('block_eduvidual/alert', array(
-        'content' => get_string('edutube:missing_configuration', 'block_eduvidual'),
+    echo $OUTPUT->render_from_template('local_eduvidual/alert', array(
+        'content' => get_string('edutube:missing_configuration', 'local_eduvidual'),
         'type' => 'danger',
         'url' => '/my',
     ));
@@ -46,7 +46,7 @@ if (empty($authurl) || empty($authtoken)) {
 } else {
     if ($USER->id > 0 && !isguestuser($USER)) {
         $sql = "SELECT orgid
-                    FROM {block_eduvidual_orgid_userid}
+                    FROM {local_eduvidual_orgid_userid}
                     WHERE userid=?
                         AND (
                             orgid LIKE '______'
@@ -56,10 +56,10 @@ if (empty($authurl) || empty($authtoken)) {
         $memberships = $DB->get_records_sql($sql, array($USER->id));
         if (count($memberships) == 0) {
             echo $OUTPUT->header();
-            echo $OUTPUT->render_from_template('block_eduvidual/alert', array(
-                'content' => get_string('edutube:no_org', 'block_eduvidual', array('wwwroot' => $CFG->wwwroot)),
+            echo $OUTPUT->render_from_template('local_eduvidual/alert', array(
+                'content' => get_string('edutube:no_org', 'local_eduvidual', array('wwwroot' => $CFG->wwwroot)),
                 'type' => 'warning',
-                'url' => '/blocks/eduvidual/pages/register.php',
+                'url' => '/local/eduvidual/pages/register.php',
             ));
             echo $OUTPUT->footer();
         } else {
@@ -80,8 +80,8 @@ if (empty($authurl) || empty($authtoken)) {
                 exit();
             } else {
                 echo $OUTPUT->header();
-                echo $OUTPUT->render_from_template('block_eduvidual/alert', array(
-                    'content' => get_string('edutube:invalid_url', 'block_eduvidual', array('url' => $url)),
+                echo $OUTPUT->render_from_template('local_eduvidual/alert', array(
+                    'content' => get_string('edutube:invalid_url', 'local_eduvidual', array('url' => $url)),
                     'type' => 'danger',
                     'url' => '/my',
                 ));

@@ -15,8 +15,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package    block_edusupport
+ * @package    local_eduvidual
  * @copyright  2018 Digital Education Society (http://www.dibig.at)
+ *             2020 onwards Zentrum für Lernmanagement (http://www.lernmanagement.at)
  * @author     Robert Schrenk
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -25,7 +26,7 @@ defined('MOODLE_INTERNAL') || die;
 
 require_once($CFG->libdir . "/externallib.php");
 
-class block_eduvidual_external_teacher extends external_api {
+class local_eduvidual_external_teacher extends external_api {
     public static function createcourse_selections_parameters() {
         return new external_function_parameters(array(
             'orgid' => new external_value(PARAM_INT, 'orgid'),
@@ -37,24 +38,24 @@ class block_eduvidual_external_teacher extends external_api {
     public static function createcourse_selections($orgid, $subcat1, $subcat2, $subcat3) {
         global $CFG, $DB;
         $params = self::validate_parameters(self::createcourse_selections_parameters(), array('orgid' => $orgid, 'subcat1' => $subcat1, 'subcat2' => $subcat2, 'subcat3' => $subcat3));
-        require_once($CFG->dirroot . '/blocks/eduvidual/block_eduvidual.php');
+        require_once($CFG->dirroot . '/local/eduvidual/block_eduvidual.php');
 
-        block_eduvidual::set_org($params['orgid']);
-        $orgas = block_eduvidual::get_organisations('Teacher');
-        $org = $DB->get_record('block_eduvidual_org', array('orgid' => $params['orgid']));
+        local_eduvidual::set_org($params['orgid']);
+        $orgas = local_eduvidual::get_organisations('Teacher');
+        $org = $DB->get_record('local_eduvidual_org', array('orgid' => $params['orgid']));
         $seltree = array(
             'orgids' => $orgas,
-            'subcats1' => block_eduvidual::get('subcats1'),
+            'subcats1' => local_eduvidual::get('subcats1'),
             'subcats1lbl' => $org->subcats1lbl,
             'subcats2lbl' => $org->subcats2lbl,
             'subcats3lbl' => $org->subcats3lbl,
             'subcats4lbl' => $org->subcats4lbl,
         );
         if (!empty($params['subcat1'])) {
-            $seltree['subcats2'] = block_eduvidual::get('subcats2', $params['subcat1']);
+            $seltree['subcats2'] = local_eduvidual::get('subcats2', $params['subcat1']);
         }
         if (!empty($params['subcat2'])) {
-            $seltree['subcats3'] = block_eduvidual::get('subcats3', $params['subcat2']);
+            $seltree['subcats3'] = local_eduvidual::get('subcats3', $params['subcat2']);
         }
 
         for ($a = 1; $a <= 3; $a++) {

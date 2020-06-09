@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package    block_eduvidual
+ * @package    local_eduvidual
  * @copyright  2018 Digital Education Society (http://www.dibig.at)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -23,8 +23,8 @@
 defined('MOODLE_INTERNAL') || die;
 if (!is_siteadmin()) die;
 
-$orgcoursebasement = get_config('block_eduvidual', 'orgcoursebasement');
-$basements = \block_eduvidual\lib_enrol::get_course_basements('system');
+$orgcoursebasement = get_config('local_eduvidual', 'orgcoursebasement');
+$basements = \local_eduvidual\lib_enrol::get_course_basements('system');
 $keys = array_keys($basements);
 $orgcoursebasements = array();
 
@@ -43,17 +43,17 @@ foreach($keys AS $key) {
 }
 
 echo $OUTPUT->render_from_template(
-    'block_eduvidual/admin_coursestuff',
+    'local_eduvidual/admin_coursestuff',
     (object) array(
-        'allmanagerscourses' => get_config('block_eduvidual', 'allmanagerscourses'),
-        'coursebasements' => get_config('block_eduvidual', 'coursebasements'),
-        'dropzonepath' => get_config('block_eduvidual', 'dropzonepath'),
-        'ltiresourcekey' => get_config('block_eduvidual', 'ltiresourcekey'),
+        'allmanagerscourses' => get_config('local_eduvidual', 'allmanagerscourses'),
+        'coursebasements' => get_config('local_eduvidual', 'coursebasements'),
+        'dropzonepath' => get_config('local_eduvidual', 'dropzonepath'),
+        'ltiresourcekey' => get_config('local_eduvidual', 'ltiresourcekey'),
         'orgcoursebasements' => $orgcoursebasements,
-        'protectedorgs' => get_config('block_eduvidual', 'protectedorgs'),
-        'registrationcc' => get_config('block_eduvidual', 'registrationcc'),
-        'registrationsupport' => get_config('block_eduvidual', 'registrationsupport'),
-        'trashcategory' => get_config('block_eduvidual', 'trashcategory'),
+        'protectedorgs' => get_config('local_eduvidual', 'protectedorgs'),
+        'registrationcc' => get_config('local_eduvidual', 'registrationcc'),
+        'registrationsupport' => get_config('local_eduvidual', 'registrationsupport'),
+        'trashcategory' => get_config('local_eduvidual', 'trashcategory'),
 
     )
 );

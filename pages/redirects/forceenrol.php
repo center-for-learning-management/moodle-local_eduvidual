@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package    block_eduvidual
+ * @package    local_eduvidual
  * @copyright  2018 Digital Education Society (http://www.dibig.at)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -28,22 +28,22 @@ require_login();
 $courseid = required_param('courseid', PARAM_INT);
 
 $PAGE->set_context(\context_system::instance());
-$PAGE->set_url('/blocks/eduvidual/pages/redirects/forceenrol.php', array('courseid' => $courseid));
-$PAGE->set_title(get_string('manage:enrolmeasteacher', 'block_eduvidual'));
-$PAGE->set_heading(get_string('manage:enrolmeasteacher', 'block_eduvidual'));
+$PAGE->set_url('/local/eduvidual/pages/redirects/forceenrol.php', array('courseid' => $courseid));
+$PAGE->set_title(get_string('manage:enrolmeasteacher', 'local_eduvidual'));
+$PAGE->set_heading(get_string('manage:enrolmeasteacher', 'local_eduvidual'));
 
 
-$org = \block_eduvidual\locallib::get_org_by_courseid($courseid);
+$org = \local_eduvidual\locallib::get_org_by_courseid($courseid);
 print_r($org);
-$is_manager = !empty($org->id) && \block_eduvidual\locallib::is_manager($org->categoryid);
+$is_manager = !empty($org->id) && \local_eduvidual\locallib::is_manager($org->categoryid);
 
 if (!empty($org->orgid) && ($is_manager || is_siteadmin())) {
-    \block_eduvidual\lib_enrol::course_manual_enrolments(array($courseid), array($USER->id), get_config('block_eduvidual', 'defaultroleteacher'));
+    \local_eduvidual\lib_enrol::course_manual_enrolments(array($courseid), array($USER->id), get_config('local_eduvidual', 'defaultroleteacher'));
     redirect(new \moodle_url('/course/view.php', array('id' => $courseid)));
 } else {
     echo $OUTPUT->header();
-    echo $OUTPUT->render_from_template('block_eduvidual/alert', array(
-        'content' => get_string('access_denied', 'block_eduvidual'),
+    echo $OUTPUT->render_from_template('local_eduvidual/alert', array(
+        'content' => get_string('access_denied', 'local_eduvidual'),
         'type' => 'danger',
         'url' => new \moodle_url('/my'),
     ));

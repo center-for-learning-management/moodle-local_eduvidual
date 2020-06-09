@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package    block_eduvidual
+ * @package    local_eduvidual
  * @copyright  2019 Digital Education Society (http://www.dibig.at)
  * @author     Robert Schrenk
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -24,7 +24,7 @@
 defined('MOODLE_INTERNAL') || die;
 
 $addons = [
-    'block_eduvidual' => [ // Plugin identifier
+    'local_eduvidual' => [ // Plugin identifier
         'handlers' => [ // Different places where the plugin will display content.
             'createcourse' => [ // Handler unique name (alphanumeric).
                 'displaydata' => [

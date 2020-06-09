@@ -43,7 +43,7 @@ function onReadyStateChangeReplacementQuestionBank() {
     if (this.readyState == 4) {
         require(['jquery'], function($) {
             setTimeout(function() {
-                require(['block_eduvidual/ajax_observer'], function(OBSERVER) {
+                require(['local_eduvidual/ajax_observer'], function(OBSERVER) {
                     OBSERVER.questionBankCategoryAddFilter();
                 });
             }, 500);

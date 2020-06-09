@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package    block_eduvidual
+ * @package    local_eduvidual
  * @copyright  2018 Digital Education Society (http://www.dibig.at)
  * @author     Robert Schrenk
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -34,7 +34,7 @@ $requestscript = $request[count($request) - 1];
 if (!is_siteadmin() && strpos($_SERVER["SCRIPT_FILENAME"], '/course/editcategory.php') > 0) {
     $categoryid = optional_param('id', 0, PARAM_INT);
     $parentid = optional_param('parent', 0, PARAM_INT);
-    $isorg = $DB->get_record('block_eduvidual_org', array('categoryid' => $categoryid));
+    $isorg = $DB->get_record('local_eduvidual_org', array('categoryid' => $categoryid));
 
     // Catch values
     $idnumber = pq('#page-content form #id_idnumber')->val();
@@ -60,15 +60,15 @@ if (!is_siteadmin() && strpos($_SERVER["SCRIPT_FILENAME"], '/course/editcategory
 // If we enter a course we are not enrolled in
 if (strpos($_SERVER["SCRIPT_FILENAME"], '/enrol/index.php') > 0) {
     $courseid = optional_param('id', 0, PARAM_INT);
-    $org = block_eduvidual::set_org_by_courseid($courseid);
-    if (!empty($org->orgid) && (block_eduvidual::get('orgrole') == 'Manager' || is_siteadmin())) {
+    $org = local_eduvidual::set_org_by_courseid($courseid);
+    if (!empty($org->orgid) && (local_eduvidual::get('orgrole') == 'Manager' || is_siteadmin())) {
         $box = pq('div[role="main"]');
-        $btn = pq('<a>')->html(get_string('manage:enrolmeasteacher', 'block_eduvidual'))
+        $btn = pq('<a>')->html(get_string('manage:enrolmeasteacher', 'local_eduvidual'))
                         ->addClass('btn ui-btn btn-primary')
-                        ->attr('href', '#')->attr('onclick', 'require(["block_eduvidual/manager"], function(MANAGER) { MANAGER.forceEnrol(' . $courseid . '); });');
+                        ->attr('href', '#')->attr('onclick', 'require(["local_eduvidual/manager"], function(MANAGER) { MANAGER.forceEnrol(' . $courseid . '); });');
         $box->prepend(pq('<p>')->html('&nbsp;'));
         $box->prepend($btn);
-        $box->prepend(pq('<h3>')->html('eduvidual-' . get_string('Manager', 'block_eduvidual')));
+        $box->prepend(pq('<h3>')->html('eduvidual-' . get_string('Manager', 'local_eduvidual')));
     }
 }
 // If we manage manual enrolments not via ajax.
@@ -80,18 +80,18 @@ if (strpos($_SERVER["SCRIPT_FILENAME"], '/enrol/manual/manage.php') > 0) {
         $courseid = $enrolment->courseid;
     }
     $orgids = array();
-    $org = \block_eduvidual\locallib::get_org_by_courseid($courseid);
+    $org = \local_eduvidual\locallib::get_org_by_courseid($courseid);
     if (!empty($org->orgid)) {
         $orgids[] = $org->orgid;
     }
     // If there is no org for now use all the user is member of.
     if (count($orgids) == 0) {
-        $orgids = \block_eduvidual\locallib::is_connected_orglist($USER->id);
+        $orgids = \local_eduvidual\locallib::is_connected_orglist($USER->id);
     }
     $options = pq('#addselect option');
     foreach ($options AS $option) {
         $userid = pq($option)->attr('value');
-        if (!\block_eduvidual\locallib::is_connected($userid, $orgids)) {
+        if (!\local_eduvidual\locallib::is_connected($userid, $orgids)) {
             if (!is_siteadmin()) {
                 pq($option)->addClass('REMOVE_ME');
             } else {
@@ -109,11 +109,11 @@ if (strpos($_SERVER["SCRIPT_FILENAME"], '/user/profile.php') > 0) {
     if (pq('div.profile_tree li.remoteuserinfo')->length() > 0) {
         $userid = optional_param('id', $USER->id, PARAM_INT);
         $entry = $DB->get_record('user_preferences', array('userid' => $userid, 'name' => 'htmleditor'));
-        $select = pq('<select>')->attr('onchange', "var sel = this; require(['block_eduvidual/user'], function(USER) { USER.setEditor(sel); });");
+        $select = pq('<select>')->attr('onchange', "var sel = this; require(['local_eduvidual/user'], function(USER) { USER.setEditor(sel); });");
         $editors = array('', 'atto', 'tinymce', 'textarea');
 
         foreach($editors AS $editor) {
-            $option = pq('<option>')->attr('value', $editor)->html(get_string('user:preference:editor:' . $editor, 'block_eduvidual'));
+            $option = pq('<option>')->attr('value', $editor)->html(get_string('user:preference:editor:' . $editor, 'local_eduvidual'));
             if (isset($entry->value) && $entry->value == $editor) {
                 $option->attr('selected', 'selected');
             }
@@ -122,7 +122,7 @@ if (strpos($_SERVER["SCRIPT_FILENAME"], '/user/profile.php') > 0) {
         $ul = pq('div.profile_tree section.node_category>ul');
         $li = pq('<li class="contentnode">'); $ul->append($li);
         $dl = pq('<dl>'); $li->append($dl);
-        $dt = pq('<dt>')->html(get_string('user:preference:editor:title', 'block_eduvidual')); $dl->append($dt);
+        $dt = pq('<dt>')->html(get_string('user:preference:editor:title', 'local_eduvidual')); $dl->append($dt);
         $dd = pq('<dd>'); $dl->append($dd);
         $dd->append($select);
     }

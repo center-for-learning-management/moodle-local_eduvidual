@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package    block_eduvidual
+ * @package    local_eduvidual
  * @copyright  2018 Digital Education Society (http://www.dibig.at)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -24,7 +24,7 @@ require_once('../../../config.php');
 require_login();
 
 require_once($CFG->libdir . '/adminlib.php');
-require_once($CFG->dirroot . '/blocks/eduvidual/block_eduvidual.php');
+require_once($CFG->dirroot . '/local/eduvidual/block_eduvidual.php');
 
 $current_orgid = optional_param('orgid', 0, PARAM_INT);
 $courseid = optional_param('courseid', 0, PARAM_INT);
@@ -34,39 +34,39 @@ $act = optional_param('act', 'createmodule', PARAM_TEXT);
 
 
 $PAGE->set_pagelayout('incourse');
-$PAGE->set_url('/blocks/eduvidual/pages/teacher.php', array('act' => $act, 'orgid' => $current_orgid, 'courseid' => $courseid, 'sectionid' => $sectionid, 'moduleid' => $moduleid));
+$PAGE->set_url('/local/eduvidual/pages/teacher.php', array('act' => $act, 'orgid' => $current_orgid, 'courseid' => $courseid, 'sectionid' => $sectionid, 'moduleid' => $moduleid));
 //$PAGE->set_cacheable(false);
 
 // Only allow a certain user group access to this page
 $allow = array("Manager", "Teacher");
-if (!in_array(block_eduvidual::get('role'), $allow) && !is_siteadmin()) {
+if (!in_array(local_eduvidual::get('role'), $allow) && !is_siteadmin()) {
     $PAGE->set_context(context_system::instance());
-    block_eduvidual::print_app_header();
-    echo $OUTPUT->render_from_template('block_eduvidual/alert', array(
+    local_eduvidual::print_app_header();
+    echo $OUTPUT->render_from_template('local_eduvidual/alert', array(
         'type' => 'danger',
-        'content' => get_string('access_denied', 'block_eduvidual'),
+        'content' => get_string('access_denied', 'local_eduvidual'),
     ));
-	block_eduvidual::print_app_footer();
+	local_eduvidual::print_app_footer();
 	exit;
 }
 
 // Used to determine if we can teach in this org
-$orgas = block_eduvidual::get_organisations('Teacher');
+$orgas = local_eduvidual::get_organisations('Teacher');
 
 // We do not set context for createcourse!
 if ($act != 'createcourse') {
     if ($courseid > 0) {
-        $org = block_eduvidual::set_org_by_courseid($courseid);
-        block_eduvidual::set_context_auto($courseid);
+        $org = local_eduvidual::set_org_by_courseid($courseid);
+        local_eduvidual::set_context_auto($courseid);
         $course = $DB->get_record('course', array('id' => $courseid));
         $title = $course->fullname;
         require_login($course);
     } else {
-        $org = block_eduvidual::get_organisations_check($orgas, $current_orgid);
+        $org = local_eduvidual::get_organisations_check($orgas, $current_orgid);
         if ($org && $courseid == 0) {
-            block_eduvidual::set_org($org->orgid);
+            local_eduvidual::set_org($org->orgid);
         } else {
-            block_eduvidual::set_context_auto();
+            local_eduvidual::set_context_auto();
         }
     }
 } else {
@@ -75,23 +75,23 @@ if ($act != 'createcourse') {
 
 switch($act) {
 	case 'createmodule':
-        $title = get_string('teacher:createmodule', 'block_eduvidual');
+        $title = get_string('teacher:createmodule', 'local_eduvidual');
     break;
 	case 'createcourse':
-        $title = get_string('teacher:createcourse', 'block_eduvidual');
+        $title = get_string('teacher:createcourse', 'local_eduvidual');
     break;
-	default: $title = get_string('Teacher', 'block_eduvidual');
+	default: $title = get_string('Teacher', 'local_eduvidual');
 }
 
 $PAGE->set_title($title);
 $PAGE->set_heading($title);
 
-$actions = block_eduvidual::get_actions('teacher');
+$actions = local_eduvidual::get_actions('teacher');
 
 $subpages = array_keys($actions);
-$includefile = $CFG->dirroot . '/blocks/eduvidual/pages/sub/teacher_' . $act . '.php';
+$includefile = $CFG->dirroot . '/local/eduvidual/pages/sub/teacher_' . $act . '.php';
 if (in_array($act, $subpages) && file_exists($includefile)) {
     include($includefile);
 }
 
-block_eduvidual::print_app_footer();
+local_eduvidual::print_app_footer();

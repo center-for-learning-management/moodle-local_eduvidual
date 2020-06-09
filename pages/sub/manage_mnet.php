@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package    block_eduvidual
+ * @package    local_eduvidual
  * @copyright  2018 Digital Education Society (http://www.dibig.at)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -32,7 +32,7 @@ if ($org->mnetid > 0) {
 
 $context = context_system::instance();
 $fs = get_file_storage();
-$files = $fs->get_area_files($context->id, 'block_eduvidual', 'mnetlogo', $org->orgid);
+$files = $fs->get_area_files($context->id, 'local_eduvidual', 'mnetlogo', $org->orgid);
 foreach ($files as $file) {
     if (str_replace('.', '', $file->get_filename()) != ""){
         $org->mnetlogo = moodle_url::make_pluginfile_url($file->get_contextid(), $file->get_component(), $file->get_filearea(), $file->get_itemid(), $file->get_filepath(), $file->get_filename());
@@ -40,11 +40,11 @@ foreach ($files as $file) {
 }
 
 if (empty($org->mnetlogo)) {
-    $org->mnetlogo = $CFG->wwwroot . '/blocks/eduvidual/pix/icon_missing.png';
+    $org->mnetlogo = $CFG->wwwroot . '/local/eduvidual/pix/icon_missing.png';
 }
 
 echo $OUTPUT->render_from_template(
-    'block_eduvidual/manage_mnet' . ((is_siteadmin() ? '_isadmin': ''),
+    'local_eduvidual/manage_mnet' . ((is_siteadmin() ? '_isadmin': ''),
     (object) array(
         'maildomain' => $org->maildomain,
         'maildomainteacher' => $org->maildomainteacher,
@@ -57,22 +57,22 @@ echo $OUTPUT->render_from_template(
 );
 
 if (is_siteadmin()) {
-    require_once($CFG->dirroot . "/blocks/eduvidual/classes/manage_mnet_form.php");
+    require_once($CFG->dirroot . "/local/eduvidual/classes/manage_mnet_form.php");
 
-    $form = new block_eduvidual_manage_mnet_form(null, null, 'post', '_self', array('data-ajax' => 'false'), true);
+    $form = new local_eduvidual_manage_mnet_form(null, null, 'post', '_self', array('data-ajax' => 'false'), true);
     $context = context_system::instance();
     if ($data = $form->get_data()) {
         $org->mnetid = $data->mnetid;
-        $DB->update_record('block_eduvidual_org', $org);
+        $DB->update_record('local_eduvidual_org', $org);
         file_save_draft_area_files(
-            $data->mnetlogo, $context->id, 'block_eduvidual', 'mnetlogo', $org->orgid,
+            $data->mnetlogo, $context->id, 'local_eduvidual', 'mnetlogo', $org->orgid,
             array('subdirs' => $form->subdirs, 'maxbytes' => $form->maxbytes, 'maxfiles' => $form->maxfiles)
         );
-        echo "<p class=\"alert alert-success\">" . get_string('store:success', 'block_eduvidual') . "</p>";
+        echo "<p class=\"alert alert-success\">" . get_string('store:success', 'local_eduvidual') . "</p>";
     }
 
     $draftitemid = file_get_submitted_draft_itemid('mnetlogo');
-    file_prepare_draft_area($draftitemid, $context->id, 'block_eduvidual', 'mnetlogo', $org->orgid,
+    file_prepare_draft_area($draftitemid, $context->id, 'local_eduvidual', 'mnetlogo', $org->orgid,
         array('subdirs' => $form->subdirs, 'maxbytes' => $form->maxbytes, 'maxfiles' => $form->maxfiles));
     $org->mnetlogo = $draftitemid;
     $form->set_data($org);

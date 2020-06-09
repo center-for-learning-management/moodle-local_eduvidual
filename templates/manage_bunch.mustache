@@ -16,19 +16,19 @@
 }}
 
 
-<div class="ui-eduvidual block_eduvidual manage_bunch">
-    <div class="hide-on-print">{{#str}} manage:profile:clickusername, block_eduvidual {{/str}}</div>
+<div class="ui-eduvidual local_eduvidual manage_bunch">
+    <div class="hide-on-print">{{#str}} manage:profile:clickusername, local_eduvidual {{/str}}</div>
     <div class="hide-on-print grid-eq-2">
         <div>
             <a href="#" onclick="window.print();" class="btn btn-primary btn-block">
                 {{#pix}} /t/print, core {{/pix}}
-                {{#str}} print, block_eduvidual {{/str}}
+                {{#str}} print, local_eduvidual {{/str}}
             </a>
         </div>
         <div>
-            <a href="#" onclick="require(['block_eduvidual/manager'], function(M) { M.exportUserPopup('{{orgid}}', '{{exportuserids}}'); }); return false;" class="btn btn-primary">
+            <a href="#" onclick="require(['local_eduvidual/manager'], function(M) { M.exportUserPopup('{{orgid}}', '{{exportuserids}}'); }); return false;" class="btn btn-primary">
                 {{#pix}} /i/export, core {{/pix}}
-                {{#str}} export, block_eduvidual {{/str}}
+                {{#str}} export, local_eduvidual {{/str}}
             </a>
         </div>
     </div>
@@ -42,7 +42,7 @@
                     <th>{{#str}} firstname {{/str}}</th>
                     <th>{{#str}} lastname {{/str}}</th>
                     <th>{{#str}} email {{/str}}</th>
-                    <th>{{#str}} secret, block_eduvidual {{/str}}</th>
+                    <th>{{#str}} secret, local_eduvidual {{/str}}</th>
                     <th>{{#str}} role {{/str}}</th>
                 </tr>
             </thead>
@@ -58,18 +58,18 @@
                 </div>
                 <div class="username">
                     <a href="#" style="text-decoration: none; color: unset;"
-                        onclick="require(['block_eduvidual/manager'], function(M) { M.editProfile({{orgid}}, {{id}}, { run: function() { top.location.reload(); } }); }); return false;">
+                        onclick="require(['local_eduvidual/manager'], function(M) { M.editProfile({{orgid}}, {{id}}, { run: function() { top.location.reload(); } }); }); return false;">
                         {{username}}
                     </a>
                 </div>
                 <div class="contact">{{email}}</div>
-                <div class="header">{{#str}} Accesscard, block_eduvidual {{/str}}</div>
+                <div class="header">{{#str}} Accesscard, local_eduvidual {{/str}}</div>
                 <div class="avatar">
                     {{{userpicture}}}
                 </div>
                 <!--
                 <div class="qr">
-                    <img src="{{wwwroot}}/blocks/eduvidual/pix/qr.php?txt={{secret_encoded}}" alt="QR" />
+                    <img src="{{wwwroot}}/local/eduvidual/pix/qr.php?txt={{secret_encoded}}" alt="QR" />
                 </div>
             -->
                 <div class="secret" style="display: flex; align-items: flex-end; justify-content: flex-end;">
@@ -87,7 +87,7 @@
             <tr>
                 <td>
                     <a href="#" style="text-decoration: none; color: unset;"
-                        onclick="require(['block_eduvidual/manager'], function(M) { M.editProfile({{orgid}}, {{id}}, { run: function() { top.location.reload(); } }); }); return false;">
+                        onclick="require(['local_eduvidual/manager'], function(M) { M.editProfile({{orgid}}, {{id}}, { run: function() { top.location.reload(); } }); }); return false;">
                         {{username}}
                     </a>
                 </td>

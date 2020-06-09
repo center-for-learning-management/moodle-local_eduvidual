@@ -15,13 +15,13 @@
     along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 }}
 
-<h4>{{#str}} admin:coursebasements:title, block_eduvidual {{/str}}</h4>
-<p>{{#str}} admin:coursebasements:description, block_eduvidual {{/str}}</p>
-<input id="block_eduvidual_admin_coursebasements" value="{{coursebasements}}" onkeyup="require(['block_eduvidual/admin'], function(ADMIN) { ADMIN.coursebasements(); });" />
+<h4>{{#str}} admin:coursebasements:title, local_eduvidual {{/str}}</h4>
+<p>{{#str}} admin:coursebasements:description, local_eduvidual {{/str}}</p>
+<input id="local_eduvidual_admin_coursebasements" value="{{coursebasements}}" onkeyup="require(['local_eduvidual/admin'], function(ADMIN) { ADMIN.coursebasements(); });" />
 
-<h4>{{#str}} admin:orgcoursebasement:title, block_eduvidual {{/str}}</h4>
-<p>{{#str}} admin:orgcoursebasement:description, block_eduvidual {{/str}}</p>
-<select id="block_eduvidual_admin_orgcoursebasement" onchange="var sel = this; require(['block_eduvidual/admin'], function(ADMIN) { ADMIN.orgcoursebasement(sel.value); });">
+<h4>{{#str}} admin:orgcoursebasement:title, local_eduvidual {{/str}}</h4>
+<p>{{#str}} admin:orgcoursebasement:description, local_eduvidual {{/str}}</p>
+<select id="local_eduvidual_admin_orgcoursebasement" onchange="var sel = this; require(['local_eduvidual/admin'], function(ADMIN) { ADMIN.orgcoursebasement(sel.value); });">
 {{#orgcoursebasements}}
     <optgroup label="{{key}}">
         {{#basements}}
@@ -30,34 +30,34 @@
     </optgroup>
 {{/orgcoursebasements}}
 {{^orgcoursebasements}}
-    <p class="alert alert-info">{{#str}} orgcoursebasement:nocoursebasementsgiven, block_eduvidual {{/str}}</p>
+    <p class="alert alert-info">{{#str}} orgcoursebasement:nocoursebasementsgiven, local_eduvidual {{/str}}</p>
 {{/orgcoursebasements}}
 </select>
 
-<h4>{{#str}} allmanagerscourses:title, block_eduvidual {{/str}}</h4>
-<p>{{#str}} allmanagerscourses:description, block_eduvidual {{/str}}</p>
-<input id="block_eduvidual_admin_allmanagerscourses" value="{{allmanagerscourses}}" onkeyup="require(['block_eduvidual/admin'], function(ADMIN) { ADMIN.allmanagerscourses(); });" />
+<h4>{{#str}} allmanagerscourses:title, local_eduvidual {{/str}}</h4>
+<p>{{#str}} allmanagerscourses:description, local_eduvidual {{/str}}</p>
+<input id="local_eduvidual_admin_allmanagerscourses" value="{{allmanagerscourses}}" onkeyup="require(['local_eduvidual/admin'], function(ADMIN) { ADMIN.allmanagerscourses(); });" />
 
-<h4>{{#str}} trashcategory:title, block_eduvidual {{/str}}</h4>
-<p>{{#str}} trashcategory:description, block_eduvidual {{/str}}</p>
-<input id="block_eduvidual_admin_trashcategory" value="{{trashcategory}}" onkeyup="require(['block_eduvidual/admin'], function(ADMIN) { ADMIN.trashcategory(); });" />
+<h4>{{#str}} trashcategory:title, local_eduvidual {{/str}}</h4>
+<p>{{#str}} trashcategory:description, local_eduvidual {{/str}}</p>
+<input id="local_eduvidual_admin_trashcategory" value="{{trashcategory}}" onkeyup="require(['local_eduvidual/admin'], function(ADMIN) { ADMIN.trashcategory(); });" />
 
-<h4>{{#str}} admin:ltiresourcekey:title, block_eduvidual {{/str}}</h4>
-<p>{{#str}} admin:ltiresourcekey:description, block_eduvidual {{/str}}</p>
-<input id="block_eduvidual_admin_ltiresourcekey" value="{{ltiresourcekey}}" onkeyup="require(['block_eduvidual/admin'], function(ADMIN) { ADMIN.ltiresourcekey(); });" />
+<h4>{{#str}} admin:ltiresourcekey:title, local_eduvidual {{/str}}</h4>
+<p>{{#str}} admin:ltiresourcekey:description, local_eduvidual {{/str}}</p>
+<input id="local_eduvidual_admin_ltiresourcekey" value="{{ltiresourcekey}}" onkeyup="require(['local_eduvidual/admin'], function(ADMIN) { ADMIN.ltiresourcekey(); });" />
 
-<h4>{{#str}} admin:protectedorgs:title, block_eduvidual {{/str}}</h4>
-<p>{{#str}} admin:protectedorgs:description, block_eduvidual {{/str}}</p>
-<input id="block_eduvidual_admin_protectedorgs" value="{{protectedorgs}}" onkeyup="require(['block_eduvidual/admin'], function(ADMIN) { ADMIN.protectedorgs(); });" />
+<h4>{{#str}} admin:protectedorgs:title, local_eduvidual {{/str}}</h4>
+<p>{{#str}} admin:protectedorgs:description, local_eduvidual {{/str}}</p>
+<input id="local_eduvidual_admin_protectedorgs" value="{{protectedorgs}}" onkeyup="require(['local_eduvidual/admin'], function(ADMIN) { ADMIN.protectedorgs(); });" />
 
-<h4>{{#str}} admin:registrationcc:title, block_eduvidual {{/str}}</h4>
-<p>{{#str}} admin:registrationcc:description, block_eduvidual {{/str}}</p>
-<input id="block_eduvidual_admin_registrationcc" value="{{registrationcc}}" onkeyup="require(['block_eduvidual/admin'], function(ADMIN) { ADMIN.registrationcc(); });" />
+<h4>{{#str}} admin:registrationcc:title, local_eduvidual {{/str}}</h4>
+<p>{{#str}} admin:registrationcc:description, local_eduvidual {{/str}}</p>
+<input id="local_eduvidual_admin_registrationcc" value="{{registrationcc}}" onkeyup="require(['local_eduvidual/admin'], function(ADMIN) { ADMIN.registrationcc(); });" />
 
-<h4>{{#str}} admin:registrationsupport:title, block_eduvidual {{/str}}</h4>
-<p>{{#str}} admin:registrationsupport:description, block_eduvidual {{/str}}</p>
-<input id="block_eduvidual_admin_registrationsupport" value="{{registrationsupport}}" onkeyup="require(['block_eduvidual/admin'], function(ADMIN) { ADMIN.registrationsupport(); });" />
+<h4>{{#str}} admin:registrationsupport:title, local_eduvidual {{/str}}</h4>
+<p>{{#str}} admin:registrationsupport:description, local_eduvidual {{/str}}</p>
+<input id="local_eduvidual_admin_registrationsupport" value="{{registrationsupport}}" onkeyup="require(['local_eduvidual/admin'], function(ADMIN) { ADMIN.registrationsupport(); });" />
 
-<h4>{{#str}} admin:dropzone:title, block_eduvidual {{/str}}</h4>
-<p>{{#str}} admin:dropzone:description, block_eduvidual {{/str}}</p>
-<input id="block_eduvidual_admin_dropzonepath" value="{{dropzonepath}}" onkeyup="require(['block_eduvidual/admin'], function(ADMIN) { ADMIN.dropZonePath(); });" />
+<h4>{{#str}} admin:dropzone:title, local_eduvidual {{/str}}</h4>
+<p>{{#str}} admin:dropzone:description, local_eduvidual {{/str}}</p>
+<input id="local_eduvidual_admin_dropzonepath" value="{{dropzonepath}}" onkeyup="require(['local_eduvidual/admin'], function(ADMIN) { ADMIN.dropZonePath(); });" />

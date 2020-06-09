@@ -15,8 +15,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package    block_edusupport
- * @copyright  2020 Center for Learningmanagement (www.lernmanagement.at)
+ * @package    local_eduvidual
+ * @copyright  2018 Digital Education Society (http://www.dibig.at)
+ *             2020 onwards Zentrum für Lernmanagement (http://www.lernmanagement.at)
  * @author     Robert Schrenk
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -25,7 +26,7 @@ defined('MOODLE_INTERNAL') || die;
 
 require_once($CFG->libdir . "/externallib.php");
 
-class block_eduvidual_external_user extends external_api {
+class local_eduvidual_external_user extends external_api {
     public static function course_news_parameters() {
         return new external_function_parameters(array(
             'courseid' => new external_value(PARAM_INT, 'courseid'),
@@ -64,9 +65,9 @@ class block_eduvidual_external_user extends external_api {
         if ($params['userid'] != $USER->id) return "";
 
         $PAGE->set_context(\context_system::instance());
-        $orgmenus = \block_eduvidual\lib_helper::orgmenus();
+        $orgmenus = \local_eduvidual\lib_helper::orgmenus();
 
-        return $OUTPUT->render_from_template('block_eduvidual/orgmenu', array('menuright' => 1, 'orgmenus' => $orgmenus));
+        return $OUTPUT->render_from_template('local_eduvidual/orgmenu', array('menuright' => 1, 'orgmenus' => $orgmenus));
     }
     public static function orgmenu_returns() {
         return new external_value(PARAM_RAW, 'Returns the orgmenu as html.');

@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package    block_eduvidual
+ * @package    local_eduvidual
  * @copyright  2018 Digital Education Society (http://www.dibig.at)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -23,13 +23,13 @@
 defined('MOODLE_INTERNAL') || die;
 if (!is_siteadmin()) {
     ?>
-    <p class="alert alert-warning"><?php echo get_string('js:missing_permission', 'block_eduvidual'); ?></p>
+    <p class="alert alert-warning"><?php echo get_string('js:missing_permission', 'local_eduvidual'); ?></p>
     <?php
 }
 
-require_once($CFG->dirroot . '/blocks/eduvidual/classes/lib_import.php');
-$helper = new block_eduvidual_lib_import();
-$compiler = new block_eduvidual_lib_import_compiler_module();
+require_once($CFG->dirroot . '/local/eduvidual/classes/lib_import.php');
+$helper = new local_eduvidual_lib_import();
+$compiler = new local_eduvidual_lib_import_compiler_module();
 $helper->set_compiler($compiler);
 
 if (optional_param('datavalidated', 0, PARAM_INT) == 1) {
@@ -41,9 +41,9 @@ if (optional_param('datavalidated', 0, PARAM_INT) == 1) {
             $module->payload = json_encode($module->payload, JSON_NUMERIC_CHECK);
             if (isset($module->moduleid) && $module->moduleid > 0) {
                 $module->id = $module->moduleid;
-                $DB->update_record('block_eduvidual_modules', $module);
+                $DB->update_record('local_eduvidual_modules', $module);
             } elseif(isset($module->categoryid) && $module->categoryid > 0) {
-                $module->moduleid = $DB->insert_record('block_eduvidual_modules', $module, true);
+                $module->moduleid = $DB->insert_record('local_eduvidual_modules', $module, true);
             }
             // Unpack afterwards to restore previous state
             $module->payload = json_decode($module->payload);
@@ -51,15 +51,15 @@ if (optional_param('datavalidated', 0, PARAM_INT) == 1) {
     }
     $helper->set_rowobjects($modules);
     ?>
-    <form action="<?php echo $CFG->wwwroot; ?>/blocks/eduvidual/pages/sub/admin_modulesdownload.php" method="post" enctype="multipart/form-data">
-        <p class="alert alert-info"><?php echo get_string('admin:modulesimport:downloadfile', 'block_eduvidual'); ?></p>
+    <form action="<?php echo $CFG->wwwroot; ?>/local/eduvidual/pages/sub/admin_modulesdownload.php" method="post" enctype="multipart/form-data">
+        <p class="alert alert-info"><?php echo get_string('admin:modulesimport:downloadfile', 'local_eduvidual'); ?></p>
         <?php echo $helper->print_hidden_form(); ?>
         <input type="submit" value="<?php echo get_string('download'); ?>" />
     </form>
     <?php
-} elseif (isset($_FILES['block_eduvidual_admin_modulesimport'])) {
+} elseif (isset($_FILES['local_eduvidual_admin_modulesimport'])) {
     $helper->set_fields(array('moduleid', 'categoryid', 'name', 'description', 'url', 'imageurl'));
-    $helper->load_file($_FILES['block_eduvidual_admin_modulesimport']['tmp_name']);
+    $helper->load_file($_FILES['local_eduvidual_admin_modulesimport']['tmp_name']);
     $objs = $helper->get_rowobjects();
     $fields = $helper->get_fields();
     ?>
@@ -97,7 +97,7 @@ if (optional_param('datavalidated', 0, PARAM_INT) == 1) {
     <form action="" method="post" enctype="multipart/form-data">
         <input type="hidden" name="act" value="<?php echo $act; ?>" />
         <input type="hidden" name="import" value="1" />
-        <input type="file" name="block_eduvidual_admin_modulesimport" />
+        <input type="file" name="local_eduvidual_admin_modulesimport" />
         <input type="submit" value="<?php echo get_string('upload'); ?>" />
     </form>
     <?php

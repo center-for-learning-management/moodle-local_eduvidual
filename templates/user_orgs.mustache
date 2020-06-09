@@ -17,11 +17,11 @@
 
 {{#isadmin}}
 <div class="grid-eq-2">
-    <a href="{{wwwroot}}/blocks/eduvidual/pages/categories.php?showall=1" class="btn btn-primary">
-        {{#str}} user:categories:adminshowall, block_eduvidual {{/str}}
+    <a href="{{wwwroot}}/local/eduvidual/pages/categories.php?showall=1" class="btn btn-primary">
+        {{#str}} user:categories:adminshowall, local_eduvidual {{/str}}
     </a>
-    <a href="{{wwwroot}}/blocks/eduvidual/pages/categories.php?showall=0" class="btn btn-secondary">
-        {{#str}} user:categories:adminshowmine, block_eduvidual {{/str}}
+    <a href="{{wwwroot}}/local/eduvidual/pages/categories.php?showall=0" class="btn btn-secondary">
+        {{#str}} user:categories:adminshowmine, local_eduvidual {{/str}}
     </a>
 </div>
 {{/isadmin}}
@@ -31,12 +31,12 @@
     <tr>
         {{#hasmultiple}}
         <td width="30">
-            <a href="{{wwwroot}}/blocks/eduvidual/pages/categories.php?favorite=-1">
+            <a href="{{wwwroot}}/local/eduvidual/pages/categories.php?favorite=-1">
                 {{#isfavorite}}
                     <i class="icon fa fa-star" title="" aria-label=""></i>
                 {{/isfavorite}}
             </a>
-            <a href="{{wwwroot}}/blocks/eduvidual/pages/categories.php?favorite={{orgid}}">
+            <a href="{{wwwroot}}/local/eduvidual/pages/categories.php?favorite={{orgid}}">
                 {{^isfavorite}}
                     <i class="icon fa fa-star-o fa-fw " title="" aria-label=""></i>
                 {{/isfavorite}}

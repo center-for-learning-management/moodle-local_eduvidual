@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package    block_eduvidual
+ * @package    local_eduvidual
  * @copyright  2019 Digital Education Society (http://www.dibig.at)
  * @author     Robert Schrenk
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -25,7 +25,7 @@ defined('MOODLE_INTERNAL') || die;
 
 require_once($CFG->libdir . "/formslib.php");
 
-class block_eduvidual_manage_user_form extends moodleform {
+class local_eduvidual_manage_user_form extends moodleform {
     function definition() {
         global $DB;
         $mform = $this->_form;
@@ -46,13 +46,13 @@ class block_eduvidual_manage_user_form extends moodleform {
     function validation($data, $files) {
         $errors = array();
         if (strlen($data['firstname']) < 2) {
-            $errors['firstname'] = get_string('manage:profile:tooshort', 'block_eduvidual', array('fieldname' => get_string('firstname'), 'minchars' => '2'));
+            $errors['firstname'] = get_string('manage:profile:tooshort', 'local_eduvidual', array('fieldname' => get_string('firstname'), 'minchars' => '2'));
         }
         if (strlen($data['lastname']) < 2) {
-            $errors['lastname'] = get_string('manage:profile:tooshort', 'block_eduvidual', array('fieldname' => get_string('lastname'), 'minchars' => '2'));
+            $errors['lastname'] = get_string('manage:profile:tooshort', 'local_eduvidual', array('fieldname' => get_string('lastname'), 'minchars' => '2'));
         }
         if (!validate_email($data['email'])) {
-            $errors['email'] = get_string('manage:profile:invalidmail', 'block_eduvidual');
+            $errors['email'] = get_string('manage:profile:invalidmail', 'local_eduvidual');
         }
         return $errors;
     }

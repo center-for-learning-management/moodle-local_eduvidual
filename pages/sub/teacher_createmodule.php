@@ -15,20 +15,20 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package    block_eduvidual
+ * @package    local_eduvidual
  * @copyright  2018 Digital Education Society (http://www.dibig.at)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die;
 
-block_eduvidual::print_app_header();
+local_eduvidual::print_app_header();
 
 
 if ($courseid == 0) {
     $courses = enrol_get_all_users_courses($USER->id, true);
     ?>
-    <h3><?php echo get_string('teacher:createmodule:selectcourse', 'block_eduvidual'); ?></h3>
+    <h3><?php echo get_string('teacher:createmodule:selectcourse', 'local_eduvidual'); ?></h3>
     <div class="grid-eq-2" style="text-align: center;">
         <div>
             <a href="#" onclick="history.go(-1);" class="ui-btn">
@@ -36,7 +36,7 @@ if ($courseid == 0) {
                 <?php echo get_string('back'); ?></a>
         </div>
     </div>
-    <ul id="block_eduvidual_teacher_createmodule_course" data-role="listview" data-inset="true">
+    <ul id="local_eduvidual_teacher_createmodule_course" data-role="listview" data-inset="true">
     <?php
     foreach($courses AS $course) {
         $context = context_course::instance($course->id);
@@ -66,11 +66,11 @@ if ($courseid == 0) {
 
     if (!has_capability('moodle/course:update', $context)){
         ?>
-        <p class="alert alert-error"><?php echo get_string('teacher:createmodule:missing_capability', 'block_eduvidual'); ?></p>
+        <p class="alert alert-error"><?php echo get_string('teacher:createmodule:missing_capability', 'local_eduvidual'); ?></p>
         <?php
     }
     ?>
-    <h3><?php echo get_string('teacher:createmodule:selectsection', 'block_eduvidual'); ?></h3>
+    <h3><?php echo get_string('teacher:createmodule:selectsection', 'local_eduvidual'); ?></h3>
     <div class="grid-eq-2" style="text-align: center;">
         <div>
             <a href="#" onclick="history.go(-1);" class="ui-btn btn">
@@ -78,7 +78,7 @@ if ($courseid == 0) {
                 <?php echo get_string('back'); ?></a>
         </div>
     </div>
-    <ul id="block_eduvidual_teacher_createmodule_section" data-role="listview" data-inset="true">
+    <ul id="local_eduvidual_teacher_createmodule_section" data-role="listview" data-inset="true">
     <?php
     //$course = $DB->get_record('course', array('id' => $courseid), '*', MUST_EXIST);
     require_once($CFG->dirroot . '/course/format/lib.php');
@@ -104,7 +104,7 @@ if ($courseid == 0) {
         $publishercanuse = block_edupublisher::check_requirements(false);
     }
     echo $OUTPUT->render_from_template(
-        'block_eduvidual/teacher_createmodule_modules',
+        'local_eduvidual/teacher_createmodule_modules',
         (object) array(
             'courseid' => $courseid,
             'orgid' => $org->orgid,
@@ -113,8 +113,8 @@ if ($courseid == 0) {
             'publishercanuse' => $publishercanuse,
         )
     );
-    //block_eduvidual::add_script_on_load('require(["block_eduvidual/teacher"], function(TEACHER) { TEACHER.loadCategory(0); });');
+    //local_eduvidual::add_script_on_load('require(["local_eduvidual/teacher"], function(TEACHER) { TEACHER.loadCategory(0); });');
     //if ($showpublisher) {
-        //block_eduvidual::add_script_on_load('require(["block_eduvidual/teacher"], function(TEACHER) { TEACHER.loadPublisher(0); });');
+        //local_eduvidual::add_script_on_load('require(["local_eduvidual/teacher"], function(TEACHER) { TEACHER.loadPublisher(0); });');
     //}
 }

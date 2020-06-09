@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package    block_eduvidual
+ * @package    local_eduvidual
  * @copyright  2017 Digital Education Society (http://www.dibig.at)
  * @author     Robert Schrenk
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -24,7 +24,7 @@
 defined('MOODLE_INTERNAL') || die;
 
 
-class block_eduvidual_lib_phplist {
+class local_eduvidual_lib_phplist {
     static $externaldb;
     static $externalconnected = false; // boolean if connection is ok.
     static $debug = false;
@@ -38,18 +38,18 @@ class block_eduvidual_lib_phplist {
         global $DB;
         $roles = array('Manager', 'Parent', 'Student', 'Teacher');
         $user = $DB->get_record('user', array('id' => $userid), '*', IGNORE_MISSING);
-        $ignores = explode(',', get_config('block_eduvidual', 'phplist_ignore_patterns'));
+        $ignores = explode(',', get_config('local_eduvidual', 'phplist_ignore_patterns'));
         foreach ($ignores AS $ignorepattern) {
             if (!empty($ignorepattern) && strpos($user->email, $ignorepattern) !== 0) return;
         }
         if (self::$debug) echo "Checking roles of " . $userid . " / " . fullname($user) . "<br />\n";
         if (!empty($user->id)) {
             foreach($roles AS $role) {
-                $listids = explode(',', get_config('block_eduvidual', 'phplist_' . strtolower($role) . '_lists'));
+                $listids = explode(',', get_config('local_eduvidual', 'phplist_' . strtolower($role) . '_lists'));
                 if (count($listids) > 0 && !empty($listids[0])) {
                     self::get_phplistuserid($user);
                     if (!empty($user->phplistuserid)) {
-                        $hasroles = $DB->get_records('block_eduvidual_orgid_userid', array('userid' => $user->id, 'role' => $role));
+                        $hasroles = $DB->get_records('local_eduvidual_orgid_userid', array('userid' => $user->id, 'role' => $role));
                         foreach($hasroles AS $hasrole) { }
                         foreach($listids AS $listid) {
                             if (!$ignore && !empty($hasrole->role) && $hasrole->role == $role) {
@@ -71,14 +71,14 @@ class block_eduvidual_lib_phplist {
      */
     public static function check_users_authtype($users = array()){
         global $DB;
-        $listids_mnet = explode(',', get_config('block_eduvidual', 'phplist_mnet_lists'));
-        $listids_google = explode(',', get_config('block_eduvidual', 'phplist_oauth_google_lists'));
-        $listids_microsoft = explode(',', get_config('block_eduvidual', 'phplist_oauth_microsoft_lists'));
+        $listids_mnet = explode(',', get_config('local_eduvidual', 'phplist_mnet_lists'));
+        $listids_google = explode(',', get_config('local_eduvidual', 'phplist_oauth_google_lists'));
+        $listids_microsoft = explode(',', get_config('local_eduvidual', 'phplist_oauth_microsoft_lists'));
         $listids = array_merge($listids_mnet, $listids_google, $listids_microsoft);
         $added = array();
 
-        $issuers_google = explode(',', get_config('block_eduvidual', 'phplist_oauth_issuers_google'));
-        $issuers_microsoft = explode(',', get_config('block_eduvidual', 'phplist_oauth_issuers_microsoft'));
+        $issuers_google = explode(',', get_config('local_eduvidual', 'phplist_oauth_issuers_google'));
+        $issuers_microsoft = explode(',', get_config('local_eduvidual', 'phplist_oauth_issuers_microsoft'));
         $issuers = array_merge($issuers_google, $issuers_microsoft);
 
         if (count($users) == 0) {
@@ -91,7 +91,7 @@ class block_eduvidual_lib_phplist {
                 $user->issuerid = $oauth->issuerid;
             }
         }
-        $ignores = explode(',', get_config('block_eduvidual', 'phplist_ignore_patterns'));
+        $ignores = explode(',', get_config('local_eduvidual', 'phplist_ignore_patterns'));
         foreach ($users AS $user) {
             $ignore = false;
             foreach ($ignores AS $ignorepattern) {
@@ -138,10 +138,10 @@ class block_eduvidual_lib_phplist {
         if (!self::$externalconnected) return $syncmessages;
 
         $lists = array('manager', 'parent', 'teacher', 'student');
-        $ignores = explode(',', get_config('block_eduvidual', 'phplist_ignore_patterns'));
+        $ignores = explode(',', get_config('local_eduvidual', 'phplist_ignore_patterns'));
         foreach($lists AS $list) {
             $added = 0;
-            $listids = explode(',', get_config('block_eduvidual', 'phplist_' . $list . '_lists'));
+            $listids = explode(',', get_config('local_eduvidual', 'phplist_' . $list . '_lists'));
             if (count($listids) > 0 && !empty($listids[0])) {
                 $users = self::get_users($list);
                 $syncmessages[] = array('type' => 'warning', 'content' => 'Syncing list ' . ucfirst($list) . ' with ' . count($users) . ' users');
@@ -180,10 +180,10 @@ class block_eduvidual_lib_phplist {
         $syncmessages = array();
         if (!self::$externalconnected) {
             // Ensure the db connection to the external db works
-            $dbhost = get_config('block_eduvidual', 'phplist_dbhost');
-            $dbname = get_config('block_eduvidual', 'phplist_dbname');
-            $dbpass = get_config('block_eduvidual', 'phplist_dbpass');
-            $dbuser = get_config('block_eduvidual', 'phplist_dbuser');
+            $dbhost = get_config('local_eduvidual', 'phplist_dbhost');
+            $dbname = get_config('local_eduvidual', 'phplist_dbname');
+            $dbpass = get_config('local_eduvidual', 'phplist_dbpass');
+            $dbuser = get_config('local_eduvidual', 'phplist_dbuser');
             try {
                 self::$externaldb = new mysqli($dbhost, $dbuser, $dbpass);
 
@@ -211,16 +211,16 @@ class block_eduvidual_lib_phplist {
         $users = array();
         switch($targetgroup) {
             case 'manager':
-                $users = $DB->get_records_sql('SELECT u.* FROM {user} u, {block_eduvidual_orgid_userid} ou WHERE ou.userid=u.id AND ou.role LIKE ? GROUP BY u.id', array('Manager'));
+                $users = $DB->get_records_sql('SELECT u.* FROM {user} u, {local_eduvidual_orgid_userid} ou WHERE ou.userid=u.id AND ou.role LIKE ? GROUP BY u.id', array('Manager'));
             break;
             case 'parent':
-                $users = $DB->get_records_sql('SELECT u.* FROM {user} u, {block_eduvidual_orgid_userid} ou WHERE ou.userid=u.id AND ou.role LIKE ? GROUP BY u.id', array('Parent'));
+                $users = $DB->get_records_sql('SELECT u.* FROM {user} u, {local_eduvidual_orgid_userid} ou WHERE ou.userid=u.id AND ou.role LIKE ? GROUP BY u.id', array('Parent'));
             break;
             case 'student':
-                $users = $DB->get_records_sql('SELECT u.* FROM {user} u, {block_eduvidual_orgid_userid} ou WHERE ou.userid=u.id AND ou.role LIKE ? GROUP BY u.id', array('Student'));
+                $users = $DB->get_records_sql('SELECT u.* FROM {user} u, {local_eduvidual_orgid_userid} ou WHERE ou.userid=u.id AND ou.role LIKE ? GROUP BY u.id', array('Student'));
             break;
             case 'teacher':
-                $users = $DB->get_records_sql('SELECT u.* FROM {user} u, {block_eduvidual_orgid_userid} ou WHERE ou.userid=u.id AND ou.role LIKE ? GROUP BY u.id', array('Teacher'));
+                $users = $DB->get_records_sql('SELECT u.* FROM {user} u, {local_eduvidual_orgid_userid} ou WHERE ou.userid=u.id AND ou.role LIKE ? GROUP BY u.id', array('Teacher'));
             break;
         }
         return $users;

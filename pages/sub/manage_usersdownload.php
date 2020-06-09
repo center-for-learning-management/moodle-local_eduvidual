@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package    block_eduvidual
+ * @package    local_eduvidual
  * @copyright  2018-2020 Digital Education Society (http://www.dibig.at)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -26,19 +26,19 @@ require_login();
 
 require_once($CFG->libdir . '/adminlib.php');
 require_once($CFG->libdir . '/dataformatlib.php');
-require_once($CFG->dirroot . '/blocks/eduvidual/block_eduvidual.php');
+require_once($CFG->dirroot . '/local/eduvidual/block_eduvidual.php');
 
 $orgid = required_param('orgid', PARAM_INT);
 $userids = explode(',', required_param('userids', PARAM_TEXT));
 $dataformat = required_param('dataformat', PARAM_ALPHA);
 
-block_eduvidual::set_org($orgid);
+local_eduvidual::set_org($orgid);
 
-if (block_eduvidual::get('orgrole') != "Manager" && !is_siteadmin()) {
+if (local_eduvidual::get('orgrole') != "Manager" && !is_siteadmin()) {
     $OUTPUT->header();
-    $OUTPUT->render_from_template('block_eduvidual/alert', array(
+    $OUTPUT->render_from_template('local_eduvidual/alert', array(
         'type' => 'warning',
-        'content' => get_string('js:missing_permission', 'block_eduvidual'),
+        'content' => get_string('js:missing_permission', 'local_eduvidual'),
     ));
     $OUTPUT->footer();
     exit;
@@ -56,7 +56,7 @@ $columns = array(
 
 list($insql, $params) = $DB->get_in_or_equal($userids);
 $sql = "SELECT u.id,u.username,u.email,u.firstname,u.lastname,ou.role
-            FROM {user} u, {block_eduvidual_orgid_userid} ou
+            FROM {user} u, {local_eduvidual_orgid_userid} ou
             WHERE u.id=ou.userid
                 AND ou.role IS NOT NULL
                 AND ou.orgid = ?
@@ -71,7 +71,7 @@ download_as_dataformat('users_' . date("Ymd-His"), $dataformat, $columns, $rs, f
     global $DB, $orgid;
     $r = (object) array('id' => $record->id);
     profile_load_data($r);
-    $bunch = $DB->get_record('block_eduvidual_userbunches', array('orgid' => $orgid, 'userid' => $record->id));
+    $bunch = $DB->get_record('local_eduvidual_userbunches', array('orgid' => $orgid, 'userid' => $record->id));
     if (!empty($bunch->bunch)) {
         $record->bunch = $bunch->bunch;
     } else {

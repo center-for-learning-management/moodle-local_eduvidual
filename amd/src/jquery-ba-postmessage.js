@@ -54,7 +54,7 @@ define(['jquery'], function($) {
                 if (!this.prepared) {
                     this.prepare();
                 }
-                var origin = localStorage.getItem('block_eduvidual_referer');
+                var origin = localStorage.getItem('local_eduvidual_referer');
                 console.log('posting', message, 'using origin', origin);
                 $.postMessage(
                   message,

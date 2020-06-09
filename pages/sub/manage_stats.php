@@ -15,17 +15,17 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package    block_eduvidual
+ * @package    local_eduvidual
  * @copyright  2019 Digital Education Society (http://www.dibig.at)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace block_eduvidual;
+namespace local_eduvidual;
 
 defined('MOODLE_INTERNAL') || die;
 
 $size = lib_manage::readable_filesize(lib_manage::get_category_filesize($org->categoryid));
 
-echo $OUTPUT->render_from_template('block_eduvidual/manage_stats', array(
+echo $OUTPUT->render_from_template('local_eduvidual/manage_stats', array(
     'size' => $size,
 ));

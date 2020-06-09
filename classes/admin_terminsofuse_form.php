@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package    block_eduvidual
+ * @package    local_eduvidual
  * @copyright  2017 Digital Education Society (http://www.dibig.at)
  * @author     Robert Schrenk
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -25,7 +25,7 @@ defined('MOODLE_INTERNAL') || die;
 
 require_once($CFG->libdir . "/formslib.php");
 
-class block_eduvidual_admin_termsofuse_form extends moodleform {
+class local_eduvidual_admin_termsofuse_form extends moodleform {
     function definition() {
         global $DB;
 
@@ -40,20 +40,20 @@ class block_eduvidual_admin_termsofuse_form extends moodleform {
         $mform->addElement('hidden', 'locked', 0);
         $mform->setType('locked', PARAM_INT);
 
-        $mform->addElement('html', get_string('admin:termsofuse:editingalwaysderivative', 'block_eduvidual'));
+        $mform->addElement('html', get_string('admin:termsofuse:editingalwaysderivative', 'local_eduvidual'));
 
         $mform->addElement('checkbox', 'active', get_string('active'));
         $mform->setType('active', PARAM_BOOL);
 
-        $mform->addElement('textarea', 'orgid_pattern', get_string('admin:termsofuse:orgidpattern', 'block_eduvidual'));
+        $mform->addElement('textarea', 'orgid_pattern', get_string('admin:termsofuse:orgidpattern', 'local_eduvidual'));
         $mform->setType('orgid_pattern', PARAM_TEXT);
-        $mform->addHelpButton('orgid_pattern', 'admin:termsofuse:orgidpattern', 'block_eduvidual');
+        $mform->addHelpButton('orgid_pattern', 'admin:termsofuse:orgidpattern', 'local_eduvidual');
 
-        $mform->addElement('textarea', 'role_pattern', get_string('admin:termsofuse:rolepattern', 'block_eduvidual'));
+        $mform->addElement('textarea', 'role_pattern', get_string('admin:termsofuse:rolepattern', 'local_eduvidual'));
         $mform->setType('role_pattern', PARAM_TEXT);
-        $mform->addHelpButton('role_pattern', 'admin:termsofuse:rolepattern', 'block_eduvidual');
+        $mform->addHelpButton('role_pattern', 'admin:termsofuse:rolepattern', 'local_eduvidual');
 
-        $mform->addElement('editor', 'termsofuse', get_string('admin:termsofuse', 'block_eduvidual'), $editoroptions);
+        $mform->addElement('editor', 'termsofuse', get_string('admin:termsofuse', 'local_eduvidual'), $editoroptions);
         $mform->setType('termsofuse', PARAM_RAW);
 
         $this->add_action_buttons();

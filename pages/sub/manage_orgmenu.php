@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package    block_eduvidual
+ * @package    local_eduvidual
  * @copyright  2018 Digital Education Society (http://www.dibig.at)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -23,18 +23,18 @@
 defined('MOODLE_INTERNAL') || die;
 
 ?>
-<h5><?php echo get_string('manage:orgmenu:title', 'block_eduvidual'); ?></h5>
-<p class="alert alert-info"><?php echo get_string('manage:orgmenu:description', 'block_eduvidual'); ?></p>
+<h5><?php echo get_string('manage:orgmenu:title', 'local_eduvidual'); ?></h5>
+<p class="alert alert-info"><?php echo get_string('manage:orgmenu:description', 'local_eduvidual'); ?></p>
 <?php
-require_once($CFG->dirroot . "/blocks/eduvidual/classes/manage_orgmenu_form.php");
+require_once($CFG->dirroot . "/local/eduvidual/classes/manage_orgmenu_form.php");
 
-$form = new block_eduvidual_manage_orgmenu_form(null, null, 'post', '_self', array('data-ajax' => 'false'), true);
+$form = new local_eduvidual_manage_orgmenu_form(null, null, 'post', '_self', array('data-ajax' => 'false'), true);
 
 if ($data = $form->get_data()) {
     $org->orgmenu = $data->orgmenu;
-    $DB->set_field('block_eduvidual_org', 'orgmenu', $org->orgmenu, array('orgid' => $org->orgid));
-    echo $OUTPUT->render_from_template('block_eduvidual/alert', array(
-        'content' => get_string('store:success', 'block_eduvidual'),
+    $DB->set_field('local_eduvidual_org', 'orgmenu', $org->orgmenu, array('orgid' => $org->orgid));
+    echo $OUTPUT->render_from_template('local_eduvidual/alert', array(
+        'content' => get_string('store:success', 'local_eduvidual'),
         'type' => 'success'
     ));
 }

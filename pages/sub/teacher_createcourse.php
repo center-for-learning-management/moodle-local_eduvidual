@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package    block_eduvidual
+ * @package    local_eduvidual
  * @copyright  2018 Digital Education Society (http://www.dibig.at)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -23,7 +23,7 @@
 defined('MOODLE_INTERNAL') || die;
 
 $formsent = optional_param('formsent', 0, PARAM_INT);
-$orgs = block_eduvidual::get_organisations('Teacher');
+$orgs = \local_eduvidual\locallib::get_organisations('Teacher');
 
 $orgid = optional_param('orgid', 0, PARAM_INT);
 $subcat1 = optional_param('subcat1', '', PARAM_TEXT);
@@ -33,18 +33,21 @@ $subcat4 = optional_param('subcat4', '', PARAM_TEXT);
 
 $basement = optional_param('basement', 0, PARAM_INT);
 
+
+
+$subcats1 = \local_eduvidual\locallib::get_orgsubcats($orgid, 'subcats1');
+$subcats2 = \local_eduvidual\locallib::get_orgsubcats($orgid, 'subcats2');
+$subcats3 = \local_eduvidual\locallib::get_orgsubcats($orgid, 'subcats3');
+
 $redirect = '';
 $msg = array();
 
 if ($formsent) {
-    $org = block_eduvidual::get_organisations_check($orgs, $orgid);
-    $subcats1 = block_eduvidual::get('subcats1');
-    $subcats2 = block_eduvidual::get('subcats2');
-    $subcats3 = block_eduvidual::get('subcats3');
+    $org = \local_eduvidual\locallib::get_organisations_check($orgs, $orgid);
 
     if (empty($subcat1)) {
-        $msg[] = $OUTPUT->render_from_template('block_eduvidual/alert', array(
-            'content' => get_string('createcourse:subcat1emptyerror', 'block_eduvidual'),
+        $msg[] = $OUTPUT->render_from_template('local_eduvidual/alert', array(
+            'content' => get_string('createcourse:subcat1emptyerror', 'local_eduvidual'),
             'url' => $CFG->wwwroot . '/my',
             'type' => 'error',
         ));
@@ -52,8 +55,8 @@ if ($formsent) {
             !empty($subcat1) && !empty($subcats1) && !in_array($subcat1, $subcats1) ||
             !empty($subcat2) && !empty($subcats2) && !in_array($subcat2, $subcats2) ||
             !empty($subcat3) && !empty($subcats3) && !in_array($subcat3, $subcats3)) {
-        $msg[] = $OUTPUT->render_from_template('block_eduvidual/alert', array(
-            'content' => get_string('missing_permission', 'block_eduvidual'),
+        $msg[] = $OUTPUT->render_from_template('local_eduvidual/alert', array(
+            'content' => get_string('missing_permission', 'local_eduvidual'),
             'url' => $CFG->wwwroot . '/my',
             'type' => 'error',
         ));
@@ -65,8 +68,8 @@ if ($formsent) {
         if (!empty($subcat4)) $parts[] = $subcat4;
         $coursename = implode(' ', $parts);
         if (empty(str_replace(' ', '', $coursename))) {
-            $msg[] = $OUTPUT->render_from_template('block_eduvidual/alert', array(
-                'content' => get_string('createcourse:coursenameemptyerror', 'block_eduvidual'),
+            $msg[] = $OUTPUT->render_from_template('local_eduvidual/alert', array(
+                'content' => get_string('createcourse:coursenameemptyerror', 'local_eduvidual'),
                 'url' => $CFG->wwwroot . '/my',
                 'type' => 'error',
             ));
@@ -86,8 +89,8 @@ if ($formsent) {
             }
             // If it is still empty - error
             if (empty($cat1->id)) {
-                $msg[] = $OUTPUT->render_from_template('block_eduvidual/alert', array(
-                    'content' => get_string('createcourse:catcreateerror', 'block_eduvidual'),
+                $msg[] = $OUTPUT->render_from_template('local_eduvidual/alert', array(
+                    'content' => get_string('createcourse:catcreateerror', 'local_eduvidual'),
                     'url' => $CFG->wwwroot . '/my',
                     'type' => 'error',
                 ));
@@ -108,8 +111,8 @@ if ($formsent) {
                     }
                     // If it is still empty - error
                     if (empty($cat2->id)) {
-                        $msg[] = $OUTPUT->render_from_template('block_eduvidual/alert', array(
-                            'content' => get_string('createcourse:catcreateerror', 'block_eduvidual'),
+                        $msg[] = $OUTPUT->render_from_template('local_eduvidual/alert', array(
+                            'content' => get_string('createcourse:catcreateerror', 'local_eduvidual'),
                             'url' => $CFG->wwwroot . '/my',
                             'type' => 'error',
                         ));
@@ -122,7 +125,7 @@ if ($formsent) {
                     //print_r($targcat);
                     // Now create course in this category!
                     // Now check if basement is valid
-                    if(\block_eduvidual\lib_enrol::is_valid_course_basement('all', $basement)){
+                    if(\local_eduvidual\lib_enrol::is_valid_course_basement('all', $basement)){
                         // Create course here
                         $fullname = $coursename;
                         $categoryid = $targcat->id;
@@ -133,8 +136,8 @@ if ($formsent) {
                             if (strlen($shortname) > 30) $shortname = substr($shortname, 0, 30);
                             // Grant a role that allows course duplication in source and target category
                             $basecourse = $DB->get_record('course', array('id' => $basement));
-                            $sourcecatcontext = context_coursecat::instance($basecourse->category);
-                            $targetcatcontext = context_coursecat::instance($categoryid);
+                            $sourcecatcontext = \context_coursecat::instance($basecourse->category);
+                            $targetcatcontext = \context_coursecat::instance($categoryid);
                             $roletoassign = 1; // Manager
                             $revokesourcerole = true;
                             $revoketargetrole = true;
@@ -172,8 +175,8 @@ if ($formsent) {
                             if (!empty($subcat4)) $coursedata->summary .= $org->subcats4lbl . ': ' . $subcat4 . "<br />\n";
                             $course = create_course($coursedata);
 
-                            $basecontext = context_course::instance($basement);
-                            $targetcontext = context_course::instance($course->id);
+                            $basecontext = \context_course::instance($basement);
+                            $targetcontext = \context_course::instance($course->id);
                             $overviewimages = $DB->get_records('files', array('contextid' => $basecontext->id, 'component' => 'course', 'filearea' => 'overviewfiles'));
                             foreach ($overviewimages AS $ovi) {
                                 unset($ovi->id);
@@ -195,8 +198,8 @@ if ($formsent) {
                                 $user_performing = $USER->id; // id of the user performing the backup.
                                 //print_r($course);
 
-                                $bc = new backup_controller(backup::TYPE_1COURSE, $course_to_backup, backup::FORMAT_MOODLE,
-                                                            backup::INTERACTIVE_NO, backup::MODE_IMPORT, $user_performing);
+                                $bc = new \backup_controller(\backup::TYPE_1COURSE, $course_to_backup, \backup::FORMAT_MOODLE,
+                                                            \backup::INTERACTIVE_NO, \backup::MODE_IMPORT, $user_performing);
                                 //$bc->get_plan()->get_setting('users')->set_value(0);
                                 $bc->execute_plan();
                                 $bc->get_results();
@@ -213,10 +216,10 @@ if ($formsent) {
                                 $transaction = $DB->start_delegated_transaction();
 
                                 // Restore backup into course.
-                                $rc = new restore_controller($bc->get_backupid(), $course_to_restore,
-                                        backup::INTERACTIVE_NO, backup::MODE_IMPORT, $user_performing,
-                                        backup::TARGET_EXISTING_DELETING);
-                                if ($rc->get_status() == backup::STATUS_REQUIRE_CONV) {
+                                $rc = new \restore_controller($bc->get_backupid(), $course_to_restore,
+                                        \backup::INTERACTIVE_NO, \backup::MODE_IMPORT, $user_performing,
+                                        \backup::TARGET_EXISTING_DELETING);
+                                if ($rc->get_status() == \backup::STATUS_REQUIRE_CONV) {
                                     $rc->convert();
                                 }
                                 $rc->execute_precheck();
@@ -227,24 +230,24 @@ if ($formsent) {
 
                                 // If we should enrol another user, we do it.
                                 $enroluser = !empty($enroluser) ? $enroluser : $USER->id;
-                                $context = context_course::instance($course->id);
-                                $role = get_config('block_eduvidual', 'defaultroleteacher');
+                                $context = \context_course::instance($course->id);
+                                $role = get_config('local_eduvidual', 'defaultroleteacher');
                                 $enroluser = optional_param('setteacher', 0, PARAM_INT);
                                 if (empty($enroluser) || $enroluser == 0) $enroluser = $USER->id;
 
-                                \block_eduvidual\lib_enrol::course_manual_enrolments(array($course->id), array($enroluser), $role);
+                                \local_eduvidual\lib_enrol::course_manual_enrolments(array($course->id), array($enroluser), $role);
 
-                                $msg[] = $OUTPUT->render_from_template('block_eduvidual/alert', array(
-                                    'content' => get_string('createcourse:created', 'block_eduvidual'),
+                                $msg[] = $OUTPUT->render_from_template('local_eduvidual/alert', array(
+                                    'content' => get_string('createcourse:created', 'local_eduvidual'),
                                     'url' => $CFG->wwwroot . '/course/view.php?id=' . $course_to_restore,
                                     'type' => 'success',
                                 ));
                                 $redirect = $CFG->wwwroot . '/course/view.php?id=' . $course_to_restore;
 
-                                $PAGE->set_context(context_system::instance());
+                                $PAGE->set_context(\context_system::instance());
                             } else {
-                                $msg[] = $OUTPUT->render_from_template('block_eduvidual/alert', array(
-                                    'content' => get_string('createcourse:createerror', 'block_eduvidual'),
+                                $msg[] = $OUTPUT->render_from_template('local_eduvidual/alert', array(
+                                    'content' => get_string('createcourse:createerror', 'local_eduvidual'),
                                     'url' => $CFG->wwwroot . '/my',
                                     'type' => 'error',
                                 ));
@@ -258,15 +261,15 @@ if ($formsent) {
                                 role_unassign($roletoassign, $USER->id, $targetcatcontext->id);
                             }
                         } else {
-                            $msg[] = $OUTPUT->render_from_template('block_eduvidual/alert', array(
-                                'content' => get_string('createcourse:nametooshort', 'block_eduvidual'),
+                            $msg[] = $OUTPUT->render_from_template('local_eduvidual/alert', array(
+                                'content' => get_string('createcourse:nametooshort', 'local_eduvidual'),
                                 'url' => $CFG->wwwroot . '/my',
                                 'type' => 'error',
                             ));
                         }
                     } else {
-                        $msg[] = $OUTPUT->render_from_template('block_eduvidual/alert', array(
-                            'content' => get_string('createcourse:invalidbasement', 'block_eduvidual'),
+                        $msg[] = $OUTPUT->render_from_template('local_eduvidual/alert', array(
+                            'content' => get_string('createcourse:invalidbasement', 'local_eduvidual'),
                             'url' => $CFG->wwwroot . '/my',
                             'type' => 'error',
                         ));
@@ -278,14 +281,14 @@ if ($formsent) {
     }
 }
 
-$PAGE->navbar->add(get_string('teacher:createcourse', 'block_eduvidual'), $PAGE->url);
-block_eduvidual::print_app_header();
+$PAGE->navbar->add(get_string('teacher:createcourse', 'local_eduvidual'), $PAGE->url);
+echo $OUTPUT->header();
 if (count($msg) > 0) {
     echo implode('', $msg);
 } else {
     if (count($orgs) == 0) {
-        echo $OUTPUT->render_from_template('block_eduvidual/alert', array(
-            'content' => get_string('missing_permission', 'block_eduvidual'),
+        echo $OUTPUT->render_from_template('local_eduvidual/alert', array(
+            'content' => get_string('missing_permission', 'local_eduvidual'),
             'url' => $CFG->wwwroot . '/my',
             'type' => 'error',
         ));
@@ -294,7 +297,7 @@ if (count($msg) > 0) {
         foreach($orgs AS $_org) { $_orgs[] = $_org; }
         $schoolyears = array('SJ 19/20', 'SJ 20/21');
         $basements = array();
-        $_basements = \block_eduvidual\lib_enrol::get_course_basements('all');
+        $_basements = \local_eduvidual\lib_enrol::get_course_basements('all');
         $basecats = array_keys($_basements);
         foreach($basecats AS $basecat) {
             $basements[] = array(
@@ -303,32 +306,32 @@ if (count($msg) > 0) {
             );
         }
 
-        $favorgid = \block_eduvidual\locallib::get_favorgid();
+        $favorgid = \local_eduvidual\locallib::get_favorgid();
         foreach ($_orgs AS &$_org) {
             $_org->isselected = ((empty($orgid) && $favorgid == $_org->orgid) || (!empty($orgid) && $orgid == $_org->orgid)) ? 1 : 0;
         }
 
-        echo $OUTPUT->render_from_template('block_eduvidual/teacher_createcourse', array(
+        echo $OUTPUT->render_from_template('local_eduvidual/teacher_createcourse', array(
             'basements' => $basements, // Coursetemplates
-            'has_subcats1' => empty(block_eduvidual::get('subcats1')) ? 0 : 1,
-            'has_subcats2' => empty(block_eduvidual::get('subcats2')) ? 0 : 1,
-            'has_subcats3' => empty(block_eduvidual::get('subcats3')) ? 0 : 1,
-            'ismanager' => (block_eduvidual::get('orgrole') == 'Manager') ? 1 : 0,
+            'has_subcats1' => empty($subcats1) ? 0 : 1,
+            'has_subcats2' => empty($subcats2) ? 0 : 1,
+            'has_subcats3' => empty($subcats3) ? 0 : 1,
+            'ismanager' => (\local_eduvidual\locallib::get_orgrole() == 'Manager') ? 1 : 0,
             'multipleorgs' => (count($_orgs) > 1),
             'orgs' => $_orgs,
             'orgfirst' => $_orgs[0]->orgid,
-            'subcats1' => block_eduvidual::get('subcats1'),
-            'subcats2' => block_eduvidual::get('subcats2'),
-            'subcats3' => block_eduvidual::get('subcats3'),
-            'subcats1lbl' => block_eduvidual::get('subcats1lbl'),
-            'subcats2lbl' => block_eduvidual::get('subcats2lbl'),
-            'subcats3lbl' => block_eduvidual::get('subcats3lbl'),
-            'subcats4lbl' => block_eduvidual::get('subcats4lbl'),
-            'subcats1org' => block_eduvidual::get('subcats1org'),
-            'subcats2org' => block_eduvidual::get('subcats2org'),
-            'subcats3org' => block_eduvidual::get('subcats3org'),
-            'subcats4org' => block_eduvidual::get('subcats4org'),
-            'wwwroot' => $CFG->wwwroot . '/blocks/eduvidual/pages/teacher.php?act=createcourse',
+            'subcats1' => $subcats1,
+            'subcats2' => $subcats2,
+            'subcats3' => $subcats3,
+            'subcats1lbl' => '', // @POTENTIAL TODO load default labels here.
+            'subcats2lbl' => '',
+            'subcats3lbl' => '',
+            'subcats4lbl' => '',
+            'subcats1org' => '',
+            'subcats2org' => '',
+            'subcats3org' => '',
+            'subcats4org' => '',
+            'wwwroot' => $CFG->wwwroot . '/local/eduvidual/pages/teacher.php?act=createcourse',
         ));
     }
 }

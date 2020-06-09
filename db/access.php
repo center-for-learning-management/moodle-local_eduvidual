@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package    block_eduvidual
+ * @package    local_eduvidual
  * @copyright  2017 Digital Education Society (http://www.dibig.at)
  *             2020 Center for Learning Management (https://www.lernmanagement.at)
  * @author     Robert Schrenk
@@ -25,7 +25,7 @@
 defined('MOODLE_INTERNAL') || die;
 
 $capabilities = array(
-    'block/eduvidual:addinstance' => array(
+    'local/eduvidual:addinstance' => array(
         'riskbitmask' => RISK_XSS,
         'captype' => 'write',
         'contextlevel' => CONTEXT_BLOCK,
@@ -35,20 +35,20 @@ $capabilities = array(
         ),
         'clonepermissionsfrom' => 'moodle/site:manageblocks'
     ),
-    'block/eduvidual:canaccess' => array(
+    'local/eduvidual:canaccess' => array(
         'riskbitmask' => RISK_XSS,
         'captype' => 'read',
         'contextlevel' => CONTEXT_COURSECAT,
         'archetypes' => array(),
     ),
-    'block/eduvidual:manage' => array(
+    'local/eduvidual:manage' => array(
         'riskbitmask' => RISK_XSS,
         'captype' => 'write',
         'contextlevel' => CONTEXT_BLOCK,
         'archetypes' => array(),
         'clonepermissionsfrom' => 'moodle/site:manageblocks'
     ),
-    'block/eduvidual:myaddinstance' => array(
+    'local/eduvidual:myaddinstance' => array(
 		'captype' => 'write',
 		'contextlevel' => CONTEXT_SYSTEM,
 		'archetypes' => array(
@@ -56,7 +56,7 @@ $capabilities = array(
 		),
 		'clonepermissionsfrom' => 'moodle/my:manageblocks'
 	),
-    'block/eduvidual:useinstance' => array(
+    'local/eduvidual:useinstance' => array(
 		'captype' => 'write',
 		'contextlevel' => CONTEXT_SYSTEM,
 		'archetypes' => array(),

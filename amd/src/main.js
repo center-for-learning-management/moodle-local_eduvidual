@@ -1,5 +1,5 @@
 define(
-    ['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'block_eduvidual/admin', 'block_eduvidual/manager', 'block_eduvidual/teacher', 'block_eduvidual/user', 'block_eduvidual/register', 'block_eduvidual/preferences','core/modal_factory', 'core/modal_events'],
+    ['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'local_eduvidual/admin', 'local_eduvidual/manager', 'local_eduvidual/teacher', 'local_eduvidual/user', 'local_eduvidual/register', 'local_eduvidual/preferences','core/modal_factory', 'core/modal_events'],
     function($, AJAX, NOTIFICATION, STR, URL, ADMIN, MANAGER, TEACHER, USER, REGISTER, PREFERENCES, ModalFactory, ModalEvents) {
     return {
         requestId: 0,
@@ -8,7 +8,7 @@ define(
         * Sets and removes the confirmed state for html elements
         **/
         confirmed: function(selector, success, timeout) {
-            var className = 'block_eduvidual_' + ((success)?'stored':'failed');
+            var className = 'local_eduvidual_' + ((success)?'stored':'failed');
             if (typeof timeout === 'undefined' || timeout == 0) timeout = 1000;
             console.log('MAIN.confirmed(selector, success, timeout)', selector, success, timeout);
             $(selector).addClass(className);
@@ -23,7 +23,7 @@ define(
             MAIN.signal(o.payload, true);
             MAIN.spinnerGrid(true);
             $.ajax({
-                url: URL.fileUrl("/blocks/eduvidual/ajax/ajax.php", ""),
+                url: URL.fileUrl("/local/eduvidual/ajax/ajax.php", ""),
                 method: 'POST',
                 data: data,
             }).done(function(res){
@@ -46,14 +46,14 @@ define(
          * Commands a logout
         **/
         doLogout: function(){
-            var originallocation = localStorage.getItem('block_eduvidual_originallocation');
+            var originallocation = localStorage.getItem('local_eduvidual_originallocation');
             if (originallocation == null) originallocation = '';
-            top.location.href = URL.fileUrl('/blocks/eduvidual/pages/login_app.php', '') + '?dologout=1&originallocation=' + encodeURI(originallocation);
+            top.location.href = URL.fileUrl('/local/eduvidual/pages/login_app.php', '') + '?dologout=1&originallocation=' + encodeURI(originallocation);
         },
         navigate: function(urltogo) {
             if (urltogo.indexOf('#') == 0) return;
             var MAIN =  this;
-            require(['block_eduvidual/user'], function(USER) { USER.toggleSubmenu(false); });
+            require(['local_eduvidual/user'], function(USER) { USER.toggleSubmenu(false); });
             MAIN.spinnerGrid(true);
             console.log('Normal navigate to ', urltogo);
             location.href = urltogo;
@@ -65,7 +65,7 @@ define(
 
                 STR.get_strings([
                     {'key' : 'confirm', component: 'core' },
-                    {'key' : o.result.error, component: 'block_eduvidual' },
+                    {'key' : o.result.error, component: 'local_eduvidual' },
                 ]).done(function(s) {
                         NOTIFICATION.alert(s[1], s[0]);
                     }
@@ -74,7 +74,7 @@ define(
             var module = o.data.module;
             // @todo maybe change everything from "manage" to "manager"
             if (module == 'manage') { module = 'manager'; }
-            require(['block_eduvidual/' + module], function(MOD) { MOD.result(o); });
+            require(['local_eduvidual/' + module], function(MOD) { MOD.result(o); });
         },
         /**
          * Calls a page in embedded layout and displays it as modal.
@@ -82,7 +82,7 @@ define(
         popPage: function(page, params) {
             if (typeof params === 'undefined') params = '?';
             //params += '&embed=1';
-            var url = URL.fileUrl("/blocks/eduvidual/pages/" + page + ".php", params);
+            var url = URL.fileUrl("/local/eduvidual/pages/" + page + ".php", params);
             console.log('popPage ', url);
             $.get(url)
                 .done(function(body) {
@@ -103,14 +103,14 @@ define(
             console.log('MAIN.signal(payload, to, success)', payload, to, success);
             if (typeof payload !== 'undefined' && typeof payload.signalItem !== 'undefined') {
                 if (typeof to !== 'undefined' && to) {
-                    $(payload.signalItem).addClass('block_eduvidual_signal');
+                    $(payload.signalItem).addClass('local_eduvidual_signal');
                 } else {
-                    $(payload.signalItem).removeClass('block_eduvidual_signal');
+                    $(payload.signalItem).removeClass('local_eduvidual_signal');
                 }
                 if (typeof success !== 'undefined') {
-                    $(payload.signalItem).addClass('block_eduvidual_signal_' + ((success)?'success':'error'));
+                    $(payload.signalItem).addClass('local_eduvidual_signal_' + ((success)?'success':'error'));
                     setTimeout(function(){
-                        $(payload.signalItem).removeClass('block_eduvidual_signal_' + ((success)?'success':'error'));
+                        $(payload.signalItem).removeClass('local_eduvidual_signal_' + ((success)?'success':'error'));
                     },1000);
                 }
             }

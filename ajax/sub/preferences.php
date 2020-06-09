@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package    block_eduvidual
+ * @package    local_eduvidual
  * @copyright  2018 Digital Education Society (http://www.dibig.at)
  * @author     Robert Schrenk
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -30,7 +30,7 @@ switch ($act) {
             $reply['error'] = 'guestuser:nopermission';
         } else {
             $background = str_replace('none', '', str_replace($CFG->wwwroot, '', optional_param('background', '', PARAM_TEXT)));
-			$chk = set_user_preference('block_eduvidual_background', $background);
+			$chk = set_user_preference('local_eduvidual_background', $background);
             if ($chk) {
                 $reply['status'] = 'ok';
             } else {

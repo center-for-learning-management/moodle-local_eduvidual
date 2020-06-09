@@ -16,7 +16,7 @@
 }}
 
 {{#ismanager}}
-    <p class="info">{{#str}} createcourse:hint_orgclasses, block_eduvidual {{/str}}</p>
+    <p class="info">{{#str}} createcourse:hint_orgclasses, local_eduvidual {{/str}}</p>
 {{/ismanager}}
 
 <form id="{{uniqid}}-form" action="{{wwwroot}}" method="POST" enctype="multipart/form-data">
@@ -28,7 +28,7 @@
         {{#multipleorgs}}
         <tr>
             <td width="200">
-                {{#str}} createcourse:org, block_eduvidual {{/str}}
+                {{#str}} createcourse:org, local_eduvidual {{/str}}
             </td>
             <td width="20" class="requirement">
                 <span class="float-sm-right text-nowrap">
@@ -40,7 +40,7 @@
             <td>
                 <select id="{{uniqid}}-orgid" name="orgid" style="width: 100%;"
                     {{! onchange="require(['jquery'], function($) { $('#{{uniqid} }-formsent').val('0'); $('#{{uniqid} }-form').submit(); });"> }}
-                    onchange="require(['block_eduvidual/teacher'], function(T) { T.createCourseSelections('{{uniqid}}'); });">
+                    onchange="require(['local_eduvidual/teacher'], function(T) { T.createCourseSelections('{{uniqid}}'); });">
                     {{#orgs}}
                     <option value="{{orgid}}" {{#isselected}} selected="selected" {{/isselected}}>({{orgid}}) {{name}}</option>
                     {{/orgs}}
@@ -51,7 +51,7 @@
         {{^multipleorgs}}
         <tr>
             <td colspan="2">
-                {{#str}} createcourse:org, block_eduvidual {{/str}}
+                {{#str}} createcourse:org, local_eduvidual {{/str}}
             </td>
             <td>
                 {{#orgs}}
@@ -74,7 +74,7 @@
             <td>
                 {{#has_subcats1}}
                     <select id="{{uniqid}}-subcat1" name="subcat1" style="width: 100%;"
-                        onchange="require(['block_eduvidual/teacher'], function(T) { T.createCourseSelections('{{uniqid}}'); });">
+                        onchange="require(['local_eduvidual/teacher'], function(T) { T.createCourseSelections('{{uniqid}}'); });">
                         {{#subcats1}}
                         <option>{{.}}</option>
                         {{/subcats1}}
@@ -82,7 +82,7 @@
                 {{/has_subcats1}}
                 {{^has_subcats1}}
                     <input id="{{uniqid}}-subcat1" name="subcat1" size="5" style="width: 100%;"
-                        onkeyup="var i = this; require(['block_eduvidual/main', 'block_eduvidual/teacher'], function(M, TEACHER) { M.watchValue({ target: $(i), run: function() { TEACHER.createCourseSelections('{{uniqid}}'); } }); });"/>
+                        onkeyup="var i = this; require(['local_eduvidual/main', 'local_eduvidual/teacher'], function(M, TEACHER) { M.watchValue({ target: $(i), run: function() { TEACHER.createCourseSelections('{{uniqid}}'); } }); });"/>
                 {{/has_subcats1}}
             </td>
         </tr>
@@ -101,7 +101,7 @@
             <td>
                 {{#has_subcats2}}
                     <select id="{{uniqid}}-subcat2" name="subcat2" style="width: 100%;"
-                        onchange="require(['block_eduvidual/teacher'], function(T) { T.createCourseSelections('{{uniqid}}'); });">
+                        onchange="require(['local_eduvidual/teacher'], function(T) { T.createCourseSelections('{{uniqid}}'); });">
                         {{#subcats2}}
                         <option>{{.}}</option>
                         {{/subcats2}}
@@ -109,7 +109,7 @@
                 {{/has_subcats2}}
                 {{^has_subcats2}}
                     <input id="{{uniqid}}-subcat2" name="subcat2" size="5" style="width: 100%;"
-                        onkeyup="var i = this; require(['block_eduvidual/main', 'block_eduvidual/teacher'], function(M, TEACHER) { M.watchValue({ target: $(i), run: function() { TEACHER.createCourseSelections('{{uniqid}}'); } }); });"/>
+                        onkeyup="var i = this; require(['local_eduvidual/main', 'local_eduvidual/teacher'], function(M, TEACHER) { M.watchValue({ target: $(i), run: function() { TEACHER.createCourseSelections('{{uniqid}}'); } }); });"/>
                 {{/has_subcats2}}
             </td>
         </tr>
@@ -122,7 +122,7 @@
             <td>
                 {{#has_subcats3}}
                     <select id="{{uniqid}}-subcat3" name="subcat3" style="width: 100%;"
-                        onchange="require(['block_eduvidual/teacher'], function(T) { T.createCourseSelections('{{uniqid}}'); });">
+                        onchange="require(['local_eduvidual/teacher'], function(T) { T.createCourseSelections('{{uniqid}}'); });">
                         {{#subcats3}}
                         <option>{{.}}</option>
                         {{/subcats3}}
@@ -130,7 +130,7 @@
                 {{/has_subcats3}}
                 {{^has_subcats3}}
                     <input id="{{uniqid}}-subcat3" name="subcat3" size="5" style="width: 100%;"
-                        onkeyup="var i = this; require(['block_eduvidual/main', 'block_eduvidual/teacher'], function(M, TEACHER) { M.watchValue({ target: $(i), run: function() { TEACHER.createCourseSelections('{{uniqid}}'); } }); });"/>
+                        onkeyup="var i = this; require(['local_eduvidual/main', 'local_eduvidual/teacher'], function(M, TEACHER) { M.watchValue({ target: $(i), run: function() { TEACHER.createCourseSelections('{{uniqid}}'); } }); });"/>
                 {{/has_subcats3}}
             </td>
         </tr>
@@ -142,13 +142,13 @@
             <td class="requirement"></td>
             <td>
                 <input id="{{uniqid}}-subcat4" name="subcat4" size="5" placeholder="{{subcats4lbl}}" style="width: 100%;"
-                    onkeyup="var i = this; require(['block_eduvidual/main', 'block_eduvidual/teacher'], function(M, TEACHER) { M.watchValue({ target: $(i), run: function() { TEACHER.createCourseSelections('{{uniqid}}'); } }); });"/>
+                    onkeyup="var i = this; require(['local_eduvidual/main', 'local_eduvidual/teacher'], function(M, TEACHER) { M.watchValue({ target: $(i), run: function() { TEACHER.createCourseSelections('{{uniqid}}'); } }); });"/>
             </td>
         </tr>
 
         <tr class="{{uniqid}}-basement">
             <td colspan="2">
-                {{#str}} createcourse:basement, block_eduvidual {{/str}}
+                {{#str}} createcourse:basement, local_eduvidual {{/str}}
             </td>
             <td>
                 <select id="{{uniqid}}-basement" name="basement" style="width: 100%;"
@@ -189,7 +189,7 @@
         $('.summary-{{uniqid}}').css('display', 'none');
         $('#summary-{{uniqid}}-' + $('#{{uniqid}}-basement').val()).css('display', 'block');
     });
-    require(['block_eduvidual/teacher'], function(TEACHER) {
+    require(['local_eduvidual/teacher'], function(TEACHER) {
         TEACHER.createCourseSelections('{{uniqid}}');
     });
 {{/js}}

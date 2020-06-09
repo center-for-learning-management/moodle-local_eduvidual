@@ -15,20 +15,20 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package    local_edumessenger
+ * @package    local_eduvidual
  * @copyright  2017 Digital Education Society (http://www.dibig.at)
  * @author     Robert Schrenk
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace block_eduvidual\task;
+namespace local_eduvidual\task;
 
 defined('MOODLE_INTERNAL') || die;
 
-class block_eduvidual_trashbin extends \core\task\scheduled_task {
+class local_eduvidual_trashbin extends \core\task\scheduled_task {
     public function get_name() {
         // Shown in admin screens.
-        return get_string('cron:trashbin:title', 'block_eduvidual');
+        return get_string('cron:trashbin:title', 'local_eduvidual');
     }
 
     public function execute() {
@@ -36,7 +36,7 @@ class block_eduvidual_trashbin extends \core\task\scheduled_task {
         $PAGE->set_context(\context_system::instance());
 
         // Empty trashbin
-        $trashcategory = get_config('block_eduvidual', 'trashcategory');
+        $trashcategory = get_config('local_eduvidual', 'trashcategory');
         if ($trashcategory > 0) {
             require_once($CFG->dirroot . '/lib/coursecatlib.php');
             $categories = $DB->get_records('course_categories', array('parent' => $trashcategory));

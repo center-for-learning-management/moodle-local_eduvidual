@@ -14,15 +14,15 @@
     You should have received a copy of tde GNU General Public License
     along witd Moodle.  If not, see <http://www.gnu.org/licenses/>.
   }}
-<div class="block_eduvidual_admin_map" id="{{uniqid}}">
-    <h4>{{#str}} admin:map, block_eduvidual {{/str}}</h4>
+<div class="local_eduvidual_admin_map" id="{{uniqid}}">
+    <h4>{{#str}} admin:map, local_eduvidual {{/str}}</h4>
     <div id="{{uniqid}}-map" style="height: 400px; border: 1px solid #AAA;"></div>
     <input type="checkbox" id="{{uniqid}}-include-nonegroup"
-        onchange="require(['block_eduvidual/admin'], function(ADMIN) { ADMIN.org_gps('{{uniqid}}'); });"/>
-        <label for="{{uniqid}}-include-nonegroup">{{#str}} admin:map:includenonegroup, block_eduvidual {{/str}}</label>
+        onchange="require(['local_eduvidual/admin'], function(ADMIN) { ADMIN.org_gps('{{uniqid}}'); });"/>
+        <label for="{{uniqid}}-include-nonegroup">{{#str}} admin:map:includenonegroup, local_eduvidual {{/str}}</label>
     <input type="checkbox" id="{{uniqid}}-count-invisibles"
-        onchange="require(['block_eduvidual/admin'], function(ADMIN) { ADMIN.org_gps_refresh('{{uniqid}}'); });"/>
-    <label for="{{uniqid}}-count-invisibles">{{#str}} admin:map:count_invisibles, block_eduvidual {{/str}}</label>
+        onchange="require(['local_eduvidual/admin'], function(ADMIN) { ADMIN.org_gps_refresh('{{uniqid}}'); });"/>
+    <label for="{{uniqid}}-count-invisibles">{{#str}} admin:map:count_invisibles, local_eduvidual {{/str}}</label>
     <div id="{{uniqid}}-legend" style="height: unset; /*position: absolute; margin-top: 2px; margin-left: 1px; */ z-index: 999;  background-color: rgba(255, 255,255, 0.8); overflow: hidden;">
         <div class="grid-eq-{{filters_count}}">
             {{#filters}}
@@ -38,7 +38,7 @@
                         <th>
                             <input type="checkbox" id="{{uniqid}}-trigger-{{key}}" class="trigger" data-trigger-key="{{key}}" data-filterid="{{filterid}}"
                                 {{#checked}} checked="checked" {{/checked}}
-                                onchange="require(['block_eduvidual/admin'], function(ADMIN) { ADMIN.org_gps_refresh('{{uniqid}}'); });"/>
+                                onchange="require(['local_eduvidual/admin'], function(ADMIN) { ADMIN.org_gps_refresh('{{uniqid}}'); });"/>
                             </a>
                         </th>
                         <th class="{{key}}"><label for="{{uniqid}}-trigger-{{key}}">{{{icon}}}{{label}}</label></th>
@@ -54,7 +54,7 @@
             <a href="#" onclick="var a = this; var h = a.offsetHeight; require(['jquery'], function($) { $(a).toggleClass('minified'); $('#{{uniqid}}-legend').css('height', $(a).hasClass('minified') ? h + 'px' : 'unset'); } ); return false;" style="float: right;">
                 {{#pix}} t/switch_whole, core, show info {{/pix}}
             </a>
-            <a href="#" onclick="require(['block_eduvidual/admin'], function(ADMIN) { ADMIN.org_gps_refresh('{{uniqid}}'); }); return false;" style="float: right;">
+            <a href="#" onclick="require(['local_eduvidual/admin'], function(ADMIN) { ADMIN.org_gps_refresh('{{uniqid}}'); }); return false;" style="float: right;">
                 {{#pix}} i/reload, core, reload {{/pix}}
             </a>
         </div>
@@ -63,7 +63,7 @@
 </div>
 
 {{#js}}
-require(['block_eduvidual/admin', 'block_eduvidual/leaflet'], function(ADMIN) {
+require(['local_eduvidual/admin', 'local_eduvidual/leaflet'], function(ADMIN) {
     ADMIN.org_gps("{{uniqid}}");
 });
 {{/js}}

@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package    block_eduvidual
+ * @package    local_eduvidual
  * @copyright  2017 Digital Education Society (http://www.dibig.at)
  * @author     Robert Schrenk
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -34,7 +34,7 @@ $observers = array();
 foreach ($events AS $event) {
     $observers[] = array(
             'eventname' => $event,
-            'callback' => '\block_eduvidual\eduvidual_observer::event',
+            'callback' => '\local_eduvidual\eduvidual_observer::event',
             'priority' => 9999,
         );
 }

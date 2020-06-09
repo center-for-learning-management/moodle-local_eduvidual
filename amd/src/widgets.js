@@ -1,4 +1,4 @@
-define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'block_eduvidual/main'], function($, AJAX, NOTIFICATION, STR, URL, MAIN) {
+define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'local_eduvidual/main'], function($, AJAX, NOTIFICATION, STR, URL, MAIN) {
     return {
         widgets: [],
         currentQRScanner: undefined,
@@ -46,7 +46,7 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'blo
                         console.log(this);
                         $(this.panel).attr('data-widgetid', this.widgetid);
                         this.layer = $('<div>').
-                            attr('onclick', 'require(["block_eduvidual/widgets"], function(WIDGETS) { WIDGETS.widgets[\'' + this.widgetid + '\'].run(); });').
+                            attr('onclick', 'require(["local_eduvidual/widgets"], function(WIDGETS) { WIDGETS.widgets[\'' + this.widgetid + '\'].run(); });').
                             addClass('eduvidual-widget-panel-layer widget-' + this.widgetid);
                         $('body').append(this.layer);
                         var that = this;
@@ -54,7 +54,7 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'blo
                             // In this block "this" is the jquery element.
                             if (!$(this).hasClass('widget-close-on-click')) {
                                 $(this).addClass('widget-close-on-click');
-                                var onclick = 'require(["block_eduvidual/widgets"], function(WIDGETS) { WIDGETS.widgets[\'' + that.widgetid + '\'].toggle(-1); %original% });';
+                                var onclick = 'require(["local_eduvidual/widgets"], function(WIDGETS) { WIDGETS.widgets[\'' + that.widgetid + '\'].toggle(-1); %original% });';
                                 if ($(this).is('[onclick]')) {
                                     onclick = onclick.replace('%original%', $(this)[0].getAttribute('onclick'));
                                 } else {
@@ -103,7 +103,7 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'blo
                 **/
                 create: function(title, text, def, runnable) {
                     this.runnable = runnable;
-                    this.container = $('<div>').addClass('block_eduvidual_prompt prompt_' + this.widgetid);
+                    this.container = $('<div>').addClass('local_eduvidual_prompt prompt_' + this.widgetid);
                     var div = $('<div>');
                     var header = $('<div>');
                     var main = $('<div>');
@@ -118,8 +118,8 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'blo
                     controls = controls.addClass('controls').attr('data-role', 'controlgroup');
                     this.input = $('<input>').attr('type', 'text').attr('value', def);
                     main.append(this.input);
-                    var ok = $('<a href="#" data-role="button" onclick="require([\'block_eduvidual/widgets\'], function(WIDGETS) { WIDGETS.widgets[\'' + this.widgetid + '\'].run(); });">').html('ok');
-                    var cancel = $('<a href="#" data-role="button" onclick="require([\'block_eduvidual/widgets\'], function(WIDGETS) { WIDGETS.widgets[\'' + this.widgetid + '\'].destroy(); });">').html('cancel');
+                    var ok = $('<a href="#" data-role="button" onclick="require([\'local_eduvidual/widgets\'], function(WIDGETS) { WIDGETS.widgets[\'' + this.widgetid + '\'].run(); });">').html('ok');
+                    var cancel = $('<a href="#" data-role="button" onclick="require([\'local_eduvidual/widgets\'], function(WIDGETS) { WIDGETS.widgets[\'' + this.widgetid + '\'].destroy(); });">').html('cancel');
                     controls.append([ok, cancel]);
                     div.append([header, main, controls]);
                     this.container.append(div);
@@ -155,7 +155,7 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'blo
                     var QRScanner = this;
 
                     STR.get_strings([
-                            {'key' : 'qrscan:cameratoobject', component: 'block_eduvidual' },
+                            {'key' : 'qrscan:cameratoobject', component: 'local_eduvidual' },
                         ]).done(function(s) {
                             cordova.plugins.barcodeScanner.scan(
                     			function(result){

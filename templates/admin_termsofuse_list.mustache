@@ -16,9 +16,9 @@
   }}
 
 
-<h4>{{#str}} admin:termsofuse, block_eduvidual {{/str}}</h4>
+<h4>{{#str}} admin:termsofuse, local_eduvidual {{/str}}</h4>
 
-<p><a href="{{wwwroot}}/blocks/eduvidual/pages/admin.php?act=termsofuse&id=-1">{{#str}} new {{/str}}</a></p>
+<p><a href="{{wwwroot}}/local/eduvidual/pages/admin.php?act=termsofuse&id=-1">{{#str}} new {{/str}}</a></p>
 
 <table width="100%">
     <thead>
@@ -26,8 +26,8 @@
             <th>#</th>
             <th>{{#str}} active {{/str}}</th>
             <th>{{#str}} locked {{/str}}</th>
-            <th>{{#str}} admin:termsofuse:role_pattern, block_eduvidual {{/str}}</th>
-            <th>{{#str}} admin:termsofuse:orgid_pattern, block_eduvidual {{/str}}</th>
+            <th>{{#str}} admin:termsofuse:role_pattern, local_eduvidual {{/str}}</th>
+            <th>{{#str}} admin:termsofuse:orgid_pattern, local_eduvidual {{/str}}</th>
             <th>{{#str}} created {{/str}}</th>
             <th>{{#str}} edit {{/str}}</th>
         </tr>
@@ -41,7 +41,7 @@
                 <td>{{role_pattern}}</td>
                 <td>{{orgid_pattern}}</td>
                 <td>{{created}}</td>
-                <td><a href="{{wwwroot}}/blocks/eduvidual/pages/admin.php?act=termsofuse&id={{id}}">{{#str}} edit {{/str}}</a></td>
+                <td><a href="{{wwwroot}}/local/eduvidual/pages/admin.php?act=termsofuse&id={{id}}">{{#str}} edit {{/str}}</a></td>
             </tr>
         {{/terms}}
     </tbody>

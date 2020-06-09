@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package    block_eduvidual
+ * @package    local_eduvidual
  * @copyright  2018 Digital Education Society (http://www.dibig.at)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -26,14 +26,14 @@ if (!is_siteadmin()) die;
 // This file is included from admin_modulecats.php and we have a $categoryid
 
 ?>
-<h4><?php echo get_string('admin:modulecat:edit', 'block_eduvidual'); ?></h4>
+<h4><?php echo get_string('admin:modulecat:edit', 'local_eduvidual'); ?></h4>
 <?php
 
 $draftitemid = file_get_submitted_draft_itemid('modulecat');
-file_prepare_draft_area($draftitemid, $context->id, 'block_eduvidual', 'modulecat', $categoryid,
+file_prepare_draft_area($draftitemid, $context->id, 'local_eduvidual', 'modulecat', $categoryid,
     array('subdirs' => $categoryform->subdirs, 'maxbytes' => $categoryform->maxbytes, 'maxfiles' => $categoryform->maxfiles));
 
-$entry = $DB->get_record('block_eduvidual_modulescat', array('id' => $categoryid));
+$entry = $DB->get_record('local_eduvidual_modulescat', array('id' => $categoryid));
 $entry->act = $act;
 if (isset($parentid) && $parentid > 0)  {
     $entry->parentid = $parentid;

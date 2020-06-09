@@ -28,7 +28,7 @@ body.eduvidual-default-bg {
 }
 div[data-role="page"] {
     position: unset !important;
-    .block_eduvidual_mainmenu {
+    .local_eduvidual_mainmenu {
         position: fixed; bottom: 0; left: 50%;
         transform: translate(-50%, 50%);
         width: 80px; height: 80px;
@@ -45,7 +45,7 @@ div[data-role="page"] {
             text-decoration: none;
         }
     }
-    .block_eduvidual_submenu {
+    .local_eduvidual_submenu {
         padding: 10px 30px 50px 15px;
         border: 1px solid darkgray;
         border-top-left-radius: 15px;
@@ -76,7 +76,7 @@ div[data-role="page"] {
             border-top: 1px solid darkgray;
         }
     }
-    .block_eduvidual_submenu_wrapper {
+    .local_eduvidual_submenu_wrapper {
         position: fixed; bottom: 0px; left: 50%;
         z-index: 998;
         padding-bottom: 40px;
@@ -86,16 +86,16 @@ div[data-role="page"] {
         /* width: 90%; */
         width: auto;
     }
-    .block_eduvidual_submenu_wrapper.opened {
+    .local_eduvidual_submenu_wrapper.opened {
         transform: translate(-50%, 40px);
     }
 }
 
-.block-eduvidual-transition-all {
+.local-eduvidual-transition-all {
     transition: all 1s ease-out;
 }
 
-.block-eduvidual-height-no {
+.local-eduvidual-height-no {
     height: 0 !important;
     max-height: 0 !important;
     padding: 0 !important;
@@ -104,62 +104,62 @@ div[data-role="page"] {
     overflow: hidden;
 }
 
-.block-eduvidual-ui-list-orgs p {
+.local-eduvidual-ui-list-orgs p {
     display: inline-block;
 }
 
-.block_eduvidual_controlgroup {
+.local_eduvidual_controlgroup {
     display: inline-block;
     border: 1px solid darkgray;
     border-radius: 5px;
     padding-bottom: 2px;
 }
 
-.block_eduvidual_admin_modulescat_cat {
+.local_eduvidual_admin_modulescat_cat {
     display: inline-block;
     width: calc(50% - 5px);
 }
-.block_eduvidual_admin_modulescat_module {
+.local_eduvidual_admin_modulescat_module {
     display: inline-block;
     width: calc(50% - 5px);
     vertical-align: top;
 }
 
 @media (max-width: 600px) {
-    .block_eduvidual_admin_modulescat_cat {
+    .local_eduvidual_admin_modulescat_cat {
         width: calc(100%);
     }
-    .block_eduvidual_admin_modulescat_module {
+    .local_eduvidual_admin_modulescat_module {
         width: calc(100%);
     }
 }
 
-.block_eduvidual_admin_modulescat_cat ul .inactive a, .block_eduvidual_admin_modulescat_module ul .inactive a {
+.local_eduvidual_admin_modulescat_cat ul .inactive a, .local_eduvidual_admin_modulescat_module ul .inactive a {
     color: rgba(200, 0, 0, 1) !important;
 }
-.block_eduvidual_admin_modulescat_cat ul .active a, .block_eduvidual_admin_modulescat_module ul .active a {
+.local_eduvidual_admin_modulescat_cat ul .active a, .local_eduvidual_admin_modulescat_module ul .active a {
     color: rgba(0, 100, 0, 1) !important;
 }
-.block_eduvidual_admin_modulescat_cat ul .current a, .block_eduvidual_admin_modulescat_module ul .current a {
+.local_eduvidual_admin_modulescat_cat ul .current a, .local_eduvidual_admin_modulescat_module ul .current a {
     color: rgba(200, 100, 0, 1) !important;
 }
 
 
 
-.block_eduvidual_iframe {
+.local_eduvidual_iframe {
     position: fixed; top: 10px; right: 10px; bottom: 10px; left: 10px;
 }
-.block_eduvidual_iframe_back {
+.local_eduvidual_iframe_back {
     position: fixed; bottom: 5px; left: 5px;
 }
 
 
-#block_eduvidual_user_courselist li.inactive>a:last-child>img {
+#local_eduvidual_user_courselist li.inactive>a:last-child>img {
     filter: drop-shadow(3px 3px 3px rgba(255, 3, 6, 1));
 }
 
 
-.block_eduvidual_prompt {
+.local_eduvidual_prompt {
     position: fixed;
     top: 0px; right: 0px; bottom: 0px; left: 0px;
     background-color: rgba(50, 50, 50, 0.7);
@@ -194,16 +194,16 @@ div[data-role="page"] {
     }
 }
 
-.block_eduvidual_signal {
+.local_eduvidual_signal {
     filter: blur(5px) !important;
 }
-.block_eduvidual_signal_success {
+.local_eduvidual_signal_success {
     background-color: rgba(0, 255, 0, 0.1) !important;
 }
-.block_eduvidual_signal_error {
+.local_eduvidual_signal_error {
     background-color: rgba(255, 0, 0, 0.1) !important;
 }
-.block_eduvidual_signal_success *, .block_eduvidual_signal_error * {
+.local_eduvidual_signal_success *, .local_eduvidual_signal_error * {
     background-color: inherit !important;
 }
 
@@ -224,13 +224,13 @@ p.accessbox {
     margin: 10px;
 }
 
-.block_eduvidual_inactive, .block_eduvidual_inactive * {
+.local_eduvidual_inactive, .local_eduvidual_inactive * {
     color: darkgray !important;
 }
 
 
 /* Fix inline-block for images in eduvidual-block */
-.block.block_eduvidual {
+.block.local_eduvidual {
     .content {
         margin-top: 0 !important;
     }
@@ -322,7 +322,7 @@ p.accessbox {
     margin-bottom: -1px;
 }
 
-#block_eduvidual_overlay {
+#local_eduvidual_overlay {
     position: fixed; top: 0px; right: 0px; bottom: 0px; left: 0px;
     z-index: 999999;
     background-color: rgba(0, 0, 0, 0.2);
@@ -347,7 +347,7 @@ textarea {
 }
 
 
-#block_eduvidual_preferences_background {
+#local_eduvidual_preferences_background {
     &>span {
         display: inline-block;
         width: 50px;

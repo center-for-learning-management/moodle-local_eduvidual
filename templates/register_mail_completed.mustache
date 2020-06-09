@@ -14,7 +14,7 @@
     You should have received a copy of the GNU General Public License
     along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 }}
-{{> block_eduvidual/mail_header }}
-<p>{{#str}} mailregister:2:text, block_eduvidual, { "orgid": "{{orgid}}", "managerscourseurl": "{{managerscourseurl}}"} {{/str}}</p>
-<p>{{#str}} mailregister:2:gotocategory, block_eduvidual, { "categoryurl": "{{categoryurl}}", "orgname": "{{orgname}}"} {{/str}}</p>
-{{> block_eduvidual/mail_footer }}
+{{> local_eduvidual/mail_header }}
+<p>{{#str}} mailregister:2:text, local_eduvidual, { "orgid": "{{orgid}}", "managerscourseurl": "{{managerscourseurl}}"} {{/str}}</p>
+<p>{{#str}} mailregister:2:gotocategory, local_eduvidual, { "categoryurl": "{{categoryurl}}", "orgname": "{{orgname}}"} {{/str}}</p>
+{{> local_eduvidual/mail_footer }}

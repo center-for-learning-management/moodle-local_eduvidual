@@ -15,13 +15,13 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package    block_eduvidual
+ * @package    local_eduvidual
  * @copyright  2017 Digital Education Society (http://www.dibig.at)
  * @author     Robert Schrenk
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace block_eduvidual;
+namespace local_eduvidual;
 
 defined('MOODLE_INTERNAL') || die;
 
@@ -144,9 +144,9 @@ class lib_helper {
         global $CFG, $DB, $USER;
         $orgmenus = array();
         $fields = array("name", "url", "target", "roles");
-        $memberships = $DB->get_records('block_eduvidual_orgid_userid', array('userid' => $USER->id));
+        $memberships = $DB->get_records('local_eduvidual_orgid_userid', array('userid' => $USER->id));
         foreach($memberships as $membership){
-            $org = $DB->get_record('block_eduvidual_org', array('orgid' => $membership->orgid));
+            $org = $DB->get_record('local_eduvidual_org', array('orgid' => $membership->orgid));
             $entries = explode("\n", $org->orgmenu);
             if (count($entries) > 0) {
                 $orgmenu = array(
@@ -154,7 +154,7 @@ class lib_helper {
                     'name' => $org->name,
                     'orgid' => $org->orgid,
                     'url' => $CFG->wwwroot . '/course/index.php?categoryid=' . $org->categoryid,
-                    'urlmanagement' => ($membership->role == 'Manager') ? $CFG->wwwroot . '/blocks/eduvidual/pages/manage.php?orgid=' . $org->orgid : '',
+                    'urlmanagement' => ($membership->role == 'Manager') ? $CFG->wwwroot . '/local/eduvidual/pages/manage.php?orgid=' . $org->orgid : '',
                 );
                 foreach ($entries AS $entry) {
                     $entry = explode("|", $entry);

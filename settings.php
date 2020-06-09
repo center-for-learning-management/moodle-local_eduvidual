@@ -15,50 +15,52 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package    block_eduvidual
+ * @package    local_eduvidual
  * @copyright  2019 Digital Education Society (http://www.dibig.at)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
 */
 
 defined('MOODLE_INTERNAL') || die;
 
-if ($ADMIN->fulltree) {
-    require_once($CFG->dirroot . '/blocks/eduvidual/block_eduvidual.php');
-    if (optional_param('section', '', PARAM_TEXT) == 'blocksettingeduvidual') {
-        $PAGE->requires->css('/blocks/eduvidual/style/main.css');
+if ($hassiteconfig) {
+    $settings = new admin_settingpage( 'local_eduvidual_settings', ''); // We ommit the label, so that it does not show the heading.
+    $ADMIN->add('localplugins', new admin_category('local_eduvidual', get_string('pluginname', 'local_eduvidual')));
+    $ADMIN->add('local_eduvidual', $settings);
+    if (optional_param('category', '', PARAM_TEXT) == 'local_eduvidual') {
+        $PAGE->requires->css('/local/eduvidual/style/main.css');
     }
-    $actions = block_eduvidual::get_actions('admin');
+    $actions = \local_eduvidual\locallib::get_actions('admin');
     $links = "<div class=\"grid-eq-3\">";
     foreach($actions AS $action => $name) {
-        $links .= '<a class="btn" href="' . $CFG->wwwroot . '/blocks/eduvidual/pages/admin.php?act=' . $action . '">' . get_string($name, 'block_eduvidual') . '</a>';
+        $links .= '<a class="btn" href="' . $CFG->wwwroot . '/local/eduvidual/pages/admin.php?act=' . $action . '">' . get_string($name, 'local_eduvidual') . '</a>';
     }
     $links .= "</div>";
-    $settings->add(new admin_setting_heading('block_eduvidual_actions', get_string('action', 'block_eduvidual'), $links));
+    $settings->add(new admin_setting_heading('local_eduvidual_actions', get_string('action', 'local_eduvidual'), $links));
 
-    $settings->add(new admin_setting_heading('block_eduvidual_others', get_string('other'), ''));
+    $settings->add(new admin_setting_heading('local_eduvidual_others', get_string('other'), ''));
     $settings->add(
         new admin_setting_configtext(
-            'block_eduvidual/supportcourse_template',
-            get_string('admin:supportcourse_template', 'block_eduvidual'),
-            get_string('admin:supportcourse_template:description', 'block_eduvidual'),
+            'local_eduvidual/supportcourse_template',
+            get_string('admin:supportcourse_template', 'local_eduvidual'),
+            get_string('admin:supportcourse_template:description', 'local_eduvidual'),
             '',
             PARAM_INT
         )
     );
     $settings->add(
         new admin_setting_configtext(
-            'block_eduvidual/mapquest_apikey',
-            get_string('admin:map:mapquest:apikey', 'block_eduvidual'),
-            get_string('admin:map:mapquest:apikey:description', 'block_eduvidual'),
+            'local_eduvidual/mapquest_apikey',
+            get_string('admin:map:mapquest:apikey', 'local_eduvidual'),
+            get_string('admin:map:mapquest:apikey:description', 'local_eduvidual'),
             '',
             PARAM_TEXT
         )
     );
     $settings->add(
         new admin_setting_configtext(
-            'block_eduvidual/google_apikey',
-            get_string('admin:map:google:apikey', 'block_eduvidual'),
-            get_string('admin:map:google:apikey:description', 'block_eduvidual'),
+            'local_eduvidual/google_apikey',
+            get_string('admin:map:google:apikey', 'local_eduvidual'),
+            get_string('admin:map:google:apikey:description', 'local_eduvidual'),
             '',
             PARAM_TEXT
         )

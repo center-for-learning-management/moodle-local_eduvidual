@@ -15,13 +15,14 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package   block_eduvidual
+ * @package   local_eduvidual
  * @copyright 2017 Digital Education Society (http://www.dibig.at)
  * @author    Robert Schrenk
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 $string['pluginname'] = 'eduvidual';
+$string['pluginname:settings'] = 'eduvidual configuration';
 $string['manage'] = 'eduvidual Management-Interface';
 
 $string['access_denied'] = 'Access denied';
@@ -84,7 +85,7 @@ $string['admin:formmodificator:removenotice'] = 'Remove a line by clearing the t
 $string['admin:formmodificator:roleids'] = 'Role-IDs';
 $string['admin:formmodificator:types'] = 'Types';
 $string['admin:globalfiles:title'] = 'Global Files';
-$string['admin:globalfiles:description'] = 'Upload global files here. The path is /pluginfile.php/1/block_eduvidual/globalfiles/0/{directories}/{filename}';
+$string['admin:globalfiles:description'] = 'Upload global files here. The path is /pluginfile.php/1/local_eduvidual/globalfiles/0/{directories}/{filename}';
 $string['admin:ltiresourcekey:title'] = 'Default LTI Resource Key';
 $string['admin:ltiresourcekey:description'] = 'When manageing LTI Resources through this tool you should ensure, that you are using the same resource key for the same platforms. You can specify the default value here.';
 $string['admin:map'] = 'Interactive Org-Map';
@@ -229,7 +230,7 @@ $string['defaultroles:refreshroles'] = 'Re-Assign Roles in course categories';
 $string['edutube:edutubeauthurl'] = 'eduTube Auth URL';
 $string['edutube:edutubeauthtoken'] = 'eduTube Auth Token';
 $string['edutube:invalid_url'] = 'Invalid URL received ({$a->url}). Redirect to edutube.at not possible.';
-$string['edutube:no_org'] = 'Sorry, you are not assigned to any organization as student or teacher. Please contact the eduvidual-Manager of your organization, so that a role is assigned to you.<br /><br />If your organization is not yet registered in eduvidual.at, you can do this on the <a href="{$a->wwwroot}/blocks/eduvidual/pages/register.php">registration page</a> and start using edutube.at immediately!';
+$string['edutube:no_org'] = 'Sorry, you are not assigned to any organization as student or teacher. Please contact the eduvidual-Manager of your organization, so that a role is assigned to you.<br /><br />If your organization is not yet registered in eduvidual.at, you can do this on the <a href="{$a->wwwroot}/local/eduvidual/pages/register.php">registration page</a> and start using edutube.at immediately!';
 $string['edutube:title'] = 'eduTube';
 $string['edutube:missing_configuration'] = 'eduTube was not yet configured';
 
@@ -272,10 +273,10 @@ $string['createcourse:coursenameemptyerror'] = 'Coursename is empty';
 $string['createcourse:created'] = 'Course successfully created';
 $string['createcourse:createerror'] = 'Course could not be created';
 $string['createcourse:extra'] = 'Extra';
-$string['createcourse:hint_orgclasses'] = 'Hint: As eduvidual-manager you can specify which classes and topics are available in the <a href="/blocks/eduvidual/pages/manage.php?act=classes">management-interface</a>!';
+$string['createcourse:hint_orgclasses'] = 'Hint: As eduvidual-manager you can specify which classes and topics are available in the <a href="/local/eduvidual/pages/manage.php?act=classes">management-interface</a>!';
 $string['createcourse:invalidbasement'] = 'Invalid template';
 $string['createcourse:org'] = 'Organization';
-$string['createcourse:here'] = 'Create course here';
+$string['createcourse:here'] = 'Create course';
 $string['createcourse:name'] = 'Name of course';
 $string['createcourse:nameinfo'] = 'We recommend using a name that contains the year when the course is used. On the long run this allows you keep an overview over all your courses!';
 $string['createcourse:nametooshort'] = 'Name too short';
@@ -304,7 +305,7 @@ $string['imprint'] = 'Imprint';
 $string['mailregister:confirmation'] = 'Confirmation';
 $string['mailregister:confirmation:mailsent'] = 'Email was sent!';
 $string['mailregister:footer'] = 'Kind regards';
-$string['mailregister:footer:signature'] = '<img src="https://www.eduvidual.at/pluginfile.php/1/block_eduvidual/globalfiles/0/_sys/register/signature.png" width="200" alt="" /><br />Robert Schrenk';
+$string['mailregister:footer:signature'] = '<img src="https://www.eduvidual.at/pluginfile.php/1/local_eduvidual/globalfiles/0/_sys/register/signature.png" width="200" alt="" /><br />Robert Schrenk';
 $string['mailregister:header'] = 'Registration';
 $string['mailregister:proceed'] = 'To proceed with your registration procedure please click this <a href="{$a->registrationurl}" target="_blank">link</a>!';
 $string['mailregister:text'] = '<a href="{$a->wwwroot}/user/profile.php?id={$a->userid}">{$a->userfullname}</a> registered your organisation with the ID <b>{$a->orgid}</b> in our moodle instance. If you do not know whats going on please just ignore this mail. If you are the person in charge for registration please forward this token to the person that started the registration process:';
@@ -313,7 +314,7 @@ $string['mailregister:2:gotocategory'] = 'The area of your organisation resides 
 $string['mailregister:2:header'] = 'Registration completed';
 $string['mailregister:2:text'] = 'Registration of a new organisation with orgid {$a->orgid} has been completed.  Please find more information about the management of your schools-area in our course for <a href="{$a->managerscourseurl}">eduvidual-managers</a>!';
 $string['mailregister:2:footer'] = 'Kind regards';
-$string['mailregister:2:footer:signature'] = '<img src="https://www.eduvidual.at/pluginfile.php/1/block_eduvidual/globalfiles/0/_sys/register/signature.png" width="200" alt="" /><br />Robert Schrenk';
+$string['mailregister:2:footer:signature'] = '<img src="https://www.eduvidual.at/pluginfile.php/1/local_eduvidual/globalfiles/0/_sys/register/signature.png" width="200" alt="" /><br />Robert Schrenk';
 $string['mailregister:2:subject'] = 'Registration completed';
 
 $string['mainmenu'] = 'Mainmenu';
@@ -321,7 +322,7 @@ $string['mainmenu'] = 'Mainmenu';
 $string['manage:accesscodes'] = 'Accesscodes';
 $string['manage:accesscodes:create'] = 'Create accesscode';
 $string['manage:accesscodes:code'] = 'Input a code or passphrase';
-$string['manage:accesscodes:description'] = 'You can create various Accesscodes to allow users to enrol themselves to your organisation through the function "<a href="{$a->wwwroot}/blocks/eduvidual/pages/accesscard.php">Accesscard</a> from the eduvidual-block"!';
+$string['manage:accesscodes:description'] = 'You can create various Accesscodes to allow users to enrol themselves to your organisation through the function "<a href="{$a->wwwroot}/local/eduvidual/pages/accesscard.php">Accesscard</a> from the eduvidual-block"!';
 $string['manage:accesscodes:issuer'] = 'Issuer';
 $string['manage:accesscodes:issuer:short'] = 'by';
 $string['manage:accesscodes:maturity'] = 'Maturity (YYYY-mm-dd HH:ii:ss)';
@@ -479,20 +480,20 @@ $string['print'] = 'Print';
 
 $string['privacy'] = 'Privacy';
 
-$string['privacy:metadata:privacy:metadata:block_eduvidual_courseshow'] = 'Stores for app-mode course list which courses you want to hide or show.';
-$string['privacy:metadata:privacy:metadata:block_eduvidual_orgid_userid'] = 'Stores your memberships and role in various organizations';
-$string['privacy:metadata:privacy:metadata:block_eduvidual_userbunch'] = 'Used by organizations to group accesscars for printing.';
-$string['privacy:metadata:privacy:metadata:block_eduvidual_userbunch:orgid'] = 'The ID of the organization';
-$string['privacy:metadata:privacy:metadata:block_eduvidual_userbunch:bunch'] = 'The group you are assigned to';
-$string['privacy:metadata:privacy:metadata:block_eduvidual_userextra'] = 'Personal extra settings';
-$string['privacy:metadata:privacy:metadata:block_eduvidual_userextra:background'] = 'The personal background';
-$string['privacy:metadata:privacy:metadata:block_eduvidual_userextra:backgroundcard'] = 'The background of the accesscard';
-$string['privacy:metadata:privacy:metadata:block_eduvidual_userextra:defaultorg'] = 'The default organization (if user is member of more than one organization)';
-$string['privacy:metadata:privacy:metadata:block_eduvidual_userqcats'] = 'The core question categories that should appear.';
-$string['privacy:metadata:privacy:metadata:block_eduvidual_usertoken'] = 'User-Tokens for auto-login';
-$string['privacy:metadata:privacy:metadata:block_eduvidual_usertoken:token'] = 'The token';
-$string['privacy:metadata:privacy:metadata:block_eduvidual_usertoken:created'] = 'The time when the token was created';
-$string['privacy:metadata:privacy:metadata:block_eduvidual_usertoken:used'] = 'The time when the token was used';
+$string['privacy:metadata:privacy:metadata:local_eduvidual_courseshow'] = 'Stores for app-mode course list which courses you want to hide or show.';
+$string['privacy:metadata:privacy:metadata:local_eduvidual_orgid_userid'] = 'Stores your memberships and role in various organizations';
+$string['privacy:metadata:privacy:metadata:local_eduvidual_userbunch'] = 'Used by organizations to group accesscars for printing.';
+$string['privacy:metadata:privacy:metadata:local_eduvidual_userbunch:orgid'] = 'The ID of the organization';
+$string['privacy:metadata:privacy:metadata:local_eduvidual_userbunch:bunch'] = 'The group you are assigned to';
+$string['privacy:metadata:privacy:metadata:local_eduvidual_userextra'] = 'Personal extra settings';
+$string['privacy:metadata:privacy:metadata:local_eduvidual_userextra:background'] = 'The personal background';
+$string['privacy:metadata:privacy:metadata:local_eduvidual_userextra:backgroundcard'] = 'The background of the accesscard';
+$string['privacy:metadata:privacy:metadata:local_eduvidual_userextra:defaultorg'] = 'The default organization (if user is member of more than one organization)';
+$string['privacy:metadata:privacy:metadata:local_eduvidual_userqcats'] = 'The core question categories that should appear.';
+$string['privacy:metadata:privacy:metadata:local_eduvidual_usertoken'] = 'User-Tokens for auto-login';
+$string['privacy:metadata:privacy:metadata:local_eduvidual_usertoken:token'] = 'The token';
+$string['privacy:metadata:privacy:metadata:local_eduvidual_usertoken:created'] = 'The time when the token was created';
+$string['privacy:metadata:privacy:metadata:local_eduvidual_usertoken:used'] = 'The time when the token was used';
 
 $string['qrscan:cameratoobject'] = 'Now focus your camery on the QR code!';
 $string['questioncategoryfilter:label'] = 'Categoryfilter';

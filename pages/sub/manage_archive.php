@@ -15,14 +15,14 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package    block_eduvidual
+ * @package    local_eduvidual
  * @copyright  2018 Digital Education Society (http://www.dibig.at)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die;
 
-$trashcategory = get_config('block_eduvidual', 'trashcategory');
+$trashcategory = get_config('local_eduvidual', 'trashcategory');
 
 $step = 0;
 $source = optional_param_array("source", array(), PARAM_INT);
@@ -37,20 +37,20 @@ if (count($source) > 0 && $target > 0 && $confirmation > 0) $step = 3;
 ?>
 
 <div class="card eduvidual-courses-progress">
-	<div><a href="<?php echo $CFG->wwwroot; ?>/blocks/eduvidual/pages/manage.php?act=<?php echo $act; ?>&orgid=<?php echo $org->orgid; ?>">
-        <?php echo get_string('manage:archive:restart', 'block_eduvidual'); ?>
+	<div><a href="<?php echo $CFG->wwwroot; ?>/local/eduvidual/pages/manage.php?act=<?php echo $act; ?>&orgid=<?php echo $org->orgid; ?>">
+        <?php echo get_string('manage:archive:restart', 'local_eduvidual'); ?>
     </a></div>
 	<div<?php echo (($step==0)?" class=\"active\"":""); ?>>
-        <?php echo get_string('manage:archive:source', 'block_eduvidual'); ?>
+        <?php echo get_string('manage:archive:source', 'local_eduvidual'); ?>
     </div>
 	<div<?php echo (($step==1)?" class=\"active\"":""); ?>>
-        <?php echo get_string('manage:archive:target', 'block_eduvidual'); ?>
+        <?php echo get_string('manage:archive:target', 'local_eduvidual'); ?>
     </div>
 	<div<?php echo (($step==2)?" class=\"active\"":""); ?>>
-        <?php echo get_string('manage:archive:confirmation', 'block_eduvidual'); ?>
+        <?php echo get_string('manage:archive:confirmation', 'local_eduvidual'); ?>
     </div>
 	<div<?php echo (($step==3)?" class=\"active\"":""); ?>>
-        <?php echo get_string('manage:archive:action', 'block_eduvidual'); ?>
+        <?php echo get_string('manage:archive:action', 'local_eduvidual'); ?>
     </div>
 </div>
 <div class="card" style="width: 100%; overflow-x: auto;"><div>
@@ -60,7 +60,7 @@ $MANAGECATS = array();
 
 /*
 // This is used if we can archive for various organizations at once
-$orgas = block_eduvidual::get_organisations('Manager');
+$orgas = local_eduvidual::get_organisations('Manager');
 foreach($orgas AS $orga) {
     $MANAGECATS[] = $orga->categoryid;
 }
@@ -68,9 +68,9 @@ foreach($orgas AS $orga) {
 $MANAGECATS[] = $org->categoryid;
 
 if ($step == 0) { ?>
-	<h3><?php echo get_string('manage:archive:source:title', 'block_eduvidual'); ?></h3>
+	<h3><?php echo get_string('manage:archive:source:title', 'local_eduvidual'); ?></h3>
 	<p class="alert alert-info">
-        <?php echo get_string('manage:archive:source:description', 'block_eduvidual'); ?>
+        <?php echo get_string('manage:archive:source:description', 'local_eduvidual'); ?>
 		<!--
         Nutzen Sie diese Funktion um eine große Menge an Kursen zu verschieben. So können Sie bspw. nach Abschluss
 		eines Schuljahres alle Kurse in ein Archiv schieben (die Kurskategorien des aktuellen Jahres bleiben erhalten),
@@ -80,7 +80,7 @@ if ($step == 0) { ?>
 	<form action="?" method="post" enctype="multipart/form-data">
 	<input type="hidden" name="act" value="<?php echo $act; ?>" />
 	<input type="hidden" name="orgid" value="<?php echo $org->orgid; ?>" />
-	<input type="submit" value="<?php echo get_string('proceed', 'block_eduvidual'); ?>" class="btn btn-primary" />
+	<input type="submit" value="<?php echo get_string('proceed', 'local_eduvidual'); ?>" class="btn btn-primary" />
 	<ul class="ul-eduvidual-courses" data-role="treeview">
 	<?php
 	$schools = $DB->get_records_sql("SELECT id,name,path FROM {course_categories} WHERE id='" . implode("' OR id='", $MANAGECATS) . "' ORDER BY name ASC",array());
@@ -90,16 +90,16 @@ if ($step == 0) { ?>
 	}
 	?>
 	</ul>
-	<input type="submit" value="<?php echo get_string('proceed', 'block_eduvidual'); ?>" class="btn btn-primary" />
+	<input type="submit" value="<?php echo get_string('proceed', 'local_eduvidual'); ?>" class="btn btn-primary" />
 	</form>
 <?php }
 if ($step == 1) { ?>
-	<h3><?php echo get_string('manage:archive:target:title', 'block_eduvidual'); ?></h3>
-	<p><?php echo get_string('manage:archive:target:description', 'block_eduvidual', array('count' => count($source))); ?></p>
+	<h3><?php echo get_string('manage:archive:target:title', 'local_eduvidual'); ?></h3>
+	<p><?php echo get_string('manage:archive:target:description', 'local_eduvidual', array('count' => count($source))); ?></p>
 	<form action="" method="post" enctype="multipart/form-data">
 	<input type="hidden" name="act" value="<?php echo $act; ?>" />
 	<input type="hidden" name="orgid" value="<?php echo $org->orgid; ?>" />
-	<input type="submit" value="<?php echo get_string('proceed', 'block_eduvidual'); ?>" class="ui-btn" />
+	<input type="submit" value="<?php echo get_string('proceed', 'local_eduvidual'); ?>" class="ui-btn" />
 	<?php
 	$courseids = array_keys($source);
 	foreach($courseids AS $courseid) {
@@ -110,7 +110,7 @@ if ($step == 1) { ?>
 		<?php
 		if ($trashcategory > 0) {
 			?>
-			<li style="margin-left: 18px;"><label><input type="radio" name="target" value="<?php echo $trashcategory; ?>" data-role="none" />&nbsp;<?php echo get_string('manage:archive:trashbin', 'block_eduvidual'); ?></label></li>
+			<li style="margin-left: 18px;"><label><input type="radio" name="target" value="<?php echo $trashcategory; ?>" data-role="none" />&nbsp;<?php echo get_string('manage:archive:trashbin', 'local_eduvidual'); ?></label></li>
 			<?php
 		}
 
@@ -121,13 +121,13 @@ if ($step == 1) { ?>
 	}
 	?>
 	</ul>
-	<input type="submit" value="<?php echo get_string('proceed', 'block_eduvidual'); ?>" class="ui-btn" />
+	<input type="submit" value="<?php echo get_string('proceed', 'local_eduvidual'); ?>" class="ui-btn" />
 	</form>
 	<?php
 	if ($trashcategory > 0) {
 		?>
 	<p class="alert alert-info">
-        <?php echo get_string('manage:archive:trashbin:description', 'block_eduvidual'); ?>
+        <?php echo get_string('manage:archive:trashbin:description', 'local_eduvidual'); ?>
         <!--
 		Kurse können in den Papierkorb hineingeschoben werden. Bis dahin bleibt der Kurs erhalten (inkl. Einschreibungen),
 		und kann von jeder im Kurs eingeschriebenen Lehrperson über die Kurseinstellungen wiederhergestellt werden.<br />
@@ -142,7 +142,7 @@ if ($step == 1) { ?>
 if ($step == 2) {
 ?>
 	<h3><?php echo get_string('confirm'); ?></h3>
-	<p><?php echo get_string('manage:archive:target:description', 'block_eduvidual', array('count' => count($source))); ?></p>
+	<p><?php echo get_string('manage:archive:target:description', 'local_eduvidual', array('count' => count($source))); ?></p>
 	<form action="" method="post" enctype="multipart/form-data">
 	<input type="hidden" name="act" value="<?php echo $act; ?>" />
 	<input type="hidden" name="orgid" value="<?php echo $org->orgid; ?>" />
@@ -160,7 +160,7 @@ if ($step == 2) {
 	<input type="submit" value="<?php echo get_string('confirm'); ?>" class="ui-btn" />
 	</form>
 	<p>
-        <?php echo get_string('manage:archive:confirmation:description', 'block_eduvidual', array('name' => $category->name)); ?>
+        <?php echo get_string('manage:archive:confirmation:description', 'local_eduvidual', array('name' => $category->name)); ?>
 	</p>
 	<ul data-role="treeview"><?php
 		$courseids = array_keys($source);
@@ -179,12 +179,12 @@ if ($step == 3) {
 	}
 	// Use children-object to determine if all actions are allowed
 	?>
-	<h3><?php echo get_string('manage:archive:action:title', 'block_eduvidual'); ?></h3>
+	<h3><?php echo get_string('manage:archive:action:title', 'local_eduvidual'); ?></h3>
 	<?php
 	$lines = array(); $failed = 0; $succeed = 0;
 	$lines[] = "\t<ul data-role=\"treeview\">";
 	if ($target == $trashcategory || searchChild($children, "category", $target)) {
-		$lines[] = "\t\t<li>" . get_string('manage:archive:action:targetok', 'block_eduvidual') . "</li>\n";
+		$lines[] = "\t\t<li>" . get_string('manage:archive:action:targetok', 'local_eduvidual') . "</li>\n";
 
 		$courseids = array_keys($source);
         require_once($CFG->dirroot . '/course/lib.php');
@@ -197,27 +197,27 @@ if ($step == 3) {
 				//$chk = $DB->execute("UPDATE {course} SET category=? WHERE id=?", array($target, $course->id));
 				if ($chk) {
 					$succeed++;
-					$lines[] = "\t\t<li>" . get_string('manage:archive:action:coursemoved', 'block_eduvidual', array('name' => $course->fullname)) . "</li>\n";
+					$lines[] = "\t\t<li>" . get_string('manage:archive:action:coursemoved', 'local_eduvidual', array('name' => $course->fullname)) . "</li>\n";
 				} else {
 					$failed++;
-					$line[] = "\t\t<li><strong>" . get_string('manage:archive:action:courseNOTmoved', 'block_eduvidual', array('name' => $course->fullname)) . "</strong></li>\n";
+					$line[] = "\t\t<li><strong>" . get_string('manage:archive:action:courseNOTmoved', 'local_eduvidual', array('name' => $course->fullname)) . "</strong></li>\n";
 				}
 			} else {
 				$failed++;
-				$lines[] = "\t\t<li>" . get_string('manage:archive:action:coursecannotmanage', 'block_eduvidual', array('name' => $course->fullname)) . "</li>\n";
+				$lines[] = "\t\t<li>" . get_string('manage:archive:action:coursecannotmanage', 'local_eduvidual', array('name' => $course->fullname)) . "</li>\n";
 			}
 		}
 	} else {
 		$failed++;
-		$lines[] = "\t\t<li>" . get_string('manage:archive:action:targetinvalid', 'block_eduvidual') . "</li>\n";
+		$lines[] = "\t\t<li>" . get_string('manage:archive:action:targetinvalid', 'local_eduvidual') . "</li>\n";
 	}
 	$lines[] = "\t</ul>";
 
 	if ($failed > 0) {
-		echo "<p class=\"alert alert-error\">" . get_string('manage:archive:action:failures', 'block_eduvidual', array('failures' => $failed)) . "</p>";
+		echo "<p class=\"alert alert-error\">" . get_string('manage:archive:action:failures', 'local_eduvidual', array('failures' => $failed)) . "</p>";
 	}
 	if ($succeed > 0) {
-		echo "<p class=\"alert alert-success\">" . get_string('manage:archive:action:successes', 'block_eduvidual', array('successes' => $succeed)) . "</p>";
+		echo "<p class=\"alert alert-success\">" . get_string('manage:archive:action:successes', 'local_eduvidual', array('successes' => $succeed)) . "</p>";
 	}
 	echo implode("", $lines);
 }

@@ -1,4 +1,4 @@
-define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/templates', 'core/url', 'block_eduvidual/main', 'block_eduvidual/user'], function($, AJAX, NOTIFICATION, STR, TEMPLATES, URL, MAIN, USER) {
+define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/templates', 'core/url', 'local_eduvidual/main', 'local_eduvidual/user'], function($, AJAX, NOTIFICATION, STR, TEMPLATES, URL, MAIN, USER) {
     return {
         /**
          * Perform an action on a course
@@ -7,10 +7,10 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/templates'
             console.log('TEACHER.courseAction(courseid, selectmenu)', courseid, selectmenu);
             var choice = $(selectmenu).val();
             $(selectmenu).val('');
-            require(['block_eduvidual/main'], function(MAIN) {
+            require(['local_eduvidual/main'], function(MAIN) {
                 switch(choice) {
                     case 'enrol':
-                        MAIN.navigate(URL.fileUrl('/blocks/eduvidual/pages/courses.php', '') + '?act=enrol&id=' + courseid);
+                        MAIN.navigate(URL.fileUrl('/local/eduvidual/pages/courses.php', '') + '?act=enrol&id=' + courseid);
                     break;
                     case 'gradings':
                         MAIN.navigate(URL.fileUrl('/grade/report/grader/index.php', '') + '?id=' + courseid);
@@ -28,8 +28,8 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/templates'
             if (typeof confirm === 'undefined' || !confirm) {
                 var TEACHER = this;
                 STR.get_strings([
-                        {'key' : 'courseremove:title', component: 'block_eduvidual' },
-                        {'key' : 'courseremove:text', component: 'block_eduvidual' },
+                        {'key' : 'courseremove:title', component: 'local_eduvidual' },
+                        {'key' : 'courseremove:text', component: 'local_eduvidual' },
                         {'key' : 'yes' },
                         {'key': 'no'}
                     ]).done(function(s) {
@@ -37,7 +37,7 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/templates'
                     }
                 ).fail(NOTIFICATION.exception);
             } else {
-                require(['block_eduvidual/main'], function(MAIN) {
+                require(['local_eduvidual/main'], function(MAIN) {
                     MAIN.connect({ module: 'teacher', act: 'course_remove', courseid: courseid }, { });
                 });
             }
@@ -52,17 +52,17 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/templates'
             var subcat2 = $('#' + uniqid + '-subcat2').val();
             var subcat3 = $('#' + uniqid + '-subcat3').val();
 
-            var method = 'block_eduvidual_teacher_createcourse_selections';
+            var method = 'local_eduvidual_teacher_createcourse_selections';
             var data = { orgid: orgid, subcat1: subcat1, subcat2: subcat2, subcat3: subcat3 };
             console.log('Sending to ', method, data);
-            require(['block_eduvidual/main'], function(MAIN) { MAIN.spinnerGrid(true); });
+            require(['local_eduvidual/main'], function(MAIN) { MAIN.spinnerGrid(true); });
             AJAX.call([{
                 methodname: method,
                 args: data,
                 done: function(result) {
-                    require(['block_eduvidual/main'], function(MAIN) { MAIN.spinnerGrid(false); });
+                    require(['local_eduvidual/main'], function(MAIN) { MAIN.spinnerGrid(false); });
                     try { result = JSON.parse(result); } catch(e) {}
-                    console.log('block_eduvidual_teacher_createcourse_selections', result);
+                    console.log('local_eduvidual_teacher_createcourse_selections', result);
 
                     for (a = 1; a <= 4; a++) {
                         $('.' + uniqid + '-subcats' + a + 'lbl').html(result['subcats' + a + 'lbl']);
@@ -96,7 +96,7 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/templates'
                                         var o = $('<select>')
                                             .attr('id', uniqid + '-' + keys)
                                             .attr('name', keys)
-                                            .attr('onchange', "require(['block_eduvidual/teacher'], function(T) { T.createCourseSelections('" + uniqid + "'); });")
+                                            .attr('onchange', "require(['local_eduvidual/teacher'], function(T) { T.createCourseSelections('" + uniqid + "'); });")
                                             .attr('style', 'width: 100%');
                                         parent.append(o);
                                     } else {
@@ -121,7 +121,7 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/templates'
                                         var o = $('<input>')
                                             .attr('id', uniqid + '-' + keys)
                                             .attr('name', keys)
-                                            .attr('onkeyup', "require(['block_eduvidual/teacher'], function(T) { T.createCourseSelections('" + uniqid + "'); });")
+                                            .attr('onkeyup', "require(['local_eduvidual/teacher'], function(T) { T.createCourseSelections('" + uniqid + "'); });")
                                             .attr('style', 'width: 100%')
                                             .val(result[keys]);
                                         parent.append(o);
@@ -167,7 +167,7 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/templates'
          */
         createCourseSelectionsRequired: function(e) {
             TEMPLATES
-                .render('block_eduvidual/teacher_createcourse_required', {})
+                .render('local_eduvidual/teacher_createcourse_required', {})
                 .then(function(html, js) {
                     $(e).html('');
                     TEMPLATES.appendNodeContents($(e), html, js);
@@ -176,9 +176,9 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/templates'
                 });
         },
         createModule: function(){
-            var orgid = +$('#block_eduvidual_teacher_createmodule').attr('data-orgid');
-            var courseid = +$('#block_eduvidual_teacher_createmodule').attr('data-courseid');
-            var sectionid = +$('#block_eduvidual_teacher_createmodule').attr('data-sectionid');
+            var orgid = +$('#local_eduvidual_teacher_createmodule').attr('data-orgid');
+            var courseid = +$('#local_eduvidual_teacher_createmodule').attr('data-courseid');
+            var sectionid = +$('#local_eduvidual_teacher_createmodule').attr('data-sectionid');
             var moduleid = this.module.id;
             var form = {};
             var customize = this.module.payload.customize;
@@ -193,7 +193,7 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/templates'
             }
             form['course'] = courseid;
             form['section'] = sectionid;
-            require(['block_eduvidual/main'], function(MAIN) {
+            require(['local_eduvidual/main'], function(MAIN) {
                 MAIN.connect({ module: 'teacher', act: 'createmodule_create', orgid: orgid, moduleid: moduleid, formdata: JSON.stringify(form) }, { section: sectionid });
             });
         },
@@ -206,22 +206,22 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/templates'
             data.module = 'teacher';
             data.act = 'createmodule_search';
             console.log(data);
-            require(['block_eduvidual/main'], function(MAIN) {
+            require(['local_eduvidual/main'], function(MAIN) {
                 MAIN.connect(data, { uniqid: uniqid, sectionid: data.sectionid, courseid: data.courseid });
             });
         },
         loadCategory: function(categoryid) {
             if (this.debug > 0) console.log('TEACHER.loadCategory(categoryid)', categoryid);
-            var orgid = $('#block_eduvidual_teacher_createmodule').attr('data-orgid');
-            require(['block_eduvidual/main'], function(MAIN) {
+            var orgid = $('#local_eduvidual_teacher_createmodule').attr('data-orgid');
+            require(['local_eduvidual/main'], function(MAIN) {
                 MAIN.connect({ module: 'teacher', act: 'createmodule_category', orgid: orgid, categoryid: categoryid });
             });
         },
         loadCourseCategory: function(categoryid, orgid) {
             if (typeof orgid === 'undefined') {
-                orgid = +$('#block_eduvidual_teacher_createcourse').attr('data-orgid');
+                orgid = +$('#local_eduvidual_teacher_createcourse').attr('data-orgid');
             }
-            require(['block_eduvidual/main'], function(MAIN) {
+            require(['local_eduvidual/main'], function(MAIN) {
                 MAIN.connect({ module: 'teacher', act: 'createcourse_category', orgid: orgid, categoryid: categoryid });
             });
         },
@@ -248,19 +248,19 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/templates'
                     container.append(controlgroup);
 
                     STR.get_strings([
-                            {'key' : 'back', component: 'block_eduvidual' },
-                            {'key' : 'create', component: 'block_eduvidual' },
-                            {'key' : 'createcourse:basement', component: 'block_eduvidual' },
-                            {'key' : 'createcourse:name', component: 'block_eduvidual' },
-                            {'key' : 'createcourse:nameinfo', component: 'block_eduvidual' },
-                            {'key' : 'createcourse:setteacher', component: 'block_eduvidual' },
+                            {'key' : 'back', component: 'local_eduvidual' },
+                            {'key' : 'create', component: 'local_eduvidual' },
+                            {'key' : 'createcourse:basement', component: 'local_eduvidual' },
+                            {'key' : 'createcourse:name', component: 'local_eduvidual' },
+                            {'key' : 'createcourse:nameinfo', component: 'local_eduvidual' },
+                            {'key' : 'createcourse:setteacher', component: 'local_eduvidual' },
                             {'key' : 'filter', component: 'core' },
                         ]).done(function(s) {
                             // Always add the back-button
                             var divback = $('<div>');//.addClass('form-group fitem');
                             var aback = $('<a>')
                                 .addClass('ui-btn btn btn-_secondary')
-                                .attr('onclick', 'require(["block_eduvidual/user"], function(USER) { USER.loadCategory(' + (+$('.ul-eduvidual-courses').attr('data-categoryid')) + '); });')
+                                .attr('onclick', 'require(["local_eduvidual/user"], function(USER) { USER.loadCategory(' + (+$('.ul-eduvidual-courses').attr('data-categoryid')) + '); });')
                                 .html(s[0]);
                             aback.html('<img src="/pix/t/left.svg" alt=""> ' + aback.html());
                             divback.append(aback);
@@ -268,7 +268,7 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/templates'
                             // Create-btn
                             var btnstore = $('<a>')
                                 .addClass('btn ui-btn').attr('href', '#')
-                                .attr('onclick', 'require(["block_eduvidual/teacher"], function(TEACHER) { TEACHER.loadCourseForm(2); });')
+                                .attr('onclick', 'require(["local_eduvidual/teacher"], function(TEACHER) { TEACHER.loadCourseForm(2); });')
                                 .html(s[1]);
 
                             controlgroup.append([divback, btnstore]);
@@ -286,26 +286,26 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/templates'
                             // Select base course
                             var baseselectlbl = $('<label>').html(s[2]);
                             var baseselect = $('<select style="max-width: 100%;">')
-                                .attr('onchange', 'var sel = this; require(["block_eduvidual/teacher"], function(TEACHER) { TEACHER.loadCourseFormBasementInfo(sel.value); });')
-                                .addClass('block_eduvidual_teacher_createcourse_basement');
+                                .attr('onchange', 'var sel = this; require(["local_eduvidual/teacher"], function(TEACHER) { TEACHER.loadCourseFormBasementInfo(sel.value); });')
+                                .addClass('local_eduvidual_teacher_createcourse_basement');
                             baseselect.append('<option>').html('loading');
 
                             // Input name
                             var basenamelbl = $('<label>').html(s[3]);
                             var basenameinfo = $('<p>').html(s[4]);
-                            var basename = $('<input>').addClass('block_eduvidual_teacher_createcourse_name');
+                            var basename = $('<input>').addClass('local_eduvidual_teacher_createcourse_name');
 
                             divleft.append([baseselectlbl, baseselect, basenamelbl, basename, basenameinfo]);
 
-                            var asteacher = $('<div>').addClass('block_eduvidual_teacher_createcourse_setteacher').css('display', 'none');
+                            var asteacher = $('<div>').addClass('local_eduvidual_teacher_createcourse_setteacher').css('display', 'none');
                             var label = $('<p>').html(s[5]);
                             var filter = $('<input>').attr('placeholder', s[6])
-                                .attr('onkeyup', 'var inp = this; require(["block_eduvidual/teacher"], function(TEACHER) { TEACHER.loadCourseTeacher(' + orgid + ', inp); });');
+                                .attr('onkeyup', 'var inp = this; require(["local_eduvidual/teacher"], function(TEACHER) { TEACHER.loadCourseTeacher(' + orgid + ', inp); });');
                             var select = $('<select>');
                             asteacher.append([label, filter, select]);
                             container.append(asteacher);
 
-                            require(['block_eduvidual/main'], function(MAIN) {
+                            require(['local_eduvidual/main'], function(MAIN) {
                                 MAIN.connect({ module: 'teacher', act: 'createcourse_basements', orgid: orgid }, { signalItem: baseselect });
                             });
                         }
@@ -313,10 +313,10 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/templates'
                 break;
                 case 2:
                     // Validate and create
-                    var base = +$('.block_eduvidual_teacher_createcourse_basement').val();
-                    var name = $('.block_eduvidual_teacher_createcourse_name').val();
-                    var setteacher = +$('.block_eduvidual_teacher_createcourse_setteacher select').val();
-                    require(['block_eduvidual/main'], function(MAIN) {
+                    var base = +$('.local_eduvidual_teacher_createcourse_basement').val();
+                    var name = $('.local_eduvidual_teacher_createcourse_name').val();
+                    var setteacher = +$('.local_eduvidual_teacher_createcourse_setteacher select').val();
+                    require(['local_eduvidual/main'], function(MAIN) {
                         MAIN.connect({ module: 'teacher', act: 'createcourse_now', orgid: orgid, categoryid: categoryid, basement: base, name: name, setteacher: setteacher }, { signalItem: {}});
                     });
                 break;
@@ -324,7 +324,7 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/templates'
         },
         loadCourseTeacher: function(orgid, inp){
             var search = $(inp).val();
-            require(['block_eduvidual/main'], function(MAIN) {
+            require(['local_eduvidual/main'], function(MAIN) {
                 MAIN.connect({ module: 'teacher', act: 'createcourse_loadteacher', orgid: orgid, search: search }, { signalItem: {}});
             });
         },
@@ -352,7 +352,7 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/templates'
             }
         },
         loadModuleForm: function(moduleid) {
-            require(['block_eduvidual/main'], function(MAIN) {
+            require(['local_eduvidual/main'], function(MAIN) {
                 MAIN.connect({ module: 'teacher', act: 'createmodule_payload', moduleid: moduleid });
             });
         },
@@ -361,7 +361,7 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/templates'
 			$.each($("input[name='preferences_moolevels[]']:checked"), function() {
                 moolevels.push($(this).val());
 			});
-            require(['block_eduvidual/main'], function(MAIN) {
+            require(['local_eduvidual/main'], function(MAIN) {
 			    MAIN.connect({ module: 'teacher', act: 'moolevels', moolevels: moolevels }, { signalItem: $(sender).parent() });
             });
 		},
@@ -370,7 +370,7 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/templates'
 			$.each($("input[name='questioncategories[]']:checked"), function() {
                 questioncategories.push(+$(this).val());
 			});
-            require(['block_eduvidual/main'], function(MAIN) {
+            require(['local_eduvidual/main'], function(MAIN) {
 			    MAIN.connect({ module: 'teacher', act: 'questioncategories', questioncategories: questioncategories }, { signalItem: $(sender).parent() });
             });
 		},
@@ -395,7 +395,7 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/templates'
             if (o.data.act == 'createcourse_basements') {
                 this.basements = o.result.basements;
                 var cats = Object.keys(o.result.basements);
-                var targ = $('.block_eduvidual_teacher_createcourse_basement').empty();
+                var targ = $('.local_eduvidual_teacher_createcourse_basement').empty();
                 var firstloaded = false;
                 for (var a = 0; a < cats.length; a++) {
                     var optgroup = $('<optgroup>').attr('label', cats[a]);
@@ -411,20 +411,20 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/templates'
                     targ.append(optgroup);
                 }
                 if (o.result.canmanage) {
-                    $('.block_eduvidual_teacher_createcourse_setteacher').css('display', 'block');
+                    $('.local_eduvidual_teacher_createcourse_setteacher').css('display', 'block');
                 } else {
-                    $('.block_eduvidual_teacher_createcourse_setteacher').css('display', 'block');
+                    $('.local_eduvidual_teacher_createcourse_setteacher').css('display', 'block');
                 }
             }
             if (o.data.act == 'createcourse_category') {
                 if (o.result.status == 'ok') {
                     var parentid = (typeof o.result.parent !== 'undefined' && o.result.parent.id > -1)?o.result.parent.id:-1;
-                    var div = $('#block_eduvidual_teacher_createcourse').empty();
-                    $('#block_eduvidual_teacher_createcourse_title').html(o.result.category.name);
+                    var div = $('#local_eduvidual_teacher_createcourse').empty();
+                    $('#local_eduvidual_teacher_createcourse_title').html(o.result.category.name);
 
                     STR.get_strings([
-                            {'key' : 'back', component: 'block_eduvidual' },
-                            {'key' : 'createcourse:here', component: 'block_eduvidual' },
+                            {'key' : 'back', component: 'local_eduvidual' },
+                            {'key' : 'createcourse:here', component: 'local_eduvidual' },
                         ]).done(function(s) {
                             // Controlgroup with back and create button
                             var controlgroup = $('<div>')
@@ -436,11 +436,11 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/templates'
                             var aback = $('<a>').addClass('ui-btn btn btn-secondary').attr('onclick', 'history.go(-1);').html(s[0]);
 
                             if (typeof parentid !== 'undefined' && parentid > 0) {
-                                aback.attr('onclick', 'require(["block_eduvidual/teacher"], function(TEACHER) { TEACHER.loadCourseCategory(' + o.result.parent.id + '); });').html(o.result.parent.name);
+                                aback.attr('onclick', 'require(["local_eduvidual/teacher"], function(TEACHER) { TEACHER.loadCourseCategory(' + o.result.parent.id + '); });').html(o.result.parent.name);
                             }
                             aback.html('<img src="/pix/t/left.svg" alt=""> ' + aback.html());
                             var aplus = $('<a>').addClass('ui-btn btn btn-primary').attr('href', '#')
-                                .attr('onclick', 'require(["block_eduvidual/teacher"], function(TEACHER) { TEACHER.loadCourseForm(' + o.result.category.id + '); });')
+                                .attr('onclick', 'require(["local_eduvidual/teacher"], function(TEACHER) { TEACHER.loadCourseForm(' + o.result.category.id + '); });')
                                 .html('<img src="/pix/t/add.svg" alt=""> ' + s[1]);
                             div1.append(aback);
                             div2.append(aplus);
@@ -455,8 +455,8 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/templates'
 
                     /*
                     var li = $('<li>').addClass('ui-li-has-count ui-first-child');
-                    var an = $('<a>').attr('href', '#').attr('onclick', 'BLOCK_EDUVIDUAL_TEACHER.loadCourseForm(' + o.result.category.id + ');').addClass('ui-btn btn');
-                    var h3 = $('<h3>').html(BLOCK_EDUVIDUAL_LANG['js:createcourse:here']);
+                    var an = $('<a>').attr('href', '#').attr('onclick', 'local_eduvidual_TEACHER.loadCourseForm(' + o.result.category.id + ');').addClass('ui-btn btn');
+                    var h3 = $('<h3>').html(local_eduvidual_LANG['js:createcourse:here']);
                     an.append([h3, p]);
                     li.append(an);
                     ul.append(li);
@@ -468,7 +468,7 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/templates'
                             for (var a = 0; a < k.length; a++) {
                                 var child = o.result.children[k[a]];
                                 var li = $('<li>').addClass('ui-li-has-count' + ((a == (k.length - 1))?' ui-last-child':''));
-                                var an = $('<a>').attr('href', '#').attr('onclick', 'require(["block_eduvidual/teacher"], function(TEACHER) { TEACHER.loadCourseCategory(' + child.id + '); });');
+                                var an = $('<a>').attr('href', '#').attr('onclick', 'require(["local_eduvidual/teacher"], function(TEACHER) { TEACHER.loadCourseCategory(' + child.id + '); });');
                                 var h3 = $('<h3>').html(child.name);
                                 var p = $('<p>').html(child.description);
                                 an.append([h3, p]);
@@ -483,13 +483,13 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/templates'
             }
             if (o.data.act == 'createcourse_now' && o.result.status == 'ok') {
                 // Reload category list
-                // Surely this is BLOCK_EDUVIDUAL_USER, not BLOCK_EDUVIDUAL_TEACHER !!
-                require(['block_eduvidual/user'], function(USER) {
+                // Surely this is local_eduvidual_USER, not local_eduvidual_TEACHER !!
+                require(['local_eduvidual/user'], function(USER) {
                     USER.loadCategory(o.data.categoryid, o.data.orgid);
                 });
             }
             if (o.data.act == 'createcourse_loadteacher' && o.result.status == 'ok') {
-                var sel = $('.block_eduvidual_teacher_createcourse_setteacher select').empty();
+                var sel = $('.local_eduvidual_teacher_createcourse_setteacher select').empty();
                 for (var i = 0; i < o.result.users.length; i++) {
                     var u = o.result.users[i];
                     var option = $('<option>').attr('value', u.id).html(u.userfullname + '(' + u.email + ')');
@@ -497,15 +497,15 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/templates'
                 }
             }
             if (o.data.act == 'createmodule_category') {
-                var div = $('#block_eduvidual_teacher_createmodule').empty();
+                var div = $('#local_eduvidual_teacher_createmodule').empty();
                 STR.get_strings([
-                        {'key' : 'back', component: 'block_eduvidual' },
+                        {'key' : 'back', component: 'local_eduvidual' },
                     ]).done(function(s) {
                         var a = $('<a>').addClass('ui-btn btn').attr('onclick', 'history.go(-1);').html(s[0]);
                         var parentid = (typeof o.result.category !== 'undefined' && o.result.category.parentid > -1)?o.result.category.parentid:-1;
                         console.log(parentid);
                         if (typeof parentid !== 'undefined' && parentid > -1) {
-                            var a = $('<a>').addClass('ui-btn btn').attr('onclick', 'require(["block_eduvidual/teacher"], function(TEACHER) { TEACHER.loadCategory(' + parentid + '); });').html(s[0]);
+                            var a = $('<a>').addClass('ui-btn btn').attr('onclick', 'require(["local_eduvidual/teacher"], function(TEACHER) { TEACHER.loadCategory(' + parentid + '); });').html(s[0]);
                         } else {
                             // Back button required?
                         }
@@ -522,7 +522,7 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/templates'
                         var child = o.result.children[k[a]];
                         var li = $('<li>').addClass('ui-li-has-count ui-li-has-thumb ui-first-child');
                         var an = $('<a>').addClass('ui-btn').attr('href', '#')
-                            .attr('onclick', 'require(["block_eduvidual/teacher"], function(TEACHER) { TEACHER.loadCategory(' + child.id + '); });');
+                            .attr('onclick', 'require(["local_eduvidual/teacher"], function(TEACHER) { TEACHER.loadCategory(' + child.id + '); });');
                         var h3 = $('<h3>').html(child.name);
                         var p = $('<p>').html(child.description);
                         var img = $('<img>').attr('src', child.imageurl).attr('alt', child.name);
@@ -547,7 +547,7 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/templates'
                         var li = $('<li>').addClass('ui-li-has-count ui-li-has-thumb ui-first-child');
                         var payload = JSON.parse(child.payload);
                         var an = $('<a>').addClass('ui-btn').attr('href', '#')
-                            .attr('onclick', 'require(["block_eduvidual/teacher"], function(TEACHER) { TEACHER.loadModuleForm(' + child.id + '); });');
+                            .attr('onclick', 'require(["local_eduvidual/teacher"], function(TEACHER) { TEACHER.loadModuleForm(' + child.id + '); });');
                         var h3 = $('<h3>').html(child.name);
                         var p = $('<p>').html(child.description);
                         var img = $('<img>').attr('src', child.imageurl).attr('alt', child.name);
@@ -559,24 +559,24 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/templates'
                     try { $(ul).trigger('create'); } catch(e) {}
                 }
                 div.trigger('create');
-                //BLOCK_EDUVIDUAL.confirmed('#block_eduvidual_preference_customcss', (o.result.status=='ok'));
-                //$('#block_eduvidual_style_org').html(o.data.customcss);
+                //local_eduvidual.confirmed('#local_eduvidual_preference_customcss', (o.result.status=='ok'));
+                //$('#local_eduvidual_style_org').html(o.data.customcss);
             }
             if (o.data.act == 'createmodule_create') {
                 if (typeof o.result.modcourse !== 'undefined') {
                     // Find - go to course
                     var url = URL.fileUrl("/course/view.php", "") + '?id=' + o.result.modcourse + '&section=' + o.payload.section;
                     console.log('Redirecting to ' + url);
-                    var isembedded = localStorage.getItem('block_eduvidual_isembedded') !== null && localStorage.getItem('block_eduvidual_isembedded') == 1;
+                    var isembedded = localStorage.getItem('local_eduvidual_isembedded') !== null && localStorage.getItem('local_eduvidual_isembedded') == 1;
                     var timeout = 0;
                     if (isembedded) {
                         timeout = 1000;
-                        require(['block_eduvidual/jquery-ba-postmessage'], function(p) { p.post('open_course|' + o.result.modcourse); });
+                        require(['local_eduvidual/jquery-ba-postmessage'], function(p) { p.post('open_course|' + o.result.modcourse); });
                     }
                     setTimeout(function(){ MAIN.navigate(url); }, timeout);
                 } else {
                     STR.get_strings([
-                            {'key' : 'createmodule:failed', component: 'block_eduvidual' },
+                            {'key' : 'createmodule:failed', component: 'local_eduvidual' },
                             {'key' : 'ok' },
                         ]).done(function(s) {
                             NOTIFICATION.alert('Error', s[0], s[1]);
@@ -590,15 +590,15 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/templates'
                     this.module = o.result.module;
                     if (typeof o.result.module.payload.customize !== 'undefined') {
                         STR.get_strings([
-                                {'key' : 'back', component: 'block_eduvidual' },
-                                {'key' : 'createmodule:create', component: 'block_eduvidual' },
+                                {'key' : 'back', component: 'local_eduvidual' },
+                                {'key' : 'createmodule:create', component: 'local_eduvidual' },
                             ]).done(function(s) {
-                                var div = $('#block_eduvidual_teacher_createmodule').empty();
-                                var a = $('<a>').addClass('ui-btn btn').attr('onclick', 'require(["block_eduvidual/teacher"], function(TEACHER) { TEACHER.loadCategory(' + o.result.module.categoryid + '); });').html(s[0]);
+                                var div = $('#local_eduvidual_teacher_createmodule').empty();
+                                var a = $('<a>').addClass('ui-btn btn').attr('onclick', 'require(["local_eduvidual/teacher"], function(TEACHER) { TEACHER.loadCategory(' + o.result.module.categoryid + '); });').html(s[0]);
                                 div.append(a);
                                 console.log(o.result.module.payload);
                                 TEACHER.listModuleForm(div, o.result.module);
-                                var a = $('<a>').addClass('ui-btn btn').attr('onclick', 'require(["block_eduvidual/teacher"], function(TEACHER) { TEACHER.createModule(); });').html(s[1]);
+                                var a = $('<a>').addClass('ui-btn btn').attr('onclick', 'require(["local_eduvidual/teacher"], function(TEACHER) { TEACHER.createModule(); });').html(s[1]);
                                 div.append(a);
                             }
                         ).fail(NOTIFICATION.exception);
@@ -607,7 +607,7 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/templates'
                     }
                 } else {
                     STR.get_strings([
-                            {'key' : 'createmodule:invalid', component: 'block_eduvidual' },
+                            {'key' : 'createmodule:invalid', component: 'local_eduvidual' },
                             {'key' : 'ok' },
                         ]).done(function(s) {
                             NOTIFICATION.alert('Error', s[0], s[1]);
@@ -616,7 +616,7 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/templates'
                 }
             }
             if (o.data.act == 'createmodule_search') {
-                var div = $('#block_eduvidual_teacher_createmodule_publisher').empty();
+                var div = $('#local_eduvidual_teacher_createmodule_publisher').empty();
 
                 if (typeof o.result.relevance !== 'undefined') {
                     var order = Object.keys(o.result.relevance);
@@ -653,11 +653,11 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/templates'
             }
             if (o.data.act == 'user_search') {
                 var selectmenu;
-                if ($(o.payload.sender).attr('id') == 'block_eduvidual_courses_courseusers_search') {
-                    selectmenu = '#block_eduvidual_courses_courseusers';
+                if ($(o.payload.sender).attr('id') == 'local_eduvidual_courses_courseusers_search') {
+                    selectmenu = '#local_eduvidual_courses_courseusers';
                 }
-                if ($(o.payload.sender).attr('id') == 'block_eduvidual_courses_orgusers_search') {
-                    selectmenu = '#block_eduvidual_courses_orgusers';
+                if ($(o.payload.sender).attr('id') == 'local_eduvidual_courses_orgusers_search') {
+                    selectmenu = '#local_eduvidual_courses_orgusers';
                 }
                 if (typeof selectmenu === 'undefined') {
                     console.log(o.payload);
@@ -675,7 +675,7 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/templates'
                 }
             }
             if (o.data.act == 'user_set') {
-                this.user_search("#block_eduvidual_courses_courseusers_search", "courseusers", 0);
+                this.user_search("#local_eduvidual_courses_courseusers_search", "courseusers", 0);
             }
         },
         /**
@@ -766,7 +766,7 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/templates'
     			}
     		}
             STR.get_strings([
-                    {'key' : 'createmodule:requiredfield', component: 'block_eduvidual' },
+                    {'key' : 'createmodule:requiredfield', component: 'local_eduvidual' },
                 ]).done(function(s) {
                     pane.append($('<br /><p><sup style="color: red;">*)</sup> ' + s[0] + '</p>'));
                 }
@@ -774,10 +774,10 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/templates'
     		pane.trigger('create');
     	},
         user_search: function(sender, type, initialsearch){
-            var orgid = +$('#block_eduvidual_courses').attr('data-orgid');
-            var courseid = +$('#block_eduvidual_courses').attr('data-courseid');
+            var orgid = +$('#local_eduvidual_courses').attr('data-orgid');
+            var courseid = +$('#local_eduvidual_courses').attr('data-courseid');
             var searchfor = $(sender).val();
-            require(['block_eduvidual/main'], function(MAIN) {
+            require(['local_eduvidual/main'], function(MAIN) {
                 MAIN.connect({ module: 'teacher', act: 'user_search', orgid: orgid, courseid: courseid, type: type, searchfor: searchfor }, { sender: sender, initialsearch: initialsearch });
             });
         },
@@ -785,21 +785,21 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/templates'
             var selectmenu, role;
             var userids = [];
             if (type == 'enrol') {
-                selectmenu = $('#block_eduvidual_courses_orgusers');
-                role = $('#block_eduvidual_courses_setrole').val();
+                selectmenu = $('#local_eduvidual_courses_orgusers');
+                role = $('#local_eduvidual_courses_setrole').val();
             } else if (type == 'unenrol'){
-                selectmenu = $('#block_eduvidual_courses_courseusers');
+                selectmenu = $('#local_eduvidual_courses_courseusers');
                 role = 'remove';
             }
             if (typeof selectmenu === 'undefined') return;
 
-            var orgid = +$('#block_eduvidual_courses').attr('data-orgid');
-            var courseid = +$('#block_eduvidual_courses').attr('data-courseid');
+            var orgid = +$('#local_eduvidual_courses').attr('data-orgid');
+            var courseid = +$('#local_eduvidual_courses').attr('data-courseid');
             var userids = [];
             $(selectmenu).find('option:selected:not([value=""])').each(function(){
                 userids.push(+$(this).val());
             });
-            require(['block_eduvidual/main'], function(MAIN) {
+            require(['local_eduvidual/main'], function(MAIN) {
                 MAIN.connect({ module: 'teacher', act: 'user_set', orgid: orgid, courseid: courseid, role: role, userids: userids }, { signalItem: $(sender) });
             });
         },

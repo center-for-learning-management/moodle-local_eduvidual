@@ -14,8 +14,8 @@
     You should have received a copy of tde GNU General Public License
     along witd Moodle.  If not, see <http://www.gnu.org/licenses/>.
   }}
-<div class="block_eduvidual_admin_stats">
-    <h4>{{#str}} admin:stats:title, block_eduvidual {{/str}}</h4>
+<div class="local_eduvidual_admin_stats">
+    <h4>{{#str}} admin:stats:title, local_eduvidual {{/str}}</h4>
     <form action="" method="POST" enctype="multipart/form-data">
     {{#stats}}
         <h3>{{label}}</h3>
@@ -30,14 +30,14 @@
             <thead>
                 <tr style="font-weight: bold;">
                     <td>{{label}}</td>
-                    <td width="100" align="right" class="{{uniqid}}-rate" {{^show_rate}} style="display: none;" {{/show_rate}}>{{#str}} admin:stats:rate, block_eduvidual {{/str}}</td>
-                    <td width="100" align="right" class="{{uniqid}}-all" {{^show_all}} style="display: none;" {{/show_all}}>{{#str}} admin:stats:all, block_eduvidual {{/str}}</td>
-                    <td width="100" align="right" class="{{uniqid}}-lpf_and_eduv" {{^show_lpf_and_eduv}} style="display: none;" {{/show_lpf_and_eduv}}>{{#str}} admin:stats:lpf_and_eduv, block_eduvidual {{/str}}</td>
-                    <!-- <td width="100" align="right" class="{{uniqid}}-registered" {{^show_registered}} style="display: none;" {{/show_registered}}>{{#str}} admin:stats:registered, block_eduvidual {{/str}}</td> -->
-                    <td width="100" align="right" class="{{uniqid}}-neweduv" {{^show_neweduv}} style="display: none;" {{/show_neweduv}}>{{#str}} admin:stats:neweduv, block_eduvidual {{/str}}</td>
-                    <!-- <td width="100" align="right" class="{{uniqid}}-lpfeduv" {{^show_lpfeduv}} style="display: none;" {{/show_lpfeduv}}>{{#str}} admin:stats:lpfeduv, block_eduvidual {{/str}}</td> -->
-                    <td width="100" align="right" class="{{uniqid}}-lpf" {{^show_lpf}} style="display: none;" {{/show_lpf}}>{{#str}} admin:stats:lpf, block_eduvidual {{/str}}</td>
-                    <td width="100" align="right" class="{{uniqid}}-migrated" {{^show_migrated}} style="display: none;" {{/show_migrated}}>{{#str}} admin:stats:migrated, block_eduvidual {{/str}}</td>
+                    <td width="100" align="right" class="{{uniqid}}-rate" {{^show_rate}} style="display: none;" {{/show_rate}}>{{#str}} admin:stats:rate, local_eduvidual {{/str}}</td>
+                    <td width="100" align="right" class="{{uniqid}}-all" {{^show_all}} style="display: none;" {{/show_all}}>{{#str}} admin:stats:all, local_eduvidual {{/str}}</td>
+                    <td width="100" align="right" class="{{uniqid}}-lpf_and_eduv" {{^show_lpf_and_eduv}} style="display: none;" {{/show_lpf_and_eduv}}>{{#str}} admin:stats:lpf_and_eduv, local_eduvidual {{/str}}</td>
+                    <!-- <td width="100" align="right" class="{{uniqid}}-registered" {{^show_registered}} style="display: none;" {{/show_registered}}>{{#str}} admin:stats:registered, local_eduvidual {{/str}}</td> -->
+                    <td width="100" align="right" class="{{uniqid}}-neweduv" {{^show_neweduv}} style="display: none;" {{/show_neweduv}}>{{#str}} admin:stats:neweduv, local_eduvidual {{/str}}</td>
+                    <!-- <td width="100" align="right" class="{{uniqid}}-lpfeduv" {{^show_lpfeduv}} style="display: none;" {{/show_lpfeduv}}>{{#str}} admin:stats:lpfeduv, local_eduvidual {{/str}}</td> -->
+                    <td width="100" align="right" class="{{uniqid}}-lpf" {{^show_lpf}} style="display: none;" {{/show_lpf}}>{{#str}} admin:stats:lpf, local_eduvidual {{/str}}</td>
+                    <td width="100" align="right" class="{{uniqid}}-migrated" {{^show_migrated}} style="display: none;" {{/show_migrated}}>{{#str}} admin:stats:migrated, local_eduvidual {{/str}}</td>
                 </tr>
             </thead>
             <tfoot>
@@ -73,47 +73,47 @@
     <ul>
         <li>
             <input type="hidden" id="{{uniqid}}-hidden-rate" name="show_rate" value="{{#show_rate}}1{{/show_rate}}0" />
-            <input id="{{uniqid}}-rate" {{#show_rate}} checked="checked" {{/show_rate}} type="checkbox" data-type="rate" onclick="document.getElementById('{{uniqid}}-hidden-rate').value = this.checked ? '1' : '0'; var c = this; require(['block_eduvidual/admin'], function(ADMIN) { ADMIN.statsSwitchColumn('{{uniqid}}', c); });" />
-            <label for="{{uniqid}}-rate">{{#str}} admin:stats:rate, block_eduvidual {{/str}}</label>
+            <input id="{{uniqid}}-rate" {{#show_rate}} checked="checked" {{/show_rate}} type="checkbox" data-type="rate" onclick="document.getElementById('{{uniqid}}-hidden-rate').value = this.checked ? '1' : '0'; var c = this; require(['local_eduvidual/admin'], function(ADMIN) { ADMIN.statsSwitchColumn('{{uniqid}}', c); });" />
+            <label for="{{uniqid}}-rate">{{#str}} admin:stats:rate, local_eduvidual {{/str}}</label>
         </li>
         <li>
             <input type="hidden" id="{{uniqid}}-hidden-all" name="show_all" value="{{#show_all}}1{{/show_all}}0" />
-            <input id="{{uniqid}}-all" name="show_all" {{#show_all}} checked="checked" {{/show_all}} type="checkbox" data-type="all" onclick="document.getElementById('{{uniqid}}-hidden-all').value = this.checked ? '1' : '0'; var c = this; require(['block_eduvidual/admin'], function(ADMIN) { ADMIN.statsSwitchColumn('{{uniqid}}', c); });" />
-            <label for="{{uniqid}}-all">{{#str}} admin:stats:all, block_eduvidual {{/str}}</label>
+            <input id="{{uniqid}}-all" name="show_all" {{#show_all}} checked="checked" {{/show_all}} type="checkbox" data-type="all" onclick="document.getElementById('{{uniqid}}-hidden-all').value = this.checked ? '1' : '0'; var c = this; require(['local_eduvidual/admin'], function(ADMIN) { ADMIN.statsSwitchColumn('{{uniqid}}', c); });" />
+            <label for="{{uniqid}}-all">{{#str}} admin:stats:all, local_eduvidual {{/str}}</label>
         </li>
         <li>
             <input type="hidden" id="{{uniqid}}-hidden-lpf_and_eduv" name="show_lpf_and_eduv" value="{{#show_lpf_and_eduv}}1{{/show_lpf_and_eduv}}0" />
-            <input id="{{uniqid}}-lpf_and_eduv" {{#show_lpf_and_eduv}} checked="checked" {{/show_lpf_and_eduv}}  type="checkbox" data-type="lpf_and_eduv" onclick="document.getElementById('{{uniqid}}-hidden-lpf_and_eduv').value = this.checked ? '1' : '0'; var c = this; require(['block_eduvidual/admin'], function(ADMIN) { ADMIN.statsSwitchColumn('{{uniqid}}', c); });" />
-            <label for="{{uniqid}}-lpf_and_eduv">{{#str}} admin:stats:lpf_and_eduv, block_eduvidual {{/str}}</label>
+            <input id="{{uniqid}}-lpf_and_eduv" {{#show_lpf_and_eduv}} checked="checked" {{/show_lpf_and_eduv}}  type="checkbox" data-type="lpf_and_eduv" onclick="document.getElementById('{{uniqid}}-hidden-lpf_and_eduv').value = this.checked ? '1' : '0'; var c = this; require(['local_eduvidual/admin'], function(ADMIN) { ADMIN.statsSwitchColumn('{{uniqid}}', c); });" />
+            <label for="{{uniqid}}-lpf_and_eduv">{{#str}} admin:stats:lpf_and_eduv, local_eduvidual {{/str}}</label>
         </li>
         <!--
         <li>
             <input type="hidden" id="{{uniqid}}-hidden-registered" name="show_registered" value="{{#show_registered}}1{{/show_registered}}0" />
-            <input id="{{uniqid}}-registered" {{#show_registered}} checked="checked" {{/show_registered}}  type="checkbox" data-type="registered" onclick="document.getElementById('{{uniqid}}-hidden-registered').value = this.checked ? '1' : '0'; var c = this; require(['block_eduvidual/admin'], function(ADMIN) { ADMIN.statsSwitchColumn('{{uniqid}}', c); });" />
-            <label for="{{uniqid}}-registered">{{#str}} admin:stats:registered, block_eduvidual {{/str}}</label>
+            <input id="{{uniqid}}-registered" {{#show_registered}} checked="checked" {{/show_registered}}  type="checkbox" data-type="registered" onclick="document.getElementById('{{uniqid}}-hidden-registered').value = this.checked ? '1' : '0'; var c = this; require(['local_eduvidual/admin'], function(ADMIN) { ADMIN.statsSwitchColumn('{{uniqid}}', c); });" />
+            <label for="{{uniqid}}-registered">{{#str}} admin:stats:registered, local_eduvidual {{/str}}</label>
         </li>
         -->
         <li>
             <input type="hidden" id="{{uniqid}}-hidden-neweduv" name="show_neweduv" value="{{#show_neweduv}}1{{/show_neweduv}}0" />
-            <input id="{{uniqid}}-neweduv" {{#show_neweduv}} checked="checked" {{/show_neweduv}}  type="checkbox" data-type="neweduv" onclick="document.getElementById('{{uniqid}}-hidden-neweduv').value = this.checked ? '1' : '0'; var c = this; require(['block_eduvidual/admin'], function(ADMIN) { ADMIN.statsSwitchColumn('{{uniqid}}', c); });" />
-            <label for="{{uniqid}}-neweduv">{{#str}} admin:stats:neweduv, block_eduvidual {{/str}}</label>
+            <input id="{{uniqid}}-neweduv" {{#show_neweduv}} checked="checked" {{/show_neweduv}}  type="checkbox" data-type="neweduv" onclick="document.getElementById('{{uniqid}}-hidden-neweduv').value = this.checked ? '1' : '0'; var c = this; require(['local_eduvidual/admin'], function(ADMIN) { ADMIN.statsSwitchColumn('{{uniqid}}', c); });" />
+            <label for="{{uniqid}}-neweduv">{{#str}} admin:stats:neweduv, local_eduvidual {{/str}}</label>
         </li>
         <!--
         <li>
             <input type="hidden" id="{{uniqid}}-hidden-lpfeduv" name="show_lpfeduv" value="{{#show_lpfeduv}}1{{/show_lpfeduv}}0" />
-            <input id="{{uniqid}}-lpfeduv" {{#show_lpfeduv}} checked="checked" {{/show_lpfeduv}}  type="checkbox" data-type="lpfeduv" onclick="document.getElementById('{{uniqid}}-hidden-lpfeduv').value = this.checked ? '1' : '0'; var c = this; require(['block_eduvidual/admin'], function(ADMIN) { ADMIN.statsSwitchColumn('{{uniqid}}', c); });" />
-            <label for="{{uniqid}}-lpfeduv">{{#str}} admin:stats:lpfeduv, block_eduvidual {{/str}}</label>
+            <input id="{{uniqid}}-lpfeduv" {{#show_lpfeduv}} checked="checked" {{/show_lpfeduv}}  type="checkbox" data-type="lpfeduv" onclick="document.getElementById('{{uniqid}}-hidden-lpfeduv').value = this.checked ? '1' : '0'; var c = this; require(['local_eduvidual/admin'], function(ADMIN) { ADMIN.statsSwitchColumn('{{uniqid}}', c); });" />
+            <label for="{{uniqid}}-lpfeduv">{{#str}} admin:stats:lpfeduv, local_eduvidual {{/str}}</label>
         </li>
         -->
         <li>
             <input type="hidden" id="{{uniqid}}-hidden-lpf" name="show_lpf" value="{{#show_lpf}}1{{/show_lpf}}0" />
-            <input id="{{uniqid}}-lpf" {{#show_lpf}} checked="checked" {{/show_lpf}}  type="checkbox" data-type="lpf" onclick="document.getElementById('{{uniqid}}-hidden-lpf').value = this.checked ? '1' : '0'; var c = this; require(['block_eduvidual/admin'], function(ADMIN) { ADMIN.statsSwitchColumn('{{uniqid}}', c); });" />
-            <label for="{{uniqid}}-lpf">{{#str}} admin:stats:lpf, block_eduvidual {{/str}}</label>
+            <input id="{{uniqid}}-lpf" {{#show_lpf}} checked="checked" {{/show_lpf}}  type="checkbox" data-type="lpf" onclick="document.getElementById('{{uniqid}}-hidden-lpf').value = this.checked ? '1' : '0'; var c = this; require(['local_eduvidual/admin'], function(ADMIN) { ADMIN.statsSwitchColumn('{{uniqid}}', c); });" />
+            <label for="{{uniqid}}-lpf">{{#str}} admin:stats:lpf, local_eduvidual {{/str}}</label>
         </li>
         <li>
             <input type="hidden" id="{{uniqid}}-hidden-migrated" name="show_migrated" value="{{#show_migrated}}1{{/show_migrated}}0" />
-            <input id="{{uniqid}}-migrated" {{#show_migrated}} checked="checked" {{/show_migrated}}  type="checkbox" data-type="migrated" onclick="document.getElementById('{{uniqid}}-hidden-migrated').value = this.checked ? '1' : '0'; var c = this; require(['block_eduvidual/admin'], function(ADMIN) { ADMIN.statsSwitchColumn('{{uniqid}}', c); });" />
-            <label for="{{uniqid}}-migrated">{{#str}} admin:stats:migrated, block_eduvidual {{/str}}</label>
+            <input id="{{uniqid}}-migrated" {{#show_migrated}} checked="checked" {{/show_migrated}}  type="checkbox" data-type="migrated" onclick="document.getElementById('{{uniqid}}-hidden-migrated').value = this.checked ? '1' : '0'; var c = this; require(['local_eduvidual/admin'], function(ADMIN) { ADMIN.statsSwitchColumn('{{uniqid}}', c); });" />
+            <label for="{{uniqid}}-migrated">{{#str}} admin:stats:migrated, local_eduvidual {{/str}}</label>
         </li>
     </ul>
     </form>

@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package    block_eduvidual
+ * @package    local_eduvidual
  * @copyright  2017 Digital Education Society (http://www.dibig.at)
  * @author     Robert Schrenk
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -25,7 +25,7 @@ defined('MOODLE_INTERNAL') || die;
 
 require_once($CFG->libdir . "/formslib.php");
 
-class block_eduvidual_manage_user_createuseranonymous_form extends moodleform {
+class local_eduvidual_manage_user_createuseranonymous_form extends moodleform {
     function definition() {
         global $DB;
         $mform = $this->_form;
@@ -34,20 +34,20 @@ class block_eduvidual_manage_user_createuseranonymous_form extends moodleform {
         $mform->addElement('hidden', 'act', 'users');
         $mform->setType('act', PARAM_TEXT);
         $options = array(
-            'Parent' => get_string('role:Parent', 'block_eduvidual'),
-            'Student' => get_string('role:Student', 'block_eduvidual'),
-            'Teacher' => get_string('role:Teacher', 'block_eduvidual'),
-            'Manager' => get_string('role:Manager', 'block_eduvidual'),
+            'Parent' => get_string('role:Parent', 'local_eduvidual'),
+            'Student' => get_string('role:Student', 'local_eduvidual'),
+            'Teacher' => get_string('role:Teacher', 'local_eduvidual'),
+            'Manager' => get_string('role:Manager', 'local_eduvidual'),
         );
-        $mform->addElement('select', 'role', get_string('manage:createuseranonymous:role', 'block_eduvidual'), $options);
+        $mform->addElement('select', 'role', get_string('manage:createuseranonymous:role', 'local_eduvidual'), $options);
         $mform->setType('role', PARAM_TEXT);
-        $mform->addElement('text', 'bunch', get_string('manage:createuseranonymous:bunch', 'block_eduvidual'));
+        $mform->addElement('text', 'bunch', get_string('manage:createuseranonymous:bunch', 'local_eduvidual'));
         $mform->setType('bunch', PARAM_TEXT);
-        $mform->addElement('text', 'amount', get_string('manage:createuseranonymous:amount', 'block_eduvidual'), array('type' => 'number'));
+        $mform->addElement('text', 'amount', get_string('manage:createuseranonymous:amount', 'local_eduvidual'), array('type' => 'number'));
         $mform->setType('amount', PARAM_INT);
         $mform->setDefault('amount', '10');
 
-        $mform->addElement('submit', null, get_string('manage:createuseranonymous:send', 'block_eduvidual'));
+        $mform->addElement('submit', null, get_string('manage:createuseranonymous:send', 'local_eduvidual'));
         //$this->add_action_buttons();
     }
     //Custom validation should be added here

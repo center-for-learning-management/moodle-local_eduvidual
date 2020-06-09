@@ -15,25 +15,25 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package    block_eduvidual
+ * @package    local_eduvidual
  * @copyright  2018 Digital Education Society (http://www.dibig.at)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die;
 
-require_once($CFG->dirroot . '/blocks/eduvidual/block_eduvidual.php');
+require_once($CFG->dirroot . '/local/eduvidual/block_eduvidual.php');
 
 if (optional_param('import', 0, PARAM_INT) > 0) {
-    require_once($CFG->dirroot . '/blocks/eduvidual/pages/sub/manage_usersimport.php');
+    require_once($CFG->dirroot . '/local/eduvidual/pages/sub/manage_usersimport.php');
     return;
 }
 
-$_codes = $DB->get_records_sql('SELECT * FROM {block_eduvidual_org_codes} WHERE orgid=? ORDER BY maturity DESC', array($org->orgid));
+$_codes = $DB->get_records_sql('SELECT * FROM {local_eduvidual_org_codes} WHERE orgid=? ORDER BY maturity DESC', array($org->orgid));
 $codes = array();
 foreach($_codes AS $code) {
     $code->isvalid = ($code->maturity > time());
-    $code->role_localized = get_string('role:' . $code->role, 'block_eduvidual');
+    $code->role_localized = get_string('role:' . $code->role, 'local_eduvidual');
 
     $issuer = $DB->get_record('user', array('id' => $code->userid));
     if (!empty($issuer->id)) {
@@ -45,7 +45,7 @@ foreach($_codes AS $code) {
 }
 
 echo $OUTPUT->render_from_template(
-    'block_eduvidual/manage_users',
+    'local_eduvidual/manage_users',
     (object) array(
         'codes' => $codes,
         'codes_amount' => count($codes),
