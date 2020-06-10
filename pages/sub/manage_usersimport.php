@@ -83,9 +83,7 @@ if (optional_param('datavalidated', 0, PARAM_INT) == 1) {
 
                 require_once($CFG->dirroot . '/blocks/eduvidual/classes/lib_enrol.php');
                 block_eduvidual_lib_enrol::role_set($u->id, $org, $user->role);
-                if (!empty($user->bunch) && strtolower($user->role) != 'remove') {
-                    block_eduvidual_lib_enrol::bunch_set($u->id, $org, $user->bunch);
-                }
+
                 if (strtolower($user->role) == 'remove') {
                     echo 'Removed #' . $u->id;
                 } else {
@@ -124,6 +122,9 @@ if (optional_param('datavalidated', 0, PARAM_INT) == 1) {
 
                 require_once($CFG->dirroot . '/blocks/eduvidual/classes/lib_enrol.php');
                 block_eduvidual_lib_enrol::role_set($user->id, $org, $user->role);
+                if (!empty($user->bunch) && strtolower($user->role) != 'remove') {
+                    block_eduvidual_lib_enrol::bunch_set($user->id, $org, $user->bunch);
+                }
                 block_eduvidual_lib_enrol::choose_background($user->id);
                 // Trigger event.
                 \core\event\user_created::create_from_userid($user->id)->trigger();
