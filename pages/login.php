@@ -72,18 +72,18 @@ $PAGE->add_body_class('login-index');
 						</a>
 					</div>
 					<div class="col-lg-6 col-sm-12">
-						<a href="<?php echo $CFG->wwwroot; ?>/local/eduvidual/pages/redirects/login_mnet.php" title="<?php echo get_string('login:network_btn', 'local_eduvidual'); ?>" id="eduvidual-btn-sso-eduverbund" data-ajax="false"
-						   class="btn btn-block" type="button" name="edu_verbund">
-								<img src="<?php echo $CFG->wwwroot; ?>/pix/i/mnethost.svg" width="20" alt="<?php echo get_string('login:network_btn', 'local_eduvidual'); ?>">&nbsp;<?php echo get_string('login:network_btn', 'local_eduvidual'); ?>
+						<a href="<?php echo $CFG->wwwroot; ?>/local/eduvidual/pages/redirects/login_google.php" title="Google" id="eduvidual-btn-sso-google" data-ajax="false"
+						 class="btn btn-block" type="button" name="google">
+								<img src="<?php echo $CFG->wwwroot; ?>/local/eduvidual/pix/logo_google.svg" width="20" alt="Google">&nbsp;Google
 						</a>
 					</div>
 				</div>
 
 				<div class="row justify-content-md-center">
-	                <div class="col-lg-6 col-sm-12">
-						<a href="<?php echo $CFG->wwwroot; ?>/local/eduvidual/pages/redirects/login_google.php" title="Google" id="eduvidual-btn-sso-google" data-ajax="false"
-						 class="btn btn-block" type="button" name="google">
-								<img src="<?php echo $CFG->wwwroot; ?>/local/eduvidual/pix/logo_google.svg" width="20" alt="Google">&nbsp;Google
+					<div class="col-lg-6 col-sm-12">
+						<a href="<?php echo $CFG->wwwroot; ?>/local/eduvidual/pages/redirects/login_mnet.php" title="<?php echo get_string('login:network_btn', 'local_eduvidual'); ?>" id="eduvidual-btn-sso-eduverbund" data-ajax="false"
+						   class="btn btn-block" type="button" name="edu_verbund">
+								<img src="<?php echo $CFG->wwwroot; ?>/pix/i/mnethost.svg" width="20" alt="<?php echo get_string('login:network_btn', 'local_eduvidual'); ?>">&nbsp;<?php echo get_string('login:network_btn', 'local_eduvidual'); ?>
 						</a>
 					</div>
 					<?php
