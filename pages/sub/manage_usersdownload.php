@@ -40,42 +40,44 @@ if (\local_eduvidual\locallib::get_orgrole($orgid) != "Manager" && !is_siteadmin
     ));
     $OUTPUT->footer();
     exit;
+} else {
+    $columns = array(
+        'id' => 'id',
+        'username' => 'username',
+        'email' => 'email',
+        'firstname' => 'firstname',
+        'lastname' => 'lastname',
+        'role' => 'role',
+        'bunch' => 'bunch',
+        'secret' => 'secret',
+    );
+
+    list($insql, $params) = $DB->get_in_or_equal($userids);
+    $sql = "SELECT u.id,u.username,u.email,u.firstname,u.lastname,ou.role
+                FROM {user} u, {local_eduvidual_orgid_userid} ou
+                WHERE u.id=ou.userid
+                    AND ou.role IS NOT NULL
+                    AND ou.orgid = ?
+                    AND u.id $insql
+                ORDER BY u.lastname ASC,u.firstname ASC";
+
+    // Add orgid at the beginning of params.
+    array_unshift($params, $orgid);
+    $rs = $DB->get_recordset_sql($sql, $params);
+
+    \core\dataformat::download_data('users_' . date("Ymd-His"), $dataformat, $columns, $rs, function($record) {
+        global $DB, $orgid;
+        $r = (object) array('id' => $record->id);
+        profile_load_data($r);
+        $bunch = $DB->get_record('local_eduvidual_userbunches', array('orgid' => $orgid, 'userid' => $record->id));
+        if (!empty($bunch->bunch)) {
+            $record->bunch = $bunch->bunch;
+        } else {
+            $record->bunch = '';
+        }
+        $record->secret = $record->id . '#' . $r->profile_field_secret;
+        return $record;
+    });
+    $rs->close();
+
 }
-$columns = array(
-    'id' => 'id',
-    'username' => 'username',
-    'email' => 'email',
-    'firstname' => 'firstname',
-    'lastname' => 'lastname',
-    'role' => 'role',
-    'bunch' => 'bunch',
-    'secret' => 'secret',
-);
-
-list($insql, $params) = $DB->get_in_or_equal($userids);
-$sql = "SELECT u.id,u.username,u.email,u.firstname,u.lastname,ou.role
-            FROM {user} u, {local_eduvidual_orgid_userid} ou
-            WHERE u.id=ou.userid
-                AND ou.role IS NOT NULL
-                AND ou.orgid = ?
-                AND u.id $insql
-            ORDER BY u.lastname ASC,u.firstname ASC";
-
-// Add orgid at the beginning of params.
-array_unshift($params, $orgid);
-$rs = $DB->get_recordset_sql($sql, $params);
-
-download_as_dataformat('users_' . date("Ymd-His"), $dataformat, $columns, $rs, function($record) {
-    global $DB, $orgid;
-    $r = (object) array('id' => $record->id);
-    profile_load_data($r);
-    $bunch = $DB->get_record('local_eduvidual_userbunches', array('orgid' => $orgid, 'userid' => $record->id));
-    if (!empty($bunch->bunch)) {
-        $record->bunch = $bunch->bunch;
-    } else {
-        $record->bunch = '';
-    }
-    $record->secret = $record->id . '#' . $r->profile_field_secret;
-    return $record;
-});
-$rs->close();

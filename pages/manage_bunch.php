@@ -24,16 +24,15 @@ require_once('../../../config.php');
 require_login();
 
 require_once($CFG->libdir . '/adminlib.php');
-
 require_once($CFG->dirroot. '/course/lib.php');
 
 $orgid = optional_param('orgid', 0, PARAM_INT);
 $bunch = optional_param('bunch', '', PARAM_TEXT);
 $format = optional_param('format', 'cards', PARAM_TEXT);
 
-$PAGE->set_context(context_system::instance());
+$PAGE->set_context(\context_system::instance());
 $PAGE->set_pagelayout('standard');
-$PAGE->set_url(new moodle_url('/local/eduvidual/pages/manage_bunch.php', array('orgid' => $orgid, 'bunch' => $bunch, 'format' => $format)));
+$PAGE->set_url(new \moodle_url('/local/eduvidual/pages/manage_bunch.php', array('orgid' => $orgid, 'bunch' => $bunch, 'format' => $format)));
 $PAGE->set_title(!empty($bunch) ? $bunch : get_string('Accesscards', 'local_eduvidual'));
 $PAGE->set_heading(!empty($bunch) ? $bunch : get_string('Accesscards', 'local_eduvidual'));
 //$PAGE->set_cacheable(false);
@@ -41,7 +40,7 @@ $PAGE->requires->css('/local/eduvidual/style/manage_bunch.css');
 
 // Only allow a certain user group access to this script
 $allow = array("Manager");
-if (!in_array(\local_eduvidual\locallib::get('role'), $allow) && !is_siteadmin()) {
+if (!in_array(\local_eduvidual\locallib::get_orgrole($orgid), $allow) && !is_siteadmin()) {
 	echo $OUTPUT->header();
 	?>
 		<p class="alert alert-danger"><?php get_string('access_denied', 'local_eduvidual'); ?></p>
@@ -50,15 +49,9 @@ if (!in_array(\local_eduvidual\locallib::get('role'), $allow) && !is_siteadmin()
 	exit;
 }
 
-// Used to determine if we can manage this org
-$current_orgid = optional_param('orgid', 0, PARAM_INT);
-$orgas = \local_eduvidual\locallib::get_organisations('Manager');
-$org = \local_eduvidual\locallib::get_organisations_check($orgas, $current_orgid);
-if ($org) {
-    \local_eduvidual\locallib::set_org($org->orgid);
-}
-
-\local_eduvidual\locallib::set_context_auto(0, $org->categoryid);
+$org = $DB->get_record('local_eduvidual_org', array('orgid' => $orgid));
+$context = \context_coursecat::instance($org->categoryid);
+$PAGE->set_context($context);
 $PAGE->navbar->add(get_string('Management', 'local_eduvidual'), new moodle_url('/local/eduvidual/pages/manage.php', array('orgid' => $orgid)));
 $PAGE->navbar->add(get_string('Accesscards', 'local_eduvidual'), $PAGE->url);
 echo $OUTPUT->header();

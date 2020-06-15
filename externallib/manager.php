@@ -34,11 +34,13 @@ class local_eduvidual_external_manager extends external_api {
         ));
     }
     public static function user_exportform($orgid, $userids) {
-        global $CFG, $OUTPUT, $PAGE;
+        global $CFG, $DB, $OUTPUT, $PAGE;
         $params = self::validate_parameters(self::user_exportform_parameters(), array('orgid' => $orgid, 'userids' => $userids));
 
-        
-        $org = \local_eduvidual\locallib::set_org($orgid);
+        if (!\local_eduvidual\locallib::get_orgrole($params['orgid']) == 'Manager' && !is_siteadmin()) {
+            return "";
+        }
+        $org = $DB->get_record('local_eduvidual_org', array('orgid' => $params['orgid']));
         $context = context_coursecat::instance($org->categoryid);
         $PAGE->set_context($context);
 
@@ -61,7 +63,7 @@ class local_eduvidual_external_manager extends external_api {
     public static function user_form($orgid, $userid) {
         global $CFG, $DB, $PAGE;
         $params = self::validate_parameters(self::user_form_parameters(), array('orgid' => $orgid, 'userid' => $userid));
-        
+
         \local_eduvidual\locallib::set_org($params['orgid']);
 
         $membership = $DB->get_record('local_eduvidual_orgid_userid', $params);
@@ -94,7 +96,7 @@ class local_eduvidual_external_manager extends external_api {
     public static function user_update($orgid, $userid, $firstname, $lastname, $email) {
         global $CFG, $DB, $PAGE;
         $params = self::validate_parameters(self::user_update_parameters(), array('orgid' => $orgid, 'userid' => $userid, 'firstname' => $firstname, 'lastname' => $lastname, 'email' => $email));
-        
+
         \local_eduvidual\locallib::set_org($params['orgid']);
         $membership = $DB->get_record('local_eduvidual_orgid_userid', array('orgid' => $params['orgid'], 'userid' => $params['userid']));
         $reply = (object)array(
