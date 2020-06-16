@@ -15,11 +15,11 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package    local_eduvidual
- * @copyright  2019 Digital Education Society (http://www.dibig.at)
- * @author     Robert Schrenk
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
+* @package    local_eduvidual
+* @copyright  2019 Digital Education Society (http://www.dibig.at)
+* @author     Robert Schrenk
+* @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+*/
 
 namespace local_eduvidual\privacy;
 use core_privacy\local\metadata\collection;
@@ -30,17 +30,17 @@ class provider implements \core_privacy\local\metadata\provider {
     public static function get_metadata(collection $collection) : collection {
         $collection->add_database_table(
             'local_eduvidual_courseshow',
-             array(),
+            array(),
             'privacy:metadata:privacy:metadata:local_eduvidual_courseshow'
         );
         $collection->add_database_table(
             'local_eduvidual_orgid_userid',
-             array(),
+            array(),
             'privacy:metadata:privacy:metadata:local_eduvidual_orgid_userid'
         );
         $collection->add_database_table(
             'local_eduvidual_userbunch',
-             array(
+            array(
                 'orgid' => 'privacy:metadata:local_eduvidual_userbunch:orgid',
                 'bunch' => 'privacy:metadata:local_eduvidual_userbunch:bunch',
             ),
@@ -48,12 +48,12 @@ class provider implements \core_privacy\local\metadata\provider {
         );
         $collection->add_database_table(
             'local_eduvidual_userqcats',
-             array(),
+            array(),
             'privacy:metadata:privacy:metadata:local_eduvidual_userqcats'
         );
         $collection->add_database_table(
             'local_eduvidual_usertoken',
-             array(
+            array(
                 'token' => 'privacy:metadata:local_eduvidual_usertoken:token',
                 'created' => 'privacy:metadata:local_eduvidual_usertoken:created',
                 'used' => 'privacy:metadata:local_eduvidual_usertoken:used',
@@ -63,10 +63,10 @@ class provider implements \core_privacy\local\metadata\provider {
         return $collection;
     }
     /**
-     * Get the list of contexts that contain user information for the specified user.
-     *
-     * @param   int           $userid       The user to search.
-     * @return  contextlist   $contextlist  The list of contexts used in this plugin.
+    * Get the list of contexts that contain user information for the specified user.
+    *
+    * @param   int           $userid       The user to search.
+    * @return  contextlist   $contextlist  The list of contexts used in this plugin.
     */
     public static function get_contexts_for_userid(int $userid) : contextlist {
         $contextlist = new \core_privacy\local\request\contextlist();
@@ -95,21 +95,21 @@ class provider implements \core_privacy\local\metadata\provider {
     }
 
     /**
-     * Export all user preferences for the plugin.
-     *
-     * @param   int         $userid The userid of the user whose data is to be exported.
-     */
+    * Export all user preferences for the plugin.
+    *
+    * @param   int         $userid The userid of the user whose data is to be exported.
+    */
     public static function export_user_preferences(int $userid) {
         $markasreadonnotification = get_user_preference('markasreadonnotification', null, $userid);
         if (null !== $markasreadonnotification) {
             switch ($markasreadonnotification) {
                 case 0:
-                    $markasreadonnotificationdescription = get_string('markasreadonnotificationno', 'mod_forum');
-                    break;
+                $markasreadonnotificationdescription = get_string('markasreadonnotificationno', 'mod_forum');
+                break;
                 case 1:
                 default:
-                    $markasreadonnotificationdescription = get_string('markasreadonnotificationyes', 'mod_forum');
-                    break;
+                $markasreadonnotificationdescription = get_string('markasreadonnotificationyes', 'mod_forum');
+                break;
             }
             writer::export_user_preference('mod_forum', 'markasreadonnotification', $markasreadonnotification, $markasreadonnotificationdescription);
         }
