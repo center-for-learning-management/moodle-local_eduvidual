@@ -153,6 +153,15 @@ function local_eduvidual_extend_navigation($navigation) {
  * Extend course settings
  */
 function local_eduvidual_extend_navigation_category_settings($nav, $context) {
+    global $DB;
+    $org = $DB->get_record('local_eduvidual_org', array('categoryid' => $context->instanceid));
+    if (!empty($org->orgid) && (\local_eduvidual\locallib::get_orgrole($org->orgid) == 'Manager' || is_siteadmin())) {
+        $label = get_string('Management', 'local_eduvidual');
+        $link = new moodle_url('/local/eduvidual/pages/manageme.php', array('orgid' => $org->orgid));
+        $icon = new pix_icon('/t/gears', '', '');
+        $nodecreatecourse = $nav->add($label, $link, navigation_node::NODETYPE_LEAF, $label, 'eduvidualmanagement', $icon);
+        $nodecreatecourse->showinflatnavigation = true;
+    }
 }
 
 /**
