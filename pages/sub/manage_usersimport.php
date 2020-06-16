@@ -111,20 +111,9 @@ if (optional_param('datavalidated', 0, PARAM_INT) == 1) {
 
                 $user->id = $u->id;
 
-                if (!empty($user->bunch)) {
-                    $userbunch = (object) array(
-                        'orgid' => $org->orgid,
-                        'userid' => $u->id,
-                        'bunch' => $user->bunch,
-                    );
-                    $DB->insert_record('block_eduvidual_userbunches', $userbunch);
-                }
-
                 require_once($CFG->dirroot . '/blocks/eduvidual/classes/lib_enrol.php');
                 block_eduvidual_lib_enrol::role_set($user->id, $org, $user->role);
-                if (!empty($user->bunch) && strtolower($user->role) != 'remove') {
-                    block_eduvidual_lib_enrol::bunch_set($user->id, $org, $user->bunch);
-                }
+
                 block_eduvidual_lib_enrol::choose_background($user->id);
                 // Trigger event.
                 \core\event\user_created::create_from_userid($user->id)->trigger();
@@ -133,6 +122,9 @@ if (optional_param('datavalidated', 0, PARAM_INT) == 1) {
                 } else {
                     echo 'Failed!';
                 }
+            }
+            if (!empty($user->id) && !empty($user->bunch) && strtolower($user->role) != 'remove') {
+                block_eduvidual_lib_enrol::bunch_set($user->id, $org, $user->bunch);
             }
             // Unpack afterwards to restore previous state
             $user->payload = json_decode($user->payload);
