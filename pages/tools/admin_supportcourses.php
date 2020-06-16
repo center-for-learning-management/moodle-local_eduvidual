@@ -56,18 +56,24 @@ if (empty($template)) {
     die();
 }
 
-$course = $DB->get_record('course', array('id' => $template), '*', MUST_EXIST);
-
 echo $OUTPUT->header();
+
+$templatecourse = $DB->get_record('course', array('id' => $template), '*', IGNORE_MISSING);
+if (empty($templatecourse->id)) {
+    echo "THERE IS NO SUPPORT TEMPLATE COURSE";
+    echo $OUTPUT->footer();
+    die();
+}
+
 echo "<ul>\n";
 require_once($CFG->dirroot . '/course/externallib.php');
 $orgs = $DB->get_records('local_eduvidual_org', array('authenticated' => 1));
 foreach ($orgs AS $org) {
-    $course = $DB->get_record('course', array('id' => $template), 'id', IGNORE_MISSING);
+    $course = $DB->get_record('course', array('id' => $org->supportcourseid), 'id', IGNORE_MISSING);
     if (!empty($org->supportcourseid) && !empty($course->id)) {
-        echo "<li>$org->name has a supportcourse</li>\n";
+        echo "<li>$org->name has a supportcourse with <a href=\"$CFG->wwwroot/course/view.php?id=$course->id\">#$course->id</a></li>\n";
     } else {
-        echo "<li>$org->name needs a supportcourse</li>\n";
+        echo "<li>$org->name needs a supportcourse<ul>\n";
         $supportcourse = \local_eduvidual\lib_helper::duplicate_course($template, 'Helpdesk (' . $org->name . ')', 'helpdesk_' . $org->orgid, $org->categoryid, 1);
         if (empty($supportcourse->id)) {
             echo "<li class='alert alert-danger'><strong>Error creating supportcourse</strong></li>\n";
@@ -77,14 +83,14 @@ foreach ($orgs AS $org) {
             $sql = "SELECT * FROM {forum} WHERE course=? LIMIT 0,1";
             $forum = $DB->get_record_sql($sql, array($supportcourse->id));
             if (empty($forum->id)) {
-                echo "<li class='alert alert-danger'>Supportcourse created successfully, but there is no forum to set as support forum.</li>\n";
+                echo "<li class='alert alert-danger'>Supportcourse created successfully <a href=\"$CFG->wwwroot/course/view.php?id=$supportcourse->id\">#$supportcourse->id</a>, but there is no forum to set as support forum.</li>\n";
             } else {
-                \block_edusupport\lib::supportforum_enable($forum->id);
-                echo "<li>Supportcourse created successfully</li>\n";
+                \local_edusupport\lib::supportforum_enable($forum->id);
+                echo "<li>Supportcourse created successfully with <a href=\"$CFG->wwwroot/course/view.php?id=$supportcourse->id\">#$supportcourse->id</a></li>\n";
                 if ($org->orgid > 500000 && $org->orgid < 600000) {
                     // School from Salzburg
                     echo "<li>Added dedicated supporter #2098</li>\n";
-                    \block_edusupport\lib::supportforum_setdedicatedsupporter($forum->id, 2098);
+                    \local_edusupport\lib::supportforum_setdedicatedsupporter($forum->id, 2098);
                 }
             }
 
@@ -101,8 +107,8 @@ foreach ($orgs AS $org) {
             echo "<li>Added " . count($managers) . " Managers with teacher role</li>\n";
             echo "<li>Added " . count($others) . " Users with student role</li>\n";
         }
+        echo "</ul></li>\n";
     }
-    break;
 }
 echo "</ul>\n";
 
