@@ -145,58 +145,17 @@ if ($USER->id > 1) {
                     if (empty($org->courseid)) {
                         // Create an org-course for this org
                         $orgcoursebasement = get_config('local_eduvidual', 'orgcoursebasement');
-                        $basement = $DB->get_record('course', array('id' => $orgcoursebasement));
 
-                        $reply["orgcourse"] = $basement;
-                        if (!empty($basement->id)) {
-                            // Grant a role that allows course duplication in source and target category
-                            $sourcecontext = \context_coursecat::instance($basement->category);
-                            $targetcontext = \context_coursecat::instance($org->categoryid);
-                            $roletoassign = 1; // Manager
-                            $revokesourcerole = true;
-                            $revoketargetrole = true;
-                            $roles = get_user_roles($sourcecontext, $USER->id, false);
-                            foreach($roles AS $role) {
-                                if ($role->roleid == $roletoassign) {
-                                    // User had this role before - we do not revoke!
-                                    $revokesourcerole = false;
-                                    $reply['msgs'][] = 'Has already been manager in source';
-                                }
-                            }
-                            $roles = get_user_roles($targetcontext, $USER->id, false);
-                            foreach($roles AS $role) {
-                                if ($role->roleid == $roletoassign) {
-                                    // User had this role before - we do not revoke!
-                                    $revoketargetrole = false;
-                                    $reply['msgs'][] = 'Has already been manager in target';
-                                }
-                            }
-                            $reply['msgs'][] = 'Assigning role manager in source/target';
-                            role_assign($roletoassign, $USER->id, $sourcecontext->id);
-                            role_assign($roletoassign, $USER->id, $targetcontext->id);
-
-                            // Duplicate course
-                            $course = \core_course_external::duplicate_course($basement->id, 'Digitaler Schulhof (' . $org->orgid . ')', $org->orgid, $org->categoryid, true);
-                            $org->courseid = $course["id"];
-                            $DB->set_field('local_eduvidual_org', 'courseid', $org->courseid, array('orgid' => $org->orgid));
-                            $course['summary'] = '<p>Digitaler Schulhof der Schule ' . $org->name . '</p>';
-                            $DB->update_record('course', $course);
-
-                            // Revoke role that allows course duplication in source and target category
-                            if ($revokesourcerole) {
-                                role_unassign($roletoassign, $USER->id, $sourcecontext->id);
-                                $reply['msgs'][] = 'Revoke role from source';
-                            }
-                            if ($revoketargetrole) {
-                                role_unassign($roletoassign, $USER->id, $targetcontext->id);
-                                $reply['msgs'][] = 'Revoke role from target';
-                            }
-                        }
+                        $course = \local_eduvidual\lib_helper::duplicate_course($orgcoursebasement, 'Digitaler Schulhof (' . $org->orgid . ')', $org->orgid, $org->categoryid, 1);
+                        $org->courseid = $course->id;
+                        $DB->set_field('local_eduvidual_org', 'courseid', $org->courseid, array('orgid' => $org->orgid));
+                        $course->summary = '<p>Digitaler Schulhof der Schule ' . $org->name . '</p>';
+                        $DB->set_field('course', 'summary', $course->summary, array('id' => $course->id));
                     }
 
-                    if (!empty($org->courseid)) {
-                        $reply['roleset'] = \local_eduvidual\lib_enrol::role_set($USER->id, $org, 'Manager');
+                    $reply['roleset'] = \local_eduvidual\lib_enrol::role_set($USER->id, $org, 'Manager');
 
+                    if (!empty($org->courseid)) {
                         $messagehtml = $OUTPUT->render_from_template(
                             'local_eduvidual/register_mail_completed',
                             (object) array(

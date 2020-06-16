@@ -93,49 +93,21 @@ if (!$org) {
                         // Create course here
                         $fullname = optional_param('name', '', PARAM_TEXT);
                         if (strlen($fullname) > 5) {
-                            require_once($CFG->dirroot . '/course/externallib.php');
                             $shortname = "[" . $USER->id . "-" . date('YmdHis') . "] " . strtolower($fullname);
                             if (strlen($shortname) > 30) $shortname = substr($shortname, 0, 30);
-                            // Grant a role that allows course duplication in source and target category
-                            $basecourse = $DB->get_record('course', array('id' => $basement));
-                            $sourcecontext = \context_coursecat::instance($basecourse->category);
-                            $targetcontext = \context_coursecat::instance($category->id);
-                            $roletoassign = 1; // Manager
-                            $revokesourcerole = true;
-                            $revoketargetrole = true;
-                            $roles = get_user_roles($sourcecontext, $USER->id, false);
-                            foreach($roles AS $role) {
-                                if ($role->roleid == $roletoassign) {
-                                    // User had this role before - we do not revoke!
-                                    $revokesourcerole = false;
-                                    $reply['msgs'][] = 'Has already been manager in source';
-                                }
-                            }
-                            $roles = get_user_roles($targetcontext, $USER->id, false);
-                            foreach($roles AS $role) {
-                                if ($role->roleid == $roletoassign) {
-                                    // User had this role before - we do not revoke!
-                                    $revoketargetrole = false;
-                                    $reply['msgs'][] = 'Has already been manager in target';
-                                }
-                            }
-                            $reply['msgs'][] = 'Assigning role manager in source/target';
-                            role_assign($roletoassign, $USER->id, $sourcecontext->id);
-                            role_assign($roletoassign, $USER->id, $targetcontext->id);
+                            $course = \local_eduvidual\lib_helper::duplicate_course($basement, $fullname, $shortname, $categoryid, 1);
 
-                            // DO THE MAGIC! CLONE THE COURSE!
-                            $course = \core_course_external::duplicate_course($basement, $fullname, $shortname, $categoryid);
-                            // ATTENTION - Revoking the role is MANDATORY and is done AFTER the roles are set in the course!
-                            if (isset($course['id']) && $course['id'] > 0) {
-                                $context = \context_course::instance($course['id']);
+                            if (!empty($course->id)) {
+                                $context = \context_course::instance($course->id);
                                 $role = get_config('local_eduvidual', 'defaultroleteacher');
                                 $enroluser = optional_param('setteacher', 0, PARAM_INT);
                                 if (empty($enroluser) || $enroluser == 0) $enroluser = $USER->id;
-                                $reply['enrolments'][] = 'course: user ' . $enroluser . ' roleid ' . $role . ' courseid ' . $course['id'];
-                                \local_eduvidual\lib_enrol::course_manual_enrolments(array($course['id']), array($enroluser), $role);
+                                $reply['enrolments'][] = 'course: user ' . $enroluser . ' roleid ' . $role . ' courseid ' . $course->id;
+                                \local_eduvidual\lib_enrol::course_manual_enrolments(array($course->id), array($enroluser), $role);
                                 // Set the start date of this course to sep 1st of the school year
-                                $course = $DB->get_record('course', array('id' => $course['id']));
+                                $course = $DB->get_record('course', array('id' => $course->id));
                                 $course->startdate = (date("m") < 6)?strtotime((date("Y")-1) . '0901000000'):strtotime(date("Y") . '0901000000');
+                                $course->enddate = (date("m") < 6)?strtotime((date("Y")) . '0831000000'):strtotime((date("Y")+1) . '0831000000');
                                 $DB->update_record('course', $course);
 
                                 $reply['course'] = $course;
@@ -143,17 +115,6 @@ if (!$org) {
                             } else {
                                 $reply['error'] = 'error_creating_course';
                             }
-
-                            // Revoke role that allows course duplication in source and target category
-                            if ($revokesourcerole) {
-                                role_unassign($roletoassign, $USER->id, $sourcecontext->id);
-                                $reply['msgs'][] = 'Revoke role from source';
-                            }
-                            if ($revoketargetrole) {
-                                role_unassign($roletoassign, $USER->id, $targetcontext->id);
-                                $reply['msgs'][] = 'Revoke role from target';
-                            }
-
                         } else {
                             $reply['error'] = 'name_too_short';
                         }

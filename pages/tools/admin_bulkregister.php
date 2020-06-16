@@ -70,11 +70,11 @@ if (!empty($orgids) && !empty($manageruserid)) {
 
                 if (!empty($basement->id)) {
                     // Duplicate course
-                    $course = core_course_external::duplicate_course($basement->id, 'Digitaler Schulhof (' . $org->orgid . ')', $org->orgid, $org->categoryid, true);
-                    $org->courseid = $course["id"];
+                    $course = \local_eduvidual\lib_helper::duplicate_course($basement->id, 'Digitaler Schulhof (' . $org->orgid . ')', $org->orgid, $org->categoryid, 1);
+                    $org->courseid = $course->id;
                     $DB->set_field('local_eduvidual_org', 'courseid', $org->courseid, array('orgid' => $org->orgid));
-                    $course['summary'] = '<p>Digitaler Schulhof der Schule ' . $org->name . '</p>';
-                    $DB->update_record('course', $course);
+                    $course->summary = '<p>Digitaler Schulhof der Schule ' . $org->name . '</p>';
+                    $DB->set_field('course', 'summary', $course->summary, array('id' => $course->id));
                 }
                 $msgs[] = "=> Created course $org->courseid<br />";
             }

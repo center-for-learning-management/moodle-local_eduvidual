@@ -41,6 +41,7 @@ class lib_helper {
         // Grant a role that allows course duplication in source and target category
         $basecourse = $DB->get_record('course', array('id' => $courseid));
         $sourcecontext = \context_course::instance($courseid);
+        $targetcontext = \context_coursecategory::instance($categoryid);
 
         $roletoassign = 1; // Manager
         $revokesourcerole = true;
@@ -52,113 +53,124 @@ class lib_helper {
                 $revokesourcerole = false;
             }
         }
+        $roles = get_user_roles($targetcontext, $USER->id, false);
+        foreach($roles AS $role) {
+            if ($role->roleid == $roletoassign) {
+                // User had this role before - we do not revoke!
+                $revoketargetrole = false;
+            }
+        }
         role_assign($roletoassign, $USER->id, $sourcecontext->id);
+        role_assign($roletoassign, $USER->id, $targetcontext->id);
 
-        $backupsettings = array(
-            'activities' => 1,
-            'blocks' => 1,
-            'filters' => 1,
-            'users' => 0,
-            // Caused and exception in the backup libraries of Moodle
-            //'enrolments' => \backup::ENROL_NEVER,
-            'role_assignments' => 0,
-            'comments' => 0,
-            'userscompletion' => 0,
-            'logs' => 0,
-            'grade_histories' => 0
-        );
-        foreach ($backupsettings AS $name => $value) {
-            if (!empty($options[$name])) {
-                $backupsettings[$name] = $options[$name];
-            }
-        }
-
-        // Backup the course.
-        $bc = new \backup_controller(\backup::TYPE_1COURSE, $basecourse->id, \backup::FORMAT_MOODLE,
-                                \backup::INTERACTIVE_NO, \backup::MODE_SAMESITE, $USER->id);
-
-        foreach ($backupsettings as $name => $value) {
-            if ($setting = $bc->get_plan()->get_setting($name)) {
-                $bc->get_plan()->get_setting($name)->set_value($value);
-            }
-        }
-
-        $backupid       = $bc->get_backupid();
-        $backupbasepath = $bc->get_plan()->get_basepath();
-
-        $bc->execute_plan();
-        $results = $bc->get_results();
-        $file = $results['backup_destination'];
-
-        $bc->destroy();
-
-        // Restore the backup immediately.
-
-        if ($revokesourcerole) {
-            role_unassign($roletoassign, $USER->id, $sourcecontext->id);
-            echo "Role was unassigned";
-        }
-
-        // Check if we need to unzip the file because the backup temp dir does not contains backup files.
-        if (!file_exists($backupbasepath . "/moodle_backup.xml")) {
-            $file->extract_to_pathname(get_file_packer('application/vnd.moodle.backup'), $backupbasepath);
-        }
-
-        // Create new course.
-        $newcourseid = \restore_dbops::create_new_course($fullname, $shortname, $categoryid);
-
-        $rc = new \restore_controller($backupid, $newcourseid,
-                \backup::INTERACTIVE_NO, \backup::MODE_SAMESITE, $USER->id, \backup::TARGET_NEW_COURSE);
-
-        foreach ($backupsettings as $name => $value) {
-            $setting = $rc->get_plan()->get_setting($name);
-            if ($setting->get_status() == \backup_setting::NOT_LOCKED) {
-                $setting->set_value($value);
-            }
-        }
-
-        if (!$rc->execute_precheck()) {
-            $precheckresults = $rc->get_precheck_results();
-            if (is_array($precheckresults) && !empty($precheckresults['errors'])) {
-                if (empty($CFG->keeptempdirectoriesonbackup)) {
-                    fulldelete($backupbasepath);
+        try {
+            $backupsettings = array(
+                'activities' => 1,
+                'blocks' => 1,
+                'filters' => 1,
+                'users' => 0,
+                // Caused and exception in the backup libraries of Moodle
+                //'enrolments' => \backup::ENROL_NEVER,
+                'role_assignments' => 0,
+                'comments' => 0,
+                'userscompletion' => 0,
+                'logs' => 0,
+                'grade_histories' => 0
+            );
+            foreach ($backupsettings AS $name => $value) {
+                if (!empty($options[$name])) {
+                    $backupsettings[$name] = $options[$name];
                 }
+            }
 
-                $errorinfo = '';
+            // Backup the course.
+            $bc = new \backup_controller(\backup::TYPE_1COURSE, $basecourse->id, \backup::FORMAT_MOODLE,
+                                    \backup::INTERACTIVE_NO, \backup::MODE_SAMESITE, $USER->id);
 
-                foreach ($precheckresults['errors'] as $error) {
-                    $errorinfo .= $error;
+            foreach ($backupsettings as $name => $value) {
+                if ($setting = $bc->get_plan()->get_setting($name)) {
+                    $bc->get_plan()->get_setting($name)->set_value($value);
                 }
+            }
 
-                if (array_key_exists('warnings', $precheckresults)) {
-                    foreach ($precheckresults['warnings'] as $warning) {
-                        $errorinfo .= $warning;
+            $backupid       = $bc->get_backupid();
+            $backupbasepath = $bc->get_plan()->get_basepath();
+
+            $bc->execute_plan();
+            $results = $bc->get_results();
+            $file = $results['backup_destination'];
+
+            $bc->destroy();
+
+            // Restore the backup immediately.
+            // Check if we need to unzip the file because the backup temp dir does not contains backup files.
+            if (!file_exists($backupbasepath . "/moodle_backup.xml")) {
+                $file->extract_to_pathname(get_file_packer('application/vnd.moodle.backup'), $backupbasepath);
+            }
+
+            // Create new course.
+            $newcourseid = \restore_dbops::create_new_course($fullname, $shortname, $categoryid);
+
+            $rc = new \restore_controller($backupid, $newcourseid,
+                    \backup::INTERACTIVE_NO, \backup::MODE_SAMESITE, $USER->id, \backup::TARGET_NEW_COURSE);
+
+            foreach ($backupsettings as $name => $value) {
+                $setting = $rc->get_plan()->get_setting($name);
+                if ($setting->get_status() == \backup_setting::NOT_LOCKED) {
+                    $setting->set_value($value);
+                }
+            }
+
+            if (!$rc->execute_precheck()) {
+                $precheckresults = $rc->get_precheck_results();
+                if (is_array($precheckresults) && !empty($precheckresults['errors'])) {
+                    if (empty($CFG->keeptempdirectoriesonbackup)) {
+                        fulldelete($backupbasepath);
                     }
-                }
 
-                throw new moodle_exception('backupprecheckerrors', 'webservice', '', $errorinfo);
+                    $errorinfo = '';
+
+                    foreach ($precheckresults['errors'] as $error) {
+                        $errorinfo .= $error;
+                    }
+
+                    if (array_key_exists('warnings', $precheckresults)) {
+                        foreach ($precheckresults['warnings'] as $warning) {
+                            $errorinfo .= $warning;
+                        }
+                    }
+
+                    throw new moodle_exception('backupprecheckerrors', 'webservice', '', $errorinfo);
+                }
+            }
+
+            $rc->execute_plan();
+            $rc->destroy();
+
+            $course = $DB->get_record('course', array('id' => $newcourseid), '*', MUST_EXIST);
+            $course->fullname = $fullname;
+            $course->shortname = $shortname;
+            $course->visible = $visible;
+
+            // Set shortname and fullname back.
+            $DB->update_record('course', $course);
+
+            if (empty($CFG->keeptempdirectoriesonbackup)) {
+                fulldelete($backupbasepath);
+            }
+
+            // Delete the course backup file created by this WebService. Originally located in the course backups area.
+            $file->delete();
+
+            return $course;
+        } finally {
+            if ($revokesourcerole) {
+                role_unassign($roletoassign, $USER->id, $sourcecontext->id);
+            }
+            if ($revokestargetrole) {
+                role_unassign($roletoassign, $USER->id, $targetcontext->id);
             }
         }
-
-        $rc->execute_plan();
-        $rc->destroy();
-
-        $course = $DB->get_record('course', array('id' => $newcourseid), '*', MUST_EXIST);
-        $course->fullname = $fullname;
-        $course->shortname = $shortname;
-        $course->visible = $visible;
-
-        // Set shortname and fullname back.
-        $DB->update_record('course', $course);
-
-        if (empty($CFG->keeptempdirectoriesonbackup)) {
-            fulldelete($backupbasepath);
-        }
-
-        // Delete the course backup file created by this WebService. Originally located in the course backups area.
-        $file->delete();
-
-        return $course;
     }
     /**
      * Makes a natural sort on an array of objects.
