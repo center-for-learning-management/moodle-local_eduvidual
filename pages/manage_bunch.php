@@ -30,11 +30,18 @@ $orgid = optional_param('orgid', 0, PARAM_INT);
 $cohort = optional_param('cohort', '', PARAM_TEXT);
 $format = optional_param('format', 'list', PARAM_TEXT);
 
-$PAGE->set_context(\context_system::instance());
+$org = $DB->get_record('local_eduvidual_org', array('orgid' => $orgid));
+$context = \context_coursecat::instance($org->categoryid);
+$PAGE->set_context($context);
+
+if (!empty($cohort)) {
+	$cohorto = $DB->get_record('cohort', array('id' => $cohort, 'contextid' => $context->id));
+}
+
 $PAGE->set_pagelayout('standard');
 $PAGE->set_url(new \moodle_url('/local/eduvidual/pages/manage_bunch.php', array('orgid' => $orgid, 'cohort' => $cohort, 'format' => $format)));
-$PAGE->set_title(!empty($cohort) ? $cohort : get_string('Accesscards', 'local_eduvidual'));
-$PAGE->set_heading(!empty($cohort) ? $cohort : get_string('Accesscards', 'local_eduvidual'));
+$PAGE->set_title(!empty($cohorto->name) ? $cohorto->name : get_string('Accesscards', 'local_eduvidual'));
+$PAGE->set_heading(!empty($cohorto->name) ? $cohorto->name : get_string('Accesscards', 'local_eduvidual'));
 //$PAGE->set_cacheable(false);
 $PAGE->requires->css('/local/eduvidual/style/manage_bunch.css');
 
@@ -49,9 +56,7 @@ if (!in_array(\local_eduvidual\locallib::get_orgrole($orgid), $allow) && !is_sit
 	exit;
 }
 
-$org = $DB->get_record('local_eduvidual_org', array('orgid' => $orgid));
-$context = \context_coursecat::instance($org->categoryid);
-$PAGE->set_context($context);
+
 $PAGE->navbar->add(get_string('Management', 'local_eduvidual'), new moodle_url('/local/eduvidual/pages/manage.php', array('orgid' => $orgid)));
 $PAGE->navbar->add(get_string('Accesscards', 'local_eduvidual'), $PAGE->url);
 echo $OUTPUT->header();
