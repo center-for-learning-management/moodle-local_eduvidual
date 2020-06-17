@@ -48,7 +48,7 @@ if (\local_eduvidual\locallib::get_orgrole($orgid) != "Manager" && !is_siteadmin
         'firstname' => 'firstname',
         'lastname' => 'lastname',
         'role' => 'role',
-        'bunch' => 'bunch',
+        'cohort_add' => 'cohort_add',
         'secret' => 'secret',
     );
 
@@ -69,12 +69,24 @@ if (\local_eduvidual\locallib::get_orgrole($orgid) != "Manager" && !is_siteadmin
         global $DB, $orgid;
         $r = (object) array('id' => $record->id);
         profile_load_data($r);
-        $bunch = $DB->get_record('local_eduvidual_userbunches', array('orgid' => $orgid, 'userid' => $record->id));
-        if (!empty($bunch->bunch)) {
-            $record->bunch = $bunch->bunch;
+        $org = $DB->get_record('local_eduvidual_org', array('orgid' => $orgid));
+        $context = \context_coursecat::instance($org->categoryid);
+        if (!empty($context->id)) {
+            $sql = "SELECT c.id,c.name
+                FROM {cohort} c, {cohort_members} cm
+                WHERE c.id=cm.cohortid
+                    AND cm.userid=?
+                    AND c.contextid=?";
+            $cohorts = $DB->get_records_sql($sql, array($record->id, $context->id));
+            $cohorts_ = array();
+            foreach ($cohorts as $cohort) {
+                $cohorts_[] = $cohort->name;
+            }
+            $record->cohorts_add = implode(',', $cohorts_);
         } else {
-            $record->bunch = '';
+            $record->cohorts_add = '';
         }
+
         $record->secret = $record->id . '#' . $r->profile_field_secret;
         return $record;
     });

@@ -292,6 +292,16 @@ $string['createmodule:failed'] = 'Could not create module';
 $string['createmodule:invalid'] = 'Invalid module data';
 $string['createmodule:requiredfield'] = 'This field is required!';
 $string['db_error'] = 'Database error!';
+
+$string['import:created'] = 'Created #{$a->id}';
+$string['import:failed'] = 'Failed!';
+$string['import:removed'] = 'Removed #{$a->id}';
+$string['import:updated'] = 'Updated #{$a->id}';
+$string['import:invalid_email'] = 'Invalid e-Mail';
+$string['import:invalid_role'] = 'Invalid role specified (allowed: Manager, Teacher, Student or Parent)';
+$string['import:invalid_org'] = 'Not allowed to manage this user account, not in your organisation';
+$string['import:invalid_username_or_email'] = 'Username or e-Mail already taken by another user, that is not in your organisation';
+
 $string['invalid_character'] = 'Invalid character';
 $string['invalid_orgcoursebasement'] = 'Invalid Basement selected!';
 $string['invalid_secret'] = 'Invalid Secret given!';

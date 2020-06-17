@@ -52,7 +52,8 @@ if (optional_param('datavalidated', 0, PARAM_INT) == 1) {
                 <th>firstname</th>
                 <th>lastname</th>
                 <th>email</th>
-                <th>bunch</th>
+                <th>cohort_add</th>
+                <th>cohort_remove</th>
                 <th>password</th>
                 <th>result</th>
                 <th>secret</th>
@@ -66,7 +67,8 @@ if (optional_param('datavalidated', 0, PARAM_INT) == 1) {
             <td><?php echo @$user->firstname; ?></td>
             <td><?php echo @$user->lastname; ?></td>
             <td><?php echo @$user->email; ?></td>
-            <td><?php echo @$user->bunch; ?></td>
+            <td><?php echo @$user->cohorts_add; ?></td>
+            <td><?php echo @$user->cohorts_remove; ?></td>
             <td><?php echo @$user->password; ?></td>
             <td>
         <?php
@@ -74,6 +76,7 @@ if (optional_param('datavalidated', 0, PARAM_INT) == 1) {
             // Pack the object before database-query
             $user->payload = json_encode($user->payload, JSON_NUMERIC_CHECK);
             if (!empty($user->id)) {
+                $action = 'update';
                 $u = $DB->get_record('user', array('id' => $user->id));
                 $u->firstname = $user->firstname;
                 $u->lastname = $user->lastname;
@@ -84,17 +87,8 @@ if (optional_param('datavalidated', 0, PARAM_INT) == 1) {
                 if (!empty($user->password)) {
                     update_internal_user_password($u, $user->password, false);
                 }
-
-                \local_eduvidual\lib_enrol::role_set($u->id, $org, $user->role);
-                if (!empty($user->bunch) && strtolower($user->role) != 'remove') {
-                    \local_eduvidual\lib_enrol::bunch_set($u->id, $org, $user->bunch);
-                }
-                if (strtolower($user->role) == 'remove') {
-                    echo 'Removed #' . $u->id;
-                } else {
-                    echo 'Updated #' . $u->id;
-                }
             } else {
+                $action = 'create';
                 // Create new user and store id
                 $u = new stdClass();
                 $u->confirmed = 1;
@@ -116,25 +110,31 @@ if (optional_param('datavalidated', 0, PARAM_INT) == 1) {
 
                 $user->id = $u->id;
 
-                if (!empty($user->bunch)) {
-                    $userbunch = (object) array(
-                        'orgid' => $org->orgid,
-                        'userid' => $u->id,
-                        'bunch' => $user->bunch,
-                    );
-                    $DB->insert_record('local_eduvidual_userbunches', $userbunch);
-                }
-
-                \local_eduvidual\lib_enrol::role_set($user->id, $org, $user->role);
                 \local_eduvidual\lib_enrol::choose_background($user->id);
                 // Trigger event.
                 \core\event\user_created::create_from_userid($user->id)->trigger();
-                if ($user->id > 0) {
-                    echo 'Created #' . $user->id;
-                } else {
-                    echo 'Failed!';
+            }
+            \local_eduvidual\lib_enrol::role_set($u->id, $org, $user->role);
+            if (strtolower($user->role) != 'remove') {
+                if (!empty($user->cohorts_add)) {
+                    \local_eduvidual\lib_enrol::cohorts_add($u->id, $org, $user->cohorts_add);
+                }
+                if (!empty($user->cohorts_remove)) {
+                    \local_eduvidual\lib_enrol::cohorts_remove($u->id, $org, $user->cohorts_remove);
                 }
             }
+            if (!empty($user->id)) {
+                if (strtolower($user->role) == 'remove') {
+                    echo echo get_string('import:removed', 'local_eduvidual', array('id' => $user->id));
+                } else if ($action == 'update') {
+                    echo echo get_string('import:updated', 'local_eduvidual', array('id' => $user->id));
+                } else if ($action == 'create') {
+                    echo get_string('import:created', 'local_eduvidual', array('id' => $user->id));
+                }
+            } else {
+                echo get_string('import:failed', 'local_eduvidual');
+            }
+
             // Unpack afterwards to restore previous state
             $user->payload = json_decode($user->payload);
         } else {

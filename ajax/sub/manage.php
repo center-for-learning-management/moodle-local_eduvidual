@@ -279,7 +279,7 @@ if (!$org) {
                             $userbunch->bunch = $bunch;
                             $userbunch->userid = $u->id;
                             $DB->insert_record('local_eduvidual_userbunches', $userbunch);
-                            \local_eduvidual\lib_enrol::bunch_set($u->id, $org, $userbunch->bunch);
+                            \local_eduvidual\lib_enrol::cohorts_add($u->id, $org, $userbunch->bunch);
                         }
 
                         \local_eduvidual\lib_enrol::role_set($u->id, $orgid, $role);

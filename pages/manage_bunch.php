@@ -27,14 +27,14 @@ require_once($CFG->libdir . '/adminlib.php');
 require_once($CFG->dirroot. '/course/lib.php');
 
 $orgid = optional_param('orgid', 0, PARAM_INT);
-$bunch = optional_param('bunch', '', PARAM_TEXT);
-$format = optional_param('format', 'cards', PARAM_TEXT);
+$cohort = optional_param('cohort', '', PARAM_TEXT);
+$format = optional_param('format', 'list', PARAM_TEXT);
 
 $PAGE->set_context(\context_system::instance());
 $PAGE->set_pagelayout('standard');
-$PAGE->set_url(new \moodle_url('/local/eduvidual/pages/manage_bunch.php', array('orgid' => $orgid, 'bunch' => $bunch, 'format' => $format)));
-$PAGE->set_title(!empty($bunch) ? $bunch : get_string('Accesscards', 'local_eduvidual'));
-$PAGE->set_heading(!empty($bunch) ? $bunch : get_string('Accesscards', 'local_eduvidual'));
+$PAGE->set_url(new \moodle_url('/local/eduvidual/pages/manage_bunch.php', array('orgid' => $orgid, 'cohort' => $cohort, 'format' => $format)));
+$PAGE->set_title(!empty($cohort) ? $cohort : get_string('Accesscards', 'local_eduvidual'));
+$PAGE->set_heading(!empty($cohort) ? $cohort : get_string('Accesscards', 'local_eduvidual'));
 //$PAGE->set_cacheable(false);
 $PAGE->requires->css('/local/eduvidual/style/manage_bunch.css');
 
@@ -59,7 +59,7 @@ echo $OUTPUT->header();
 $grid = 2;
 if (count($orgas) > 1) $grid = 3;
 ?>
-<form action="<?php echo $PAGE->url; ?>" method="get">
+<form action="" method="get">
     <input type="hidden" name="orgid" value="<?php echo $org->orgid; ?>" />
     <div class="hide-on-print ui-eduvidual grid-eq-<?php echo $grid; ?>">
         <?php
@@ -71,40 +71,29 @@ if (count($orgas) > 1) $grid = 3;
                 </option><?php
             }
             ?></select></div><?php
-        }
+        } else {
+			?><input type="hidden" name="orgid" value="<?php echo $org->orgid; ?>" /><?php
+		}
         ?>
         <div>
-            <select name="bunch" onchange="this.form.submit();" style="width: 100%;">
+            <select name="cohort" onchange="this.form.submit();" style="width: 100%;">
             <?php
 
-            $urltobunch = $CFG->wwwroot . '/local/eduvidual/pages/manage_bunch.php?orgid=' . $org->orgid . '&bunch=';
-            $bunches = $DB->get_records_sql('SELECT DISTINCT(eu.bunch) FROM {local_eduvidual_userbunches} eu,{user} u WHERE u.id=eu.userid AND u.deleted=0 AND orgid=? ORDER BY eu.bunch ASC', array($org->orgid));
-            $bunches['___all'] = (object) array('bunch' => get_string('manage:bunch:all', 'local_eduvidual'));
-            $bunches['___allwithout'] = (object) array('bunch' => get_string('manage:bunch:allwithoutbunch', 'local_eduvidual'));
-            $bunches['___allparents'] = (object) array('bunch' => get_string('manage:bunch:allparents', 'local_eduvidual'));
-            $bunches['___allstudents'] = (object) array('bunch' => get_string('manage:bunch:allstudents', 'local_eduvidual'));
-            $bunches['___allteachers'] = (object) array('bunch' => get_string('manage:bunch:allteachers', 'local_eduvidual'));
-            $bunches['___allmanagers'] = (object) array('bunch' => get_string('manage:bunch:allmanagers', 'local_eduvidual'));
-            if (count($bunches) > 0) {
-                $ks = array_keys($bunches);
-                asort($ks);
-                for ($a = 0; $a < count($ks); $a++) {
-                    $_bunch = $bunches[$ks[$a]];
-                    // If we did not get a bunch we take the first one
-                    if (empty($bunch)) {
-                        $bunch = $ks[$a];
-                    }
-                    ?>
-                    <option value="<?php echo $ks[$a]; ?>"<?php if($bunch == $ks[$a]) { echo " selected"; } ?>>
-                        <?php echo $_bunch->bunch; ?>
-                    </option>
-                    <?php
-                }
-            } else {
-                ?>
-                <option value=""><?php echo get_string('none'); ?></option>
+            $urltobunch = $CFG->wwwroot . '/local/eduvidual/pages/manage_bunch.php?orgid=' . $org->orgid . '&cohort=';
+			$cohorts = $DB->get_records_sql("SELECT id,name FROM {cohort} WHERE contextid=? ORDER BY name ASC", array($context->id));
+            $cohorts['___all'] = (object) array('name' => get_string('manage:bunch:all', 'local_eduvidual'));
+            $cohorts['___allwithout'] = (object) array('name' => get_string('manage:bunch:allwithoutbunch', 'local_eduvidual'));
+            $cohorts['___allparents'] = (object) array('name' => get_string('manage:bunch:allparents', 'local_eduvidual'));
+            $cohorts['___allstudents'] = (object) array('name' => get_string('manage:bunch:allstudents', 'local_eduvidual'));
+            $cohorts['___allteachers'] = (object) array('name' => get_string('manage:bunch:allteachers', 'local_eduvidual'));
+            $cohorts['___allmanagers'] = (object) array('name' => get_string('manage:bunch:allmanagers', 'local_eduvidual'));
+			foreach ($cohorts as $k => $c) {
+				?>
+                <option value="<?php echo $k; ?>"<?php if($cohort == $k) { echo " selected"; } ?>>
+                    <?php echo $c->name; ?>
+                </option>
                 <?php
-            }
+			}
             ?>
             </select>
         </div>
@@ -118,7 +107,7 @@ if (count($orgas) > 1) $grid = 3;
 </form>
 <?php
 require_once($CFG->dirroot . '/user/profile/lib.php');
-switch($bunch) {
+switch($cohort) {
     case '___all':
         $entries = $DB->get_records_sql('SELECT u.* FROM {local_eduvidual_orgid_userid} AS ou, {user} AS u WHERE u.deleted=0 AND ou.userid=u.id AND ou.orgid=? ORDER BY u.lastname ASC, u.firstname ASC', array($orgid));
     break;
@@ -138,7 +127,7 @@ switch($bunch) {
         $entries = $DB->get_records_sql('SELECT u.* FROM {local_eduvidual_orgid_userid} AS ou, {user} AS u WHERE u.deleted=0 AND ou.userid=u.id AND ou.orgid=? AND ou.role=? ORDER BY u.lastname ASC, u.firstname ASC', array($orgid, 'Manager'));
     break;
     default:
-        $entries = $DB->get_records_sql('SELECT u.* FROM {local_eduvidual_userbunches} AS ub, {user} AS u WHERE u.deleted=0 AND ub.userid=u.id AND ub.orgid=? AND ub.bunch=? ORDER BY u.lastname ASC, u.firstname ASC', array($orgid, $bunch));
+        $entries = $DB->get_records_sql('SELECT u.* FROM {cohort_members} AS cm, {user} AS u WHERE u.deleted=0 AND cm.userid=u.id AND cm.cohortid=? ORDER BY u.lastname ASC, u.firstname ASC', array($cohort));
 }
 
 $users = array();

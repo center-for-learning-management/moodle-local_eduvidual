@@ -317,36 +317,52 @@ class local_eduvidual_lib_import_compiler_user extends local_eduvidual_lib_impor
         $obj->lastname = trim($obj->lastname);
         $obj->role = trim(ucfirst(strtolower($obj->role)));
         $obj->username = trim($obj->username);
-        if (empty($obj->cohorts) && !empty($obj->bunch)) {
+        if (empty($obj->cohorts_add) && !empty($obj->bunch)) {
             // Translate the old name to its new name.
-            $obj->cohorts = $obj->bunch;
+            $obj->cohorts_add = $obj->bunch;
             unset($obj->bunch);
         }
 
         if (!filter_var($obj->email, FILTER_VALIDATE_EMAIL)) {
             $payload->processed = false;
-            $payload->action = 'Invalid email';
+            $payload->action = get_string('import:invalid_email', 'local_eduvidual');
         }
 
         // Revoke processed flag if required information is missing!
         if (!in_array($obj->role, array('Manager', 'Teacher', 'Student', 'Parent', 'Remove'))) {
             $payload->processed = false;
-            $payload->action = 'Invalid role';
+            $payload->action = get_string('import:invalid_role', 'local_eduvidual');
         }
+
+        // Check if email is already taken and set userid accordingly.
+        $chk = $DB->get_records_sql('SELECT id FROM {user} WHERE username LIKE ? OR email LIKE ?', array($obj->email, $obj->email));
+        $ids = array_keys($chk);
+        if (count($ids) > 0) {
+            if (count($ids) == 1) {
+                // Set the userid given.
+                $obj->id = $ids[0];
+            } else {
+                // We have multiple candidates, if an id was given and it fits, we use it.
+                if (empty($obj->id) || !in_array($obj->id, $ids)) {
+                    // The id was missing or invalid - we set the first candidate.
+                    $obj->id = $ids[0];
+                }
+            }
+        }
+
         if (!empty($obj->id)) {
             $ismember = $DB->get_record('local_eduvidual_orgid_userid', array('orgid' => $org->orgid, 'userid' => $obj->id));
             if ($ismember->userid != $obj->id) {
                 $payload->processed = false;
-                $payload->action = 'Not in your organisation!';
+                $payload->action = get_string('import:invalid_org', 'local_eduvidual');
             }
-            //$obj->email = 'can not be updated';
         } else {
             // Test if username or email already taken.
             $chk = $DB->get_records_sql('SELECT id FROM {user} WHERE username LIKE ? OR username LIKE ? OR email LIKE ? OR email LIKE ?', array($obj->username, $obj->email, $obj->username, $obj->email));
             $ids = array_keys($chk);
             if (count($ids) > 0) {
                 $payload->processed = false;
-                $payload->action = 'Username or eMail already taken!';
+                $payload->action = get_string('import:invalid_username_or_email', 'local_eduvidual');
             }
         }
         // Set default language to german.

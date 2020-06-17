@@ -27,45 +27,66 @@ defined('MOODLE_INTERNAL') || die;
 
 class lib_enrol {
     /**
-     * Adds a user to the cohort for a bunch of an org.
+     * Adds a user to the cohort of an org.
+     * @param userid (int) the userid.
+     * @param org (object) org
+     * @param cohorts (String) list comma separated.
      */
-    public static function bunch_set($userid, $org, $bunch) {
+    public static function cohorts_add($userid, $org, $cohorts) {
         global $DB;
-        if (empty($bunch)) return;
-
-        // Store bunch in eduvidual-plugin
-        $curbunch = $DB->get_record('local_eduvidual_userbunches', array('orgid' => $org->orgid, 'userid' => $userid));
-        if (!empty($curbunch->id)) {
-            $DB->set_field('local_eduvidual_userbunches', 'bunch', $bunch, array('orgid' => $org->orgid, 'userid' => $userid));
-        } else {
-            $curbunch = (object) array('orgid' => $org->orgid, 'bunch' => $bunch, 'userid' => $userid);
-            $DB->insert_record('local_eduvidual_userbunches', $curbunch);
-        }
-
-        // Sync bunch to cohorts
+        if (empty($cohorts)) return;
         if (empty($org->categoryid)) return;
         $context = \context_coursecat::instance($org->categoryid);
         if (empty($context->id)) return;
+
+        $cohorts = explode(',', $cohorts);
+
+        foreach ($cohorts AS $cohort) {
+            $cohort = $DB->get_record('cohort', array('contextid' => $context->id, 'name' => $cohort));
+            if (empty($cohort->id)) {
+                $idnumber = $org->orgid . '_' . hash('crc32', $cohort);
+                $cohort = (object) array(
+                    'contextid' => $context->id,
+                    'description' => 'Automatically created cohort ' . $cohort,
+                    'descriptionformat' => 1,
+                    'idnumber' => $idnumber,
+                    'name' => $cohort,
+                    'timecreated' => time(),
+                    'timemodified' => time(),
+                    'visible' => 1,
+                );
+                $cohort->id = $DB->insert_record('cohort', $cohort);
+            }
+            $chk = $DB->get_record('cohort_members', array('cohortid' => $cohort->id, 'userid' => $userid));
+            if (empty($chk->id)) {
+                $DB->insert_record('cohort_members', (object) array('cohortid' => $cohort->id, 'userid' => $userid, 'timeadded' => time()));
+            }
+        }
+
+        return true;
+    }
+    /**
+     * Remove a user from a cohort of an org.
+     * @param userid (int) the userid.
+     * @param org (object) org
+     * @param cohorts (String) list comma separated.
+     */
+    public static function cohorts_remove($userid, $org, $cohorts) {
         global $DB;
-        $idnumber = $org->orgid . '_' . hash('crc32', $bunch);
-        $cohort = $DB->get_record('cohort', array('contextid' => $context->id, 'idnumber' => $idnumber));
-        if (empty($cohort->id)) {
-            $cohort = (object) array(
-                'contextid' => $context->id,
-                'description' => 'Automatically created cohort for bunch ' . $bunch,
-                'descriptionformat' => 1,
-                'idnumber' => $idnumber,
-                'name' => $bunch,
-                'timecreated' => time(),
-                'timemodified' => time(),
-                'visible' => 1,
-            );
-            $cohort->id = $DB->insert_record('cohort', $cohort);
+        if (empty($cohorts)) return;
+        if (empty($org->categoryid)) return;
+        $context = \context_coursecat::instance($org->categoryid);
+        if (empty($context->id)) return;
+
+        $cohorts = explode(',', $cohorts);
+
+        foreach ($cohorts AS $cohort) {
+            $cohort = $DB->get_record('cohort', array('contextid' => $context->id, 'name' => $cohort));
+            if (!empty($cohort->id)) {
+                $DB->delete_records('cohort_members', array('cohortid' => $cohort->id, 'userid' => $userid));
+            }
         }
-        $chk = $DB->get_record('cohort_members', array('cohortid' => $cohort->id, 'userid' => $userid));
-        if (empty($chk->id)) {
-            $DB->insert_record('cohort_members', (object) array('cohortid' => $cohort->id, 'userid' => $userid, 'timeadded' => time()));
-        }
+
         return true;
     }
     /**
