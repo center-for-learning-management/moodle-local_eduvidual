@@ -307,7 +307,7 @@ class local_eduvidual_lib_import_compiler_user extends local_eduvidual_lib_impor
         } else {
             $obj->email = strtolower($obj->email);
             global $CFG;
-            
+
             if (empty($obj->username) || !is_siteadmin()) {
                 $obj->username = str_replace($dummydomain, '', $obj->email);
             }
@@ -317,6 +317,11 @@ class local_eduvidual_lib_import_compiler_user extends local_eduvidual_lib_impor
         $obj->lastname = trim($obj->lastname);
         $obj->role = trim(ucfirst(strtolower($obj->role)));
         $obj->username = trim($obj->username);
+        if (empty($obj->cohorts) && !empty($obj->bunch)) {
+            // Translate the old name to its new name.
+            $obj->cohorts = $obj->bunch;
+            unset($obj->bunch);
+        }
 
         if (!filter_var($obj->email, FILTER_VALIDATE_EMAIL)) {
             $payload->processed = false;
