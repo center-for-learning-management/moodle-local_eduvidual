@@ -40,6 +40,15 @@ if ($hassiteconfig) {
     $settings->add(new admin_setting_heading('local_eduvidual_others', get_string('other'), ''));
     $settings->add(
         new admin_setting_configtext(
+            'local_eduvidual/manage_importusers_spreadsheettemplate',
+            get_string('manage:createuserspreadsheet:templateurl', 'local_eduvidual'),
+            get_string('manage:createuserspreadsheet:templateurl:description', 'local_eduvidual'),
+            '',
+            PARAM_URL
+        )
+    );
+    $settings->add(
+        new admin_setting_configtext(
             'local_eduvidual/supportcourse_template',
             get_string('admin:supportcourse_template', 'local_eduvidual'),
             get_string('admin:supportcourse_template:description', 'local_eduvidual'),

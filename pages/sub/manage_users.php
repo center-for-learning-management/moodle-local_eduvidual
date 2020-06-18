@@ -51,6 +51,7 @@ echo $OUTPUT->render_from_template(
         'codes_amount' => count($codes),
         'yyyymmddhhiiss' => date('Y-m-d H:i:s', time() + 60*60*24*30),
         'orgid' => $org->orgid,
+        'urlspreadsheet' => get_config('manage_importusers_spreadsheettemplate', 'local_eduvidual'),
         'wwwroot' => $CFG->wwwroot,
     )
 );

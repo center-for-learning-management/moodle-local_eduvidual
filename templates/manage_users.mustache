@@ -15,20 +15,41 @@
     along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 }}
 
-<div class="ui-eduvidual local_eduvidual_manage_user-wrapper">
-    <p>
-        <a class="btn btn-primary btn-block" target="_blank"
-            href="{{wwwroot}}/local/eduvidual/pages/manage_bunch.php?orgid={{orgid}}">
+<div class="ui-eduvidual__ local_eduvidual_manage_user-wrapper">
+    <div class="grid-eq-3">
+        <div><a href="#" onclick="$('#{{uniqid}}-manageusers').toggleClass('hidden'); $(this).toggleClass('btn-primary btn-secondary');" class="btn btn-secondary btn-block">
+            {{#str}} manage:users:title, local_eduvidual {{/str}}
+        </a></div>
+        <div><a href="#" onclick="$('#{{uniqid}}-adduserexcel').toggleClass('hidden'); $(this).toggleClass('btn-primary btn-secondary');" class="btn btn-secondary btn-block">
+            {{#str}} manage:createuserspreadsheet, local_eduvidual {{/str}}
+        </a></div>
+        <div><a href="#" onclick="$('#{{uniqid}}-addusercode').toggleClass('hidden'); $(this).toggleClass('btn-primary btn-secondary');" class="btn btn-secondary btn-block">
+            {{#str}} manage:adduser, local_eduvidual {{/str}}
+        </a></div>
+        <div><a href="#" onclick="$('#{{uniqid}}-adduseranonymous').toggleClass('hidden'); $(this).toggleClass('btn-primary btn-secondary');" class="btn btn-secondary btn-block">
+            {{#str}} manage:createuseranonymous, local_eduvidual {{/str}}
+        </a></div>
+        <div><a href="#" onclick="$('#{{uniqid}}-managementors').toggleClass('hidden'); $(this).toggleClass('btn-primary btn-secondary');" class="btn btn-secondary btn-block">
+            {{#str}} manage:addparent, local_eduvidual {{/str}}
+        </a></div>
+        <div><a href="#" onclick="$('#{{uniqid}}-accesscodes').toggleClass('hidden'); $(this).toggleClass('btn-primary btn-secondary');" class="btn btn-secondary btn-block">
+            {{#str}} manage:accesscodes, local_eduvidual {{/str}}
+        </a></div>
+    </div>
+    <div class="grid-eq-1">
+        <div><a class="btn btn-primary btn-block" target="_blank"
+            href="{{wwwroot}}/local/eduvidual/pages/manage_userlists.php?orgid={{orgid}}">
             {{#str}} manage:users:printcards, local_eduvidual {{/str}}
-        </a>
-    </p>
-    <div class="grid-eq-2">
-        <div class="card">
-            <h3>{{#str}} manage:users:title, local_eduvidual {{/str}}</h3>
-            <p>{{#str}} manage:users:description, local_eduvidual {{/str}}</p>
+        </a></div>
+    </div>
 
+    <div id="{{uniqid}}-manageusers" class="hidden card" style="padding: 12px;">
+        <h3>{{#str}} manage:users:title, local_eduvidual {{/str}}</h3>
+        <p>{{#str}} manage:users:description, local_eduvidual {{/str}}</p>
+
+        <div class="grid-eq-2">
             <fieldset>
-            	<legend>{{#str}} manage:users:searchforuser, local_eduvidual {{/str}}</legend>
+            	<!-- <legend>{{#str}} manage:users:searchforuser, local_eduvidual {{/str}}</legend> -->
             	<input type="text" id="local_eduvidual_manage_setuserrole_search" class="btn-block"
                     onkeyup="require(['local_eduvidual/manager'], function(MANAGER) { MANAGER.setuserrole_search(); } );" />
             	<select id="local_eduvidual_manage_setuserrole_user" style="width: 100%;"
@@ -39,7 +60,7 @@
             </fieldset>
             <fieldset>
             	<!-- <legend>{{#str}} manage:users:setrole, local_eduvidual {{/str}}</legend> -->
-            	<select id="local_eduvidual_manage_setuserrole_role" style="width: 100%;">
+            	<select id="local_eduvidual_manage_setuserrole_role" style="width: 100%; margin-bottom: 2px;">
                     <option value="remove">{{#str}} role:Remove, local_eduvidual {{/str}}</option>
                     <option value="Parent">{{#str}} role:Parent, local_eduvidual {{/str}}</option>
             		<option value="Student" selected="selected">{{#str}} role:Student, local_eduvidual {{/str}}</option>
@@ -49,147 +70,180 @@
             	<input type="button" value="{{#str}} manage:users:setrole, local_eduvidual {{/str}}" class="btn btn-primary btn-block"
                     onclick="require(['local_eduvidual/manager'], function(MANAGER) { MANAGER.setuserrole(); });" />
                 <hr />
-                <p>{{#str}} manage:users:setpwreset:description, local_eduvidual {{/str}}</p>
                 <input type="button" value="{{#str}} manage:users:setpwreset, local_eduvidual {{/str}}" class="btn btn-primary btn-block"
                     onclick="require(['local_eduvidual/manager'], function(MANAGER) { MANAGER.setpwreset(); });" />
+                <p><small>{{#str}} manage:users:setpwreset:description, local_eduvidual {{/str}}</small></p>
             </fieldset>
         </div>
+    </div>
 
-        <div class="card">
-            <h3>{{#str}} manage:createuserspreadsheet, local_eduvidual {{/str}}</h3>
-            <p>{{#str}} manage:createuserspreadsheet:import:description, local_eduvidual {{/str}}</p>
-            <ul>
-                <li>id:<br />{{#str}} manage:createuserspreadsheet:import:description:id, local_eduvidual {{/str}}</li>
-                <li>firstname:<br />{{#str}} manage:createuserspreadsheet:import:description:firstname, local_eduvidual {{/str}}</li>
-                <li>lastname:<br />{{#str}} manage:createuserspreadsheet:import:description:lastname, local_eduvidual {{/str}}</li>
-                <li>email:<br />{{#str}} manage:createuserspreadsheet:import:description:email, local_eduvidual {{/str}}</li>
-                <li>role:<br />{{#str}} manage:createuserspreadsheet:import:description:role, local_eduvidual {{/str}}</li>
-                <li>bunch:<br />{{#str}} manage:createuserspreadsheet:import:description:bunch, local_eduvidual {{/str}}</li>
-            </ul>
+    <div id="{{uniqid}}-adduserexcel" class="hidden card" style="padding: 12px;">
+        <h3>{{#str}} manage:createuserspreadsheet, local_eduvidual {{/str}}</h3>
+        <div class="grid-eq-2">
+            <p>{{#str}} manage:createuserspreadsheet:import:description, local_eduvidual, { "urlspreadsheet": {{#quote}}{{urlspreadsheet}}{{/quote}} } {{/str}}</p>
+
             <form action="" method="post" enctype="multipart/form-data">
                 <input type="hidden" name="act" value="users" />
                 <input type="hidden" name="orgid" value="{{orgid}}" />
                 <input type="hidden" name="import" value="1" />
                 <input type="file" name="local_eduvidual_manage_usersimport" class="btn" />
-                <input type="submit" value="{{#str}} upload {{/str}}"  class="btn btn-primary" />
+                <input type="submit" value="{{#str}} upload {{/str}}"  class="btn btn-primary btn-block" />
             </form>
         </div>
+    </div>
 
-        <div class="card">
-            <h3>{{#str}} manage:adduser, local_eduvidual {{/str}}</h3>
+    <div id="{{uniqid}}-addusercode" class="hidden card" style="padding: 12px;">
+        <h3>{{#str}} manage:adduser, local_eduvidual {{/str}}</h3>
+        <div class="grid-eq-2">
             <p>{{#str}} manage:adduser:description, local_eduvidual {{/str}}</p>
-            <select id="local_eduvidual_manage_adduser_role" style="width: 100%;">
-                <option value="Parent">{{#str}} role:Parent, local_eduvidual {{/str}}</option>
-                <option value="Student">{{#str}} role:Student, local_eduvidual {{/str}}</option>
-                <option value="Teacher">{{#str}} role:Teacher, local_eduvidual {{/str}}</option>
-                <option value="Manager">{{#str}} role:Manager, local_eduvidual {{/str}}</option>
-            </select>
-            <input type="text" id="local_eduvidual_manage_adduser" data-orgid="{{orgid}}" />
-            <input type="button" value="{{#str}} manage:adduser, local_eduvidual {{/str}}" class="btn btn-primary btn-block"
-                onclick="require(['local_eduvidual/manager'], function(MANAGER) { MANAGER.addUser(); });"/>
+            <div>
+                <select id="local_eduvidual_manage_adduser_role" style="width: 100%;">
+                    <option value="Parent">{{#str}} role:Parent, local_eduvidual {{/str}}</option>
+                    <option value="Student">{{#str}} role:Student, local_eduvidual {{/str}}</option>
+                    <option value="Teacher">{{#str}} role:Teacher, local_eduvidual {{/str}}</option>
+                    <option value="Manager">{{#str}} role:Manager, local_eduvidual {{/str}}</option>
+                </select>
+                <input type="text" id="local_eduvidual_manage_adduser" data-orgid="{{orgid}}" />
+                <input type="button" value="{{#str}} manage:adduser, local_eduvidual {{/str}}" class="btn btn-primary btn-block"
+                    onclick="require(['local_eduvidual/manager'], function(MANAGER) { MANAGER.addUser(); });"/>
+            </div>
         </div>
-        <div class="card">
-            <h3>{{#str}} manage:createuseranonymous, local_eduvidual {{/str}}</h3>
+    </div>
+    <div id="{{uniqid}}-adduseranonymous" class="hidden card" style="padding: 12px;">
+        <h3>{{#str}} manage:createuseranonymous, local_eduvidual {{/str}}</h3>
+        <div class="grid-eq-2">
             <p>{{#str}} manage:createuseranonymous:description, local_eduvidual {{/str}}</p>
-            <input type="hidden" id="local_eduvidual_manage_createuseranonymous_orgid" value="{{orgid}}" />
-            <label for="local_eduvidual_manage_createuseranonymous_role">{{#str}} manage:createuseranonymous:role, local_eduvidual {{/str}}</label>
-            <select id="local_eduvidual_manage_createuseranonymous_role" style="width: 100%;">
-                <option value="Parent">{{#str}} role:Parent, local_eduvidual {{/str}}</option>
-                <option value="Student">{{#str}} role:Student, local_eduvidual {{/str}}</option>
-                <option value="Teacher">{{#str}} role:Teacher, local_eduvidual {{/str}}</option>
-                <option value="Manager">{{#str}} role:Manager, local_eduvidual {{/str}}</option>
-            </select>
-            <label for="local_eduvidual_manage_createuseranonymous_bunch">{{#str}} manage:createuseranonymous:bunch, local_eduvidual {{/str}}</label>
-            <input type="text" id="local_eduvidual_manage_createuseranonymous_bunch" />
-            <label for="local_eduvidual_manage_createuseranonymous_amount">{{#str}} manage:createuseranonymous:amount, local_eduvidual {{/str}}</label>
-            <input type="number" id="local_eduvidual_manage_createuseranonymous_amount" min="1" max="99" />
-            <input type="button" id="local_eduvidual_manage_createuseranonymous_btn" value="{{#str}} manage:createuseranonymous, local_eduvidual {{/str}}" class="btn btn-primary"
-                onclick="require(['local_eduvidual/manager'], function(MANAGER) { MANAGER.addUserAnonymous(); });"/>
             <p id="local_eduvidual_manage_createuseranonymous_success" class="alert alert-success" style="display: none;">
                 <span></span>{{#str}} manage:createuseranonymous:success, local_eduvidual {{/str}}
-                <input type="button" class="btn btn-primary" data-bunch=""
-                    onclick="var bunch = $(this).attr('data-bunch'); window.open('{{wwwroot}}/local/eduvidual/pages/manage_bunch.php?orgid={{orgid}}&bunch=' + bunch, 'system');"
-                    value="{{#str}} manage:users:printcards, local_eduvidual {{/str}}" />
+                <a class="btn btn-primary" href="{{wwwroot}}/local/eduvidual/pages/manage_userlists.php?orgid={{orgid}}">
+                    {{#str}} manage:users:printcards, local_eduvidual {{/str}}
+                </a>
             </p>
             <p id="local_eduvidual_manage_createuseranonymous_failed" class="alert alert-danger" style="display: none;">
                 <span></span>{{#str}} manage:createuseranonymous:failed, local_eduvidual {{/str}}
             </p>
-        </div>
-        <div class="card">
-            <h3>{{#str}} manage:addparent, local_eduvidual {{/str}}</h3>
-            <p>{{#str}} manage:addparent:description, local_eduvidual {{/str}}</p>
-            <p class="alert alert-info">{{#str}} manage:addparent:warning, local_eduvidual {{/str}}</p>
-            <input type="text" id="local_eduvidual_manage_addparent_studentfilter"
-                data-orgid="{{orgid}}"
-                placeholder="{{#str}} manage:addparent:studentfilter, local_eduvidual {{/str}}"
-                onkeyup="var inp = this; require(['local_eduvidual/manager'], function(MANAGER) { MANAGER.addParentFilter('student', inp); });"
-                 />
-            <select id="local_eduvidual_manage_addparent_student" style="width: 100%;"
-                onchange="require(['local_eduvidual/manager'], function(MANAGER) { MANAGER.addParentSelectStudent(); });">
-                <option value="">{{#str}} manage:addparent:studentfilter:init, local_eduvidual {{/str}}</option>
-            </select>
-            <input type="text" id="local_eduvidual_manage_addparent_parentfilter"
-                placeholder="{{#str}} manage:addparent:parentfilter, local_eduvidual {{/str}}"
-                onkeyup="var inp = this; require(['local_eduvidual/manager'], function(MANAGER) { MANAGER.addParentFilter('parent', inp); });" />
-            <select id="local_eduvidual_manage_addparent_parent" style="width: 100%;">
-                <option value="">{{#str}} manage:addparent:parentfilter:init, local_eduvidual {{/str}}</option>
-            </select>
-            <input type="button" value="{{#str}} manage:addparent:changestate, local_eduvidual {{/str}}" class="btn btn-primary btn-block"
-                onclick="var inp = this; require(['local_eduvidual/manager'], function(MANAGER) { MANAGER.addParent(inp); });" />
-        </div>
-        <div class="card local_eduvidual_accesscodes">
-            <h3>{{#str}} manage:accesscodes, local_eduvidual {{/str}}</h3>
-            <p>{{#str}} manage:accesscodes:description, local_eduvidual, { "wwwroot": "{{{wwwroot}}}"} {{/str}}</p>
-
-            <fieldset>
-                <legend>{{#str}} manage:accesscodes:create, local_eduvidual {{/str}}</legend>
-                <label for="local_eduvidual_manage_accesscode_code">{{#str}} manage:accesscodes:code, local_eduvidual {{/str}}</label>
-                <input type="text" id="local_eduvidual_manage_accesscode_code" placeholder="{{#str}} manage:accesscodes:code, local_eduvidual {{/str}}" />
-
-                <label for="local_eduvidual_manage_accesscode_maturity">{{#str}} manage:accesscodes:maturity, local_eduvidual {{/str}}</label>
-                <input type="text" id="local_eduvidual_manage_accesscode_maturity" placeholder="YYYY-mm-dd HH:ii:ss" value="{{yyyymmddhhiiss}}" />
-
-                <label for="local_eduvidual_manage_accesscode_role">{{#str}} manage:accesscodes:role, local_eduvidual {{/str}}</label>
-                <select id="local_eduvidual_manage_accesscode_role">
+            <div>
+                <input type="hidden" id="local_eduvidual_manage_createuseranonymous_orgid" value="{{orgid}}" />
+                <label for="local_eduvidual_manage_createuseranonymous_role">{{#str}} manage:createuseranonymous:role, local_eduvidual {{/str}}</label>
+                <select id="local_eduvidual_manage_createuseranonymous_role" style="width: 100%;">
+                    <option value="Parent">{{#str}} role:Parent, local_eduvidual {{/str}}</option>
                     <option value="Student">{{#str}} role:Student, local_eduvidual {{/str}}</option>
                     <option value="Teacher">{{#str}} role:Teacher, local_eduvidual {{/str}}</option>
                     <option value="Manager">{{#str}} role:Manager, local_eduvidual {{/str}}</option>
-                    <option value="Parent">{{#str}} role:Parent, local_eduvidual {{/str}}</option>
                 </select>
-
-                <input type="button" id="local_eduvidual_manage_accesscode_btn" class="btn ui-btn btn-primary" value="{{#str}} save {{/str}}"
-                    onclick="require(['local_eduvidual/manager'], function(MANAGER) { MANAGER.createAccesscode(); });" />
-            </fieldset>
-
-
-            {{#codes_amount}}
-                <table border="0">
+                <label for="local_eduvidual_manage_createuseranonymous_cohorts">{{#str}} cohorts, cohort {{/str}} ()</label>
+                <input type="text" id="local_eduvidual_manage_createuseranonymous_bunch" />
+                <label for="local_eduvidual_manage_createuseranonymous_amount">{{#str}} manage:createuseranonymous:amount, local_eduvidual {{/str}}</label>
+                <input type="number" id="local_eduvidual_manage_createuseranonymous_amount" min="1" max="99" />
+                <input type="button" id="local_eduvidual_manage_createuseranonymous_btn" value="{{#str}} manage:createuseranonymous, local_eduvidual {{/str}}" class="btn btn-primary"
+                    onclick="require(['local_eduvidual/manager'], function(MANAGER) { MANAGER.addUserAnonymous(); });"/>
+            </div>
+        </div>
+    </div>
+    <div id="{{uniqid}}-managementors" class="hidden card" style="padding: 12px;">
+        <h3>{{#str}} manage:addparent, local_eduvidual {{/str}}</h3>
+        <p class="alert alert-info">{{#str}} manage:addparent:warning, local_eduvidual {{/str}}</p>
+        <div class="grid-eq-2">
+            <p>{{#str}} manage:addparent:description, local_eduvidual {{/str}}</p>
+            <div>
+                <input type="text" id="local_eduvidual_manage_addparent_studentfilter"
+                    data-orgid="{{orgid}}"
+                    placeholder="{{#str}} manage:addparent:studentfilter, local_eduvidual {{/str}}"
+                    onkeyup="var inp = this; require(['local_eduvidual/manager'], function(MANAGER) { MANAGER.addParentFilter('student', inp); });"
+                     />
+                <select id="local_eduvidual_manage_addparent_student" style="width: 100%;"
+                    onchange="require(['local_eduvidual/manager'], function(MANAGER) { MANAGER.addParentSelectStudent(); });">
+                    <option value="">{{#str}} manage:addparent:studentfilter:init, local_eduvidual {{/str}}</option>
+                </select>
+                <input type="text" id="local_eduvidual_manage_addparent_parentfilter"
+                    placeholder="{{#str}} manage:addparent:parentfilter, local_eduvidual {{/str}}"
+                    onkeyup="var inp = this; require(['local_eduvidual/manager'], function(MANAGER) { MANAGER.addParentFilter('parent', inp); });" />
+                <select id="local_eduvidual_manage_addparent_parent" style="width: 100%;">
+                    <option value="">{{#str}} manage:addparent:parentfilter:init, local_eduvidual {{/str}}</option>
+                </select>
+                <input type="button" value="{{#str}} manage:addparent:changestate, local_eduvidual {{/str}}" class="btn btn-primary btn-block"
+                    onclick="var inp = this; require(['local_eduvidual/manager'], function(MANAGER) { MANAGER.addParent(inp); });" />
+            </div>
+        </div>
+    </div>
+    <div id="{{uniqid}}-accesscodes" class="hidden card" style="padding: 12px;">
+        <h3>{{#str}} manage:accesscodes, local_eduvidual {{/str}}</h3>
+        <p>{{#str}} manage:accesscodes:description, local_eduvidual, { "wwwroot": "{{{wwwroot}}}"} {{/str}}</p>
+        <div class="grid-eq-2">
+            <div>
+                <h4>{{#str}} manage:accesscodes:create, local_eduvidual {{/str}}</h4>
+                <table class="generaltable">
                     <tr>
-                        <th width="30">{{#str}} manage:accesscodes:issuer:short, local_eduvidual {{/str}}</th>
-                        <th>{{#str}} manage:accesscodes:code, local_eduvidual {{/str}}</th>
-                        <th>{{#str}} manage:accesscodes:role, local_eduvidual {{/str}}</th>
-                        <th>{{#str}} manage:accesscodes:maturity:short, local_eduvidual {{/str}}</th>
-                        <th width="30">{{#str}} manage:accesscodes:revoke, local_eduvidual {{/str}}</th>
+                        <th>
+                            <label for="local_eduvidual_manage_accesscode_code">{{#str}} manage:accesscodes:code, local_eduvidual {{/str}}</label>
+                        </th>
+                        <td>
+                            <input type="text" id="local_eduvidual_manage_accesscode_code" placeholder="{{#str}} manage:accesscodes:code, local_eduvidual {{/str}}" />
+                        </td>
                     </tr>
-                    {{#codes}}
-                        <tr{{^isvalid}} class="mature" {{/isvalid}}>
-                            <td>
-                                {{{issuerpicture}}}
-                            </td>
-                            <td>{{code}}</td>
-                            <td>{{role_localized}}</td>
-                            <td>{{#userdate}} {{maturity}}, %Y-%m-%d %H:%M {{/userdate}}</td>
-                            <td align="center">
-                                {{#isvalid}}
-                                <a href="#" onclick="require(['local_eduvidual/manager'], function(MANAGER) { MANAGER.revokeAccesscode({{id}}); }); return false;">
-                                    <img src="/pix/i/delete.svg" alt="{{#str}} manage:accesscodes:revoke, local_eduvidual {{/str}}" width="30" />
-                                </a>
-                                {{/isvalid}}
-                            </td>
-                        </tr>
-                    {{/codes}}
+                    <tr>
+                        <th>
+                            <label for="local_eduvidual_manage_accesscode_maturity">{{#str}} manage:accesscodes:maturity, local_eduvidual {{/str}}</label>
+                        </th>
+                        <td>
+                            <input type="text" id="local_eduvidual_manage_accesscode_maturity" placeholder="YYYY-mm-dd HH:ii:ss" value="{{yyyymmddhhiiss}}" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            <label for="local_eduvidual_manage_accesscode_role">{{#str}} manage:accesscodes:role, local_eduvidual {{/str}}</label>
+                        </th>
+                        <td>
+                            <select id="local_eduvidual_manage_accesscode_role">
+                                <option value="Student">{{#str}} role:Student, local_eduvidual {{/str}}</option>
+                                <option value="Teacher">{{#str}} role:Teacher, local_eduvidual {{/str}}</option>
+                                <option value="Manager">{{#str}} role:Manager, local_eduvidual {{/str}}</option>
+                                <option value="Parent">{{#str}} role:Parent, local_eduvidual {{/str}}</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <input type="button" id="local_eduvidual_manage_accesscode_btn" class="btn btn-primary btn-block" value="{{#str}} save {{/str}}"
+                                onclick="require(['local_eduvidual/manager'], function(MANAGER) { MANAGER.createAccesscode(); });" />
+                        </td>
+                    </tr>
                 </table>
-            {{/codes_amount}}
+            </div>
+            <div>
+                <h4>{{#str}} manage:accesscodes:list, local_eduvidual {{/str}}</h4>
+                {{^codes_amount}}
+                    <p class="alert alert-info">{{#str}} none {{/str}}</p>
+                {{/codes_amount}}
+                {{#codes_amount}}
+                    <table border="0">
+                        <tr>
+                            <th width="30">{{#str}} manage:accesscodes:issuer:short, local_eduvidual {{/str}}</th>
+                            <th>{{#str}} manage:accesscodes:code, local_eduvidual {{/str}}</th>
+                            <th>{{#str}} manage:accesscodes:role, local_eduvidual {{/str}}</th>
+                            <th>{{#str}} manage:accesscodes:maturity:short, local_eduvidual {{/str}}</th>
+                            <th width="30">{{#str}} manage:accesscodes:revoke, local_eduvidual {{/str}}</th>
+                        </tr>
+                        {{#codes}}
+                            <tr{{^isvalid}} class="mature" {{/isvalid}}>
+                                <td>
+                                    {{{issuerpicture}}}
+                                </td>
+                                <td>{{code}}</td>
+                                <td>{{role_localized}}</td>
+                                <td>{{#userdate}} {{maturity}}, %Y-%m-%d %H:%M {{/userdate}}</td>
+                                <td align="center">
+                                    {{#isvalid}}
+                                    <a href="#" onclick="require(['local_eduvidual/manager'], function(MANAGER) { MANAGER.revokeAccesscode({{id}}); }); return false;">
+                                        <img src="/pix/i/delete.svg" alt="{{#str}} manage:accesscodes:revoke, local_eduvidual {{/str}}" width="30" />
+                                    </a>
+                                    {{/isvalid}}
+                                </td>
+                            </tr>
+                        {{/codes}}
+                    </table>
+                {{/codes_amount}}
+            </div>
         </div>
     </div>
 </div>

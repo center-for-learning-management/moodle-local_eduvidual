@@ -39,7 +39,7 @@ if (!empty($cohort)) {
 }
 
 $PAGE->set_pagelayout('standard');
-$PAGE->set_url(new \moodle_url('/local/eduvidual/pages/manage_bunch.php', array('orgid' => $orgid, 'cohort' => $cohort, 'format' => $format)));
+$PAGE->set_url(new \moodle_url('/local/eduvidual/pages/manage_userlists.php', array('orgid' => $orgid, 'cohort' => $cohort, 'format' => $format)));
 $PAGE->set_title(!empty($cohorto->name) ? $cohorto->name : get_string('Accesscards', 'local_eduvidual'));
 $PAGE->set_heading(!empty($cohorto->name) ? $cohorto->name : get_string('Accesscards', 'local_eduvidual'));
 //$PAGE->set_cacheable(false);
@@ -84,7 +84,7 @@ if (count($orgas) > 1) $grid = 3;
             <select name="cohort" onchange="this.form.submit();" style="width: 100%;">
             <?php
 
-            $urltobunch = $CFG->wwwroot . '/local/eduvidual/pages/manage_bunch.php?orgid=' . $org->orgid . '&cohort=';
+            $urltobunch = $CFG->wwwroot . '/local/eduvidual/pages/manage_userlists.php?orgid=' . $org->orgid . '&cohort=';
 			$cohorts = $DB->get_records_sql("SELECT id,name FROM {cohort} WHERE contextid=? ORDER BY name ASC", array($context->id));
             $cohorts['___all'] = (object) array('name' => get_string('manage:bunch:all', 'local_eduvidual'));
             $cohorts['___allwithout'] = (object) array('name' => get_string('manage:bunch:allwithoutbunch', 'local_eduvidual'));

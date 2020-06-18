@@ -35,7 +35,7 @@ $PAGE->set_url('/local/eduvidual/pages/manage.php', array('act' => $act, 'orgid'
 $PAGE->set_title(get_string('Management', 'local_eduvidual'));
 $PAGE->set_heading(get_string('Management', 'local_eduvidual'));
 //$PAGE->set_cacheable(false);
-$PAGE->requires->css('/local/eduvidual/style/manage.css');
+//$PAGE->requires->css('/local/eduvidual/style/manage.css');
 
 // Only allow a certain user group access to this script
 $allow = array("Manager");

@@ -161,7 +161,7 @@ if (optional_param('datavalidated', 0, PARAM_INT) == 1) {
                 <img src="<?php echo $CFG->wwwroot; ?>/pix/i/export.svg" alt="export" />
                 <?php echo get_string('export', 'local_eduvidual'); ?>
             </a>
-            <a href="<?php echo $CFG->wwwroot . '/local/eduvidual/pages/manage_bunch.php?orgid=' . $org->orgid; ?>" target="_blank" class="btn ui-btn">
+            <a href="<?php echo $CFG->wwwroot . '/local/eduvidual/pages/manage_userlists.php?orgid=' . $org->orgid; ?>" target="_blank" class="btn ui-btn">
                 <img src="<?php echo $CFG->wwwroot; ?>/pix/t/print.svg" alt="print" />
                 <?php echo get_string('manage:users:printcards', 'local_eduvidual'); ?>
             </a>

@@ -230,12 +230,12 @@ if (!$org) {
             $maximum = 50; // How many accounts can be created at once.
             $orgid = optional_param('orgid', 0, PARAM_INT);
             $role = optional_param('role', '', PARAM_TEXT);
-            $bunch = optional_param('bunch', '', PARAM_TEXT);
+            $cohorts = optional_param('cohorts', '', PARAM_TEXT);
             $amount = optional_param('amount', 0, PARAM_INT);
 
             $success = 0; $failed = 0;
 
-            if (\local_eduvidual\locallib::get('orgrole') == 'Manager' || is_siteadmin()) {
+            if (\local_eduvidual\locallib::get_orgrole($orgid) == 'Manager' || is_siteadmin()) {
                 if ($amount <= $maximum) {
                     require_once($CFG->dirroot . '/user/lib.php');
                     $colors = file($CFG->dirroot . '/local/eduvidual/templates/names.colors', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
@@ -243,9 +243,6 @@ if (!$org) {
                     $pattern = 'e-' . date("Ym") . '-';
                     $usernameformat= $pattern . '%1$04d';
                     $domain = str_replace(array('https://', 'http://', 'www.'), '', $CFG->wwwroot);
-                    $userbunch = new stdClass();
-                    $userbunch->orgid = $orgid;
-                    $userbunch->bunch = $bunch;
 
                     $lasts = $DB->get_records_sql('SELECT username FROM {user} WHERE username LIKE ? ORDER BY username DESC LIMIT 0,1', array($pattern . '%'));
                     if (count($lasts) > 0) {
@@ -271,22 +268,19 @@ if (!$org) {
                         $u->calendartype = 'gregorian';
 
                         $u->id = user_create_user($u, false, false);
-                        $u->secret = \local_eduvidual\locallib::get_user_secret($u->id);
-                        $user = $DB->get_record('user', array('id' => $u->id));
-                        update_internal_user_password($user, $u->secret, false);
+						if ($u->id > 0) {
+	                        $u->secret = \local_eduvidual\locallib::get_user_secret($u->id);
+	                        $user = $DB->get_record('user', array('id' => $u->id));
+	                        update_internal_user_password($user, $u->secret, false);
 
-                        if (!empty($bunch)) {
-                            $userbunch->bunch = $bunch;
-                            $userbunch->userid = $u->id;
-                            $DB->insert_record('local_eduvidual_userbunches', $userbunch);
-                            \local_eduvidual\lib_enrol::cohorts_add($u->id, $org, $userbunch->bunch);
-                        }
+	                        \local_eduvidual\lib_enrol::role_set($u->id, $orgid, $role);
+	                        \local_eduvidual\lib_enrol::choose_background($u->id);
+	                        // Trigger event.
+	                        \core\event\user_created::create_from_userid($u->id)->trigger();
 
-                        \local_eduvidual\lib_enrol::role_set($u->id, $orgid, $role);
-                        \local_eduvidual\lib_enrol::choose_background($u->id);
-                        // Trigger event.
-                        \core\event\user_created::create_from_userid($u->id)->trigger();
-                        if ($u->id > 0) {
+							if (!empty($cohort)) {
+								\local_eduvidual\lib_enrol::cohorts_add($u->id, $org, $cohort);
+							}
                             $success++;
                         } else {
                             $failed++;

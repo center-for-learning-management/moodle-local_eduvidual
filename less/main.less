@@ -260,22 +260,30 @@ p.accessbox {
     .page-break {
         display: none !important;
     }
+    .grid-eq-1 {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, 100%);
+    }
     .grid-eq-2 {
         display: grid;
         grid-template-columns: repeat(auto-fill, 50%);
     }
     .grid-eq-3 {
         display: grid;
-        grid-template-columns: repeat(auto-fill, 33%);
+        grid-template-columns: repeat(auto-fill, 33.3333%);
     }
+    .grid-eq-1>*,
     .grid-eq-2>*,
     .grid-eq-3>* {
-        width: calc(100% - 4px) !important;
-        margin-left: 2px !important;
+        margin: 2px !important;
     }
 }
 
 @media screen and (max-width: 800px) {
+    .grid-eq-1 {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, 100%);
+    }
     .grid-eq-2 {
         display: grid;
         grid-template-columns: repeat(auto-fill, 100%);
@@ -284,13 +292,12 @@ p.accessbox {
         display: grid;
         grid-template-columns: repeat(auto-fill, 100%);
     }
+    .grid-eq-1>*,
     .grid-eq-2>*,
     .grid-eq-3>* {
-        width: calc(100% - 4px) !important;
         margin: 2px !important;
     }
 }
-
 
 
 .block li>div.column {

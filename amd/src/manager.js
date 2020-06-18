@@ -48,7 +48,7 @@ define(['jquery', 'core/ajax', 'core/modal_events', 'core/modal_factory', 'core/
             var orgid = +$('#local_eduvidual_manage_createuseranonymous_orgid').val();
             var role = $('#local_eduvidual_manage_createuseranonymous_role').val();
             var amount = +$('#local_eduvidual_manage_createuseranonymous_amount').val();
-            var bunch = $('#local_eduvidual_manage_createuseranonymous_bunch').val();
+            var cohorts = $('#local_eduvidual_manage_createuseranonymous_cohorts').val();
             var maximum = 50;
             if (amount > maximum) {
                 STR.get_strings([
@@ -60,7 +60,7 @@ define(['jquery', 'core/ajax', 'core/modal_events', 'core/modal_factory', 'core/
                 ).fail(NOTIFICATION.exception);
             } else {
                 require(['local_eduvidual/main'], function(MAIN) {
-                    MAIN.connect({ module: 'manage', act: 'adduser_anonymous', orgid: orgid, role: role, amount: amount, bunch: bunch }, { signalItem: $('#local_eduvidual_manage_adduseranonymous_btn') });
+                    MAIN.connect({ module: 'manage', act: 'adduser_anonymous', orgid: orgid, role: role, amount: amount, cohorts: cohorts }, { signalItem: $('#local_eduvidual_manage_adduseranonymous_btn') });
                 });
             }
         },
