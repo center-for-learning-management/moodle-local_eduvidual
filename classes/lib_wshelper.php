@@ -115,6 +115,7 @@ class lib_wshelper {
         return $result;
     }
     private static function override_core_course_external_get_enrolled_courses_by_timeline_classification($result) {
+        global $DB;
         if (!empty($result['courses'])) {
             foreach ($result['courses'] AS $id => &$course) {
                 if ($id == 0) {
@@ -126,6 +127,16 @@ class lib_wshelper {
                 $course->showshortname = false;
                 // We do not want to show the progress bar.
                 $course->hasprogress = false;
+                $context = \context_course::instance($course->id);
+                $path = explode('/', $context->path);
+                $coursecategory = array();
+                for ($a = 2; $a < count($path) -1; $a++) {
+                    $ccontext = $DB->get_record('context', array('id' => $path[$a]));
+                    $category = $DB->get_record('course_categories', array('id' => $ccontext->instanceid));
+                    $coursecategory[] = $category->name;
+                    break;
+                }
+                $course->coursecategory = implode(' > ', $coursecategory);
             }
         }
         return $result;
