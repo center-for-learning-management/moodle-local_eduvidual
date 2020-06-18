@@ -126,7 +126,7 @@ class lib_enrol {
             // If we are removing the user, we have to remove a bunch and cohorts as well.
             if ($role == 'remove') {
                 // Remove from orgcourse
-                self::course_manual_enrolments(array($org->courseid), array($userid), -1);
+                self::course_manual_enrolments(array($org->courseid, $org->supportcourseid), array($userid), -1);
 
                 // Remove from orgcategory
                 $orgcatcontext = \context_coursecat::instance($org->categoryid, IGNORE_MISSING);
@@ -442,7 +442,7 @@ class lib_enrol {
             }
         } else {
             // Enrol user with the required role.
-            self::course_manual_enrolments($org->courseid, array($userid), $roles[$orgrole]);
+            self::course_manual_enrolments(array($org->courseid, $org->supportcourseid), array($userid), $roles[$orgrole]);
         }
     }
     /**
