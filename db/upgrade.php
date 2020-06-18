@@ -64,6 +64,20 @@ function xmldb_local_eduvidual_upgrade($oldversion) {
         }
         upgrade_block_savepoint(true, 2020060401, 'eduvidual');
     }
+    if ($oldversion < 2020061800) {
+        // Ensure that all userbunches are synced to cohorts.
+        $bunches = $DB->get_records_sql("SELECT * FROM {local_eduvidual_userbunches} ORDER BY orgid ASC", array());
+        $org = "";
+        foreach ($bunches as $bunch) {
+            if (empty($org) || $org->orgid != $bunch->orgid) {
+                $org = $DB->get_record('local_eduvidual_org', array('orgid' => $bunch->orgid));
+            }
+            if (!empty($org->categoryid)) {
+                \local_eduvidual\lib_enrol::cohorts_add($bunch->userid, $org, $bunch->bunch);
+            }
+        }
+        upgrade_block_savepoint(true, 2020061800, 'eduvidual');
+    }
 
 
     return true;
