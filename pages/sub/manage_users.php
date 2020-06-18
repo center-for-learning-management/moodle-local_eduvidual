@@ -22,12 +22,7 @@
 
 defined('MOODLE_INTERNAL') || die;
 
-
-
-if (optional_param('import', 0, PARAM_INT) > 0) {
-    require_once($CFG->dirroot . '/local/eduvidual/pages/sub/manage_usersimport.php');
-    return;
-}
+$tab = optional_param('tab', '', PARAM_TEXT); // tab the will be shown initially.
 
 $_codes = $DB->get_records_sql('SELECT * FROM {local_eduvidual_org_codes} WHERE orgid=? ORDER BY maturity DESC', array($org->orgid));
 $codes = array();
@@ -51,7 +46,8 @@ echo $OUTPUT->render_from_template(
         'codes_amount' => count($codes),
         'yyyymmddhhiiss' => date('Y-m-d H:i:s', time() + 60*60*24*30),
         'orgid' => $org->orgid,
-        'urlspreadsheet' => get_config('manage_importusers_spreadsheettemplate', 'local_eduvidual'),
+        'tab' => $tab,
+        'urlspreadsheet' => get_config('local_eduvidual', 'manage_importusers_spreadsheettemplate'),
         'wwwroot' => $CFG->wwwroot,
     )
 );

@@ -125,6 +125,23 @@ define(
                 $('.spinner-grid').removeClass('show');
             }
         },
+        /**
+         * Used to toggle between buttons and toggle visibility of a linked element.
+         * @param uniqid of the mustache
+         * @param a the button that was pressed.
+         * @param target String id of target (without uniqid)
+         */
+        toggle: function(uniqid, a, target) {
+            if (this.debug > 5) console.log('local_eduvidual/main:toggle(uniqid, a, target)', uniqid, a, target);
+            // Hide all cards of this uniqid.
+            $('.' + uniqid + '-card').addClass('hidden');
+            // Set all buttons to "non-pressed" state.
+            $(a).closest('.toggle-controller-' + uniqid).find('a').removeClass('btn-primary').addClass('btn-secondary');
+            // Show the linked card, that was identified by target.
+            $('#' + uniqid + '-' + target).removeClass('hidden');
+            // Set the pressed button active.
+            $(a).toggleClass('btn-primary btn-secondary');
+        },
         watchValue: function(o) {
             if (this.debug > 5) console.log('MAIN.watchValue(o)', o);
             var self = this;

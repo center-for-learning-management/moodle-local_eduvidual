@@ -25,41 +25,19 @@ require_login();
 
 require_once($CFG->libdir . '/adminlib.php');
 
+$orgid = required_param('orgid', PARAM_INT);
+$org = $DB->get_record('local_eduvidual_org', array('orgid' => $orgid));
+$context = \context_coursecat::instance($org->categoryid);
+
+require_capability('local/eduvidual:canmanage', $context);
 
 $act = optional_param('act', '', PARAM_TEXT);
-$orgid = optional_param('orgid', 0, PARAM_INT);
 
-$PAGE->set_context(context_system::instance());
-$PAGE->set_pagelayout('mydashboard');
+$PAGE->set_context($context);
 $PAGE->set_url('/local/eduvidual/pages/manage.php', array('act' => $act, 'orgid' => $orgid));
 $PAGE->set_title(get_string('Management', 'local_eduvidual'));
 $PAGE->set_heading(get_string('Management', 'local_eduvidual'));
-//$PAGE->set_cacheable(false);
-//$PAGE->requires->css('/local/eduvidual/style/manage.css');
 
-// Only allow a certain user group access to this script
-$allow = array("Manager");
-if (!in_array(\local_eduvidual\locallib::get_highest_role(), $allow) && !is_siteadmin()) {
-	echo $OUTPUT->header();
-	?>
-		<p class="alert alert-danger"><?php get_string('access_denied', 'local_eduvidual'); ?></p>
-	<?php
-	echo $OUTPUT->footer();
-	exit;
-}
-
-// Used to determine if we can manage this org
-$orgid = optional_param('orgid', 0, PARAM_INT);
-$orgas = \local_eduvidual\locallib::get_organisations('Manager');
-$org = \local_eduvidual\locallib::get_organisations_check($orgas, $orgid);
-
-$PAGE->set_context(\context_coursecat::instance($org->categoryid));
-$PAGE->navbar->add(get_string('Management', 'local_eduvidual'), $PAGE->url);
-
-$act = optional_param('act', '', PARAM_TEXT);
-if (empty($act)) {
-    $act = 'users';
-}
 switch($act) {
     case 'archive':
         $title = get_string('manage:archive', 'local_eduvidual');
@@ -71,9 +49,11 @@ switch($act) {
         $PAGE->requires->js('/local/eduvidual/js/archive.js');
         $PAGE->requires->css('/local/eduvidual/style/archive.css');
     break;
-    case 'subcats': $title = get_string('manage:subcats:title', 'local_eduvidual'); break;
     case 'data': $title = get_string('manage:data', 'local_eduvidual'); break;
+	case 'mnet': $title = get_string('manage:mnet:action', 'local_eduvidual'); break;
+	case 'stats': $title = get_string('manage:stats', 'local_eduvidual'); break;
 	case 'style': $title = get_string('manage:style', 'local_eduvidual'); break;
+	case 'subcats': $title = get_string('manage:subcats:title', 'local_eduvidual'); break;
 	case 'users': $title = get_string('manage:users', 'local_eduvidual'); break;
 	default: $title = get_string('Management', 'local_eduvidual');
 }
@@ -81,24 +61,36 @@ switch($act) {
 $PAGE->set_title($org->name . ': ' . $title);
 $PAGE->set_heading($org->name . ': ' . $title);
 
+$orgurl = new \moodle_url('/course/index.php', array('categoryid' => $org->categoryid));
+$PAGE->navbar->add($org->name, $orgurl);
+$manageurl = new \moodle_url('/local/eduvidual/pages/manage.php', array('orgid' => $orgid));
+$PAGE->navbar->add(get_string('Management', 'local_eduvidual'), $manageurl);
+
+if (!empty($act)) {
+	$PAGE->navbar->add($title, $PAGE->url);
+}
+
 echo $OUTPUT->header();
 
-echo "<div class=\"grid-eq-2 ui-eduvidual\">\n";
-if (count($orgas) > 1) {
-    \local_eduvidual\locallib::print_org_selector('Manager', $org->orgid);
-}
 $actions = \local_eduvidual\locallib::get_actions('manage');
+$subpages = array_keys($actions);
+$includefile = $CFG->dirroot . '/local/eduvidual/pages/sub/manage_' . $act . '.php';
+/*
 \local_eduvidual\locallib::print_act_selector($actions, $act);
-echo "</div>\n";
-
-if ($org) {
-    $subpages = array_keys($actions);
-    $includefile = $CFG->dirroot . '/local/eduvidual/pages/sub/manage_' . $act . '.php';
-    if (in_array($act, $subpages) && file_exists($includefile)) {
-        include($includefile);
-    }
+*/
+if (!empty($act) && in_array($act, $subpages) && file_exists($includefile)) {
+    include($includefile);
+} else {
+	$oactions = array();
+	foreach ($actions as $key => $action) {
+		$oactions[] = array(
+			'action' => $action,
+			'key' => $key,
+			'localized' => get_string($action, 'local_eduvidual'),
+			'url' => new \moodle_url('/local/eduvidual/pages/manage.php', array('orgid' => $orgid, 'act' => $key)),
+		);
+	}
+	echo $OUTPUT->render_from_template('local_eduvidual/manage_overview', array('actions' => $oactions));
 }
 
 echo $OUTPUT->footer();
-
-// Below this line we only collect functions

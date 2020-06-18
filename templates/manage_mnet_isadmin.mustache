@@ -15,7 +15,7 @@
     along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 }}
 
-<div class="ui-eduvidual">
+<div class="ui-eduvidual__">
     <p class="alert alert-warning">{{#str}} manage:mnet:adminonly, local_eduvidual {{/str}}</p>
 
     <h5>{{#str}} manage:maildomain, local_eduvidual {{/str}}</h5>
@@ -24,12 +24,16 @@
         onclick="var btn = this; require(['local_eduvidual/manager'], function(MANAGER) { MANAGER.maildomain_apply({{orgid}}, btn); }); return false;">
         {{#str}} manage:mnet:enrol, local_eduvidual {{/str}}
     </a>
-    <label for="local_eduvidual_manage_maildomain">{{#str}} Student, local_eduvidual {{/str}}</label>
-    <input id="local_eduvidual_manage_maildomain" value="{{maildomain}}"
+    <label for="local_eduvidual_manage_maildomain">
+        {{#str}} Student, local_eduvidual {{/str}}
+    </label>
+    <input id="local_eduvidual_manage_maildomain" value="{{maildomain}}" style="width: 100%;"
            onkeyup="var inp = this; require(['local_eduvidual/manager'], function(MANAGER) { MANAGER.maildomain(inp, {{orgid}}, ''); });" />
-    <label for="local_eduvidual_manage_maildomain_teacher">{{#str}} Teacher, local_eduvidual {{/str}}</label>
-    <input id="local_eduvidual_manage_maildomain_teacher" value="{{maildomainteacher}}"
+    <label for="local_eduvidual_manage_maildomain_teacher">
+        {{#str}} Teacher, local_eduvidual {{/str}}
+    </label>
+    <input id="local_eduvidual_manage_maildomain_teacher" value="{{maildomainteacher}}" style="width: 100%;"
            onkeyup="var inp = this; require(['local_eduvidual/manager'], function(MANAGER) { MANAGER.maildomain(inp, {{orgid}}, 'teacher'); });" />
-
+    <p>&nbsp;</p>
     <h5>{{#str}} manage:mnet, local_eduvidual {{/str}}</h5>
 </div>

@@ -15,15 +15,21 @@
     along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 }}
 
-<div class="ui-eduvidual">
+<div class="ui-eduvidual__">
     <p class="alert alert-warning">{{#str}} manage:mnet:adminonly, local_eduvidual {{/str}}</p>
 
     <h5>{{#str}} manage:maildomain, local_eduvidual {{/str}}</h5>
     <p>{{#str}} manage:maildomain:description, local_eduvidual {{/str}}</p>
     <label for="local_eduvidual_manage_maildomain">{{#str}} Student, local_eduvidual {{/str}}</label>
-    <pre>{{maildomain}}{{^maildomain}}{{#str}} n_a, local_eduvidual {{/str}}{{/maildomain}}</pre>
+    <pre>
+        {{maildomain}}
+        {{^maildomain}}{{#str}} n_a, local_eduvidual {{/str}}{{/maildomain}}
+    </pre>
     <label for="local_eduvidual_manage_maildomain_teacher">{{#str}} Teacher, local_eduvidual {{/str}}</label>
-    <pre>{{maildomainteacher}}{{^maildomainteacher}}{{#str}} n_a, local_eduvidual {{/str}}{{/maildomainteacher}}</pre>
+    <pre>
+        {{maildomainteacher}}
+        {{^maildomainteacher}}{{#str}} n_a, local_eduvidual {{/str}}{{/maildomainteacher}}
+    </pre>
 
     <h5>{{#str}} manage:mnet, local_eduvidual {{/str}}</h5>
     {{#mnetname}}

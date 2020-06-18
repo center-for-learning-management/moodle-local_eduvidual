@@ -389,7 +389,7 @@ $string['manage:createuseranonymous:success'] = ' Users created';
 $string['manage:createuseranonymous:failed'] = ' Users <strong>not</strong> created';
 $string['manage:createuserspreadsheet'] = 'Manage Users with Spreadsheets';
 $string['manage:createuserspreadsheet:import:datavalidated'] = 'Data is ok, store to database';
-$string['manage:createuserspreadsheet:import:description'] = 'You can create/manage users by uploading a spreadsheet (Excel, OpenOffice). You can use <a href="{$a->urlspreadsheet}" target="_blank">this template</a> to fill in your data, or modify a current <a href="{{wwwroot}}/local/eduvidual/pages/manage_userlists.php?orgid={{orgid}}&cohort=___all" target="_blank">export of all your users</a>.';
+$string['manage:createuserspreadsheet:import:description'] = 'You can create/manage users by uploading a spreadsheet (Excel, OpenOffice). You can use <a href="{$a->urlspreadsheet}" target="_blank">this template</a> to fill in your data, or modify a current <a href="{$a->wwwroot}/local/eduvidual/pages/manage_userlists.php?orgid={$a->orgid}&cohort=___all" target="_blank">export of all your users</a>.';
 $string['manage:createuserspreadsheet:import:description:bunch'] = 'The cohort allows you to group users. This is useful to enrol a whole cohort in courses and to manage the access cards for printing.';
 $string['manage:createuserspreadsheet:import:description:email'] = 'The mail-address of this user. If not given a (not working) dummy address will be assigned. The mailaddress is used as username.';
 $string['manage:createuserspreadsheet:import:description:firstname'] = 'The firstname. If no firstname is given eduvidual will use a random name.';
@@ -436,8 +436,9 @@ $string['manage:subcats:subcat3'] = 'Third layer';
 $string['manage:subcats:subcat4'] = 'Fourth layer';
 $string['manage:user_bunches:format:cards'] = 'Cards';
 $string['manage:user_bunches:format:list'] = 'List';
-$string['manage:users:title'] = 'Users in your organization';
-$string['manage:users:description'] = 'To change the role of a certain user just select the user from the search box and choose the role.';
+
+$string['manage:users:description'] = 'To change the role of a certain user just select the user from the search box and choose the role. You can also <a href="{$a->wwwroot}/local/eduvidual/pages/manage_userlists.php?orgid={$a->orgid}&cohort=___all" target="_blank">print / export all users of your organization</a>.';
+$string['manage:users:entersecrets'] = 'Enter secret(s)';
 $string['manage:users:printcards'] = 'Print accesscards';
 $string['manage:users:setpwreset'] = 'Reset password';
 $string['manage:users:setpwreset:description'] = 'Resetting passwords will only work for manually created accounts and will <strong>NOT</strong> work for Microsoft-, MNET- or other accounts. This function will reset the password to the secret (red text) on the accesscard.';
@@ -445,10 +446,13 @@ $string['manage:users:setpwreset:failed'] = 'Failed';
 $string['manage:users:setpwreset:updated'] = 'Reset';
 $string['manage:users:setrole'] = 'Set role';
 $string['manage:users:searchforuser'] = 'Search and select a user';
+$string['manage:users:title'] = 'Users in your organization';
 
 $string['manage:users'] = 'Users';
 $string['manage:categories'] = 'Categories';
 $string['manage:style'] = 'Style';
+
+$string['manage:welcome'] = 'Welcome to the management interface of your organization. Please choose from the following functions:';
 
 $string['minimum_x_chars'] = 'More than {$a} characters required!';
 

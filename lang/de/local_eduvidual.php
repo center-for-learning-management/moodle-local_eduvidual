@@ -389,7 +389,7 @@ $string['manage:createuseranonymous:success'] = ' Nutzer/innen erstellt';
 $string['manage:createuseranonymous:failed'] = ' Nutzer/innen <strong>nicht</strong> erstellt';
 $string['manage:createuserspreadsheet'] = 'Nutzer/innen mit Excel verwalten';
 $string['manage:createuserspreadsheet:import:datavalidated'] = 'Daten sind in Ordnung, sende zur Datenbank';
-$string['manage:createuserspreadsheet:import:description'] = 'Sie können Nutzer/innen auf Basis eines Tabellendokuments erstellen / verwalten. Bitte verwenden Sie als Grundlage unsere <a href="{$a->urlspreadsheet}" target="_blank">Vorlage</a>, um neue Nutzer/innen einzugeben, oder ändern Sie bestehende Daten nach dem Download einer <a href="{{wwwroot}}/local/eduvidual/pages/manage_userlists.php?orgid={{orgid}}&cohort=___all" target="_blank">aktuellen Nutzerliste</a>.';
+$string['manage:createuserspreadsheet:import:description'] = 'Sie können Nutzer/innen auf Basis eines Tabellendokuments erstellen / verwalten. Bitte verwenden Sie als Grundlage unsere <a href="{$a->urlspreadsheet}" target="_blank">Vorlage</a>, um neue Nutzer/innen einzugeben, oder ändern Sie bestehende Daten nach dem Download einer <a href="{$a->wwwroot}/local/eduvidual/pages/manage_userlists.php?orgid={$a->orgid}&cohort=___all" target="_blank">aktuellen Nutzerliste</a>.';
 $string['manage:createuserspreadsheet:import:description:bunch'] = 'Mit der "globalen Gruppe" können Sie erstelle Nutzerkonten zusammenfassen, um sie gezielter in Kurse aufnehmen oder die Zugangskarten ausdrucken zu können.';
 $string['manage:createuserspreadsheet:import:description:email'] = 'Die eMail-Adresse. Falls keine angegeben wird, wird das Feld mit einer (nicht funktionierenden) dummy-Adresse befüllt. Falls hier ein Wert angegeben wird, dient die Mailadresse zugleich als Nutzername.';
 $string['manage:createuserspreadsheet:import:description:firstname'] = 'Der Vorname. Falls keiner angegeben wird, wird automatisch ein Pseudonym gewählt.';
@@ -436,8 +436,9 @@ $string['manage:subcats:subcat3'] = 'Dritte Ebene';
 $string['manage:subcats:subcat4'] = 'Vierte Ebene';
 $string['manage:user_bunches:format:cards'] = 'Zugangskarten';
 $string['manage:user_bunches:format:list'] = 'Liste';
-$string['manage:users:title'] = 'Nutzer/innen Ihrer Schule';
-$string['manage:users:description'] = 'Um die Rolle einzelner Nutzer/innen zu ändern wählen Sie diesen bitte aus dem Suchfeld aus und wählen Sie die Rolle.';
+
+$string['manage:users:description'] = 'Um die Rolle einzelner Nutzer/innen zu ändern wählen Sie diesen bitte aus dem Suchfeld aus und wählen Sie die Rolle. Sie können außerdem <a href="{$a->wwwroot}/local/eduvidual/pages/manage_userlists.php?orgid={$a->orgid}&cohort=___all" target="_blank">alle Nutzer/innen Ihrer Organisation drucken / exportieren</a>.';
+$string['manage:users:entersecrets'] = 'Geben Sie den/die Code/s ein';
 $string['manage:users:printcards'] = 'Zugangskarten drucken';
 $string['manage:users:setpwreset'] = 'Passwort zurücksetzen';
 $string['manage:users:setpwreset:description'] = 'Passwörter zurücksetzen funktioniert nur mit manuell erstellten Konten. Bei Microsoft-, MNet- oder anderen Konten hat die Funktion keinen Effekt. Diese Funktion setzt das Passwort auf den Code der Zugangskarte (rot geschrieben) der jeweiligen Nutzer/innen.';
@@ -445,10 +446,13 @@ $string['manage:users:setpwreset:failed'] = 'Fehler';
 $string['manage:users:setpwreset:updated'] = 'Zurückgesetzt';
 $string['manage:users:setrole'] = 'Rolle setzen';
 $string['manage:users:searchforuser'] = 'Suchen und wählen Sie Nutzer/innen';
+$string['manage:users:title'] = 'Nutzer/innen Ihrer Schule';
 
 $string['manage:users'] = 'Nutzer/innen';
 $string['manage:categories'] = 'Kategorien';
 $string['manage:style'] = 'Stil';
+
+$string['manage:welcome'] = 'Willkommen in der Verwaltungsansicht Ihrer Organisation. Bitte wählen Sie eine der folgenden Funktionen:';
 
 $string['minimum_x_chars'] = 'Mehr als {$a} Buchstaben erforderlich!';
 

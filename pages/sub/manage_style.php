@@ -22,9 +22,6 @@
 
 defined('MOODLE_INTERNAL') || die;
 
-?>
-<h5><?php echo get_string('manage:style:orgfiles:title', 'local_eduvidual'); ?></h5>
-<?php
 require_once($CFG->dirroot . "/local/eduvidual/classes/manage_files_form.php");
 // This variable is used within the form-object for the label text of orgfiles
 $_url = '/pluginfile.php/1/local_eduvidual/orgfiles/' . $org->orgid . '/<i>filename</i>';

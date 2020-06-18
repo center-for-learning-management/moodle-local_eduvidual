@@ -370,12 +370,12 @@ define(['jquery', 'core/ajax', 'core/modal_events', 'core/modal_factory', 'core/
         result: function(o) {
             if (o.data.act == 'accesscode_create') {
                 if (o.result.status == 'ok') {
-                    top.location.href = top.location.href;
+                    top.location.href = URL.relativeUrl('/local/eduvidual/pages/manage.php', { orgid: o.data.orgid, act: 'users', tab: 'accesscodes' });
                 }
             }
             if (o.data.act == 'accesscode_revoke') {
                 if (o.result.status == 'ok') {
-                    top.location.href = top.location.href;
+                    top.location.href = URL.relativeUrl('/local/eduvidual/pages/manage.php', { orgid: o.data.orgid, act: 'users', tab: 'accesscodes' });
                 }
             }
             if (o.data.act == 'addcategory') {

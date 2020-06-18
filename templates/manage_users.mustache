@@ -16,39 +16,33 @@
 }}
 
 <div class="ui-eduvidual__ local_eduvidual_manage_user-wrapper">
-    <div class="grid-eq-3">
-        <div><a href="#" onclick="$('#{{uniqid}}-manageusers').toggleClass('hidden'); $(this).toggleClass('btn-primary btn-secondary');" class="btn btn-secondary btn-block">
+    <div class="grid-eq-3 toggle-controller-{{uniqid}}">
+        <div><a href="#" onclick="var a = this; require(['local_eduvidual/main'], function(M) { M.toggle('{{uniqid}}', a, $(a).attr('data-toggle'));} ); return false;" data-toggle="manageusers" class="btn btn-secondary btn-block">
             {{#str}} manage:users:title, local_eduvidual {{/str}}
         </a></div>
-        <div><a href="#" onclick="$('#{{uniqid}}-adduserexcel').toggleClass('hidden'); $(this).toggleClass('btn-primary btn-secondary');" class="btn btn-secondary btn-block">
+        <div><a href="#" onclick="var a = this; require(['local_eduvidual/main'], function(M) { M.toggle('{{uniqid}}', a, $(a).attr('data-toggle'));} ); return false;" data-toggle="adduserexcel" class="btn btn-secondary btn-block">
             {{#str}} manage:createuserspreadsheet, local_eduvidual {{/str}}
         </a></div>
-        <div><a href="#" onclick="$('#{{uniqid}}-addusercode').toggleClass('hidden'); $(this).toggleClass('btn-primary btn-secondary');" class="btn btn-secondary btn-block">
+        <div><a href="#" onclick="var a = this; require(['local_eduvidual/main'], function(M) { M.toggle('{{uniqid}}', a, $(a).attr('data-toggle'));} ); return false;" data-toggle="addusercode" class="btn btn-secondary btn-block">
             {{#str}} manage:adduser, local_eduvidual {{/str}}
         </a></div>
-        <div><a href="#" onclick="$('#{{uniqid}}-adduseranonymous').toggleClass('hidden'); $(this).toggleClass('btn-primary btn-secondary');" class="btn btn-secondary btn-block">
+        <div><a href="#" onclick="var a = this; require(['local_eduvidual/main'], function(M) { M.toggle('{{uniqid}}', a, $(a).attr('data-toggle'));} ); return false;" data-toggle="adduseranonymous" class="btn btn-secondary btn-block">
             {{#str}} manage:createuseranonymous, local_eduvidual {{/str}}
         </a></div>
-        <div><a href="#" onclick="$('#{{uniqid}}-managementors').toggleClass('hidden'); $(this).toggleClass('btn-primary btn-secondary');" class="btn btn-secondary btn-block">
+        <div><a href="#" onclick="var a = this; require(['local_eduvidual/main'], function(M) { M.toggle('{{uniqid}}', a, $(a).attr('data-toggle'));} ); return false;" data-toggle="managementors" class="btn btn-secondary btn-block">
             {{#str}} manage:addparent, local_eduvidual {{/str}}
         </a></div>
-        <div><a href="#" onclick="$('#{{uniqid}}-accesscodes').toggleClass('hidden'); $(this).toggleClass('btn-primary btn-secondary');" class="btn btn-secondary btn-block">
+        <div><a href="#" onclick="var a = this; require(['local_eduvidual/main'], function(M) { M.toggle('{{uniqid}}', a, $(a).attr('data-toggle'));} ); return false;" data-toggle="accesscodes" class="btn btn-secondary btn-block">
             {{#str}} manage:accesscodes, local_eduvidual {{/str}}
         </a></div>
     </div>
-    <div class="grid-eq-1">
-        <div><a class="btn btn-primary btn-block" target="_blank"
-            href="{{wwwroot}}/local/eduvidual/pages/manage_userlists.php?orgid={{orgid}}">
-            {{#str}} manage:users:printcards, local_eduvidual {{/str}}
-        </a></div>
-    </div>
 
-    <div id="{{uniqid}}-manageusers" class="hidden card" style="padding: 12px;">
+    <div id="{{uniqid}}-manageusers" class="hidden card {{uniqid}}-card" style="padding: 12px;">
         <h3>{{#str}} manage:users:title, local_eduvidual {{/str}}</h3>
-        <p>{{#str}} manage:users:description, local_eduvidual {{/str}}</p>
+        <p>{{#str}} manage:users:description, local_eduvidual, { "wwwroot": {{#quote}}{{wwwroot}}{{/quote}}, "orgid": {{#quote}}{{orgid}}{{/quote}} } {{/str}}</p>
 
         <div class="grid-eq-2">
-            <fieldset>
+            <fieldset style="border-right: 1px solid darkgray; padding-right: 2px;">
             	<!-- <legend>{{#str}} manage:users:searchforuser, local_eduvidual {{/str}}</legend> -->
             	<input type="text" id="local_eduvidual_manage_setuserrole_search" class="btn-block"
                     onkeyup="require(['local_eduvidual/manager'], function(MANAGER) { MANAGER.setuserrole_search(); } );" />
@@ -77,51 +71,65 @@
         </div>
     </div>
 
-    <div id="{{uniqid}}-adduserexcel" class="hidden card" style="padding: 12px;">
+    <div id="{{uniqid}}-adduserexcel" class="hidden card {{uniqid}}-card" style="padding: 12px;">
         <h3>{{#str}} manage:createuserspreadsheet, local_eduvidual {{/str}}</h3>
         <div class="grid-eq-2">
-            <p>{{#str}} manage:createuserspreadsheet:import:description, local_eduvidual, { "urlspreadsheet": {{#quote}}{{urlspreadsheet}}{{/quote}} } {{/str}}</p>
-
-            <form action="" method="post" enctype="multipart/form-data">
-                <input type="hidden" name="act" value="users" />
-                <input type="hidden" name="orgid" value="{{orgid}}" />
-                <input type="hidden" name="import" value="1" />
-                <input type="file" name="local_eduvidual_manage_usersimport" class="btn" />
-                <input type="submit" value="{{#str}} upload {{/str}}"  class="btn btn-primary btn-block" />
-            </form>
+            <div style="border-right: 1px solid darkgray; padding-right: 2px;">
+                <p>{{#str}} manage:createuserspreadsheet:import:description, local_eduvidual, { "urlspreadsheet": {{#quote}}{{urlspreadsheet}}{{/quote}}, "wwwroot": {{#quote}}{{wwwroot}}{{/quote}}, "orgid": {{#quote}}{{orgid}}{{/quote}} } {{/str}}</p>
+            </div>
+            <div>
+                <form action="" method="post" enctype="multipart/form-data">
+                    <input type="hidden" name="act" value="users" />
+                    <input type="hidden" name="orgid" value="{{orgid}}" />
+                    <input type="hidden" name="import" value="1" />
+                    <input type="file" name="local_eduvidual_manage_usersimport" class="btn" />
+                    <input type="submit" value="{{#str}} upload {{/str}}"  class="btn btn-primary btn-block" />
+                </form>
+            </div>
         </div>
     </div>
 
-    <div id="{{uniqid}}-addusercode" class="hidden card" style="padding: 12px;">
-        <h3>{{#str}} manage:adduser, local_eduvidual {{/str}}</h3>
+    <div id="{{uniqid}}-addusercode" class="hidden card {{uniqid}}-card" style="padding: 12px;">
         <div class="grid-eq-2">
-            <p>{{#str}} manage:adduser:description, local_eduvidual {{/str}}</p>
+            <div style="border-right: 1px solid darkgray; padding-right: 2px;">
+                <h3>{{#str}} manage:adduser, local_eduvidual {{/str}}</h3>
+                <p>{{#str}} manage:adduser:description, local_eduvidual {{/str}}</p>
+            </div>
             <div>
+                <label for="local_eduvidual_manage_adduser_role">{{#str}} manage:accesscodes:role, local_eduvidual {{/str}}</label>
                 <select id="local_eduvidual_manage_adduser_role" style="width: 100%;">
                     <option value="Parent">{{#str}} role:Parent, local_eduvidual {{/str}}</option>
                     <option value="Student">{{#str}} role:Student, local_eduvidual {{/str}}</option>
                     <option value="Teacher">{{#str}} role:Teacher, local_eduvidual {{/str}}</option>
                     <option value="Manager">{{#str}} role:Manager, local_eduvidual {{/str}}</option>
                 </select>
-                <input type="text" id="local_eduvidual_manage_adduser" data-orgid="{{orgid}}" />
+                <label for="local_eduvidual_manage_adduser">{{#str}} manage:users:entersecrets, local_eduvidual {{/str}}</label>
+                <input type="text" id="local_eduvidual_manage_adduser" placeholder="{{#str}} manage:users:entersecrets, local_eduvidual {{/str}}" data-orgid="{{orgid}}" style="width: 100%;" />
                 <input type="button" value="{{#str}} manage:adduser, local_eduvidual {{/str}}" class="btn btn-primary btn-block"
                     onclick="require(['local_eduvidual/manager'], function(MANAGER) { MANAGER.addUser(); });"/>
             </div>
         </div>
+        <!--
+        <div style="text-align: center;">
+            <img src="{{wwwroot}}/local/eduvidual/pix/example_accesscard.png" alt="Example Accesscard" style="width: 500px; max-width: 90%;" />
+        </div>
+        -->
     </div>
-    <div id="{{uniqid}}-adduseranonymous" class="hidden card" style="padding: 12px;">
-        <h3>{{#str}} manage:createuseranonymous, local_eduvidual {{/str}}</h3>
+    <div id="{{uniqid}}-adduseranonymous" class="hidden card {{uniqid}}-card" style="padding: 12px;">
         <div class="grid-eq-2">
-            <p>{{#str}} manage:createuseranonymous:description, local_eduvidual {{/str}}</p>
-            <p id="local_eduvidual_manage_createuseranonymous_success" class="alert alert-success" style="display: none;">
-                <span></span>{{#str}} manage:createuseranonymous:success, local_eduvidual {{/str}}
-                <a class="btn btn-primary" href="{{wwwroot}}/local/eduvidual/pages/manage_userlists.php?orgid={{orgid}}">
-                    {{#str}} manage:users:printcards, local_eduvidual {{/str}}
-                </a>
-            </p>
-            <p id="local_eduvidual_manage_createuseranonymous_failed" class="alert alert-danger" style="display: none;">
-                <span></span>{{#str}} manage:createuseranonymous:failed, local_eduvidual {{/str}}
-            </p>
+            <div style="border-right: 1px solid darkgray; padding-right: 2px;">
+                <h3>{{#str}} manage:createuseranonymous, local_eduvidual {{/str}}</h3>
+                <p>{{#str}} manage:createuseranonymous:description, local_eduvidual {{/str}}</p>
+                <p id="local_eduvidual_manage_createuseranonymous_success" class="alert alert-success" style="display: none;">
+                    <span></span>{{#str}} manage:createuseranonymous:success, local_eduvidual {{/str}}
+                    <a class="btn btn-primary" href="{{wwwroot}}/local/eduvidual/pages/manage_userlists.php?orgid={{orgid}}">
+                        {{#str}} manage:users:printcards, local_eduvidual {{/str}}
+                    </a>
+                </p>
+                <p id="local_eduvidual_manage_createuseranonymous_failed" class="alert alert-danger" style="display: none;">
+                    <span></span>{{#str}} manage:createuseranonymous:failed, local_eduvidual {{/str}}
+                </p>
+            </div>
             <div>
                 <input type="hidden" id="local_eduvidual_manage_createuseranonymous_orgid" value="{{orgid}}" />
                 <label for="local_eduvidual_manage_createuseranonymous_role">{{#str}} manage:createuseranonymous:role, local_eduvidual {{/str}}</label>
@@ -131,20 +139,24 @@
                     <option value="Teacher">{{#str}} role:Teacher, local_eduvidual {{/str}}</option>
                     <option value="Manager">{{#str}} role:Manager, local_eduvidual {{/str}}</option>
                 </select>
-                <label for="local_eduvidual_manage_createuseranonymous_cohorts">{{#str}} cohorts, cohort {{/str}} ()</label>
-                <input type="text" id="local_eduvidual_manage_createuseranonymous_bunch" />
+                <label for="local_eduvidual_manage_createuseranonymous_cohorts">{{#str}} cohorts, cohort {{/str}}</label>
+                <input type="text" id="local_eduvidual_manage_createuseranonymous_bunch" placeholder="{{#str}} cohorts, cohort {{/str}}" style="width: 100%;" />
+
                 <label for="local_eduvidual_manage_createuseranonymous_amount">{{#str}} manage:createuseranonymous:amount, local_eduvidual {{/str}}</label>
-                <input type="number" id="local_eduvidual_manage_createuseranonymous_amount" min="1" max="99" />
-                <input type="button" id="local_eduvidual_manage_createuseranonymous_btn" value="{{#str}} manage:createuseranonymous, local_eduvidual {{/str}}" class="btn btn-primary"
+                <input type="number" id="local_eduvidual_manage_createuseranonymous_amount" min="1" max="99" style="width: 100%;" />
+
+                <input type="button" id="local_eduvidual_manage_createuseranonymous_btn" value="{{#str}} manage:createuseranonymous, local_eduvidual {{/str}}" class="btn btn-primary btn-block"
                     onclick="require(['local_eduvidual/manager'], function(MANAGER) { MANAGER.addUserAnonymous(); });"/>
             </div>
         </div>
     </div>
-    <div id="{{uniqid}}-managementors" class="hidden card" style="padding: 12px;">
-        <h3>{{#str}} manage:addparent, local_eduvidual {{/str}}</h3>
+    <div id="{{uniqid}}-managementors" class="hidden card {{uniqid}}-card" style="padding: 12px;">
         <p class="alert alert-info">{{#str}} manage:addparent:warning, local_eduvidual {{/str}}</p>
         <div class="grid-eq-2">
-            <p>{{#str}} manage:addparent:description, local_eduvidual {{/str}}</p>
+            <div style="border-right: 1px solid darkgray; padding-right: 2px;">
+                <h3>{{#str}} manage:addparent, local_eduvidual {{/str}}</h3>
+                <p>{{#str}} manage:addparent:description, local_eduvidual {{/str}}</p>
+            </div>
             <div>
                 <input type="text" id="local_eduvidual_manage_addparent_studentfilter"
                     data-orgid="{{orgid}}"
@@ -166,11 +178,11 @@
             </div>
         </div>
     </div>
-    <div id="{{uniqid}}-accesscodes" class="hidden card" style="padding: 12px;">
+    <div id="{{uniqid}}-accesscodes" class="hidden card {{uniqid}}-card" style="padding: 12px;">
         <h3>{{#str}} manage:accesscodes, local_eduvidual {{/str}}</h3>
         <p>{{#str}} manage:accesscodes:description, local_eduvidual, { "wwwroot": "{{{wwwroot}}}"} {{/str}}</p>
         <div class="grid-eq-2">
-            <div>
+            <div style="border-right: 1px solid darkgray; padding-right: 2px;">
                 <h4>{{#str}} manage:accesscodes:create, local_eduvidual {{/str}}</h4>
                 <table class="generaltable">
                     <tr>
@@ -247,3 +259,11 @@
         </div>
     </div>
 </div>
+
+{{#js}}
+var tab = '{{tab}}';
+if (tab != '') {
+    var a = $('.toggle-controller-{{uniqid}}').find('[data-toggle="{{tab}}"]');
+    require(['local_eduvidual/main'], function(M) { M.toggle('{{uniqid}}', a, tab);} );
+}
+{{/js}}
