@@ -234,7 +234,6 @@ $string['edutube:no_org'] = 'Entschuldigung, leider wurde Ihnen an keiner Schule
 $string['edutube:title'] = 'eduTube';
 $string['edutube:missing_configuration'] = 'eduTube wurde noch nicht konfiguriert';
 
-$string['eduvidual:canaccess'] = 'Erlaube Zugriff auf diesen Kontext und seine Subkontexte.';
 $string['eduvidual:canmanage'] = 'Erlaube Verwaltung der Organisation diesem Kontext';
 
 $string['explevel:title'] = 'Erfahrungslevel';

@@ -25,12 +25,6 @@
 defined('MOODLE_INTERNAL') || die;
 
 $capabilities = array(
-    'local/eduvidual:canaccess' => array(
-        'riskbitmask' => RISK_XSS,
-        'captype' => 'read',
-        'contextlevel' => CONTEXT_COURSECAT,
-        'archetypes' => array(),
-    ),
     'local/eduvidual:canmanage' => array(
         'riskbitmask' => RISK_PERSONAL & RISK_XSS & RISK_DATALOSS,
         'captype' => 'write',

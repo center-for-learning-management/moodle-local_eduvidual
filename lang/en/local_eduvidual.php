@@ -234,7 +234,6 @@ $string['edutube:no_org'] = 'Sorry, you are not assigned to any organization as 
 $string['edutube:title'] = 'eduTube';
 $string['edutube:missing_configuration'] = 'eduTube was not yet configured';
 
-$string['eduvidual:canaccess'] = 'Allow access to this context and its children.';
 $string['eduvidual:canmanage'] = 'Can manage the organization in this context.';
 
 $string['explevel:title'] = 'Experience Levels';
