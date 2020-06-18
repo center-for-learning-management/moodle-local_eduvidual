@@ -29,7 +29,7 @@ require_once('../../../../config.php');
 
 $PAGE->set_context(context_system::instance());
 $PAGE->set_pagelayout('admin');
-$PAGE->set_url('/local/eduvidual/pages/admin.php', array());
+$PAGE->set_url('/local/eduvidual/pages/tools/admin_supportcourses.php', array());
 $PAGE->set_title(get_string('admin:supportcourses', 'local_eduvidual'));
 $PAGE->set_heading(get_string('admin:supportcourses', 'local_eduvidual'));
 
