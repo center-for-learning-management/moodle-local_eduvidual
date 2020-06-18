@@ -234,11 +234,8 @@ $string['edutube:no_org'] = 'Sorry, you are not assigned to any organization as 
 $string['edutube:title'] = 'eduTube';
 $string['edutube:missing_configuration'] = 'eduTube was not yet configured';
 
-$string['eduvidual:addinstance'] = 'Add eduvidual block';
 $string['eduvidual:canaccess'] = 'Allow access to this context and its children.';
-$string['eduvidual:manage'] = 'Manage eduvidual block';
-$string['eduvidual:myaddinstance'] = 'Add eduvidual_block to course view';
-$string['eduvidual:useinstance'] = 'Use the eduvidual_block';
+$string['eduvidual:canmanage'] = 'Can manage the organization in this context.';
 
 $string['explevel:title'] = 'Experience Levels';
 $string['explevel:description'] = 'Experience Level Roles can be chosen to simplify the UI of Moodle. Consequently the amount of functions will be shorted, so that can focus better on what you want to achieve!';

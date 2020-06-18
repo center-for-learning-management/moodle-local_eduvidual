@@ -234,11 +234,8 @@ $string['edutube:no_org'] = 'Entschuldigung, leider wurde Ihnen an keiner Schule
 $string['edutube:title'] = 'eduTube';
 $string['edutube:missing_configuration'] = 'eduTube wurde noch nicht konfiguriert';
 
-$string['eduvidual:addinstance'] = 'eduvidual Block hinzufügen';
 $string['eduvidual:canaccess'] = 'Erlaube Zugriff auf diesen Kontext und seine Subkontexte.';
-$string['eduvidual:manage'] = 'eduvidual Block verwalten';
-$string['eduvidual:myaddinstance'] = 'eduvidual Block zum Kurs hinzufügen';
-$string['eduvidual:useinstance'] = 'eduvidual Block verwenden';
+$string['eduvidual:canmanage'] = 'Erlaube Verwaltung der Organisation diesem Kontext';
 
 $string['explevel:title'] = 'Erfahrungslevel';
 $string['explevel:description'] = 'Erfahrungslevel-Rollen können verwendet werden, um bspw. das Moodle-Userinterface zu vereinfachen.';

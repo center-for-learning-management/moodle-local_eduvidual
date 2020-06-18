@@ -25,41 +25,16 @@
 defined('MOODLE_INTERNAL') || die;
 
 $capabilities = array(
-    'local/eduvidual:addinstance' => array(
-        'riskbitmask' => RISK_XSS,
-        'captype' => 'write',
-        'contextlevel' => CONTEXT_BLOCK,
-        'archetypes' => array(
-            'editingteacher' => CAP_ALLOW,
-            'manager' => CAP_ALLOW
-        ),
-        'clonepermissionsfrom' => 'moodle/site:manageblocks'
-    ),
     'local/eduvidual:canaccess' => array(
         'riskbitmask' => RISK_XSS,
         'captype' => 'read',
         'contextlevel' => CONTEXT_COURSECAT,
         'archetypes' => array(),
     ),
-    'local/eduvidual:manage' => array(
-        'riskbitmask' => RISK_XSS,
+    'local/eduvidual:canmanage' => array(
+        'riskbitmask' => RISK_PERSONAL & RISK_XSS & RISK_DATALOSS,
         'captype' => 'write',
-        'contextlevel' => CONTEXT_BLOCK,
+        'contextlevel' => CONTEXT_COURSECAT,
         'archetypes' => array(),
-        'clonepermissionsfrom' => 'moodle/site:manageblocks'
     ),
-    'local/eduvidual:myaddinstance' => array(
-		'captype' => 'write',
-		'contextlevel' => CONTEXT_SYSTEM,
-		'archetypes' => array(
-				'user' => CAP_ALLOW
-		),
-		'clonepermissionsfrom' => 'moodle/my:manageblocks'
-	),
-    'local/eduvidual:useinstance' => array(
-		'captype' => 'write',
-		'contextlevel' => CONTEXT_SYSTEM,
-		'archetypes' => array(),
-		//'clonepermissionsfrom' => ''
-	),
 );
