@@ -15,6 +15,17 @@
     along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 }}
 
+<div id="{{ uniqid }}-tab-container">
+    <ul role="tablist" class="nav nav-tabs mb-3">
+		{{# actions }}
+			<li class="nav-item">
+				<a class="nav-link{{#selected}} active{{/selected}}" href="{{{url}}}">{{{ localized }}}</a>
+			</li>
+		{{/ actions }}
+	</ul>
+</div>
+
+<!--
 <div class="ui-eduvidual__">
     <p>{{#str}} manage:welcome, local_eduvidual {{/str}}</p>
     <div class="grid-eq-3">
@@ -27,3 +38,4 @@
         {{/actions}}
     </div>
 </div>
+-->

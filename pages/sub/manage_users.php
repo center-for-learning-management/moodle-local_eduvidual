@@ -22,7 +22,7 @@
 
 defined('MOODLE_INTERNAL') || die;
 
-$tab = optional_param('tab', '', PARAM_TEXT); // tab the will be shown initially.
+$tab = optional_param('tab', 'manageusers', PARAM_TEXT); // tab the will be shown initially.
 
 $_codes = $DB->get_records_sql('SELECT * FROM {local_eduvidual_org_codes} WHERE orgid=? ORDER BY maturity DESC', array($org->orgid));
 $codes = array();

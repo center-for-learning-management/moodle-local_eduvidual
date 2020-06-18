@@ -136,11 +136,11 @@ define(
             // Hide all cards of this uniqid.
             $('.' + uniqid + '-card').addClass('hidden');
             // Set all buttons to "non-pressed" state.
-            $(a).closest('.toggle-controller-' + uniqid).find('a').removeClass('btn-primary').addClass('btn-secondary');
+            $(a).closest('.toggle-controller-' + uniqid).find('a').removeClass('active');
             // Show the linked card, that was identified by target.
             $('#' + uniqid + '-' + target).removeClass('hidden');
             // Set the pressed button active.
-            $(a).toggleClass('btn-primary btn-secondary');
+            $(a).addClass('active');
         },
         watchValue: function(o) {
             if (this.debug > 5) console.log('MAIN.watchValue(o)', o);

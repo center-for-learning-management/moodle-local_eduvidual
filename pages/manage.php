@@ -31,7 +31,7 @@ $context = \context_coursecat::instance($org->categoryid);
 
 require_capability('local/eduvidual:canmanage', $context);
 
-$act = optional_param('act', '', PARAM_TEXT);
+$act = optional_param('act', 'users', PARAM_TEXT);
 
 $PAGE->set_context($context);
 $PAGE->set_url('/local/eduvidual/pages/manage.php', array('act' => $act, 'orgid' => $orgid));
@@ -78,19 +78,21 @@ $includefile = $CFG->dirroot . '/local/eduvidual/pages/sub/manage_' . $act . '.p
 /*
 \local_eduvidual\locallib::print_act_selector($actions, $act);
 */
+
+$oactions = array();
+
+foreach ($actions as $key => $action) {
+	$oactions[] = array(
+		'action' => $action,
+		'key' => $key,
+		'localized' => get_string($action, 'local_eduvidual'),
+		'selected' => ($key == $act),
+		'url' => new \moodle_url('/local/eduvidual/pages/manage.php', array('orgid' => $orgid, 'act' => $key)),
+	);
+}
+echo $OUTPUT->render_from_template('local_eduvidual/manage_overview', array('actions' => $oactions));
+
 if (!empty($act) && in_array($act, $subpages) && file_exists($includefile)) {
     include($includefile);
-} else {
-	$oactions = array();
-	foreach ($actions as $key => $action) {
-		$oactions[] = array(
-			'action' => $action,
-			'key' => $key,
-			'localized' => get_string($action, 'local_eduvidual'),
-			'url' => new \moodle_url('/local/eduvidual/pages/manage.php', array('orgid' => $orgid, 'act' => $key)),
-		);
-	}
-	echo $OUTPUT->render_from_template('local_eduvidual/manage_overview', array('actions' => $oactions));
 }
-
 echo $OUTPUT->footer();

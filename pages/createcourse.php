@@ -47,7 +47,6 @@ $orgas = \local_eduvidual\locallib::get_organisations('Teacher');
 $PAGE->set_title(get_string('teacher:createcourse', 'local_eduvidual'));
 $PAGE->set_heading(get_string('teacher:createcourse', 'local_eduvidual'));
 
-$PAGE->navbar->add(get_string('teacher:createcourse', 'local_eduvidual'), $PAGE->url);
 echo $OUTPUT->header();
 
 $formsent = optional_param('formsent', 0, PARAM_INT);
