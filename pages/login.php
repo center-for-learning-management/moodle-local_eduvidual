@@ -150,7 +150,7 @@ if ($errorcode > 0) {
 		break;
 		/** Can not login because user is locked out. */
 		case AUTH_LOGIN_LOCKOUT: // 4
-			$errormessage = get_string('lockoutemailsubject', 'admin', format_string($SITE->fullname));
+			$errormessage = get_string('sessionexpired', 'error');
 		break;
 		/** Can not login becauser user is not authorised. */
 		case AUTH_LOGIN_UNAUTHORISED: // 5
