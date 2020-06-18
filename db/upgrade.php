@@ -27,57 +27,42 @@ function xmldb_local_eduvidual_upgrade($oldversion) {
     global $DB;
     $dbman = $DB->get_manager();
 
-    if ($oldversion < 2020052502) {
-        $sql = "SELECT userid,background,backgroundcard
-                    FROM {local_eduvidual_userextra}";
-        $extras = $DB->get_records_sql($sql, array());
-        foreach ($extras AS $extra) {
-            error_log("Setting $extra->background / $extra->backgroundcard for User #$extra->userid");
-            if (!empty($extra->background)) {
-                set_user_preference('local_eduvidual_background', $extra->background, $extra->userid);
-            }
-            if (!empty($extra->backgroundcard)) {
-                set_user_preference('local_eduvidual_backgroundcard', $extra->backgroundcard, $extra->userid);
-            }
-        }
-        $table = new xmldb_table('local_eduvidual_userextra');
+    /*
 
+        ATTENTION!!!!!!!!!!!
+        We have to change the block_eduvidual to local_eduvidual.
+        The current tables of the old plugin will be renamed, before the old
+        plugin gets uninstalled. Then we will install the local-Plugin,
+        delete its tables and rename the old tables for the new plugin.
+
+        Therefore some database changes will not haven taken effect.
+
+        For that reason, AFTER installing the local_plugin, we have to enable
+        this piece of code, so that all database changes will take effect!
+
+        ENSURE WE HAVE RUN /local/eduvidual/pages/tools/admin_block2local.php
+        BEFORE THIS IS ENABLED!
+
+    if ($oldversion < 2020061800) {
+        $table = new xmldb_table('local_eduvidual_userextra');
         if ($dbman->table_exists($table)) {
             $dbman->drop_table($table);
         }
-
-        upgrade_block_savepoint(true, 2020052502, 'eduvidual');
-    }
-    if ($oldversion < 2020060400) {
         $table = new xmldb_table('local_eduvidual_org');
         $field = new xmldb_field('supportcourseid', XMLDB_TYPE_INTEGER, '20', null, null, null, null, 'courseid');
         if (!$dbman->field_exists($table, $field)) {
             $dbman->add_field($table, $field);
         }
-        upgrade_block_savepoint(true, 2020060400, 'eduvidual');
-    }
-    if ($oldversion < 2020060401) {
+        upgrade_local_savepoint(true, 2020060400, 'eduvidual');
+        upgrade_plugin_savepoint(true, 2020061800, 'local', 'eduvidual');
         $table = new xmldb_table('local_eduvidual_org');
         $field = new xmldb_field('orgmenu', XMLDB_TYPE_TEXT, null, null, null, null, null, 'customcss');
         if (!$dbman->field_exists($table, $field)) {
             $dbman->add_field($table, $field);
         }
-        upgrade_block_savepoint(true, 2020060401, 'eduvidual');
+        upgrade_plugin_savepoint(true, 2020061800, 'local', 'eduvidual');
     }
-    if ($oldversion < 2020061800) {
-        // Ensure that all userbunches are synced to cohorts.
-        $bunches = $DB->get_records_sql("SELECT * FROM {local_eduvidual_userbunches} ORDER BY orgid ASC", array());
-        $org = "";
-        foreach ($bunches as $bunch) {
-            if (empty($org) || $org->orgid != $bunch->orgid) {
-                $org = $DB->get_record('local_eduvidual_org', array('orgid' => $bunch->orgid));
-            }
-            if (!empty($org->categoryid)) {
-                \local_eduvidual\lib_enrol::cohorts_add($bunch->userid, $org, $bunch->bunch);
-            }
-        }
-        upgrade_block_savepoint(true, 2020061800, 'eduvidual');
-    }
+    */
 
 
     return true;

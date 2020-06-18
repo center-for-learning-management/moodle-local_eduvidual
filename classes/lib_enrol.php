@@ -32,21 +32,24 @@ class lib_enrol {
      * @param org (object) org
      * @param cohorts (String) list comma separated.
      */
-    public static function cohorts_add($userid, $org, $cohorts) {
+    public static function cohorts_add($userid, &$org, $cohorts) {
         global $DB;
         if (empty($cohorts)) return;
         if (empty($org->categoryid)) return;
-        $context = \context_coursecat::instance($org->categoryid);
-        if (empty($context->id)) return;
+        if (empty($org->categorycontext)) {
+            $org->categorycontext = \context_coursecat::instance($org->categoryid);
+        }
+        if (empty($org->categorycontext->id)) return;
 
         $cohorts = explode(',', $cohorts);
 
         foreach ($cohorts AS $cohort) {
-            $cohort = $DB->get_record('cohort', array('contextid' => $context->id, 'name' => $cohort));
-            if (empty($cohort->id)) {
+            if (empty($cohort)) continue;
+            $cohorto = $DB->get_record('cohort', array('contextid' => $org->categorycontext->id, 'name' => $cohort));
+            if (empty($cohorto->id)) {
                 $idnumber = $org->orgid . '_' . hash('crc32', $cohort);
-                $cohort = (object) array(
-                    'contextid' => $context->id,
+                $cohorto = (object) array(
+                    'contextid' => $org->categorycontext->id,
                     'description' => 'Automatically created cohort ' . $cohort,
                     'descriptionformat' => 1,
                     'idnumber' => $idnumber,
@@ -55,11 +58,11 @@ class lib_enrol {
                     'timemodified' => time(),
                     'visible' => 1,
                 );
-                $cohort->id = $DB->insert_record('cohort', $cohort);
+                $cohorto->id = $DB->insert_record('cohort', $cohorto);
             }
-            $chk = $DB->get_record('cohort_members', array('cohortid' => $cohort->id, 'userid' => $userid));
+            $chk = $DB->get_record('cohort_members', array('cohortid' => $cohorto->id, 'userid' => $userid));
             if (empty($chk->id)) {
-                $DB->insert_record('cohort_members', (object) array('cohortid' => $cohort->id, 'userid' => $userid, 'timeadded' => time()));
+                $DB->insert_record('cohort_members', (object) array('cohortid' => $cohorto->id, 'userid' => $userid, 'timeadded' => time()));
             }
         }
 
