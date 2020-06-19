@@ -162,7 +162,7 @@ if ($formsent) {
                             $basecourse = $DB->get_record('course', array('id' => $basement));
 
                             $course = \local_eduvidual\lib_helper::duplicate_course($basecourse->id, $fullname, $shortname, $categoryid, 1);
-                            print_r($course);
+
                             if (!empty($course->id)) {
                                 $course->startdate = (date("m") < 6)?strtotime((date("Y")-1) . '0901000000'):strtotime(date("Y") . '0901000000');
                                 $DB->set_field('course', 'startdate', $course->startdate, array('id' => $course->id));
