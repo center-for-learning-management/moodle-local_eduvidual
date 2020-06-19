@@ -36,9 +36,8 @@ class lib_helper {
      **/
     public static function duplicate_course($courseid, $fullname, $shortname, $categoryid, $visible = 1, $options = array()) {
         global $CFG, $DB, $USER;
-        // is that needed??? require_once($CFG->dirroot . '/course/externallib.php');
-        require_once($CFG->dirroot . '/backup/controller/backup_controller.class.php');
-        require_once($CFG->dirroot . '/backup/controller/restore_controller.class.php');
+        require_once($CFG->dirroot . '/backup/util/includes/backup_includes.php');
+        require_once($CFG->dirroot . '/backup/util/includes/restore_includes.php');
 
         // Grant a role that allows course duplication in source and target category
         $basecourse = $DB->get_record('course', array('id' => $courseid));
@@ -88,9 +87,10 @@ class lib_helper {
             $bc = new \backup_controller(\backup::TYPE_1COURSE, $basecourse->id, \backup::FORMAT_MOODLE,
                                     \backup::INTERACTIVE_NO, \backup::MODE_SAMESITE, $USER->id);
 
-            foreach ($backupsettings as $name => $value) {
-                if ($setting = $bc->get_plan()->get_setting($name)) {
-                    $bc->get_plan()->get_setting($name)->set_value($value);
+            $settings = $bc->get_plan()->get_settings();
+            foreach($settings AS $setting) {
+                if (!empty($backupsettings[$setting->get_name()])) {
+                    $setting->set_value($backupsettings[$setting->get_name()]);
                 }
             }
 
@@ -164,6 +164,11 @@ class lib_helper {
             $file->delete();
 
             return $course;
+        } catch(Exception $e) {
+            echo $OUTPUT->render_from_template('local_eduvidual/alert', array(
+                'content' => $e->getMessage(),
+                'type' => 'danger',
+            ));
         } finally {
             if ($revokesourcerole) {
                 role_unassign($roletoassign, $USER->id, $sourcecontext->id);
