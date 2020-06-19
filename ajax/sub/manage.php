@@ -306,7 +306,7 @@ if (!$org) {
             }
         break;
 		case 'adduser':
-			$secrets = array(optional_param('secret', '', PARAM_TEXT));
+			$secrets = explode(' ', optional_param('secret', '', PARAM_TEXT));
         case 'setuserrole':
             if (!isset($secrets)) {
                 $secrets = optional_param_array('secrets', NULL, PARAM_TEXT);
