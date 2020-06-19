@@ -37,11 +37,13 @@ class lib_helper {
     public static function duplicate_course($courseid, $fullname, $shortname, $categoryid, $visible = 1, $options = array()) {
         global $CFG, $DB, $USER;
         // is that needed??? require_once($CFG->dirroot . '/course/externallib.php');
+        require_once($CFG->dirroot . '/backup/controller/backup_controller.class.php');
+        require_once($CFG->dirroot . '/backup/controller/restore_controller.class.php');
 
         // Grant a role that allows course duplication in source and target category
         $basecourse = $DB->get_record('course', array('id' => $courseid));
         $sourcecontext = \context_course::instance($courseid);
-        $targetcontext = \context_coursecategory::instance($categoryid);
+        $targetcontext = \context_coursecat::instance($categoryid);
 
         $roletoassign = 1; // Manager
         $revokesourcerole = true;
@@ -69,8 +71,7 @@ class lib_helper {
                 'blocks' => 1,
                 'filters' => 1,
                 'users' => 0,
-                // Caused and exception in the backup libraries of Moodle
-                //'enrolments' => \backup::ENROL_NEVER,
+                'enrolments' => 2,
                 'role_assignments' => 0,
                 'comments' => 0,
                 'userscompletion' => 0,
