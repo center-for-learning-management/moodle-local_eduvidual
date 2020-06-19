@@ -63,7 +63,7 @@ class local_eduvidual_external_teacher extends external_api {
         for ($a = 1; $a <= 3; $a++) {
             $seltree['subcat' . $a] = $params['subcat' . $a];
             if ($a > 1 && empty($seltree['subcat' . ($a-1)])) $seltree['subcat' . $a] = '';
-            if (is_array($seltree['subcats' . $a]) && !in_array($params['subcat' . $a], $seltree['subcats' . $a])) $seltree['subcat' . $a] = '';
+            if (is_array($seltree['subcats' . $a]) && !empty($params['subcat' . $a]) && !in_array($params['subcat' . $a], $seltree['subcats' . $a])) $seltree['subcat' . $a] = '';
         }
 
         return json_encode($seltree, JSON_NUMERIC_CHECK);
