@@ -446,7 +446,7 @@ switch ($act) {
         $reply['users'] = array();
 		if (strlen($search) > $minimum) {
 			$search = "%" . $search . "%";
-            $CONCAT = 'CONCAT("[",ou.role,"] ",u.firstname," ",u.lastname,IF(ub.bunch IS NULL,"",CONCAT(" #",ub.bunch)))';
+            $CONCAT = 'CONCAT("[",ou.role,"] ",u.firstname," ",u.lastname)';
             if (false && is_siteadmin()) {
                 $users = $DB->get_records_sql('SELECT u.id,u.email,' . $CONCAT . ' AS userfullname FROM {user} AS u INNER JOIN {local_eduvidual_orgid_userid} AS ou ON u.id=ou.userid WHERE ' . $CONCAT . ' LIKE ? AND u.suspended=0', array($search));
             } else {
