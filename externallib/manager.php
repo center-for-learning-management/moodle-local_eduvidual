@@ -64,11 +64,8 @@ class local_eduvidual_external_manager extends external_api {
         global $CFG, $DB, $PAGE;
         $params = self::validate_parameters(self::user_form_parameters(), array('orgid' => $orgid, 'userid' => $userid));
 
-        \local_eduvidual\locallib::set_org($params['orgid']);
-
         $membership = $DB->get_record('local_eduvidual_orgid_userid', $params);
-
-        if (empty($membership->id) || (\local_eduvidual\locallib::get('orgrole') != 'Manager' && !is_siteadmin())) {
+        if (empty($membership->id) || (\local_eduvidual\locallib::get_orgrole($params['orgid']) != 'Manager' && !is_siteadmin())) {
             // We are not allowed to to this!
             return get_string('missing_permission', 'local_eduvidual');
         } else {
@@ -97,14 +94,13 @@ class local_eduvidual_external_manager extends external_api {
         global $CFG, $DB, $PAGE;
         $params = self::validate_parameters(self::user_update_parameters(), array('orgid' => $orgid, 'userid' => $userid, 'firstname' => $firstname, 'lastname' => $lastname, 'email' => $email));
 
-        \local_eduvidual\locallib::set_org($params['orgid']);
         $membership = $DB->get_record('local_eduvidual_orgid_userid', array('orgid' => $params['orgid'], 'userid' => $params['userid']));
         $reply = (object)array(
             'message' => '',
             'subject' => '',
             'success' => 0,
         );
-        if (empty($membership->id) || (\local_eduvidual\locallib::get('orgrole') != 'Manager' && !is_siteadmin())) {
+        if (empty($membership->id) || (\local_eduvidual\locallib::get_orgrole($params['orgid']) != 'Manager' && !is_siteadmin())) {
             // We are not allowed to to this!
             $reply->message = get_string('missing_permission', 'local_eduvidual');
             $reply->subject = get_string('error');
