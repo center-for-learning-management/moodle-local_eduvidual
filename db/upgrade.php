@@ -43,7 +43,7 @@ function xmldb_local_eduvidual_upgrade($oldversion) {
         ENSURE WE HAVE RUN /local/eduvidual/pages/tools/admin_block2local.php
         BEFORE THIS IS ENABLED!
 
-    if ($oldversion < 2020061800) {
+    if ($oldversion < 2020xxxx00) {
         $table = new xmldb_table('local_eduvidual_userextra');
         if ($dbman->table_exists($table)) {
             $dbman->drop_table($table);
@@ -53,14 +53,18 @@ function xmldb_local_eduvidual_upgrade($oldversion) {
         if (!$dbman->field_exists($table, $field)) {
             $dbman->add_field($table, $field);
         }
-        upgrade_local_savepoint(true, 2020060400, 'eduvidual');
-        upgrade_plugin_savepoint(true, 2020061800, 'local', 'eduvidual');
         $table = new xmldb_table('local_eduvidual_org');
         $field = new xmldb_field('orgmenu', XMLDB_TYPE_TEXT, null, null, null, null, null, 'customcss');
         if (!$dbman->field_exists($table, $field)) {
             $dbman->add_field($table, $field);
         }
-        upgrade_plugin_savepoint(true, 2020061800, 'local', 'eduvidual');
+
+        $users = $DB->get_records_sql("SELECT id,email FROM {user} WHERE email LIKE '%@doesnotexist.eduvidual.org' OR email LIKE '%@doesnotexist.eduvidual.at'", array());
+        foreach ($users AS $user) {
+            $DB->set_field('user', 'email', 'a' . $user->id . '@a.eduvidual.at', array('id' => $user->id));
+        }
+
+        upgrade_plugin_savepoint(true, 2020xxxx00, 'local', 'eduvidual');
     }
     */
 
