@@ -87,7 +87,6 @@ if (count($orgas) > 1) $grid = 3;
             $urltobunch = $CFG->wwwroot . '/local/eduvidual/pages/manage_userlists.php?orgid=' . $org->orgid . '&cohort=';
 			$cohorts = $DB->get_records_sql("SELECT id,name FROM {cohort} WHERE contextid=? ORDER BY name ASC", array($context->id));
             $cohorts['___all'] = (object) array('name' => get_string('manage:bunch:all', 'local_eduvidual'));
-            $cohorts['___allwithout'] = (object) array('name' => get_string('manage:bunch:allwithoutbunch', 'local_eduvidual'));
             $cohorts['___allparents'] = (object) array('name' => get_string('manage:bunch:allparents', 'local_eduvidual'));
             $cohorts['___allstudents'] = (object) array('name' => get_string('manage:bunch:allstudents', 'local_eduvidual'));
             $cohorts['___allteachers'] = (object) array('name' => get_string('manage:bunch:allteachers', 'local_eduvidual'));
@@ -115,9 +114,6 @@ require_once($CFG->dirroot . '/user/profile/lib.php');
 switch($cohort) {
     case '___all':
         $entries = $DB->get_records_sql('SELECT u.* FROM {local_eduvidual_orgid_userid} AS ou, {user} AS u WHERE u.deleted=0 AND ou.userid=u.id AND ou.orgid=? ORDER BY u.lastname ASC, u.firstname ASC', array($orgid));
-    break;
-    case '___allwithout':
-        $entries = $DB->get_records_sql('SELECT u.* FROM {local_eduvidual_userbunches} AS ub, {local_eduvidual_orgid_userid} AS ou, {user} AS u WHERE u.deleted=0 AND ou.userid=ub.userid AND ou.userid=u.id AND ou.orgid=? AND ub.bunch IS NULL ORDER BY u.lastname ASC, u.firstname ASC', array($orgid));
     break;
     case '___allparents':
         $entries = $DB->get_records_sql('SELECT u.* FROM {local_eduvidual_orgid_userid} AS ou, {user} AS u WHERE u.deleted=0 AND ou.userid=u.id AND ou.orgid=? AND ou.role=? ORDER BY u.lastname ASC, u.firstname ASC', array($orgid, 'Parent'));

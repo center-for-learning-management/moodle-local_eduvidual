@@ -147,7 +147,6 @@ class lib_enrol {
                 }
 
                 // Now remove our eduvidual-membership.
-                $DB->delete_records('local_eduvidual_userbunches', array('orgid' => $org->orgid, 'userid' => $userid));
                 $DB->delete_records('local_eduvidual_orgid_userid', array('orgid' => $org->orgid, 'userid' => $userid));
             } else {
                 // Set our roles in this org.
@@ -459,7 +458,6 @@ class lib_enrol {
             // Remove this user from any eduvidual-lists
             $DB->delete_records('local_eduvidual_courseshow', array('userid' => $userid));
             $DB->delete_records('local_eduvidual_orgid_userid', array('userid' => $userid));
-            $DB->delete_records('local_eduvidual_userbunches', array('userid' => $userid));
             $DB->delete_records('local_eduvidual_userqcats', array('userid' => $userid));
             $DB->delete_records('local_eduvidual_usertoken', array('userid' => $userid));
             return false;

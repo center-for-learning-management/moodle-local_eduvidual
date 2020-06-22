@@ -448,9 +448,9 @@ switch ($act) {
 			$search = "%" . $search . "%";
             $CONCAT = 'CONCAT("[",ou.role,"] ",u.firstname," ",u.lastname,IF(ub.bunch IS NULL,"",CONCAT(" #",ub.bunch)))';
             if (false && is_siteadmin()) {
-                $users = $DB->get_records_sql('SELECT u.id,u.email,' . $CONCAT . ' AS userfullname FROM {user} AS u INNER JOIN {local_eduvidual_orgid_userid} AS ou ON u.id=ou.userid LEFT JOIN {local_eduvidual_userbunches} AS ub ON u.id=ub.userid WHERE ' . $CONCAT . ' LIKE ? AND u.suspended=0', array($search));
+                $users = $DB->get_records_sql('SELECT u.id,u.email,' . $CONCAT . ' AS userfullname FROM {user} AS u INNER JOIN {local_eduvidual_orgid_userid} AS ou ON u.id=ou.userid WHERE ' . $CONCAT . ' LIKE ? AND u.suspended=0', array($search));
             } else {
-                $users = $DB->get_records_sql('SELECT u.id,u.email,' . $CONCAT . ' AS userfullname FROM {user} AS u INNER JOIN {local_eduvidual_orgid_userid} AS ou ON u.id=ou.userid LEFT JOIN {local_eduvidual_userbunches} AS ub ON u.id=ub.userid WHERE ou.orgid=? AND ' . $CONCAT . ' LIKE ? AND u.suspended=0', array($org->orgid, $search));
+                $users = $DB->get_records_sql('SELECT u.id,u.email,' . $CONCAT . ' AS userfullname FROM {user} AS u INNER JOIN {local_eduvidual_orgid_userid} AS ou ON u.id=ou.userid WHERE ou.orgid=? AND ' . $CONCAT . ' LIKE ? AND u.suspended=0', array($org->orgid, $search));
             }
             require_once($CFG->dirroot . '/user/profile/lib.php');
 			foreach($users AS $user) {

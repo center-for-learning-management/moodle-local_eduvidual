@@ -80,7 +80,7 @@ $PAGE->add_body_class('login-index');
 					</div>
 				</div>
 
-				<div class="row justify-content-md-center">
+				<div class="row justify-content-md-center__">
 					<div class="col-lg-6 col-sm-12">
 						<a href="<?php echo $CFG->wwwroot; ?>/local/eduvidual/pages/redirects/login_mnet.php" title="<?php echo get_string('login:network_btn', 'local_eduvidual'); ?>" id="eduvidual-btn-sso-eduverbund" data-ajax="false"
 							class="btn btn-block" type="button" name="edu_verbund">
