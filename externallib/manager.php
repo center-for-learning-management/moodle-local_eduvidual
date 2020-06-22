@@ -116,6 +116,12 @@ class local_eduvidual_external_manager extends external_api {
                 $user->firstname = $params['firstname'];
                 $user->lastname = $params['lastname'];
                 $user->email = $params['email'];
+
+                $otheru = $DB->get_record('user', array('username' => $user->email));
+                if (empty($otheru->id)) {
+                    $user->username = $user->email;
+                }
+
                 $DB->update_record('user', $user);
                 $reply->message = '';
                 $reply->subject = get_string('store:success', 'local_eduvidual');

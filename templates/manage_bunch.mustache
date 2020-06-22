@@ -38,10 +38,9 @@
         <table class="generaltable">
             <thead>
                 <tr>
-                    <th>{{#str}} username {{/str}}</th>
+                    <th>{{#str}} email {{/str}}</th>
                     <th>{{#str}} firstname {{/str}}</th>
                     <th>{{#str}} lastname {{/str}}</th>
-                    <th>{{#str}} email {{/str}}</th>
                     <th>{{#str}} secret, local_eduvidual {{/str}}</th>
                     <th>{{#str}} role {{/str}}</th>
                 </tr>
@@ -59,7 +58,7 @@
                 <div class="username">
                     <a href="#" style="text-decoration: none; color: unset;"
                         onclick="require(['local_eduvidual/manager'], function(M) { M.editProfile({{orgid}}, {{id}}, { run: function() { top.location.reload(); } }); }); return false;">
-                        {{username}}
+                        {{email}}
                     </a>
                 </div>
                 <div class="contact">{{email}}</div>
@@ -88,15 +87,13 @@
                 <td>
                     <a href="#" style="text-decoration: none; color: unset;"
                         onclick="require(['local_eduvidual/manager'], function(M) { M.editProfile({{orgid}}, {{id}}, { run: function() { top.location.reload(); } }); }); return false;">
-                        {{username}}
+                        {{email}}
                     </a>
                 </td>
                 <td>{{firstname}}</td>
                 <td>{{lastname}}</td>
-                <td>{{email}}</td>
                 <td>{{id}}#{{profile_field_secret}}</td>
                 <td>{{role}}</td>
-
             </tr>
             {{/format_list}}
         {{/users}}
