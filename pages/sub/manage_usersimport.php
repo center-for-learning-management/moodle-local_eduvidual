@@ -83,6 +83,13 @@ if (optional_param('datavalidated', 0, PARAM_INT) == 1) {
                 $u->email = $user->email;
                 $u->confirmed = 1;
                 $u->mnethostid = 1;
+
+                $otheru = $DB->get_record('user', array('username' => $u->email));
+                if (empty($otheru->id)) {
+                    // Ok, we can update the username too.
+                    $u->username = $u->email;
+                }
+
                 user_update_user($u, false);
                 if (!empty($user->password)) {
                     update_internal_user_password($u, $user->password, false);

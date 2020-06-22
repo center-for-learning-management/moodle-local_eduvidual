@@ -231,18 +231,8 @@ switch ($act) {
                 require_once($CFG->dirroot . '/user/lib.php');
                 $colors = file($CFG->dirroot . '/local/eduvidual/templates/names.colors', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
                 $animals = file($CFG->dirroot . '/local/eduvidual/templates/names.animals', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-                $pattern = 'e-' . date("Ym") . '-';
-                $usernameformat= $pattern . '%1$04d';
                 $domain = str_replace(array('https://', 'http://', 'www.'), '', $CFG->wwwroot);
 
-                $lasts = $DB->get_records_sql('SELECT username FROM {user} WHERE username LIKE ? ORDER BY username DESC LIMIT 0,1', array($pattern . '%'));
-                if (count($lasts) > 0) {
-                    foreach($lasts AS $last){
-                        $usernumber = intval(str_replace($pattern, '', $last->username)) + 1;
-                    }
-                } else {
-                    $usernumber = 1;
-                }
                 for ($a = 0; $a < $amount; $a++) {
                     $color_key = array_rand($colors, 1);
                     $animal_key = array_rand($animals, 1);
@@ -250,16 +240,19 @@ switch ($act) {
                     $u = new stdClass();
                     $u->confirmed = 1;
                     $u->mnethostid = 1;
-                    $u->username = sprintf($usernameformat, $usernumber++);
                     $u->firstname = $colors[$color_key];
                     $u->lastname = $animals[$animal_key];
-                    $u->email = $u->username . '@doesnotexist.' . $domain;
+                    $u->username = md5($u->firstname . $u->lastname);
+
                     $u->auth = 'manual';
                     $u->lang = 'de';
                     $u->calendartype = 'gregorian';
 
                     $u->id = user_create_user($u, false, false);
-					if ($u->id > 0) {
+					if (!empty($u->id)) {
+                        $u->email = 'a' . $u->id . '@a.eduvidual.at';
+                        $u->username = $u->email;
+                        user_update_user($u, false);
                         $u->secret = \local_eduvidual\locallib::get_user_secret($u->id);
                         $user = $DB->get_record('user', array('id' => $u->id));
                         update_internal_user_password($user, $u->secret, false);
@@ -269,8 +262,8 @@ switch ($act) {
                         // Trigger event.
                         \core\event\user_created::create_from_userid($u->id)->trigger();
 
-						if (!empty($cohort)) {
-							\local_eduvidual\lib_enrol::cohorts_add($u->id, $org, $cohort);
+						if (!empty($cohorts)) {
+							\local_eduvidual\lib_enrol::cohorts_add($u->id, $org, $cohorts);
 						}
                         $success++;
                     } else {
