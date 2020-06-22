@@ -141,7 +141,7 @@
             </td>
             <td class="requirement"></td>
             <td>
-                <input id="{{uniqid}}-subcat4" name="subcat4" size="5" placeholder="{{subcats4lbl}}" style="width: 100%;"
+                <input id="{{uniqid}}-subcat4" name="subcat4" size="5" style="width: 100%;"
                     onkeyup="var i = this; require(['local_eduvidual/main', 'local_eduvidual/teacher'], function(M, TEACHER) { M.watchValue({ target: $(i), run: function() { TEACHER.createCourseSelections('{{uniqid}}'); } }); });"/>
             </td>
         </tr>
