@@ -83,7 +83,7 @@ class locallib {
                 //$actions['archive'] = 'manage:archive';
                 //$actions['categories'] = 'manage:categories';
                 $actions['mnet'] = 'manage:mnet:action';
-                //$actions['orgmenu'] = 'manage:orgmenu:title';
+                $actions['orgmenu'] = 'manage:orgmenu:title';
                 $actions['style'] = 'manage:style';
                 $actions['subcats'] = 'manage:subcats:title';
                 $actions['users'] = 'manage:users';
