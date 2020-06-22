@@ -34,6 +34,14 @@ $org = $DB->get_record('local_eduvidual_org', array('orgid' => $orgid));
 $context = \context_coursecat::instance($org->categoryid);
 $PAGE->set_context($context);
 
+$cohorts = $DB->get_records_sql("SELECT id,name FROM {cohort} WHERE contextid=? ORDER BY name ASC", array($context->id));
+if (empty($cohort)) {
+	foreach ($cohorts AS $_cohort) {
+		$cohort = $_cohort->id;
+		break;
+	}
+
+}
 if (!empty($cohort)) {
 	$cohorto = $DB->get_record('cohort', array('id' => $cohort, 'contextid' => $context->id));
 }
@@ -85,7 +93,6 @@ if (count($orgas) > 1) $grid = 3;
             <?php
 
             $urltobunch = $CFG->wwwroot . '/local/eduvidual/pages/manage_userlists.php?orgid=' . $org->orgid . '&cohort=';
-			$cohorts = $DB->get_records_sql("SELECT id,name FROM {cohort} WHERE contextid=? ORDER BY name ASC", array($context->id));
             $cohorts['___all'] = (object) array('name' => get_string('manage:bunch:all', 'local_eduvidual'));
             $cohorts['___allparents'] = (object) array('name' => get_string('manage:bunch:allparents', 'local_eduvidual'));
             $cohorts['___allstudents'] = (object) array('name' => get_string('manage:bunch:allstudents', 'local_eduvidual'));
