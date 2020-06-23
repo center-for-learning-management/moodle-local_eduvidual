@@ -30,9 +30,8 @@ require_once($CFG->libdir . '/adminlib.php');
 $embed = optional_param('embed', 0, PARAM_INT);
 $act = optional_param('act', 'backgrounds', PARAM_TEXT);
 
-$context = context_user::instance($USER->id);
-//$PAGE->set_context($context);
-$PAGE->set_context(context_system::instance());
+$context = \context_system::instance();
+$PAGE->set_context($context);
 $PAGE->set_pagelayout(($embed) ? 'popup' : 'standard');
 $PAGE->set_pagetype('user-preferences');
 $PAGE->set_url('/local/eduvidual/pages/preferences.php', array('act' => $act));
@@ -46,7 +45,6 @@ echo $OUTPUT->header();
 if ($embed || $act == 'backgrounds') {
     $background = get_user_preferences('local_eduvidual_background');
 
-    $context = context_system::instance();
     $fs = get_file_storage();
     $files = $fs->get_area_files($context->id, 'local_eduvidual', 'backgrounds', 0);
     $bgdivs = array();
@@ -73,7 +71,6 @@ if ($embed || $act == 'backgrounds') {
     } // count bgdivs > 0
 }
 
-$context = \context_system::instance();
 if (has_capability('moodle/question:viewall', $context)) {
     require_once($CFG->dirroot . '/local/eduvidual/pages/preferences_teacher.php');
 } // if is teacher
