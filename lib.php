@@ -58,7 +58,7 @@ function local_eduvidual_before_standard_html_head() {
         $PAGE->requires->js_call_amd("local_eduvidual/jsinjector", "signupPage", array());
     }
     if (strpos($_SERVER["SCRIPT_FILENAME"], '/course/edit.php') > 0) {
-        $PAGE->requires->js_call_amd("local_eduvidual/jsinjector", "courseEditPage", array($USER->id, is_siteadmin));
+        $PAGE->requires->js_call_amd("local_eduvidual/jsinjector", "courseEditPage", array($USER->id, is_siteadmin()));
     }
 
     $data = array(
