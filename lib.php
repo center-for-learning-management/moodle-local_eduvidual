@@ -245,7 +245,7 @@ function local_eduvidual_override_webservice_execution($function, $params) {
     $supported = array(
         'block_exacomp_diggr_get_students_of_cohort', 'core_cohort_add_cohort_members',
         'core_cohort_search_cohorts', 'core_course_external_get_enrolled_courses_by_timeline_classification',
-        'core_enrol_external_get_potential_users', 'core_get_fragment',
+        'core_enrol_external_get_potential_users', 'core_external_get_fragment',
         'core_message_message_search_users', 'core_message_data_for_messagearea_search_users',
         'core_message_search_contacts', 'core_search_get_relevant_users',
         'core_user_get_users', 'tool_lp_search_cohorts', 'tool_lp_search_users'

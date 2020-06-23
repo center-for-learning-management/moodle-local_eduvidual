@@ -65,7 +65,7 @@ class lib_wshelper {
         if (method_exists(__CLASS__, $func)) {
             if (self::$debug) error_log('Overide function ' . $func . ' called');
             $result = call_user_func_array(array($classname, $methodname), $params);
-            return call_user_func('self::' . $func, $result);
+            return call_user_func('self::' . $func, $result, $params);
         } else {
             if (self::$debug) error_log('Overide function ' . $func . ' not found');
             return false;
@@ -106,19 +106,19 @@ class lib_wshelper {
     /**
      * These are the override-functions, that should RETURN something like the result of ws requests.
      */
-    private static function override_block_exacomp_diggr_get_students_of_cohort($result) {
+    private static function override_block_exacomp_diggr_get_students_of_cohort($result, $params) {
         if (self::$debug) error_log(print_r($result, 1));
         return $result;
     }
-    private static function override_core_cohort_add_cohort_members($result) {
+    private static function override_core_cohort_add_cohort_members($result, $params) {
         if (self::$debug) error_log(print_r($result, 1));
         return $result;
     }
-    private static function override_core_cohort_search_cohorts($result) {
+    private static function override_core_cohort_search_cohorts($result, $params) {
         if (self::$debug) error_log(print_r($result, 1));
         return $result;
     }
-    private static function override_core_course_external_get_enrolled_courses_by_timeline_classification($result) {
+    private static function override_core_course_external_get_enrolled_courses_by_timeline_classification($result, $params) {
         global $DB;
         if (!empty($result['courses'])) {
             foreach ($result['courses'] AS $id => &$course) {
@@ -145,44 +145,78 @@ class lib_wshelper {
         }
         return $result;
     }
-    private static function override_core_enrol_external_get_potential_users($result) {
+    private static function override_core_enrol_external_get_potential_users($result, $params) {
         return \local_eduvidual\locallib::filter_userlist($result, 'id', 'fullname');
     }
-    private static function override_core_get_fragment($result) {
-        if (!empty($result[0]->args->component) && $result[0]->args->component == 'mod_quiz') {
-            if (self::$debug) error_log('WE WILL NEED TO PROGRAM THIS IN ANOTHER WAY - override_core_get_fragment for mod_quiz');
+    private static function override_core_external_get_fragment($result, $params) {
+        global $DB, $USER;
+        if (!empty($params[0]) && $params[0] == 'mod_quiz' && !empty($params[1]) && $params[1] == 'quiz_question_bank') {
+            $managed_qcats = explode(",", get_config('local_eduvidual', 'questioncategories'));
+            $utf8converted = mb_convert_encoding($result['html'], 'HTML-ENTITIES', "UTF-8");
+            $doc = \DOMDocument::loadHTML($utf8converted, LIBXML_NOWARNING | LIBXML_NOERROR);
+
+            $optgroups = $doc->getElementsByTagName('optgroup');
+            $options = $optgroups->item($optgroups->length-1)->getElementsByTagName('option');
+            $remove = false;
+            $removeList = array();
+            for ($a = 0; $a < $options->length; $a++) {
+                $label = $options->item($a)->nodeValue;
+                $label2 = ltrim($label, " \t\n\r\0\x0B\xC2\xA0");
+                $depth = (strlen($label) - strlen($label2))/6;
+                if ($depth == 1) { // This is a core category.
+                    $value = explode(',', $options->item($a)->getAttribute('value'));
+                    if (!empty($value[0])) {
+                        $catid = $value[0];
+                        if (!in_array($catid, $managed_qcats)) {
+                            $remove = false;
+                        } else {
+                            $chk = $DB->get_record('local_eduvidual_userqcats', array('userid' => $USER->id, 'categoryid' => $catid));
+                            $remove = empty($chk->id);
+                        }
+                    }
+                }
+                if ($remove) {
+                    $removeList[] = $options->item($a);
+                }
+            }
+            // Now remove the nodes.
+            foreach($removeList AS $option) {
+                $option->parentNode->removeChild($option);
+            }
+            $result['html'] = $doc->saveHTML();
         }
+        return $result;
     }
 
     /* THIS WSFUNCTION IS MARKED AS OBSOLETE. WE KEEP IT IF OLDER PLUGINS STILL USE IT */
-    private static function override_core_message_data_for_messagearea_search_users($result) {
+    private static function override_core_message_data_for_messagearea_search_users($result, $params) {
         if (!empty($result->data[0]->noncontacts)) {
             $result->data[0]->noncontacts = \local_eduvidual\locallib::filter_userlist($result->data[0]->noncontacts, 'userid', 'fullname');
         }
         return $result;
     }
 
-    private static function override_core_message_message_search_users($result) {
+    private static function override_core_message_message_search_users($result, $params) {
         if (self::$debug) error_log(print_r($result, 1));
         return $result;
     }
-    private static function override_core_message_search_contacts($result) {
+    private static function override_core_message_search_contacts($result, $params) {
         if (self::$debug) error_log(print_r($result, 1));
         return $result;
     }
-    private static function override_core_search_get_relevant_users($result) {
+    private static function override_core_search_get_relevant_users($result, $params) {
         if (self::$debug) error_log(print_r($result, 1));
         return $result;
     }
-    private static function override_core_user_get_users($result) {
+    private static function override_core_user_get_users($result, $params) {
         if (self::$debug) error_log(print_r($result, 1));
         return $result;
     }
-    private static function override_tool_lp_search_cohorts($result) {
+    private static function override_tool_lp_search_cohorts($result, $params) {
         if (self::$debug) error_log(print_r($result, 1));
         return $result;
     }
-    private static function override_tool_lp_search_users($result) {
+    private static function override_tool_lp_search_users($result, $params) {
         if (self::$debug) error_log(print_r($result, 1));
         return $result;
     }
