@@ -75,7 +75,7 @@ $PAGE->add_body_class('login-index');
 					<div class="col-lg-6 col-sm-12">
 						<a href="<?php echo $CFG->wwwroot; ?>/local/eduvidual/pages/redirects/login_google.php" title="Google" id="eduvidual-btn-sso-google" data-ajax="false"
 							class="btn btn-block" type="button" name="google">
-							<img src="<?php echo $CFG->wwwroot; ?>/local/eduvidual/pix/logo_google.svg" width="20" alt="Google">&nbsp;Google
+							<img src="<?php echo $CFG->wwwroot; ?>/local/eduvidual/pix/logo_google.png" width="20" alt="Google">&nbsp;Google
 						</a>
 					</div>
 				</div>
