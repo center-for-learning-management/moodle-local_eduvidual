@@ -36,7 +36,7 @@ class locallib {
         $users2 = array();
         foreach ($users AS $user) {
             if (is_array($user)) {
-                if (!\local_eduvidual\locallib::is_connected($user[$idfield])) {
+                if (!self::is_connected($user[$idfield])) {
                     if (is_siteadmin()) {
                         $user[$namefield] = '! ' . $user[$namefield];
                         $users2[] = $user;
@@ -45,7 +45,7 @@ class locallib {
                     $users2[] = $user;
                 }
             } else {
-                if (!\local_eduvidual\locallib::is_connected($user->$idfield)) {
+                if (!self::is_connected($user->$idfield)) {
                     if (is_siteadmin()) {
                         $user->$namefield = '! ' . $user->$namefield;
                         $users2[] = $user;
@@ -87,8 +87,9 @@ class locallib {
                 $actions['style'] = 'manage:style';
                 $actions['subcats'] = 'manage:subcats:title';
                 $actions['users'] = 'manage:users';
-                if (is_siteadmin())
+                if (is_siteadmin()) {
                     $actions['stats'] = 'manage:stats';
+                }
             break;
             case 'teacher':
                 //$actions['createmodule'] = 'teacher:createmodule';
@@ -366,12 +367,15 @@ class locallib {
         if (count($orgids) == 0) {
             $orgids = self::is_connected_orglist($srcuserid);
         }
+        $strorgids = implode(',', $orgids);
+
         $sql = "SELECT userid
                     FROM {local_eduvidual_orgid_userid}
                     WHERE userid=?
-                        AND orgid IN (?)";
-        $params = array($touserid, implode(',', $orgids));
+                        AND orgid IN ($strorgids)";
+        $params = array($touserid);
         $chks = $DB->get_records_sql($sql, $params);
+
         foreach ($chks AS $chk) {
             if (!empty($chk->userid) && $chk->userid == $touserid) {
                 return true;

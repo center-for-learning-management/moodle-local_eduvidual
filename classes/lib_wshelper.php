@@ -26,18 +26,20 @@ namespace local_eduvidual;
 defined('MOODLE_INTERNAL') || die;
 
 class lib_wshelper {
+    private static $debug = false;
     /**
      * Recognizes the result of a certain script and registers an output buffer for it.
      */
     public static function buffer() {
         global $CFG;
+        self::$debug = ($CFG->debug == 32767); // Developer debugging
         $func = str_replace('__', '_', 'buffer_' . str_replace('/', '_', str_replace('.php', '', str_replace($CFG->dirroot, '', $_SERVER["SCRIPT_FILENAME"]))));
         if (method_exists(__CLASS__, $func)) {
-            error_log('Buffer function ' . $func . ' called');
+            if (self::$debug) error_log('Buffer function ' . $func . ' called');
             ob_start();
             register_shutdown_function('\local_eduvidual\lib_wshelper::buffer_modify');
         } else {
-            error_log('Buffer function ' . $func . ' not found');
+            if (self::$debug) error_log('Buffer function ' . $func . ' not found');
             return false;
         }
     }
@@ -57,13 +59,15 @@ class lib_wshelper {
      * @param params The params for this wsfunction.
     **/
     public static function override($classname, $methodname, $params) {
+        global $CFG;
+        self::$debug = ($CFG->debug == 32767); // Developer debugging
         $func = 'override_' . $classname . '_' . $methodname;
         if (method_exists(__CLASS__, $func)) {
-            error_log('Overide function ' . $func . ' called');
+            if (self::$debug) error_log('Overide function ' . $func . ' called');
             $result = call_user_func_array(array($classname, $methodname), $params);
             return call_user_func('self::' . $func, $result);
         } else {
-            error_log('Overide function ' . $func . ' not found');
+            if (self::$debug) error_log('Overide function ' . $func . ' not found');
             return false;
         }
     }
@@ -103,15 +107,15 @@ class lib_wshelper {
      * These are the override-functions, that should RETURN something like the result of ws requests.
      */
     private static function override_block_exacomp_diggr_get_students_of_cohort($result) {
-        error_log(print_r($result, 1));
+        if (self::$debug) error_log(print_r($result, 1));
         return $result;
     }
     private static function override_core_cohort_add_cohort_members($result) {
-        error_log(print_r($result, 1));
+        if (self::$debug) error_log(print_r($result, 1));
         return $result;
     }
     private static function override_core_cohort_search_cohorts($result) {
-        error_log(print_r($result, 1));
+        if (self::$debug) error_log(print_r($result, 1));
         return $result;
     }
     private static function override_core_course_external_get_enrolled_courses_by_timeline_classification($result) {
@@ -146,7 +150,7 @@ class lib_wshelper {
     }
     private static function override_core_get_fragment($result) {
         if (!empty($result[0]->args->component) && $result[0]->args->component == 'mod_quiz') {
-            error_log('WE WILL NEED TO PROGRAM THIS IN ANOTHER WAY - override_core_get_fragment for mod_quiz');
+            if (self::$debug) error_log('WE WILL NEED TO PROGRAM THIS IN ANOTHER WAY - override_core_get_fragment for mod_quiz');
         }
     }
 
@@ -159,27 +163,27 @@ class lib_wshelper {
     }
 
     private static function override_core_message_message_search_users($result) {
-        error_log(print_r($result, 1));
+        if (self::$debug) error_log(print_r($result, 1));
         return $result;
     }
     private static function override_core_message_search_contacts($result) {
-        error_log(print_r($result, 1));
+        if (self::$debug) error_log(print_r($result, 1));
         return $result;
     }
     private static function override_core_search_get_relevant_users($result) {
-        error_log(print_r($result, 1));
+        if (self::$debug) error_log(print_r($result, 1));
         return $result;
     }
     private static function override_core_user_get_users($result) {
-        error_log(print_r($result, 1));
+        if (self::$debug) error_log(print_r($result, 1));
         return $result;
     }
     private static function override_tool_lp_search_cohorts($result) {
-        error_log(print_r($result, 1));
+        if (self::$debug) error_log(print_r($result, 1));
         return $result;
     }
     private static function override_tool_lp_search_users($result) {
-        error_log(print_r($result, 1));
+        if (self::$debug) error_log(print_r($result, 1));
         return $result;
     }
 }
