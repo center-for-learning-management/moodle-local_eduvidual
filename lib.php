@@ -204,7 +204,8 @@ function local_eduvidual_extend_navigation_user_settings($nav, $user, $context, 
     //print_r($nav);die();
     //$nav->add(get_string('test'), new moodle_url('/local/eduvidual/pages/preferendes.php'));
     $node->add(get_string('preferences:selectbg:title', 'local_eduvidual'), new moodle_url('/local/eduvidual/pages/preferences.php?act=backgrounds'));
-    if (has_capability('moodle/question:viewall', $context)) {
+    $sysctx = \context_system::instance();
+    if (has_capability('moodle/question:viewall', $sysctx)) {
         $node->add(get_string('preferences:questioncategories', 'local_eduvidual'), new moodle_url('/local/eduvidual/pages/preferences.php?act=qcats'));
     }
 
