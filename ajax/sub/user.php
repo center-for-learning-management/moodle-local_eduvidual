@@ -73,6 +73,40 @@ switch ($act) {
             }
         }
     break;
+    case 'questioncategories':
+        $sysctx = \context_system::instance();
+        $questioncategories = optional_param_array('questioncategories', array(), PARAM_INT);
+        if (has_capability('moodle/question:viewall', $sysctx)) {
+            $reply['acts'] = array();
+            $hascats_ = $DB->get_records('local_eduvidual_userqcats', array('userid' => $USER->id));
+            $hascats = array();
+            foreach($hascats_ AS $hascat) {
+                if (!in_array($hascat->categoryid, $questioncategories)) {
+                    $reply['acts'][] = 'Remove ' . $hascat->categoryid;
+                    $DB->delete_records('local_eduvidual_userqcats', array('userid' => $USER->id, 'categoryid' => $hascat->categoryid));
+                } else {
+                    $hascats[] = $hascat->categoryid;
+                }
+            }
+
+            $allowed_questioncategories = explode(",", get_config('local_eduvidual', 'questioncategories'));
+            foreach ($questioncategories AS $cat) {
+                if (!in_array($cat, $allowed_questioncategories)) continue;
+                if (!in_array($cat, $hascats)) {
+                    $entry = new stdClass();
+                    $entry->userid = $USER->id;
+                    $entry->categoryid = $cat;
+                    $reply['acts'][] = 'Insert ' . $cat;
+                    $DB->insert_record('local_eduvidual_userqcats', $entry);
+                }
+            }
+            $reply['status'] = 'ok';
+        } else {
+            $DB->delete_records('local_eduvidual_userqcats', array('userid' => $USER->id));
+            $reply['status'] = 'ok';
+        }
+
+    break;
     case 'whoami':
         $reply['status'] = 'ok';
         $reply['userid'] = $USER->id;

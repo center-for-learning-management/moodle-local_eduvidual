@@ -26,7 +26,7 @@ if(!defined('MOODLE_INTERNAL')) {
     require_once('../../../config.php');
     require_login();
     require_once($CFG->libdir . '/adminlib.php');
-    
+
 }
 
 $context = \context_system::instance();

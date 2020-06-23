@@ -322,7 +322,7 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/templates'
                 break;
             }
         },
-        loadCourseTeacher: function(orgid, inp){
+        loadCourseTeacher: function(orgid, inp) {
             var search = $(inp).val();
             require(['local_eduvidual/main'], function(MAIN) {
                 MAIN.connect({ module: 'teacher', act: 'createcourse_loadteacher', orgid: orgid, search: search }, { signalItem: {}});
@@ -331,7 +331,7 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/templates'
         /**
          * Show meta information for a specific basement
         **/
-        loadCourseFormBasementInfo: function(basement){
+        loadCourseFormBasementInfo: function(basement) {
             var cats = Object.keys(this.basements);
             var container = $('.ul-eduvidual-courses .div-right').empty();
             for (var a = 0; a < cats.length; a++) {
@@ -351,27 +351,13 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/templates'
                 }
             }
         },
-        loadModuleForm: function(moduleid) {
-            require(['local_eduvidual/main'], function(MAIN) {
-                MAIN.connect({ module: 'teacher', act: 'createmodule_payload', moduleid: moduleid });
-            });
-        },
-        moolevels: function(sender) {
-			var moolevels = [];
-			$.each($("input[name='preferences_moolevels[]']:checked"), function() {
-                moolevels.push($(this).val());
-			});
-            require(['local_eduvidual/main'], function(MAIN) {
-			    MAIN.connect({ module: 'teacher', act: 'moolevels', moolevels: moolevels }, { signalItem: $(sender).parent() });
-            });
-		},
         questioncategories: function(sender) {
 			var questioncategories = [];
 			$.each($("input[name='questioncategories[]']:checked"), function() {
                 questioncategories.push(+$(this).val());
 			});
             require(['local_eduvidual/main'], function(MAIN) {
-			    MAIN.connect({ module: 'teacher', act: 'questioncategories', questioncategories: questioncategories }, { signalItem: $(sender).parent() });
+			    MAIN.connect({ module: 'user', act: 'questioncategories', questioncategories: questioncategories }, { signalItem: $(sender).parent() });
             });
 		},
         result: function(o) {
@@ -496,161 +482,6 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/templates'
                     sel.append(option);
                 }
             }
-            if (o.data.act == 'createmodule_category') {
-                var div = $('#local_eduvidual_teacher_createmodule').empty();
-                STR.get_strings([
-                        {'key' : 'back', component: 'local_eduvidual' },
-                    ]).done(function(s) {
-                        var a = $('<a>').addClass('ui-btn btn').attr('onclick', 'history.go(-1);').html(s[0]);
-                        var parentid = (typeof o.result.category !== 'undefined' && o.result.category.parentid > -1)?o.result.category.parentid:-1;
-                        console.log(parentid);
-                        if (typeof parentid !== 'undefined' && parentid > -1) {
-                            var a = $('<a>').addClass('ui-btn btn').attr('onclick', 'require(["local_eduvidual/teacher"], function(TEACHER) { TEACHER.loadCategory(' + parentid + '); });').html(s[0]);
-                        } else {
-                            // Back button required?
-                        }
-                        div.append(a);
-                    }
-                ).fail(NOTIFICATION.exception);
-
-                var k = Object.keys(o.result.children);
-                if (typeof o.result.children !== 'undefined' && k.length > 0) {
-                    var ul = $('<ul>')
-                        .attr('data-role', 'listview').attr('data-inset', 'true').attr('data-filter', 'true')
-                        .addClass('ui-listview ui-listview-inset ui-corner-all ui-shadow fix-images');
-                    for (var a = 0; a < k.length; a++) {
-                        var child = o.result.children[k[a]];
-                        var li = $('<li>').addClass('ui-li-has-count ui-li-has-thumb ui-first-child');
-                        var an = $('<a>').addClass('ui-btn').attr('href', '#')
-                            .attr('onclick', 'require(["local_eduvidual/teacher"], function(TEACHER) { TEACHER.loadCategory(' + child.id + '); });');
-                        var h3 = $('<h3>').html(child.name);
-                        var p = $('<p>').html(child.description);
-                        var img = $('<img>').attr('src', child.imageurl).attr('alt', child.name);
-                        an.append([img, h3, p]);
-                        li.append(an);
-                        ul.append(li);
-                    }
-                    div.append(ul);
-                    try { $(ul).trigger('create'); } catch(e) {}
-                }
-                var k = Object.keys(o.result.modules);
-                if (typeof o.result.modules !== 'undefined' && k.length > 0) {
-                    var ul = $('<ul>')
-                        .attr('data-role', 'listview').attr('data-inset', 'true').attr('data-filter', 'true')
-                        .addClass('ui-listview ui-listview-inset ui-corner-all ui-shadow fix-images');
-                    for (var a = 0; a < k.length; a++) {
-                        var child = o.result.modules[k[a]];
-                        if (child.imageurl == '') {
-                            child.imageurl = o.result.category.imageurl;
-                        }
-                        console.log(child.payload);
-                        var li = $('<li>').addClass('ui-li-has-count ui-li-has-thumb ui-first-child');
-                        var payload = JSON.parse(child.payload);
-                        var an = $('<a>').addClass('ui-btn').attr('href', '#')
-                            .attr('onclick', 'require(["local_eduvidual/teacher"], function(TEACHER) { TEACHER.loadModuleForm(' + child.id + '); });');
-                        var h3 = $('<h3>').html(child.name);
-                        var p = $('<p>').html(child.description);
-                        var img = $('<img>').attr('src', child.imageurl).attr('alt', child.name);
-                        an.append([img, h3, p]);
-                        li.append(an);
-                        ul.append(li);
-                    }
-                    div.append(ul);
-                    try { $(ul).trigger('create'); } catch(e) {}
-                }
-                div.trigger('create');
-                //local_eduvidual.confirmed('#local_eduvidual_preference_customcss', (o.result.status=='ok'));
-                //$('#local_eduvidual_style_org').html(o.data.customcss);
-            }
-            if (o.data.act == 'createmodule_create') {
-                if (typeof o.result.modcourse !== 'undefined') {
-                    // Find - go to course
-                    var url = URL.fileUrl("/course/view.php", "") + '?id=' + o.result.modcourse + '&section=' + o.payload.section;
-                    console.log('Redirecting to ' + url);
-                    var isembedded = localStorage.getItem('local_eduvidual_isembedded') !== null && localStorage.getItem('local_eduvidual_isembedded') == 1;
-                    var timeout = 0;
-                    if (isembedded) {
-                        timeout = 1000;
-                        require(['local_eduvidual/jquery-ba-postmessage'], function(p) { p.post('open_course|' + o.result.modcourse); });
-                    }
-                    setTimeout(function(){ MAIN.navigate(url); }, timeout);
-                } else {
-                    STR.get_strings([
-                            {'key' : 'createmodule:failed', component: 'local_eduvidual' },
-                            {'key' : 'ok' },
-                        ]).done(function(s) {
-                            NOTIFICATION.alert('Error', s[0], s[1]);
-                        }
-                    ).fail(NOTIFICATION.exception);
-                }
-            }
-            if (o.data.act == 'createmodule_payload') {
-                if (typeof o.result.module.payload !== 'undefined') {
-                    o.result.module.payload = JSON.parse(o.result.module.payload);
-                    this.module = o.result.module;
-                    if (typeof o.result.module.payload.customize !== 'undefined') {
-                        STR.get_strings([
-                                {'key' : 'back', component: 'local_eduvidual' },
-                                {'key' : 'createmodule:create', component: 'local_eduvidual' },
-                            ]).done(function(s) {
-                                var div = $('#local_eduvidual_teacher_createmodule').empty();
-                                var a = $('<a>').addClass('ui-btn btn').attr('onclick', 'require(["local_eduvidual/teacher"], function(TEACHER) { TEACHER.loadCategory(' + o.result.module.categoryid + '); });').html(s[0]);
-                                div.append(a);
-                                console.log(o.result.module.payload);
-                                TEACHER.listModuleForm(div, o.result.module);
-                                var a = $('<a>').addClass('ui-btn btn').attr('onclick', 'require(["local_eduvidual/teacher"], function(TEACHER) { TEACHER.createModule(); });').html(s[1]);
-                                div.append(a);
-                            }
-                        ).fail(NOTIFICATION.exception);
-                    } else {
-                        this.createModule();
-                    }
-                } else {
-                    STR.get_strings([
-                            {'key' : 'createmodule:invalid', component: 'local_eduvidual' },
-                            {'key' : 'ok' },
-                        ]).done(function(s) {
-                            NOTIFICATION.alert('Error', s[0], s[1]);
-                        }
-                    ).fail(NOTIFICATION.exception);
-                }
-            }
-            if (o.data.act == 'createmodule_search') {
-                var div = $('#local_eduvidual_teacher_createmodule_publisher').empty();
-
-                if (typeof o.result.relevance !== 'undefined') {
-                    var order = Object.keys(o.result.relevance);
-                    order.sort();
-                    order.reverse();
-
-                    var ul = $('<ul>')
-                        .attr('data-role', 'listview').attr('data-inset', 'true').attr('data-filter', 'true')
-                        .addClass('ui-listview ui-listview-inset ui-corner-all ui-shadow');
-
-                    for (var a = 0; a < order.length; a++) {
-                        var relevance = order[a];
-                        var packages = Object.keys(o.result.relevance[relevance]);
-                        //console.log(order, relevance, packages);
-                        for (var b = 0; b < packages.length; b++) {
-                            console.log('Package-ID', o.result.relevance[relevance][b]);
-                            var item = o.result.packages[o.result.relevance[relevance][b]];
-                            var li = $('<li>').addClass('ui-li-has-count ui-li-has-thumb ui-first-child');
-                            var an = $('<a>').addClass('ui-btn').attr('href', URL.fileUrl('/blocks/edupublisher/pages/', 'import.php?package=' + item.id + '&course=' + o.payload.courseid + '&section=' + o.payload.sectionid));
-                            var h3 = $('<h3>').html(item.title);
-                            var p = $('<p>').html(item.default_summary);
-                            var img = $('<img>').attr('src', item.default_imageurl).attr('alt', '');
-                            var a2 = $('<a>').attr('href', URL.fileUrl('/course', 'view.php?id=' + o.payload.courseid)).attr('target', '_blank').html('<img src="/pix/i/info.svg" />').css('top', '40px').css('min-height', '30px !important');
-                            TEACHER.resultRatingInject(item, h3);
-                            an.append([img, h3, p]);
-                            li.append([an, a2]);
-                            ul.append(li);
-                        }
-                    }
-                    div.append(ul);
-                    try { $(ul).trigger('create'); } catch(e) {}
-                }
-                div.trigger('create');
-            }
             if (o.data.act == 'user_search') {
                 var selectmenu;
                 if ($(o.payload.sender).attr('id') == 'local_eduvidual_courses_courseusers_search') {
@@ -678,101 +509,6 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/templates'
                 this.user_search("#local_eduvidual_courses_courseusers_search", "courseusers", 0);
             }
         },
-        /**
-         * Displays the rating by use of a template.
-         * @param package package object
-         * @param appendtoelement jquery-object to append generated html to.
-        **/
-        resultRatingInject: function(package, appendtoelement) {
-            require(['core/templates', 'core/notification'], function(TEMPLATES, NOTIFICATION) {
-                TEMPLATES.render('block_edupublisher/package_rating_display', package)
-                        .then(function(html, js) {
-                            console.log(html, js);
-                            var container = $('<div style="float: right;"></div>');
-                            container.append(html);
-                            $(appendtoelement).prepend(container);
-                            $('body').append(js);
-                            //TEMPLATES.appendNodeContents(p, source, javascript);
-                        }).fail(NOTIFICATION.exception);
-            });
-        },
-        /**
-    	** Prepares the create-Form of the module (makes it customizable)
-    	** @param pane DOM-Element where to place the form-elements
-    	** @param mod Object representing the module
-    	**/
-    	listModuleForm: function(pane, mod){
-    		console.log('TEACHER.listModuleForm(pane, mod)', pane, mod);
-    		var customize = mod.payload.customize;
-    		var keys = Object.keys(customize);
-    		for (var a = 0; a < keys.length; a++) {
-    			var param = keys[a];
-    			var field = customize[param];
-    			var id = 'edublock_custom_' + param;
-    			var def = (typeof field.default !== 'undefined')?field.default:'';
-    			var labeltxt = (typeof field.label !== 'undefined')?field.label:param;
-    			if (field.required) labeltxt = labeltxt + '<sup style="color: red;">*)</sup>';
-    			if (field.type == 'label') {
-    				var label = $('<p>').html(field.name);
-    				if (typeof field.style !== 'undefined') {
-    					label.addClass(field.style);
-    				}
-    				pane.append([label]);
-    			} else if (field.type == 'memo') {
-    				var label = $('<label>').attr('for', id).html(labeltxt);
-    				var inp = $('<textarea>').attr('id', id).html(def).attr('rows', '10')
-                                .addClass('ui-input-text ui-shadow-inset ui-body-inherit ui-corner-all ui-textinput-autogrow');
-    				pane.append([label, inp]);
-    			} else if (field.type == 'url') {
-    				var label = $('<label>').attr('for', id).html(labeltxt);
-    				var inp = $('<input>').attr('id', id).attr('type', 'url').val(def).css('width', '100%')
-                                .addClass('ui-input-text ui-body-inherit ui-corner-all ui-shadow-inset');
-    				pane.append([label, inp]);
-    			} else if (field.type == 'checkbox') {
-    				var label = $('<label>').attr('for', id).html(labeltxt);
-    				var inp = $('<select>').attr('id', id).attr('data-role', 'slider').val(def);
-    				inp.append($('<option>').attr('value', '0').html('Nein'));
-    				inp.append($('<option>').attr('value', '1').html('Ja'));
-    				pane.append([inp, label]);
-    			} else if (field.type == 'select') {
-    				var label = $('<label>').attr('for', id).html(labeltxt);
-    				var inp = $('<select>').attr('id', id);
-    				if (typeof field.options !== 'undefined') {
-    					var ks = Object.keys(field.options);
-    					for (var b = 0; b < ks.length; b++) {
-    						var k = ks[b];
-    						var option = $('<option>').html(field.options[k].name);
-    						if (typeof field.options[k].value !== 'undefined') {
-    							option.attr('value', field.options[k].value);
-    						}
-    						inp.append(option);
-    					}
-    				}
-    				inp.val(def);
-    				pane.append([label, inp]);
-    			} else if (field.type == 'range') {
-    				var label = $('<label>').attr('for', id).html(labeltxt);
-                    // Currently falls back to text input
-    				var inp = $('<input type="number" value="0" min="0" max="100" step="1" data-highlight="true">').attr('id', id).val(def);
-    				if (typeof field.min !== 'undefined') inp.attr('min', field.min);
-    				if (typeof field.max !== 'undefined') inp.attr('max', field.max);
-    				if (typeof field.step !== 'undefined') inp.attr('step', field.step);
-    				pane.append([label, inp]);
-    			} else {
-    				var label = $('<label>').attr('for', id).html(labeltxt);
-    				var inp = $('<input>').attr('id', id).attr('type', 'text').val(def).css('width', '100%')
-                                .addClass('ui-input-text ui-body-inherit ui-corner-all ui-shadow-inset');
-    				pane.append([label, inp]);
-    			}
-    		}
-            STR.get_strings([
-                    {'key' : 'createmodule:requiredfield', component: 'local_eduvidual' },
-                ]).done(function(s) {
-                    pane.append($('<br /><p><sup style="color: red;">*)</sup> ' + s[0] + '</p>'));
-                }
-            ).fail(NOTIFICATION.exception);
-    		pane.trigger('create');
-    	},
         user_search: function(sender, type, initialsearch){
             var orgid = +$('#local_eduvidual_courses').attr('data-orgid');
             var courseid = +$('#local_eduvidual_courses').attr('data-courseid');
