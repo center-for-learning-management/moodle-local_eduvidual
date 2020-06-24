@@ -427,21 +427,28 @@ class lib_enrol {
         );
         $roles['student'] = $roles['teacher'];
         $roles['parent'] = $roles['teacher'];
-        $context = \context_course::instance($org->courseid, IGNORE_MISSING);
-        if (empty($context->id)) return;
-        if (is_enrolled($context, $userid)) {
-            // Only switch role
-            $roletoassign = $roles[$orgrole];
-            role_assign($roletoassign, $userid, $context->id);
+        $orgcourses = array(
+            (object) array('courseid' => $org->courseid, 'context' => \context_course::instance($org->courseid, IGNORE_MISSING)),
+            (object) array('courseid' => $org->supportcourseid, 'context' => \context_course::instance($org->supportcourseid, IGNORE_MISSING)),
+        );
+        foreach ($orgcourses as $orgcourse) {
+            $courseid = $orgcourse->courseid;
+            $context = $orgcourse->context;
+            if (empty($context->id)) continue;
+            if (is_enrolled($context, $userid)) {
+                // Only switch role
+                $roletoassign = $roles[$orgrole];
+                role_assign($roletoassign, $userid, $context->id);
 
-            foreach ($roles AS $role => $roleid) {
-                if ($roleid !== $roletoassign) {
-                    role_unassign($roleid, $userid, $context->id);
+                foreach ($roles AS $role => $roleid) {
+                    if ($roleid !== $roletoassign) {
+                        role_unassign($roleid, $userid, $context->id);
+                    }
                 }
+            } else {
+                // Enrol user with the required role.
+                self::course_manual_enrolments(array($courseid), array($userid), $roles[$orgrole]);
             }
-        } else {
-            // Enrol user with the required role.
-            self::course_manual_enrolments(array($org->courseid, $org->supportcourseid), array($userid), $roles[$orgrole]);
         }
     }
     /**
