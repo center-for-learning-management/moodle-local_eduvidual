@@ -67,13 +67,13 @@ $PAGE->add_body_class('login-index');
 			<div class="login_buttons">
 				<div class="row justify-content-md-center">
 					<div class="col-lg-6 col-sm-12">
-						<a href="<?php echo $CFG->wwwroot; ?>/local/eduvidual/pages/redirects/login_microsoft.php" title="Microsoft" id="eduvidual-btn-sso-microsoft" data-ajax="false"
+						<a href="<?php echo $CFG->wwwroot; ?>/local/eduvidual/pages/redirects/login_oauth.php?issuer=Microsoft" title="Microsoft" id="eduvidual-btn-sso-microsoft" data-ajax="false"
 							class="btn btn-block" type="button" name="microsoft">
 							<img src="<?php echo $CFG->wwwroot; ?>/local/eduvidual/pix/logo_microsoft.svg" width="20" alt="Microsoft">&nbsp;Microsoft
 						</a>
 					</div>
 					<div class="col-lg-6 col-sm-12">
-						<a href="<?php echo $CFG->wwwroot; ?>/local/eduvidual/pages/redirects/login_google.php" title="Google" id="eduvidual-btn-sso-google" data-ajax="false"
+						<a href="<?php echo $CFG->wwwroot; ?>/local/eduvidual/pages/redirects/login_oauth.php?issuer=Google" title="Google" id="eduvidual-btn-sso-google" data-ajax="false"
 							class="btn btn-block" type="button" name="google">
 							<img src="<?php echo $CFG->wwwroot; ?>/local/eduvidual/pix/logo_google.png" width="20" alt="Google">&nbsp;Google
 						</a>

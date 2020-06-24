@@ -461,6 +461,7 @@ $string['missing_capability'] = 'Erforderliches Recht fehlt';
 $string['n_a'] = 'n/a';
 $string['name_too_short'] = 'Der Name ist zu kurz';
 
+$string['oauth2:nosuchissuer'] = 'Kein oAuth Service für {$a->issuer} konfiguriert!';
 $string['or'] = 'oder';
 $string['orgrole:role_already_in_use'] = 'Rolle wird bereits benutzt!';
 $string['orgsizes:title'] = 'Dateisystemgröße';

@@ -461,6 +461,7 @@ $string['missing_capability'] = 'Missing capability';
 $string['n_a'] = 'n/a';
 $string['name_too_short'] = 'Name too short';
 
+$string['oauth2:nosuchissuer'] = 'No oAuth service for {$a->issuer} was configured!';
 $string['or'] = 'or';
 $string['orgrole:role_already_in_use'] = 'Role already in use';
 $string['orgsizes:title'] = 'Filesystem Size';
