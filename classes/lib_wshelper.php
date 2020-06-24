@@ -165,9 +165,11 @@ class lib_wshelper {
             substr($buffer, $posstart, $posend-$posstart+strlen($strend)),
             substr($buffer, $posend+strlen($strend))
         );
-        if (!empty($parts[1])) {
+        
+        if (!empty($parts[0]) && !empty($parts[1]) && !empty($parts[2])) {
             $parts[1] = mb_convert_encoding($parts[1], 'HTML-ENTITIES', "UTF-8");
-            $doc = \DOMDocument::loadHTML($parts[1], LIBXML_NOWARNING | LIBXML_NOERROR);
+            $doc = new \DOMDocument();
+            $doc->loadHTML($parts[1], LIBXML_NOWARNING | LIBXML_NOERROR);
 
             $options = $doc->getElementsByTagName('option');
 

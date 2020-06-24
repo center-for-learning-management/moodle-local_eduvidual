@@ -27,6 +27,33 @@ defined('MOODLE_INTERNAL') || die;
 
 class locallib {
     /**
+     * We only want users to access the question bank if the capabilities were
+     * given by roles in the course context. We do not want this capability
+     * to be inherited from parent contexts!
+     * @param coursecontext the current course context to check.
+     * @return boolean true if the capability was given by a role in course context.
+     */
+    public static function can_access_course_questionbank($coursecontext, $user = null, $doanything = true) {
+        global $DB, $USER;
+        if (empty($user)) $user = $USER;
+        if ($USER->id == $user->id && is_siteadmin() && $doanything) return true;
+
+        $roles = get_user_roles($coursecontext, $user->id);
+        foreach ($roles as $role) {
+            // We only accept roles in the course context itself.
+            if ($role->contextid != $coursecontext->id) continue;
+            $sql = "SELECT id FROM {role_capabilities}
+                        WHERE roleid=?
+                            AND contextid=?
+                            AND (capability=? OR capability=?)";
+            $params = array($role->id, $coursecontext->id, 'moodle/question:viewall', 'moodle/question:viewmine');
+            $chks = $DB->get_records_sql($sql, $params);
+            foreach ($chks as $chk) {
+                if (!empty($chks->id)) return true;
+            }
+        }
+    }
+    /**
      * Filter a list of users given. Only connected users shall be kept.
      * @param users Array of users.
      * @param idfield field that contains the user-id attribute, defaults to 'id'

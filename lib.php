@@ -42,6 +42,18 @@ function local_eduvidual_after_require_login() {
 function local_eduvidual_before_standard_html_head() {
     global $CFG, $CONTEXT, $COURSE, $DB, $OUTPUT, $PAGE, $USER;
 
+    // Protect question banks on course level.
+    if (!empty($PAGE->context->contextlevel) && $PAGE->context->contextlevel == CONTEXT_COURSE) {
+        if (strpos($_SERVER["SCRIPT_FILENAME"], '/question/edit.php') > 0
+            || strpos($_SERVER["SCRIPT_FILENAME"], '/question/category.php') > 0
+            || strpos($_SERVER["SCRIPT_FILENAME"], '/question/import.php') > 0
+            || strpos($_SERVER["SCRIPT_FILENAME"], '/question/export.php') > 0) {
+            if (!\local_eduvidual\locallib::can_access_course_questionbank($PAGE->context)) {
+                throw new \required_capability_exception($PAGE->context, 'moodle/question:viewall', get_string('access_denied', 'local_eduvidual'), '');
+            }
+        }
+    }
+
     // Main styles for eduvidual.
     $PAGE->requires->css('/local/eduvidual/style/main.css');
     $PAGE->requires->css('/local/eduvidual/style/spinner.css');
@@ -60,6 +72,9 @@ function local_eduvidual_before_standard_html_head() {
     if (strpos($_SERVER["SCRIPT_FILENAME"], '/course/edit.php') > 0) {
         $PAGE->requires->js_call_amd("local_eduvidual/jsinjector", "courseEditPage", array($USER->id, is_siteadmin()));
     }
+
+
+
 
     $data = array(
         'context' => $CONTEXT,
@@ -169,6 +184,7 @@ function local_eduvidual_extend_navigation_category_settings($nav, $context) {
  * Extend course settings
  */
 function local_eduvidual_extend_navigation_course($nav, $course, $context) {
+    global $DB, $USER;
     $coursecontext = \context_course::instance($course->id);
     if (has_capability('moodle/course:delete', $coursecontext)) {
         //$node = $nav->find('courseadmin', null);   // 'courseadmin' is the menu key
@@ -179,6 +195,14 @@ function local_eduvidual_extend_navigation_course($nav, $course, $context) {
     }
     if ($otherusers = $nav->find('otherusers', global_navigation::TYPE_SETTING)) {
         $otherusers->remove();
+    }
+
+    // We try to find out if we can see the question bank. We only want access to it,
+    // if the capability was given in the course context itself - not parent contexts!!!
+    if (!\local_eduvidual\locallib::can_access_course_questionbank($coursecontext)) {
+        if ($node = $nav->find('questionbank', global_navigation::TYPE_CONTAINER)) {
+            $node->remove();
+        }
     }
 }
 
