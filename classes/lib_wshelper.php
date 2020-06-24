@@ -239,6 +239,18 @@ class lib_wshelper {
         if (self::$debug) error_log(print_r($result, 1));
         return $result;
     }
+
+    private static function override_core_calendar_external_get_calendar_action_events_by_timesort($result, $params) {
+        global $DB;
+
+        if (!empty($result->events)) {
+            foreach ($result->events AS $id => &$event) {
+                $event->course->showshortname = false;
+                $event->course->fullnamedisplay = $event->course->fullname;
+            }
+        }
+        return $result;
+    }
     private static function override_core_cohort_add_cohort_members($result, $params) {
         if (self::$debug) error_log(print_r($result, 1));
         return $result;

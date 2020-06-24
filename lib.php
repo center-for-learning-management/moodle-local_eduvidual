@@ -242,8 +242,10 @@ function local_eduvidual_myprofile_navigation($tree, $user, $iscurrentuser, $cou
  */
 // Will work since Moodle 3.6
 function local_eduvidual_override_webservice_execution($function, $params) {
+    global $CFG;
     $supported = array(
-        'block_exacomp_diggr_get_students_of_cohort', 'core_cohort_add_cohort_members',
+        'block_exacomp_diggr_get_students_of_cohort', 'core_calendar_external_get_calendar_action_events_by_timesort',
+        'core_cohort_add_cohort_members',
         'core_cohort_search_cohorts', 'core_course_external_get_enrolled_courses_by_timeline_classification',
         'core_enrol_external_get_potential_users', 'core_external_get_fragment',
         'core_message_message_search_users', 'core_message_data_for_messagearea_search_users',
@@ -251,11 +253,11 @@ function local_eduvidual_override_webservice_execution($function, $params) {
         'core_user_get_users', 'tool_lp_search_cohorts', 'tool_lp_search_users'
     );
     $func = $function->classname . '_' . $function->methodname;
-    error_log($func);
+    if ($CFG->debug == 32767) error_log($func);
     if (in_array($func, $supported)) {
         global $CFG;
         require_once($CFG->dirroot . '/local/eduvidual/classes/lib_wshelper.php');
-        error_log('Overriding ' . $func);
+        if ($CFG->debug == 32767) error_log('Overriding ' . $func);
         return \local_eduvidual\lib_wshelper::override($function->classname, $function->methodname, $params);
     }
     return false;
