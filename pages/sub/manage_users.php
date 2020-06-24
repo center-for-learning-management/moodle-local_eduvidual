@@ -22,6 +22,11 @@
 
 defined('MOODLE_INTERNAL') || die;
 
+if (optional_param('import', 0, PARAM_INT) > 0) {
+    require_once($CFG->dirroot . '/local/eduvidual/pages/sub/manage_usersimport.php');
+    return;
+}
+
 $tab = optional_param('tab', 'manageusers', PARAM_TEXT); // tab the will be shown initially.
 
 $_codes = $DB->get_records_sql('SELECT * FROM {local_eduvidual_org_codes} WHERE orgid=? ORDER BY maturity DESC', array($org->orgid));
