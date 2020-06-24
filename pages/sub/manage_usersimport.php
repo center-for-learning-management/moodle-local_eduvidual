@@ -132,9 +132,9 @@ if (optional_param('datavalidated', 0, PARAM_INT) == 1) {
             }
             if (!empty($user->id)) {
                 if (strtolower($user->role) == 'remove') {
-                    echo echo get_string('import:removed', 'local_eduvidual', array('id' => $user->id));
+                    echo get_string('import:removed', 'local_eduvidual', array('id' => $user->id));
                 } else if ($action == 'update') {
-                    echo echo get_string('import:updated', 'local_eduvidual', array('id' => $user->id));
+                    echo get_string('import:updated', 'local_eduvidual', array('id' => $user->id));
                 } else if ($action == 'create') {
                     echo get_string('import:created', 'local_eduvidual', array('id' => $user->id));
                 }
@@ -164,11 +164,11 @@ if (optional_param('datavalidated', 0, PARAM_INT) == 1) {
     ?>
         </table>
         <div class="grid-eq-2">
-            <a href="#" onclick="require(['local_eduvidual/manager'], function(M) { M.exportUserPopup('<?php echo $org->orgid; ?>', '<?php echo implode(',', $exportuserids); ?>'); }); return false;" class="btn btn-primary">
+            <a href="#" onclick="require(['local_eduvidual/manager'], function(M) { M.exportUserPopup('<?php echo $org->orgid; ?>', '<?php echo implode(',', $exportuserids); ?>'); }); return false;" class="btn btn-primary btn-block">
                 <img src="<?php echo $CFG->wwwroot; ?>/pix/i/export.svg" alt="export" />
                 <?php echo get_string('export', 'local_eduvidual'); ?>
             </a>
-            <a href="<?php echo $CFG->wwwroot . '/local/eduvidual/pages/manage_userlists.php?orgid=' . $org->orgid; ?>" target="_blank" class="btn ui-btn">
+            <a href="<?php echo $CFG->wwwroot . '/local/eduvidual/pages/manage_userlists.php?orgid=' . $org->orgid; ?>" target="_blank" class="btn btn-secondary btn-block">
                 <img src="<?php echo $CFG->wwwroot; ?>/pix/t/print.svg" alt="print" />
                 <?php echo get_string('manage:users:printcards', 'local_eduvidual'); ?>
             </a>
@@ -216,7 +216,7 @@ if (optional_param('datavalidated', 0, PARAM_INT) == 1) {
         <input type="hidden" name="import" value="1" />
         <input type="hidden" name="datavalidated" value="1" />
         <?php echo $helper->print_hidden_form(); ?>
-        <input type="submit" value="<?php echo get_string('manage:createuserspreadsheet:import:datavalidated', 'local_eduvidual'); ?>" />
+        <input type="submit" value="<?php echo get_string('manage:createuserspreadsheet:import:datavalidated', 'local_eduvidual'); ?>" class="btn btn-primary btn-block" />
     </form>
 
     <?php
