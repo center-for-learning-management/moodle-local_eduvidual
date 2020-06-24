@@ -28,7 +28,7 @@ function local_eduvidual_after_config() {
     global $CFG, $PAGE;
     $PAGE->add_body_class('theme-' . $CFG->theme);
     // Check for particular scripts, whose output has to be protected.
-    $scripts = array('/user/selector/search.php');
+    $scripts = array('/question/category.php', '/question/edit.php', '/user/selector/search.php');
     $script = str_replace($CFG->dirroot, '', $_SERVER["SCRIPT_FILENAME"]);
     if (in_array($script, $scripts)) {
         \local_eduvidual\lib_wshelper::buffer();

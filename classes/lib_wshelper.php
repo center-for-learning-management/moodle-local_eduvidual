@@ -72,9 +72,138 @@ class lib_wshelper {
         }
     }
 
+
+
     /**
      * These are the buffer-functions, that should OUTPUT something using echo.
+     * Function names reveal the php-script buffer_ + php-script-path
      */
+    private static function buffer_question_category($buffer) {
+        global $DB, $USER;
+
+        $managed_qcats = explode(",", get_config('local_eduvidual', 'questioncategories'));
+
+        $strstart = '<section id="region-main"';
+        $strend = '</section>';
+        $posstart = strpos($buffer, $strstart);
+        $posend = strpos($buffer, $strend, $posstart);
+
+        $parts = array(
+            substr($buffer, 0, $posstart),
+            substr($buffer, $posstart, $posend-$posstart+strlen($strend)),
+            substr($buffer, $posend+strlen($strend))
+        );
+        if (!empty($parts[1])) {
+            $removeList = array();
+            $parts[1] = mb_convert_encoding($parts[1], 'HTML-ENTITIES', "UTF-8");
+            $doc = \DOMDocument::loadHTML($parts[1], LIBXML_NOWARNING | LIBXML_NOERROR);
+
+            $divs = $doc->getElementsByTagName('div');
+            foreach ($divs as $div) {
+                $classnames = explode(' ', $div->getAttribute('class'));
+                if (!in_array('questioncategories', $classnames) && in_array('contextlevel10', $classnames)) continue;
+
+                $uls = $div->childNodes;
+                foreach ($uls as $ul) {
+                    if ($ul->nodeName != 'ul') continue;
+                    $lis = $ul->childNodes;
+                    $removeList = array();
+
+                    foreach ($lis AS $li) {
+                        if ($li->nodeName != 'li') continue;
+                        $break = false;
+                        $as = $li->childNodes;
+                        foreach ($as AS $a) {
+                            if ($a->nodeName != 'a') continue;
+                            $params = array();
+
+                            $url = parse_url($a->getAttribute('href'));
+                            parse_str($url['query'], $params);
+                            if (!empty($params['edit'])) {
+                                $catid = intval($params['edit']);
+                                if (!in_array($catid, $managed_qcats)) {
+                                    $remove = false;
+                                } else {
+                                    $chk = $DB->get_record('local_eduvidual_userqcats', array('userid' => $USER->id, 'categoryid' => $catid));
+                                    if (empty($chk->id)) {
+                                        $removeList[] = $li;
+                                    }
+                                }
+                                $break = true;
+                            }
+                            if ($break) break;
+                        }
+                        if ($break) break;
+                    }
+                }
+            }
+
+            // Now remove the nodes.
+            foreach($removeList AS $option) {
+                $option->parentNode->removeChild($option);
+            }
+
+            $parts[1] = $doc->saveHTML();
+            $buffer = implode($parts);
+        }
+
+        self::buffer_question_edit($buffer);
+    }
+    private static function buffer_question_edit($buffer) {
+        global $DB, $USER;
+
+        $managed_qcats = explode(",", get_config('local_eduvidual', 'questioncategories'));
+
+        $strstart = '<optgroup label="' . get_string('coresystem') . '">';
+        $strend = '</optgroup>';
+        $posstart = strpos($buffer, $strstart);
+        $posend = strpos($buffer, $strend, $posstart);
+
+
+        $parts = array(
+            substr($buffer, 0, $posstart),
+            substr($buffer, $posstart, $posend-$posstart+strlen($strend)),
+            substr($buffer, $posend+strlen($strend))
+        );
+        if (!empty($parts[1])) {
+            $parts[1] = mb_convert_encoding($parts[1], 'HTML-ENTITIES', "UTF-8");
+            $doc = \DOMDocument::loadHTML($parts[1], LIBXML_NOWARNING | LIBXML_NOERROR);
+
+            $options = $doc->getElementsByTagName('option');
+
+            $remove = false;
+            $removeList = array();
+            for ($a = 0; $a < $options->length; $a++) {
+                $label = $options->item($a)->nodeValue;
+                $label2 = ltrim($label, " \t\n\r\0\x0B\xC2\xA0");
+                $depth = (strlen($label) - strlen($label2))/6;
+                if ($depth == 1) { // This is a core category.
+                    $value = explode(',', $options->item($a)->getAttribute('value'));
+                    if (!empty($value[0])) {
+                        $catid = $value[0];
+                        if (!in_array($catid, $managed_qcats)) {
+                            $remove = false;
+                        } else {
+                            $chk = $DB->get_record('local_eduvidual_userqcats', array('userid' => $USER->id, 'categoryid' => $catid));
+                            $remove = empty($chk->id);
+                        }
+                    }
+                }
+                if ($remove) {
+                    $removeList[] = $options->item($a);
+                }
+            }
+            // Now remove the nodes.
+            foreach($removeList AS $option) {
+                $option->parentNode->removeChild($option);
+            }
+
+            $parts[1] = $doc->saveHTML();
+            $buffer = implode($parts);
+        }
+
+        echo $buffer;
+    }
     private static function buffer_user_selector_search($buffer) {
         $result = json_decode($buffer);
         if (!empty($result->results)) {
