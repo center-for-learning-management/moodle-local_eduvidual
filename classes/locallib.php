@@ -409,8 +409,7 @@ class locallib {
      * @param int categoryid (optional)
      */
     public static function is_manager($categoryid = 0) {
-        return true;
-        //if (is_siteadmin()) return true;
+        if (is_siteadmin()) return true;
         global $DB, $USER;
         if (empty($categoryid)) {
             // Check if user is manager in any organization.
