@@ -369,7 +369,7 @@ class locallib {
         }
         $strorgids = implode(',', $orgids);
 
-        $sql = "SELECT userid
+        $sql = "SELECT DISTINCT(userid)
                     FROM {local_eduvidual_orgid_userid}
                     WHERE userid=?
                         AND orgid IN ($strorgids)";
