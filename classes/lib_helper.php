@@ -207,6 +207,8 @@ class lib_helper {
     public static function orgmenus() {
         global $CFG, $DB, $USER;
         $orgmenus = array();
+        // Trigger if management-links shall be shawn.
+        $display_managerlink = false;
         $fields = array("name", "url", "target", "roles");
         $memberships = $DB->get_records('local_eduvidual_orgid_userid', array('userid' => $USER->id));
         foreach($memberships as $membership){
@@ -218,7 +220,8 @@ class lib_helper {
                     'name' => $org->name,
                     'orgid' => $org->orgid,
                     'url' => $CFG->wwwroot . '/course/index.php?categoryid=' . $org->categoryid,
-                    'urlmanagement' => ($membership->role == 'Manager') ? $CFG->wwwroot . '/local/eduvidual/pages/manage.php?orgid=' . $org->orgid : '',
+                    'urlmanagement' => ($display_managerlink && $membership->role == 'Manager') ?
+                                            $CFG->wwwroot . '/local/eduvidual/pages/manage.php?orgid=' . $org->orgid : '',
                 );
                 foreach ($entries AS $entry) {
                     $entry = explode("|", $entry);
@@ -227,7 +230,7 @@ class lib_helper {
                     foreach ($fields AS $k => $field) {
                         $o[$field] = (!empty($entry[$k])) ? $entry[$k] : '';
                     }
-                    if (empty($o['roles']) || strpos($membership->role, $o['roles']) > -1) {
+                    if (empty($o['roles']) || strpos($o['roles'], $membership->role) > -1) {
                         $orgmenu['entries'][] = $o;
                     }
                 }

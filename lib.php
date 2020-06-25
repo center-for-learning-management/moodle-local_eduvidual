@@ -73,9 +73,6 @@ function local_eduvidual_before_standard_html_head() {
         $PAGE->requires->js_call_amd("local_eduvidual/jsinjector", "courseEditPage", array($USER->id, is_siteadmin()));
     }
 
-
-
-
     $data = array(
         'context' => $CONTEXT,
         'course' => (object) array(
@@ -88,16 +85,6 @@ function local_eduvidual_before_standard_html_head() {
 
     // No Org-Menu for the moment!
     $PAGE->requires->js_call_amd("local_eduvidual/jsinjector", "orgMenu", array($USER->id));
-
-    $cache = \cache::make('local_eduvidual', 'appcache');
-    $orgmenu = $cache->get('orgmenu');
-    $orgmenu = '';
-    if (empty($orgmenu)) {
-        $orgmenu = $OUTPUT->render_from_template('local_eduvidual/orgmenu', array('orgmenus' => \local_eduvidual\lib_helper::orgmenus()));
-        $cache->set('orgmenu', $orgmenu);
-    }
-    $PAGE->set_headingmenu($orgmenu);
-
 
     if (strpos($_SERVER["SCRIPT_FILENAME"], '/course/delete.php') > 0) {
         $PAGE->requires->js_call_amd("local_eduvidual/jsinjector", "modifyRedirectUrl", array('coursedelete'));

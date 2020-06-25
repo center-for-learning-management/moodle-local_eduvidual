@@ -305,6 +305,7 @@ $string['invalid_type'] = 'Invalid Type!';
 $string['missing_permission'] = 'Missing Permission!';
 $string['open'] = 'open';
 
+
 $string['help_and_tutorials'] = 'Help & Tutorials';
 $string['imprint'] = 'Imprint';
 
@@ -463,6 +464,7 @@ $string['name_too_short'] = 'Name too short';
 
 $string['oauth2:nosuchissuer'] = 'No oAuth service for {$a->issuer} was configured!';
 $string['or'] = 'or';
+$string['orgmenu'] = 'custom links of my organizations';
 $string['orgrole:role_already_in_use'] = 'Role already in use';
 $string['orgsizes:title'] = 'Filesystem Size';
 
