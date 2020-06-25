@@ -30,8 +30,9 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'loc
          * We do not want to see the course shortname field.
          */
         courseEditPage: function(userid, is_siteadmin) {
-            if (is_siteadmin) return;
-            $('#fitem_id_shortname').css('display', 'none');
+            if (!is_siteadmin) {
+                $('#fitem_id_shortname').css('display', 'none');
+            }
             if ($('#fitem_id_shortname #id_shortname').val() == '') {
                 var d = new Date();
                 $('#fitem_id_shortname #id_shortname').val(userid + '-' + Date.now());
