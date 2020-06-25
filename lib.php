@@ -112,6 +112,81 @@ function local_eduvidual_before_standard_html_head() {
     if (!empty($org->customcss)) $inject_styles[] = $org->customcss;
     $inject_styles[] = "</style>";
 
+    global $DB, $PAGE;
+
+    // Add navbar items.
+    if (!empty($PAGE->context->contextlevel) && $PAGE->context->contextlevel >= CONTEXT_COURSE) {
+
+        $navbaritems = $PAGE->navbar->get_items();
+        $PAGE->navbar->ignore_active();
+
+        $nodes = array();
+        $nodesafter = array();
+
+        foreach ($navbaritems AS &$navbaritem) {
+            if ($navbaritem->key == 'myhome') {
+                $nodes[] = array(
+                    'has_action' => true,
+                    'action' => $navbaritem->action,
+                    'get_title' => $navbaritem->text,
+                    'get_content' => $navbaritem->text,
+                    'is_hidden' => false,
+                );
+                continue;
+            }
+            if ($navbaritem->key == 'mycourses') {
+                continue;
+            }
+            if ($navbaritem->type != \navigation_node::TYPE_COURSE) {
+                $nodesafter[] = array(
+                    'has_action' => true,
+                    'action' => $navbaritem->action,
+                    'get_title' => $navbaritem->text,
+                    'get_content' => $navbaritem->text,
+                    'is_hidden' => false,
+                );
+            }
+        }
+
+        $path = explode('/', $PAGE->context->path);
+        for ($a = 2; $a < count($path); $a++) {
+            $ctx = $DB->get_record('context', array('id' => $path[$a]));
+            switch ($ctx->contextlevel) {
+                case CONTEXT_COURSECAT:
+                    $o = $DB->get_record('course_categories', array('id' => $ctx->instanceid));
+                    if (!empty($o->id)) {
+                        $url = new \moodle_url('/course/index.php', array('categoryid' => $o->id));
+                        $nodes[] = array(
+                            'has_action' => true,
+                            'action' => $url->__toString(),
+                            'get_title' => $o->name,
+                            'get_content' => $o->name,
+                            'is_hidden' => false,
+                        );
+                    }
+                break;
+                case CONTEXT_COURSE:
+                    $o = $DB->get_record('course', array('id' => $ctx->instanceid));
+                    if (!empty($o->id)) {
+                        $url = new \moodle_url('/course/index.php', array('id' => $o->id));
+                        $nodes[] = array(
+                            'has_action' => true,
+                            'action' => $url->__toString(),
+                            'get_title' => $o->fullname,
+                            'get_content' => $o->fullname,
+                            'is_hidden' => false,
+                        );
+                    }
+                break;
+            }
+        }
+
+        $nodes = array_merge($nodes, $nodesafter);
+        \local_eduvidual\lib_wshelper::$navbar_nodes = $nodes;
+        ob_start();
+        register_shutdown_function('\local_eduvidual\lib_wshelper::buffer_navbar');
+    }
+
     return implode("\n", $inject_styles);
 }
 

@@ -26,6 +26,7 @@ namespace local_eduvidual;
 defined('MOODLE_INTERNAL') || die;
 
 class lib_wshelper {
+    public static $navbar_nodes = array();
     private static $debug = false;
     /**
      * Recognizes the result of a certain script and registers an output buffer for it.
@@ -51,6 +52,24 @@ class lib_wshelper {
         $buffer = ob_get_clean();
         $func = str_replace('__', '_', 'buffer_' . str_replace('/', '_', str_replace('.php', '', str_replace($CFG->dirroot, '', $_SERVER["SCRIPT_FILENAME"]))));
         call_user_func('self::' . $func, $buffer);
+    }
+    public static function buffer_navbar() {
+        global $OUTPUT;
+        $buffer = ob_get_clean();
+        $strstart = '<ol class="breadcrumb"';
+        $strend = '</ol>';
+        $posstart = strpos($buffer, $strstart);
+        $posend = strpos($buffer, $strend, $posstart);
+
+        $parts = array(
+            substr($buffer, 0, $posstart),
+            substr($buffer, $posstart, $posend-$posstart+strlen($strend)),
+            substr($buffer, $posend+strlen($strend))
+        );
+        if (!empty($parts[0]) && !empty($parts[1]) && !empty($parts[2])) {
+            $parts[1] = $OUTPUT->render_from_template('core/navbar', array('get_items' => self::$navbar_nodes));
+        }
+        echo implode($parts);
     }
     /**
      * Modifies the output of particular webservice calls.
@@ -165,7 +184,7 @@ class lib_wshelper {
             substr($buffer, $posstart, $posend-$posstart+strlen($strend)),
             substr($buffer, $posend+strlen($strend))
         );
-        
+
         if (!empty($parts[0]) && !empty($parts[1]) && !empty($parts[2])) {
             $parts[1] = mb_convert_encoding($parts[1], 'HTML-ENTITIES', "UTF-8");
             $doc = new \DOMDocument();
