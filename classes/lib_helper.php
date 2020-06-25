@@ -170,10 +170,10 @@ class lib_helper {
                 'type' => 'danger',
             ));
         } finally {
-            if ($revokesourcerole) {
+            if (!empty($revokesourcerole)) {
                 role_unassign($roletoassign, $USER->id, $sourcecontext->id);
             }
-            if ($revokestargetrole) {
+            if (!empty($revokestargetrole)) {
                 role_unassign($roletoassign, $USER->id, $targetcontext->id);
             }
         }
