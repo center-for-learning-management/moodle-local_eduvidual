@@ -304,10 +304,6 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/templates'
                             var select = $('<select>');
                             asteacher.append([label, filter, select]);
                             container.append(asteacher);
-
-                            require(['local_eduvidual/main'], function(MAIN) {
-                                MAIN.connect({ module: 'teacher', act: 'createcourse_basements', orgid: orgid }, { signalItem: baseselect });
-                            });
                         }
                     ).fail(NOTIFICATION.exception);
                 break;
@@ -327,29 +323,6 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/templates'
             require(['local_eduvidual/main'], function(MAIN) {
                 MAIN.connect({ module: 'teacher', act: 'createcourse_loadteacher', orgid: orgid, search: search }, { signalItem: {}});
             });
-        },
-        /**
-         * Show meta information for a specific basement
-        **/
-        loadCourseFormBasementInfo: function(basement) {
-            var cats = Object.keys(this.basements);
-            var container = $('.ul-eduvidual-courses .div-right').empty();
-            for (var a = 0; a < cats.length; a++) {
-                for (var b = 0; b < this.basements[cats[a]].length; b++) {
-                    var base = this.basements[cats[a]][b];
-                    if (base.id == basement && $(container).find('img').length == 0) {
-                        var p = $('<p>').html(base.summary)
-                            .css('text-align', 'justify');
-                        if (base.imageurl !== '') {
-                            var img = $('<img>').attr('src', base.imageurl)
-                                .css('max-width', '200px').css('width', '25%')
-                                .css('margin', '0px 0px 5px 5px').css('float', 'right');
-                            p.prepend(img);
-                        }
-                        container.append(p);
-                    }
-                }
-            }
         },
         questioncategories: function(sender) {
 			var questioncategories = [];
@@ -376,30 +349,6 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/templates'
                 } else {
                     // @todo localization
                     NOTIFICATION.alert(o.result.error);
-                }
-            }
-            if (o.data.act == 'createcourse_basements') {
-                this.basements = o.result.basements;
-                var cats = Object.keys(o.result.basements);
-                var targ = $('.local_eduvidual_teacher_createcourse_basement').empty();
-                var firstloaded = false;
-                for (var a = 0; a < cats.length; a++) {
-                    var optgroup = $('<optgroup>').attr('label', cats[a]);
-                    for (var b = 0; b < o.result.basements[cats[a]].length; b++) {
-                        var base = o.result.basements[cats[a]][b];
-                        var option = $('<option>').attr('value', base.id).html(base.fullname);
-                        optgroup.append(option);
-                        if (!firstloaded) {
-                            firstloaded = true;
-                            this.loadCourseFormBasementInfo(base.id);
-                        }
-                    }
-                    targ.append(optgroup);
-                }
-                if (o.result.canmanage) {
-                    $('.local_eduvidual_teacher_createcourse_setteacher').css('display', 'block');
-                } else {
-                    $('.local_eduvidual_teacher_createcourse_setteacher').css('display', 'block');
                 }
             }
             if (o.data.act == 'createcourse_category') {

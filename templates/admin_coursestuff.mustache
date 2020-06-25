@@ -17,8 +17,21 @@
 
 <h4>{{#str}} admin:coursebasements:title, local_eduvidual {{/str}}</h4>
 <p>{{#str}} admin:coursebasements:description, local_eduvidual {{/str}}</p>
-<input id="local_eduvidual_admin_coursebasements" value="{{coursebasements}}" onkeyup="require(['local_eduvidual/admin'], function(ADMIN) { ADMIN.coursebasements(); });" />
-
+<label>
+    {{#str}} admin:coursebasements:courseempty, local_eduvidual {{/str}}
+    <input id="local_eduvidual_admin_coursebasements_courseempty" value="{{coursebasementempty}}"
+        onkeyup="var i = this; require(['local_eduvidual/admin'], function(ADMIN) { ADMIN.coursebasements(i); });" />
+</label>
+<label>
+    {{#str}} admin:coursebasements:courserestore, local_eduvidual {{/str}}
+    <input id="local_eduvidual_admin_coursebasements_courserestore" value="{{coursebasementrestore}}"
+        onkeyup="var i = this; require(['local_eduvidual/admin'], function(ADMIN) { ADMIN.coursebasements(i); });" />
+</label>
+<label>
+    {{#str}} admin:coursebasements:coursetemplate, local_eduvidual {{/str}}
+    <input id="local_eduvidual_admin_coursebasements_coursetemplate" value="{{coursebasementtemplate}}"
+        onkeyup="var i = this; require(['local_eduvidual/admin'], function(ADMIN) { ADMIN.coursebasements(i); });" />
+</label>
 <h4>{{#str}} admin:orgcoursebasement:title, local_eduvidual {{/str}}</h4>
 <p>{{#str}} admin:orgcoursebasement:description, local_eduvidual {{/str}}</p>
 <select id="local_eduvidual_admin_orgcoursebasement" onchange="var sel = this; require(['local_eduvidual/admin'], function(ADMIN) { ADMIN.orgcoursebasement(sel.value); });">

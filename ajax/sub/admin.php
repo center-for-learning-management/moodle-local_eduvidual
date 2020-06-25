@@ -41,10 +41,15 @@ if (!is_siteadmin()) {
             }
         break;
         case 'coursebasements':
-            $coursebasements = optional_param('coursebasements', '', PARAM_TEXT);
-            if (set_config('coursebasements', $coursebasements, 'local_eduvidual')) {
-                $reply['status'] = 'ok';
-            }
+            $courseempty = optional_param('courseempty', 0, PARAM_INT);
+            $courserestore = optional_param('courserestore', 0, PARAM_INT);
+            $coursetemplate = optional_param('coursetemplate', 0, PARAM_INT);
+
+            set_config('coursebasementempty', $courseempty, 'local_eduvidual');
+            set_config('coursebasementrestore', $courserestore, 'local_eduvidual');
+            set_config('coursebasementtemplate', $coursetemplate, 'local_eduvidual');
+
+            $reply['status'] = 'ok';
         break;
         case 'defaultrole':
             $role = optional_param('role', 0, PARAM_INT);

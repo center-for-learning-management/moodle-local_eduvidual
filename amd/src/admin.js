@@ -41,38 +41,19 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'loc
             });
         },
         /**
-        * Sets the navbar of the eduvidual block
-        **/
-        navbar: function() {
-            if (this.debug > 0) console.log('ADMIN.navbar()');
-            require(['local_eduvidual/main'], function(MAIN) {
-                MAIN.watchValue({
-                    target: '#local_eduvidual_admin_navbar',
-                    run: function() {
-                        var o = this;
-                        require(['local_eduvidual/main'], function(MAIN) {
-                            MAIN.connect({ module: 'admin', act: 'navbar', navbar: $(o.target).val() }, { signalItem: $(o.target) });
-                        });
-                    }
-                });
-            });
-        },
-        /**
         * Sets the categoryids where coursebasements reside
         * IDs of Courses delimited by a ','
         **/
-        coursebasements: function() {
+        coursebasements: function(sender) {
             if (this.debug > 0) console.log('ADMIN.coursebasements()');
+            var params = {
+                module: 'admin', act: 'coursebasements',
+                courseempty: $('#local_eduvidual_admin_coursebasements_courseempty').val(),
+                courserestore: $('#local_eduvidual_admin_coursebasements_courserestore').val(),
+                coursetemplate: $('#local_eduvidual_admin_coursebasements_coursetemplate').val(),
+            };
             require(['local_eduvidual/main'], function(MAIN) {
-                MAIN.watchValue({
-                    target: '#local_eduvidual_admin_coursebasements',
-                    run: function() {
-                        var o = this;
-                        require(['local_eduvidual/main'], function(MAIN) {
-                            MAIN.connect({ module: 'admin', act: 'coursebasements', coursebasements: $(o.target).val() }, { signalItem: $(o.target) });
-                        });
-                    }
-                });
+                MAIN.connect(params, { signalItem: $(sender) });
             });
         },
         /**
@@ -191,6 +172,23 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'loc
             });
             require(['local_eduvidual/main'], function(MAIN) {
                 MAIN.connect({ module: 'admin', act: 'manageorgs_store', fields: fields }, { signalItem: $('#' + uniqid + '-store'), uniqid: uniqid });
+            });
+        },
+        /**
+        * Sets the navbar of the eduvidual block
+        **/
+        navbar: function() {
+            if (this.debug > 0) console.log('ADMIN.navbar()');
+            require(['local_eduvidual/main'], function(MAIN) {
+                MAIN.watchValue({
+                    target: '#local_eduvidual_admin_navbar',
+                    run: function() {
+                        var o = this;
+                        require(['local_eduvidual/main'], function(MAIN) {
+                            MAIN.connect({ module: 'admin', act: 'navbar', navbar: $(o.target).val() }, { signalItem: $(o.target) });
+                        });
+                    }
+                });
             });
         },
         orgrole: function(type, role) {

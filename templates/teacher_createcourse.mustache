@@ -151,26 +151,24 @@
                 {{#str}} createcourse:basement, local_eduvidual {{/str}}
             </td>
             <td>
-                <select id="{{uniqid}}-basement" name="basement" style="width: 100%;"
-                    onchange="var s = this; require(['jquery'], function($) { $('.summary-{{uniqid}}').css('display', 'none'); $('#summary-{{uniqid}}-' + $(s).val()).css('display', 'block'); });">
-                    {{#basements}}
-                        <optgroup label="{{name}}">
-                        {{#templates}}
-                            <option value="{{id}}">{{fullname}}</option>
-                        {{/templates}}
-                        </optgroup>
-                    {{/basements}}
-                </select>
-            </td>
-        </tr>
-        <tr class="{{uniqid}}-basement-summary">
-            <td colspan="3" id="{{uniqid}}-basement-summary">
-                {{#basements}}
-                    {{#templates}}
-                        <div id="summary-{{uniqid}}-{{id}}" class="summary-{{uniqid}}" style="display: none;">{{{summary}}}</div>
-                    {{/templates}}
-                    </optgroup>
-                {{/basements}}
+                {{#coursebasementempty}}
+                <label>
+                    <input type="radio" name="basement" id="{{uniqid}}-basement-empty" value="empty" />
+                    {{#str}} createcourse:basement:empty, local_eduvidual {{/str}}
+                </label><br />
+                {{/coursebasementempty}}
+                {{#coursebasementtemplate}}
+                <label>
+                    <input type="radio" name="basement" id="{{uniqid}}-basement-template" value="template" />
+                    {{#str}} createcourse:basement:template, local_eduvidual {{/str}}
+                </label><br />
+                {{/coursebasementtemplate}}
+                {{#coursebasementrestore}}
+                <label>
+                    <input type="radio" name="basement" id="{{uniqid}}-basement-restore" value="restore" />
+                    {{#str}} createcourse:basement:restore, local_eduvidual {{/str}}
+                </label>
+                {{/coursebasementrestore}}
             </td>
         </tr>
         <tr class="{{uniqid}}-create">

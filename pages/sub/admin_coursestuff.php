@@ -23,6 +23,8 @@
 defined('MOODLE_INTERNAL') || die;
 if (!is_siteadmin()) die;
 
+
+
 $orgcoursebasement = get_config('local_eduvidual', 'orgcoursebasement');
 $basements = \local_eduvidual\lib_enrol::get_course_basements('system');
 $keys = array_keys($basements);
@@ -46,7 +48,9 @@ echo $OUTPUT->render_from_template(
     'local_eduvidual/admin_coursestuff',
     (object) array(
         'allmanagerscourses' => get_config('local_eduvidual', 'allmanagerscourses'),
-        'coursebasements' => get_config('local_eduvidual', 'coursebasements'),
+        'coursebasementempty' => get_config('local_eduvidual', 'coursebasementempty'),
+        'coursebasementrestore' => get_config('local_eduvidual', 'coursebasementrestore'),
+        'coursebasementtemplate' => get_config('local_eduvidual', 'coursebasementtemplate'),
         'dropzonepath' => get_config('local_eduvidual', 'dropzonepath'),
         'ltiresourcekey' => get_config('local_eduvidual', 'ltiresourcekey'),
         'orgcoursebasements' => $orgcoursebasements,

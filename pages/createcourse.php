@@ -47,8 +47,6 @@ $orgas = \local_eduvidual\locallib::get_organisations('Teacher');
 $PAGE->set_title(get_string('teacher:createcourse', 'local_eduvidual'));
 $PAGE->set_heading(get_string('teacher:createcourse', 'local_eduvidual'));
 
-echo $OUTPUT->header();
-
 $formsent = optional_param('formsent', 0, PARAM_INT);
 $orgs = \local_eduvidual\locallib::get_organisations('Teacher');
 
@@ -57,7 +55,7 @@ $subcat1 = optional_param('subcat1', '', PARAM_TEXT);
 $subcat2 = optional_param('subcat2', '', PARAM_TEXT);
 $subcat3 = optional_param('subcat3', '', PARAM_TEXT);
 $subcat4 = optional_param('subcat4', '', PARAM_TEXT);
-$basement = optional_param('basement', 0, PARAM_INT);
+$basement = optional_param('basement', '', PARAM_ALPHANUM);
 
 $subcats1 = \local_eduvidual\locallib::get_orgsubcats($orgid, 'subcats1');
 $subcats2 = \local_eduvidual\locallib::get_orgsubcats($orgid, 'subcats2');
@@ -145,11 +143,15 @@ if ($formsent) {
                     }
                 }
                 if (!empty($targcat->id)) {
-                    //echo "Target Category: ";
-                    //print_r($targcat);
-                    // Now create course in this category!
                     // Now check if basement is valid
-                    if(\local_eduvidual\lib_enrol::is_valid_course_basement('all', $basement)){
+                    $basementcourseid = 0;
+                    switch ($basement) {
+                        case 'empty': $basementcourseid = get_config('local_eduvidual', 'coursebasementempty'); break;
+                        case 'restore': $basementcourseid = get_config('local_eduvidual', 'coursebasementrestore'); break;
+                        case 'template': $basementcourseid = get_config('local_eduvidual', 'coursebasementtemplate'); break;
+                    }
+
+                    if(!empty($basementcourseid)){
                         // Create course here
                         $fullname = $coursename;
                         $categoryid = $targcat->id;
@@ -159,7 +161,7 @@ if ($formsent) {
                             require_once($CFG->dirroot . '/course/externallib.php');
                             if (strlen($shortname) > 30) $shortname = substr($shortname, 0, 30);
                             // Grant a role that allows course duplication in source and target category
-                            $basecourse = $DB->get_record('course', array('id' => $basement));
+                            $basecourse = $DB->get_record('course', array('id' => $basementcourseid));
 
                             $course = \local_eduvidual\lib_helper::duplicate_course($basecourse->id, $fullname, $shortname, $categoryid, 1);
 
@@ -184,26 +186,24 @@ if ($formsent) {
 
                                 \local_eduvidual\lib_enrol::course_manual_enrolments(array($course->id), array($enroluser), $role);
 
+                                $redirect = $CFG->wwwroot . '/course/view.php?id=' . $course->id;
+                                if ($basement == 'restore') {
+                                    $coursectx = \context_course::instance($course->id);
+                                    $redirect = $CFG->wwwroot . '/backup/restorefile.php?contextid=' . $coursectx->id;
+                                }
+
                                 $msg[] = $OUTPUT->render_from_template('local_eduvidual/alert', array(
                                     'content' => get_string('createcourse:created', 'local_eduvidual'),
-                                    'url' => $CFG->wwwroot . '/course/view.php?id=' . $course->id,
+                                    'url' => $redirect,
                                     'type' => 'success',
                                 ));
-                                $redirect = $CFG->wwwroot . '/course/view.php?id=' . $course->id;
+
                             } else {
                                 $msg[] = $OUTPUT->render_from_template('local_eduvidual/alert', array(
                                     'content' => get_string('createcourse:createerror', 'local_eduvidual'),
                                     'url' => $CFG->wwwroot . '/my',
                                     'type' => 'error',
                                 ));
-                            }
-
-                            // Revoke role that allows course duplication in source and target category
-                            if ($revokesourcerole) {
-                                role_unassign($roletoassign, $USER->id, $sourcecatcontext->id);
-                            }
-                            if ($revoketargetrole) {
-                                role_unassign($roletoassign, $USER->id, $targetcatcontext->id);
                             }
                         } else {
                             $msg[] = $OUTPUT->render_from_template('local_eduvidual/alert', array(
@@ -226,7 +226,10 @@ if ($formsent) {
     }
 }
 
-
+if (!empty($redirect)) {
+    redirect($redirect);
+}
+echo $OUTPUT->header();
 if (count($msg) > 0) {
     echo implode('', $msg);
 } else {
@@ -240,15 +243,6 @@ if (count($msg) > 0) {
         $_orgs = array();
         foreach($orgs AS $_org) { $_orgs[] = $_org; }
         $schoolyears = array('SJ 19/20', 'SJ 20/21');
-        $basements = array();
-        $_basements = \local_eduvidual\lib_enrol::get_course_basements('all');
-        $basecats = array_keys($_basements);
-        foreach($basecats AS $basecat) {
-            $basements[] = array(
-                'name' => $basecat,
-                'templates' => $_basements[$basecat],
-            );
-        }
 
         $favorgid = \local_eduvidual\locallib::get_favorgid();
         foreach ($_orgs AS &$_org) {
@@ -256,7 +250,9 @@ if (count($msg) > 0) {
         }
 
         echo $OUTPUT->render_from_template('local_eduvidual/teacher_createcourse', array(
-            'basements' => $basements, // Coursetemplates
+            'coursebasementempty' => get_config('local_eduvidual', 'coursebasementempty'),
+            'coursebasementrestore' => get_config('local_eduvidual', 'coursebasementrestore'),
+            'coursebasementtemplate' => get_config('local_eduvidual', 'coursebasementtemplate'),
             'has_subcats1' => empty($subcats1) ? 0 : 1,
             'has_subcats2' => empty($subcats2) ? 0 : 1,
             'has_subcats3' => empty($subcats3) ? 0 : 1,
