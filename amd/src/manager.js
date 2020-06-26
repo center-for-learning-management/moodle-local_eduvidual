@@ -1,25 +1,27 @@
 define(['jquery', 'core/ajax', 'core/modal_events', 'core/modal_factory', 'core/notification', 'core/str', 'core/url', 'local_eduvidual/main', 'local_eduvidual/user', 'local_eduvidual/widgets'], function($, AJAX, ModalEvents, ModalFactory, NOTIFICATION, STR, URL, MAIN, USER, WIDGETS) {
     return {
+        addParentFilterRequest: 0,
         debug: 0,
 		customcsscache: '',
         addParentFilter: function(type, inp) {
+            console.log('local_eduvidual/main:addParentFilter(type, inp)', type, inp);
+            this.addParentFilterRequest++
             var orgid = $('#local_eduvidual_manage_addparent_studentfilter').attr('data-orgid');
             var studentid = 0;
 
             var select = $('#local_eduvidual_manage_addparent_' + type);
             $(select).empty();
 
-            if (type == 'student') {
-                $('#local_eduvidual_manage_addparent_parentfilter').val('');
-                $('#local_eduvidual_manage_addparent_parent').empty();
-            } else {
-                studentid = $('#local_eduvidual_manage_addparent_student').val();
+            if ($(inp).val().length == 0) {
+                $(inp).val('*');
             }
-            if (type != 'student' || $(inp).val().length > 3) {
-                require(['local_eduvidual/main'], function(MAIN) {
-                    MAIN.connect({ module: 'manage', act: 'addparent_filter', orgid: orgid, filter: $(inp).val(), studentid: studentid }, { signalItem: inp, appendItem: select, type: type });
-                });
-            }
+            studentid = $('#local_eduvidual_manage_addparent_student').val();
+
+            var addParentFilterRequest = this.addParentFilterRequest;
+
+            require(['local_eduvidual/main'], function(MAIN) {
+                MAIN.connect({ module: 'manage', act: 'addparent_filter', orgid: orgid, filter: $(inp).val(), studentid: studentid }, { signalItem: inp, appendItem: select, type: type, request: addParentFilterRequest });
+            });
         },
         addParentSelectStudent: function() {
             this.addParentFilter('parent', $('#local_eduvidual_manage_addparent_parentfilter'));
@@ -398,6 +400,10 @@ define(['jquery', 'core/ajax', 'core/modal_events', 'core/modal_factory', 'core/
                 this.addParentSelectStudent();
             }
             if (o.data.act == 'addparent_filter') {
+                if (o.payload.request != this.addParentFilterRequest) {
+                    // There has been another request in the meanwhile, drop the results!
+                    return;
+                }
                 $(o.payload.appendItem).empty();
                 var keys = Object.keys(o.result.users);
                 if (keys.length > 0) {

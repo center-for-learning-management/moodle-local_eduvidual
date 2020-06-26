@@ -188,8 +188,22 @@ switch ($act) {
         if (!is_siteadmin() && $chk->role != 'Manager') {
             $reply['error'] = 'not_member_of_this_org';
         } else {
-            $filter = '%' . optional_param('filter', 'zzzzzz', PARAM_TEXT) . '%';
-            $entries = $DB->get_records_sql('SELECT u1.id,CONCAT(u1.firstname, " ", u1.lastname) AS userfullname, u1.email FROM {user} AS u1, {local_eduvidual_orgid_userid} AS ou WHERE ou.orgid=? AND ou.userid = u1.id AND u1.id IN (SELECT u2.id FROM {user} AS u2 WHERE u2.firstname LIKE ? OR u2.lastname LIKE ? OR u2.email LIKE ? OR CONCAT(u2.firstname, " ", u2.lastname) LIKE ?) ORDER BY u1.lastname ASC, u1.firstname ASC', array($orgid, $filter, $filter, $filter, $filter));
+            $filter = '%' . str_replace('*', '%', optional_param('filter', 'zzzzzz', PARAM_TEXT)) . '%';
+            $sql = "SELECT u1.id,CONCAT(u1.firstname, \" \", u1.lastname) AS userfullname, u1.email
+                        FROM {user} AS u1, {local_eduvidual_orgid_userid} AS ou
+                        WHERE ou.orgid=?
+                            AND ou.userid = u1.id
+                            AND u1.id IN (
+                                SELECT u2.id
+                                    FROM {user} AS u2
+                                    WHERE u2.firstname LIKE ?
+                                        OR u2.lastname LIKE ?
+                                        OR u2.email LIKE ?
+                                        OR CONCAT(u2.firstname, \" \", u2.lastname) LIKE ?
+                            )
+                            ORDER BY u1.lastname ASC,
+                                u1.firstname ASC";
+            $entries = $DB->get_records_sql($sql, array($orgid, $filter, $filter, $filter, $filter));
             $reply['users'] = array();
             if ($studentid > 0) {
                 $parents = array();
