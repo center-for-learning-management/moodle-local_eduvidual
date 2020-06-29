@@ -21,18 +21,17 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+namespace local_eduvidual\observer;
+
 defined('MOODLE_INTERNAL') || die;
 
-$observers[] = array(
-        'eventname' => 'core\event\course_created',
-        'callback' => '\local_eduvidual\observer\course_created::event',
-        'includefile' => '/local/eduvidual/classes/observer/course_created.php',
-        'priority' => 9999,
-    );
 
-$observers[] = array(
-        'eventname' => 'core\event\user_loggedin',
-        'callback' => '\local_eduvidual\observer\login::event',
-        'includefile' => '/local/eduvidual/classes/observer/login.php',
-        'priority' => 9999,
-    );
+class course_created {
+    public static function event($event) {
+        global $CFG, $DB, $PAGE, $SESSION, $USER;
+        $debug = false; // ($USER->id == 3707); //false;
+        $data = (object)$event->get_data();
+        //error_log("COURSE WAS CREATED");
+        //error_log(json_encode($data, JSON_NUMERIC_CHECK));
+    }
+}
