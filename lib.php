@@ -168,7 +168,7 @@ function local_eduvidual_before_standard_html_head() {
                 case CONTEXT_COURSE:
                     $o = $DB->get_record('course', array('id' => $ctx->instanceid));
                     if (!empty($o->id)) {
-                        $url = new \moodle_url('/course/index.php', array('id' => $o->id));
+                        $url = new \moodle_url('/course/view.php', array('id' => $o->id));
                         $nodes[] = array(
                             'has_action' => true,
                             'action' => $url->__toString(),
