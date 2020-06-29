@@ -114,6 +114,17 @@
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
       </KEYS>
     </TABLE>
+    <TABLE NAME="local_eduvidual_overrides" COMMENT="Override rules for course creations">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="orgid" TYPE="int" LENGTH="20" NOTNULL="true" SEQUENCE="false" COMMENT="The orgid"/>
+        <FIELD NAME="field" TYPE="char" LENGTH="250" NOTNULL="true" SEQUENCE="false" COMMENT="fieldname of the setting"/>
+        <FIELD NAME="value" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+    </TABLE>
     <TABLE NAME="local_eduvidual_modules" COMMENT="Modules that can be created on the fly">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>

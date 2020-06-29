@@ -184,7 +184,10 @@ if ($formsent) {
                                 $enroluser = optional_param('setteacher', 0, PARAM_INT);
                                 if (empty($enroluser) || $enroluser == 0) $enroluser = $USER->id;
 
+                                // Enrol user as teacher.
                                 \local_eduvidual\lib_enrol::course_manual_enrolments(array($course->id), array($enroluser), $role);
+                                // Override course settings based on organizational standards.
+                                \local_eduvidual\lib_helper::override_coursesettings($course->id);
 
                                 $redirect = $CFG->wwwroot . '/course/view.php?id=' . $course->id;
                                 if ($basement == 'restore') {

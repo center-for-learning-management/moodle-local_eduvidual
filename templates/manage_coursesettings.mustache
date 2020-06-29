@@ -1,0 +1,49 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+
+<div class="ui-eduvidual__">
+    <h5>{{#str}} manage:coursesettings, local_eduvidual {{/str}}</h5>
+    <p>{{#str}} manage:coursesettings:description, local_eduvidual {{/str}}</p>
+    <h6>{{#str}} manage:coursesettings:overriderolenames, local_eduvidual {{/str}}</h6>
+    <input type="hidden" id="orgid-{{uniqid}}" value="{{orgid}}" />
+    <table class="generaltable">
+        <tr>
+            <th>{{#str}} shortname {{/str}}</th>
+            <th>{{#str}} role {{/str}}</th>
+            <th>{{#str}} name {{/str}}</th>
+        </tr>
+        {{#overrideroles}}
+            <tr>
+                <td>{{shortname}}</td>
+                <td>{{name}}</td>
+                <td>
+                    <input type="text" class="form-field overriderole-{{uniqid}}" data-roleid="{{id}}"
+                        value="{{override}}" />
+                </td>
+            </tr>
+        {{/overrideroles}}
+        <tr>
+            <th colspan="3">
+                <a href="#" class="btn btn-primary btn-block"
+                    onclick="var a = this; require(['local_eduvidual/manager'], function(M) { M.overrideRolenames('{{uniqid}}', a); }); return false;">
+                    {{#str}} save {{/str}}
+                </a>
+            </th>
+        </tr>
+    </table>
+
+</div>

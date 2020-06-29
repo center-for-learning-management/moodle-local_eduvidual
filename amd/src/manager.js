@@ -331,6 +331,24 @@ define(['jquery', 'core/ajax', 'core/modal_events', 'core/modal_factory', 'core/
             });
         },
         /**
+         * Custom org settings - override role names of course roles.
+         * @param uniqid of the form.
+         * @param signalitem that shows success / failure.
+         */
+        overrideRolenames: function(uniqid, signalitem) {
+            var orgid = $('#orgid-' + uniqid).val();
+            var roles = [];
+            $('.overriderole-' + uniqid).each(function(){
+                roles[roles.length] = {
+                    roleid: $(this).attr('data-roleid'),
+                    override: $(this).val()
+                };
+            });
+            require(['local_eduvidual/main'], function(MAIN) {
+                MAIN.connect({ module: 'manage', act: 'override_rolenames', orgid: orgid, roles: JSON.stringify(roles) }, { signalItem: $(signalitem) });
+            });
+        },
+        /**
          * Reset the password of users.
          */
         setpwreset: function(){

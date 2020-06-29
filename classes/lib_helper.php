@@ -241,4 +241,42 @@ class lib_helper {
         }
         return $orgmenus;
     }
+    /**
+     * Override course settings as specified by org-managers.
+     * @param courseid.
+     */
+    public static function override_coursesettings($courseid) {
+        global $DB;
+        $ctx = \context_course::instance($courseid);
+        if (empty($ctx->id)) {
+            return;
+        }
+        $org = \local_eduvidual\locallib::get_org_by_courseid($courseid);
+        if (empty($org->orgid)) {
+            return;
+        }
+        $overrides = $DB->get_records('local_eduvidual_overrides', array('orgid' => $org->orgid));
+        foreach ($overrides as $override) {
+            $field = explode('_', $override->field);
+            switch($field[0]) {
+                case 'courserole':
+                    if (count($field) == 3 && $field[2] == 'name') {
+                        $roleid = $field[1];
+                        $rec = $DB->get_record('role_names', array('contextid' => $ctx->id, 'roleid' => $roleid));
+                        if (!empty($rec->id)) {
+                            $DB->set_field('role_names', 'name', $override->value, array('contextid' => $ctx->id, 'roleid' => $roleid));
+                        } else {
+                            $rec = (object) array(
+                                'contextid' => $ctx->id,
+                                'name' => $override->value,
+                                'roleid' => $roleid,
+                            );
+                            $DB->insert_record('role_names', $rec);
+                        }
+                    }
+                break;
+            }
+
+        }
+    }
 }

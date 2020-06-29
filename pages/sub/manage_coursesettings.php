@@ -16,16 +16,30 @@
 
 /**
  * @package    local_eduvidual
- * @copyright  2018 Digital Education Society (http://www.dibig.at),
- *             2020 and ongoing Center for Learning Management (http://www.lernmanagement.at)
- * @author     Robert Schrenk
+ * @copyright  2018 Digital Education Society (http://www.dibig.at)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die;
 
-$plugin->version  = 2020062903;
-$plugin->requires = 2019111803;  // Requires Moodle 3.8.3.
-$plugin->component = 'local_eduvidual';
-$plugin->release = '2.0 (Build: 2020062900)';
-$plugin->maturity = MATURITY_STABLE;
+$sql = "SELECT r.*
+            FROM {role} AS r, {role_context_levels} AS rcl
+            WHERE r.id=rcl.roleid
+                AND rcl.contextlevel = ?
+            ORDER BY r.name ASC";
+$roles = array_values($DB->get_records_sql($sql, array(CONTEXT_COURSE)));
+
+foreach ($roles as &$role) {
+    $override = $DB->get_record('local_eduvidual_overrides', array('orgid' => $org->orgid, 'field' => 'courserole_' . $role->id . '_name'));
+    //$role->showname = (!empty($role->name) ? $role->name : $role->shortname);
+    $role->override = $override->value;
+}
+
+echo $OUTPUT->render_from_template(
+    'local_eduvidual/manage_coursesettings',
+    (object) array(
+        'overrideroles' => $roles,
+        'orgid' => $org->orgid,
+        'wwwroot' => $CFG->wwwroot,
+    )
+);

@@ -413,6 +413,36 @@ switch ($act) {
             $reply['error'] = 'not_siteadmin';
         }
     break;
+    case 'override_rolenames':
+        $overrides = json_decode(optional_param('roles', '{}', PARAM_TEXT));
+        $sql = "SELECT r.id
+                    FROM {role} AS r, {role_context_levels} AS rcl
+                    WHERE r.id=rcl.roleid
+                        AND rcl.contextlevel = ?
+                    ORDER BY r.name ASC";
+        $allowedroles = array_keys($DB->get_records_sql($sql, array(CONTEXT_COURSE)));
+        foreach ($overrides as $override) {
+            if (!empty($override->roleid) && in_array($override->roleid, $allowedroles)) {
+                if (empty($override->override)) {
+                    $DB->delete_records('local_eduvidual_overrides', array('orgid' => $org->orgid, 'field' => 'courserole_' . $override->roleid . '_name'));
+                } else {
+                    $rec = $DB->get_record('local_eduvidual_overrides', array('orgid' => $org->orgid, 'field' => 'courserole_' . $override->roleid . '_name'));
+                    if (!empty($rec->id)) {
+                        $rec->value = $override->override;
+                        $DB->set_field('local_eduvidual_overrides', 'value', $rec->value, array('orgid' => $org->orgid, 'field' => 'courserole_' . $override->roleid . '_name'));
+                    } else {
+                        $override = (object) array(
+                            'orgid' => $org->orgid,
+                            'field' => 'courserole_' . $override->roleid . '_name',
+                            'value' => $override->override
+                        );
+                        $override->id = $DB->insert_record('local_eduvidual_overrides', $override);
+                    }
+                }
+            }
+        }
+        $reply['status'] = 'ok';
+    break;
     case 'setpwreset':
         if (!isset($secrets)) {
             $secrets = optional_param_array('secrets', NULL, PARAM_TEXT);

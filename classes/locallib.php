@@ -109,6 +109,7 @@ class locallib {
             case 'manage':
                 //$actions['archive'] = 'manage:archive';
                 //$actions['categories'] = 'manage:categories';
+                $actions['coursesettings'] = 'manage:coursesettings';
                 $actions['mnet'] = 'manage:mnet:action';
                 $actions['orgmenu'] = 'manage:orgmenu:title';
                 $actions['style'] = 'manage:style';
