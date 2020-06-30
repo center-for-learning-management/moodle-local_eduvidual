@@ -24,7 +24,7 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'loc
          */
         clearSessionStorage: function() {
             console.log('local_eduvidual/jsinjector:clearSessionStorage()');
-            sessionStorage.clear();
+            window.sessionStorage.clear();
         },
         /**
          * We do not want to see the course shortname field.
