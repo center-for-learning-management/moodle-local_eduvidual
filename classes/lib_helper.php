@@ -178,17 +178,20 @@ class lib_helper {
             }
         }
     }
+    /**
+     * If a course belongs to "mycourses", moodle will not show the coursecategories in the navbar.
+     * We want that, so we modify the navbar, if the "mycourses"-node is found.
+     */
     public static function fix_navbar() {
-        // It seems this is not necessary when the block mycourses is not enabled!
-        return;
         global $DB, $PAGE;
 
         // Add navbar items.
-        if (false && !empty($PAGE->context->contextlevel) && $PAGE->context->contextlevel >= CONTEXT_COURSE) {
+        if (!empty($PAGE->context->contextlevel) && $PAGE->context->contextlevel >= CONTEXT_COURSE) {
 
             $navbaritems = $PAGE->navbar->get_items();
             $PAGE->navbar->ignore_active();
 
+            $foundmycourses = false;
             $nodes = array();
             $nodesafter = array();
 
@@ -204,6 +207,7 @@ class lib_helper {
                     continue;
                 }
                 if ($navbaritem->key == 'mycourses') {
+                    $foundmycourses = true;
                     continue;
                 }
                 if ($navbaritem->type != \navigation_node::TYPE_COURSE) {
@@ -215,6 +219,11 @@ class lib_helper {
                         'is_hidden' => false,
                     );
                 }
+            }
+
+            if (!$foundmycourses) {
+                // we did not find the my courses node, so we will not modify this navbar!
+                return;
             }
 
             $path = explode('/', $PAGE->context->path);
