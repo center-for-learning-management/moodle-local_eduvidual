@@ -60,6 +60,7 @@ function local_eduvidual_before_standard_html_head() {
     $PAGE->requires->css('/local/eduvidual/style/ui.css');
     // General boost-modifications.
     $PAGE->requires->css('/local/eduvidual/style/theme_boost.css');
+    $PAGE->requires->css('/local/eduvidual/style/theme_39.css');
 
     $org = \local_eduvidual\locallib::get_org_by_context();
 
