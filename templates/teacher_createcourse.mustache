@@ -174,7 +174,7 @@
         <tr class="{{uniqid}}-create">
             <td colspan="3">
                 <a href="#" id="{{uniqid}}-submit" class="btn btn-primary btn-block disabled"
-                    onclick="require(['jquery'], function($) { $('#{{uniqid}}-form').submit(); });">
+                    onclick="require(['jquery'], function($) { $(this).addClass('disabled'); $('#{{uniqid}}-form').submit(); });">
                     {{#str}} create {{/str}}
                 </a>
             </td>
