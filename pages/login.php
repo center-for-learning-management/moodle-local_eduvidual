@@ -32,12 +32,8 @@ $PAGE->set_url('/local/eduvidual/pages/login.php', array('edushare' => $edushare
 $PAGE->set_title(get_string('login'));
 $PAGE->set_heading(get_string('login'));
 
-$PAGE->requires->css('/local/eduvidual/style/login.css');
-
-$PAGE->add_body_class('login-index');
-
 ?>
-<!doctype html>
+<!DOCTYPE html>
 <html>
 <head>
 	<meta charset="utf-8">
@@ -53,6 +49,7 @@ $PAGE->add_body_class('login-index');
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
 	<!-- Latest compiled JavaScript -->
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript"> window.sessionStorage.clear(); </script>
 </head>
 
 <body id="page-login-index">
@@ -75,7 +72,7 @@ $PAGE->add_body_class('login-index');
 					<div class="col-lg-6 col-sm-12">
 						<a href="<?php echo $CFG->wwwroot; ?>/local/eduvidual/pages/redirects/login_oauth.php?issuer=Google" title="Google" id="eduvidual-btn-sso-google" data-ajax="false"
 							class="btn btn-block" type="button" name="google">
-							<img src="<?php echo $CFG->wwwroot; ?>/local/eduvidual/pix/logo_google.png" width="20" alt="Google">&nbsp;Google
+							<img src="<?php echo $CFG->wwwroot; ?>/local/eduvidual/pix/logo_google.svg" width="20" alt="Google">&nbsp;Google
 						</a>
 					</div>
 				</div>
