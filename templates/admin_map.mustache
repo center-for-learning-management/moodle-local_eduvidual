@@ -17,6 +17,20 @@
 <div class="block_eduvidual_admin_map" id="{{uniqid}}">
     <h4>{{#str}} admin:map, block_eduvidual {{/str}}</h4>
     <div id="{{uniqid}}-map" style="height: 400px; border: 1px solid #AAA;"></div>
+    <div style="text-align: right; margin-bottom: 10px;">
+        <div style="display: inline-block;">
+                {{#pix}} google-maps-pin-green, block_eduvidual {{/pix}}
+                {{#str}} admin:map:eduv, block_eduvidual {{/str}}
+        </div>
+        <div style="display: inline-block;">
+            {{#pix}} google-maps-pin-orange, block_eduvidual {{/pix}}
+            {{#str}} admin:map:both, block_eduvidual {{/str}}
+        </div>
+        <div style="display: inline-block;">
+            {{#pix}} google-maps-pin-blue, block_eduvidual {{/pix}}
+            {{#str}} admin:map:lpf, block_eduvidual {{/str}}
+        </div>
+    </div>
     <input type="checkbox" id="{{uniqid}}-include-nonegroup"
         onchange="require(['block_eduvidual/admin'], function(ADMIN) { ADMIN.org_gps('{{uniqid}}'); });"/>
         <label for="{{uniqid}}-include-nonegroup">{{#str}} admin:map:includenonegroup, block_eduvidual {{/str}}</label>
