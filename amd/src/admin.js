@@ -367,6 +367,11 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'blo
 
                     });
 
+                    smallest_lat = 45.18189988240382;
+                    smallest_lon = 8.88805461218309;
+                    biggest_lat = 49.517950306694665;
+                    biggest_lon = 17.45739054968309;
+
                     var bounds = [[smallest_lat, smallest_lon], [biggest_lat, biggest_lon ]];
                     var center_lat = (smallest_lat + biggest_lat) / 2;
                     var center_lon = (smallest_lon + biggest_lon) / 2;
