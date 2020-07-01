@@ -351,7 +351,7 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'loc
                             orgs[i].layer = 0;
                             orgs[i].url = '';
                         }
-                        if (col != 'lightgray') {
+                        if (col != 'lightgray' && orgtype > 0) {
                             if (orgs[i].lon < smallest_lon) smallest_lon = orgs[i].lon;
                             if (orgs[i].lon > biggest_lon) biggest_lon = orgs[i].lon;
                             if (orgs[i].lat < smallest_lat) smallest_lat = orgs[i].lat;
@@ -360,6 +360,12 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'loc
                         orgs[i].marker = URL.relativeUrl('/local/eduvidual/pix/google-maps-pin-' + col + '.svg#' + orgs[i].classes + '#' + orgs[i].layer);
 
                     });
+
+                    smallest_lat = 45.18189988240382;
+                    smallest_lon = 8.88805461218309;
+                    biggest_lat = 49.517950306694665;
+                    biggest_lon = 17.45739054968309;
+
 
                     var bounds = [[smallest_lat, smallest_lon], [biggest_lat, biggest_lon ]];
                     var center_lat = (smallest_lat + biggest_lat) / 2;
