@@ -15,10 +15,6 @@
     along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 }}
 
-{{#ismanager}}
-    <p class="info">{{#str}} createcourse:hint_orgclasses, local_eduvidual {{/str}}</p>
-{{/ismanager}}
-
 <form id="{{uniqid}}-form" action="{{wwwroot}}/local/eduvidual/pages/createcourse.php" method="POST" enctype="multipart/form-data">
     <input type="hidden" id="{{uniqid}}-formsent" name="formsent" value="1" />
     {{^multipleorgs}}
