@@ -42,7 +42,9 @@ foreach ($files as $file) {
 if (empty($org->mnetlogo)) {
     $org->mnetlogo = $CFG->wwwroot . '/local/eduvidual/pix/icon_missing.png';
 }
-
+if (empty($org->mnetwwwroot)) {
+    $org->mnetwwwroot = '';
+}
 echo $OUTPUT->render_from_template(
     'local_eduvidual/manage_mnet' . (is_siteadmin() ? '_isadmin': ''),
     (object) array(
