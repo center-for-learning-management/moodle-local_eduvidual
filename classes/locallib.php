@@ -461,10 +461,10 @@ class locallib {
         }
         $files = array();
         $fs = get_file_storage();
-        $files_ = $fs->get_area_files($context->id, 'block_eduvidual', $areaname, $itemid);
+        $files_ = $fs->get_area_files($context->id, 'local_eduvidual', $areaname, $itemid);
         foreach ($files_ as $file) {
             if (str_replace('.', '', $file->get_filename()) != ""){
-                $file->url = '' . moodle_url::make_pluginfile_url($file->get_contextid(), $file->get_component(), $file->get_filearea(), $file->get_itemid(), $file->get_filepath(), $file->get_filename());
+                $file->url = '' . \moodle_url::make_pluginfile_url($file->get_contextid(), $file->get_component(), $file->get_filearea(), $file->get_itemid(), $file->get_filepath(), $file->get_filename());
                 $files[] = $file;
             }
         }
