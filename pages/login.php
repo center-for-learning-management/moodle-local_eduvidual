@@ -202,13 +202,6 @@ if ($errorcode > 0) {
 					</a>
 				</div>
 				<div class="col-lg-4 col-sm-12">
-					<a href="<?php echo $CFG->wwwroot; ?>/local/eduvidual/pages/register.php" title="reg-schule"  data-ajax="false">
-						<button class="btn-block btn-grey" type="button" name="Als Schule registrieren" id="reg-schule">
-							<?php echo get_string('register:org', 'local_eduvidual'); ?>
-						</button>
-					</a>
-				</div>
-				<div class="col-lg-4 col-sm-12">
 					<form action="<?php echo $CFG->wwwroot; ?>/login/index.php" method="post" id="guestlogin">
 						<input type="hidden" name="logintoken" value="WBOYNquPhvP8c2NXtWKVztYVQ73yXVXH">
 						<input type="hidden" name="username" value="guest">

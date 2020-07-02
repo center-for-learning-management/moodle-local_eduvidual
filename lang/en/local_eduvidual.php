@@ -523,7 +523,7 @@ $string['privacy:metadata:privacy:metadata:local_eduvidual_usertoken:used'] = 'T
 $string['qrscan:cameratoobject'] = 'Now focus your camery on the QR code!';
 $string['questioncategoryfilter:label'] = 'Categoryfilter';
 
-$string['register:individual'] = 'Register as individual';
+$string['register:individual'] = 'Register';
 $string['register:org'] = 'Register as organization';
 
 $string['registration:alreadyregistered'] = 'Already registered!';

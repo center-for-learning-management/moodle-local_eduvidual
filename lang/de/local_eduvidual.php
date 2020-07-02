@@ -521,7 +521,7 @@ $string['privacy:metadata:privacy:metadata:local_eduvidual_usertoken:used'] = 'D
 $string['qrscan:cameratoobject'] = 'Richten Sie nun die Kamera auf den QR Code!';
 $string['questioncategoryfilter:label'] = 'Kategoriefilter';
 
-$string['register:individual'] = 'Als Person registrieren';
+$string['register:individual'] = 'Registrieren';
 $string['register:org'] = 'Als Schule registrieren';
 
 $string['registration:alreadyregistered'] = 'Bereits registriert!';
