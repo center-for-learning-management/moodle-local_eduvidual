@@ -28,24 +28,19 @@ $addons = [
         'handlers' => [ // Different places where the plugin will display content.
             'createcourse' => [ // Handler unique name (alphanumeric).
                 'displaydata' => [
-                    'icon' => $CFG->wwwroot . '/mod/certificate/pix/icon.gif',
+                    'title' => get_string('createcourse:here', 'local_eduvidual'),
+                    'icon' => 't/cohort',
                     'class' => '',
                 ],
 
-                'delegate' => 'CoreCourseModuleDelegate', // Delegate (where to display the link to the plugin)
-                'method' => 'mobile_course_view', // Main function in \mod_certificate\output\mobile
+                'delegate' => 'CoreMainMenuDelegate', // Delegate (where to display the link to the plugin)
+                'init' => 'course_create_init',
+                'method' => 'course_create',
                 'offlinefunctions' => [
-                    'mobile_course_view' => [],
-                    'mobile_issues_view' => [],
                 ], // Function that needs to be downloaded for offline.
             ],
         ],
         'lang' => [ // Language strings that are used in all the handlers.
-            ['pluginname', 'certificate'],
-            ['summaryofattempts', 'certificate'],
-            ['getcertificate', 'certificate'],
-            ['requiredtimenotmet', 'certificate'],
-            ['viewcertificateviews', 'certificate'],
         ],
     ],
 ];
