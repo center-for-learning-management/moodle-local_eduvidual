@@ -32,7 +32,9 @@ $roles = array_values($DB->get_records_sql($sql, array(CONTEXT_COURSE)));
 foreach ($roles as &$role) {
     $override = $DB->get_record('local_eduvidual_overrides', array('orgid' => $org->orgid, 'field' => 'courserole_' . $role->id . '_name'));
     //$role->showname = (!empty($role->name) ? $role->name : $role->shortname);
-    $role->override = $override->value;
+    if (!empty($override->value)) {
+        $role->override = $override->value;
+    }
 }
 
 echo $OUTPUT->render_from_template(
