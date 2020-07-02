@@ -103,14 +103,13 @@ function local_eduvidual_before_standard_html_head() {
     }
     $inject_styles[] = "</style>";
 
-    $inject_styles = array("<style type=\"text/css\" id=\"local_eduvidual_style_orgbanner\">");
-    if (!empty($org->orgbanner)) {
-        $inject_styles[] = "body #page-header .card { background-image: url(" . $org->orgbanner . ") !important; }";
+    $inject_styles[] = "<style type=\"text/css\" id=\"local_eduvidual_style_org\">";
+    if (!empty($org->customcss)) {
+        $inject_styles[] = $org->customcss;
     }
-    $inject_styles[] = "</style>";
-
-    $inject_styles = array("<style type=\"text/css\" id=\"local_eduvidual_style_org\">");
-    if (!empty($org->customcss)) $inject_styles[] = $org->customcss;
+    if (!empty($org->banner)) {
+        $inject_styles[] = "body #page-header .card { background-image: url(" . $org->banner . ") !important; }";
+    }
     $inject_styles[] = "</style>";
 
     \local_eduvidual\lib_helper::fix_navbar();
