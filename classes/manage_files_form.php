@@ -41,7 +41,7 @@ class local_eduvidual_manage_files_form extends moodleform {
         $mform->addElement('header', 'orgbannerlbl', get_string('manage:style:orgbanner:header', 'local_eduvidual'));
         $mform->addElement('filemanager', 'orgbanner', get_string('manage:style:orgbanner:filearealabel', 'local_eduvidual'), null,
             array(
-                'subdirs' => $this->subdirds, 'maxbytes' => $this->maxbytes, 'areamaxbytes' => $this->areamaxbytes,
+                'subdirs' => $this->subdirs, 'maxbytes' => $this->maxbytes, 'areamaxbytes' => $this->areamaxbytes,
                 'maxfiles' => 1, 'accepted_types' => array('image') //, 'return_types'=> FILE_INTERNAL | FILE_EXTERNAL
             )
         );
@@ -49,7 +49,7 @@ class local_eduvidual_manage_files_form extends moodleform {
         $mform->addElement('header', 'orgfileslbl', get_string('manage:style:orgfiles:header', 'local_eduvidual'));
         $mform->addElement('filemanager', 'orgfiles', get_string('manage:style:orgfiles:filearealabel', 'local_eduvidual', array('url' => $_url)), null,
             array(
-                'subdirs' => $this->subdirds, 'maxbytes' => $this->maxbytes, 'areamaxbytes' => $this->areamaxbytes,
+                'subdirs' => $this->subdirs, 'maxbytes' => $this->maxbytes, 'areamaxbytes' => $this->areamaxbytes,
                 'maxfiles' => $this->maxfiles, 'accepted_types' => array('image') //, 'return_types'=> FILE_INTERNAL | FILE_EXTERNAL
             )
         );
