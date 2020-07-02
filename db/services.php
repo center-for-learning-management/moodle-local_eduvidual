@@ -64,6 +64,7 @@ $functions = array(
         'description' => 'Get possible options for a layer in create course',
         'type'        => 'read',
         'ajax'        => 1,
+        'services'    => [MOODLE_OFFICIAL_MOBILE_SERVICE, 'local_mobile'],
     ),
     'local_eduvidual_user_course_news' => array(
         'classname'   => 'local_eduvidual_external_user',
