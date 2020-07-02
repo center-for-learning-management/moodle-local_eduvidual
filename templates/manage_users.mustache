@@ -24,10 +24,6 @@
 			</li>
 		{{/ actions }}
 	</ul>
-</div>
-
-
-<div class="ui-eduvidual__ local_eduvidual_manage_user-wrapper">
     <ul class="nav nav-tabs mb-3 toggle-controller-{{uniqid}}">
         <li class="nav-item">
             <a href="#" onclick="var a = this; require(['local_eduvidual/main'], function(M) { M.toggle('{{uniqid}}', a, $(a).attr('data-toggle'));} ); return false;" data-toggle="manageusers" class="nav-link">
@@ -61,7 +57,10 @@
             </a>
         </li>
     </ul>
+</div>
 
+
+<div class="ui-eduvidual__ local_eduvidual_manage_user-wrapper">
     <div id="{{uniqid}}-manageusers" class="hidden card {{uniqid}}-card" style="padding: 12px;">
         <h3>{{#str}} manage:users:title, local_eduvidual {{/str}}</h3>
         <p>{{#str}} manage:users:description, local_eduvidual, { "wwwroot": {{#quote}}{{wwwroot}}{{/quote}}, "orgid": {{#quote}}{{orgid}}{{/quote}} } {{/str}}</p>
