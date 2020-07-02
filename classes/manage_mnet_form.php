@@ -50,8 +50,8 @@ class local_eduvidual_manage_mnet_form extends moodleform {
                         'maxfiles' => $this->maxfiles, 'accepted_types' => array('image') //, 'return_types'=> FILE_INTERNAL | FILE_EXTERNAL
                     )
                 );
-        $mform->addElement('submit', null, get_string('manage:mnet:send', 'local_eduvidual'));
-        //$this->add_action_buttons();
+
+        $this->add_action_buttons();
     }
     //Custom validation should be added here
     function validation($data, $files) {

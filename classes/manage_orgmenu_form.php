@@ -37,6 +37,7 @@ class local_eduvidual_manage_orgmenu_form extends moodleform {
         $mform->addElement('textarea', 'orgmenu', get_string('manage:orgmenu:title', 'local_eduvidual'), array('style' => 'width: 100%'));
         $mform->setType('orgmenu', PARAM_TEXT);
 
-        $this->add_action_buttons();
+        // Add action buttons without cancel option.
+        $this->add_action_buttons(false);
     }
 }

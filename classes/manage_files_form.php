@@ -54,8 +54,7 @@ class local_eduvidual_manage_files_form extends moodleform {
             )
         );
 
-        $mform->addElement('submit', null, get_string('manage:style:files:send', 'local_eduvidual'));
-        //$this->add_action_buttons();
+        $this->add_action_buttons(true, get_string('manage:style:files:send', 'local_eduvidual'));
     }
     //Custom validation should be added here
     function validation($data, $files) {

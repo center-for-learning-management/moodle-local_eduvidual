@@ -72,8 +72,7 @@ class local_eduvidual_manage_subcats_form extends moodleform {
         $mform->setType('subcats4lbl', PARAM_TEXT);
         $mform->setDefault('subcats4lbl', $org->subcats4lbl);
 
-        $mform->addElement('submit', null, get_string('save'));
-        //$this->add_action_buttons();
+        $this->add_action_buttons();
     }
     //Custom validation should be added here
     function validation($data, $files) {
