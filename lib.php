@@ -33,6 +33,13 @@ function local_eduvidual_after_config() {
     if (in_array($script, $scripts)) {
         \local_eduvidual\lib_wshelper::buffer();
     }
+
+    /* Prepared code for custom config of bigbluebutton server.
+    $CFG->bigbluebuttonbn['server_url'] = '';
+    $CFG->{'bigbluebuttonbn_server_url'} = '';
+    $CFG->bigbluebuttonbn['shared_secret'] = '';
+    $CFG->{'bigbluebuttonbn_shared_secret'} = '';
+    */
 }
 
 function local_eduvidual_after_require_login() {
