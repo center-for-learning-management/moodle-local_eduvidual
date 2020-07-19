@@ -62,7 +62,7 @@ if ($USER->id > 1 && !isguestuser($USER)) {
                         <span class="hash">#</span>
                         <span class="tan"><?php echo $USER->profile_field_secret; ?></span>
                     </div>
-                    <div class="roles"><?php echo \local_eduvidual\locallib::get_orgrole($org->orgid); ?></div>
+                    <div class="roles"><?php echo \local_eduvidual\locallib::get_highest_role(); ?></div>
                 </div>
             </div>
             <div>
