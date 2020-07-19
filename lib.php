@@ -149,14 +149,14 @@ function local_eduvidual_extend_navigation($navigation) {
     if (in_array($highestrole, array('Manager', 'Teacher'))) {
         $label = get_string('createcourse:here', 'local_eduvidual');
         $link = new moodle_url('/local/eduvidual/pages/createcourse.php', array());
-        $icon = new pix_icon('/t/cohort', '', '');
+        $icon = new pix_icon('create-course', '', 'local_eduvidual');
         $nodecreatecourse = $nodehome->add($label, $link, navigation_node::NODETYPE_LEAF, $label, 'createcourse', $icon);
         $nodecreatecourse->showinflatnavigation = true;
     }
 
     $label = get_string('Browse_org', 'local_eduvidual');
     $link = new moodle_url('/local/eduvidual/pages/myorgs.php');
-    $icon = new pix_icon('/i/withsubcat', '', '');
+    $icon = new pix_icon('my-orgs', '', 'local_eduvidual');
     $nodemyorgs = $nodehome->add($label, $link, navigation_node::NODETYPE_LEAF, $label, 'browseorgs', $icon);
     $nodemyorgs->showinflatnavigation = true;
 }
