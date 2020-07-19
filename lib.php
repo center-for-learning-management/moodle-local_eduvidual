@@ -239,7 +239,7 @@ function local_eduvidual_extend_navigation_user_settings($nav, $user, $context, 
  * Extend users profile
  */
 function local_eduvidual_myprofile_navigation($tree, $user, $iscurrentuser, $course) {
-    global $DB;
+    global $CFG, $DB;
     $category = new \core_user\output\myprofile\category('eduvidual', get_string('pluginname', 'local_eduvidual'), null);
     $tree->add_category($category);
     if (is_siteadmin()) {
