@@ -69,25 +69,11 @@ $PAGE->navbar->add(get_string('Management', 'local_eduvidual'), new moodle_url('
 $PAGE->navbar->add(get_string('Accesscards', 'local_eduvidual'), $PAGE->url);
 echo $OUTPUT->header();
 
-$grid = 2;
-if (count($orgas) > 1) $grid = 3;
 ?>
 <form action="" method="get">
     <input type="hidden" name="orgid" value="<?php echo $org->orgid; ?>" />
-    <div class="hide-on-print ui-eduvidual grid-eq-<?php echo $grid; ?>">
-        <?php
-        if (count($orgas) > 1) {
-            ?><div><select name="orgid" onchange="this.form.submit();" style="width: 100%;"><?php
-            foreach($orgas AS $orga) {
-                ?><option value="<?php echo $orga->orgid; ?>"<?php if($orga->orgid == $org->orgid) echo " selected"; ?>>
-                    <?php echo $orga->orgid . ' | ' . $orga->name; ?>
-                </option><?php
-            }
-            ?></select></div><?php
-        } else {
-			?><input type="hidden" name="orgid" value="<?php echo $org->orgid; ?>" /><?php
-		}
-        ?>
+    <div class="hide-on-print ui-eduvidual grid-eq-2">
+		<input type="hidden" name="orgid" value="<?php echo $org->orgid; ?>" />
         <div>
             <select name="cohort" onchange="this.form.submit();" style="width: 100%;">
             <?php
