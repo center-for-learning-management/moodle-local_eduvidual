@@ -35,6 +35,7 @@ require_once($CFG->dirroot . '/local/eduvidual/classes/lib_import.php');
 $helper = new local_eduvidual_lib_import();
 $compiler = new local_eduvidual_lib_import_compiler_user();
 $helper->set_compiler($compiler);
+$helper->set_fields(array('id', 'username', 'email', 'firstname', 'lastname', 'cohorts_add', 'cohorts_remove', 'bunch'));
 
 if (optional_param('datavalidated', 0, PARAM_INT) == 1) {
     $helper->load_post();
@@ -48,15 +49,16 @@ if (optional_param('datavalidated', 0, PARAM_INT) == 1) {
         <input type="hidden" name="act" value="users" />
         <table border="1" width="100%">
             <tr>
-                <th>chk</th>
-                <th>firstname</th>
-                <th>lastname</th>
-                <th>email</th>
-                <th>cohort_add</th>
-                <th>cohort_remove</th>
-                <th>password</th>
-                <th>result</th>
-                <th>secret</th>
+                <th><?php echo get_string('manage:createuserspreadsheet:col:check', 'local_eduvidual'); ?></th>
+                <th><?php echo get_string('firstname'); ?></th>
+                <th><?php echo get_string('lastname'); ?></th>
+                <th><?php echo get_string('email'); ?></th>
+                <th><?php echo get_string('role'); ?></th>
+                <th><?php echo get_string('manage:createuserspreadsheet:col:cohorts_add', 'local_eduvidual'); ?></th>
+                <th><?php echo get_string('manage:createuserspreadsheet:col:cohorts_remove', 'local_eduvidual'); ?></th>
+                <th><?php echo get_string('password'); ?></th>
+                            <th><?php echo get_string('manage:createuserspreadsheet:col:result', 'local_eduvidual'); ?></th>
+                <th><?php echo get_string('secret', 'local_eduvidual'); ?></th>
             </tr>
     <?php
     for ($a = 0; $a < count($users); $a++) {
@@ -67,6 +69,7 @@ if (optional_param('datavalidated', 0, PARAM_INT) == 1) {
             <td><?php echo @$user->firstname; ?></td>
             <td><?php echo @$user->lastname; ?></td>
             <td><?php echo @$user->email; ?></td>
+            <td><?php echo @$user->role; ?></td>
             <td><?php echo @$user->cohorts_add; ?></td>
             <td><?php echo @$user->cohorts_remove; ?></td>
             <td><?php echo @$user->password; ?></td>
@@ -150,7 +153,12 @@ if (optional_param('datavalidated', 0, PARAM_INT) == 1) {
         ?>
                 </td>
                 <td>
-        <?php if(!empty($user->secret)) { echo $user->secret; } else { echo '-'; } ?>
+        <?php
+        if(empty($user->secret)) {
+            $user->secret = \local_eduvidual\locallib::get_user_secret($u->id);
+        }
+        echo $u->id . '#' . $user->secret;
+        ?>
                 </td>
             </tr>
         </tr>
@@ -180,20 +188,21 @@ if (optional_param('datavalidated', 0, PARAM_INT) == 1) {
     </form>
     <?php
 } elseif (isset($_FILES['local_eduvidual_manage_usersimport'])) {
-    $helper->set_fields(array('id', 'username', 'email', 'firstname', 'lastname', 'role', 'bunch'));
     $helper->load_file($_FILES['local_eduvidual_manage_usersimport']['tmp_name']);
     $objs = $helper->get_rowobjects();
     $fields = $helper->get_fields();
     ?>
     <table border="1" width="100%">
         <tr>
-            <td>chk</td>
-            <td>firstname</td>
-            <td>lastname</td>
-            <td>email</td>
-            <td>role</td>
-            <td>bunch</td>
-            <td>action</td>
+            <th><?php echo get_string('manage:createuserspreadsheet:col:check', 'local_eduvidual'); ?></th>
+            <th><?php echo get_string('firstname'); ?></th>
+            <th><?php echo get_string('lastname'); ?></th>
+            <th><?php echo get_string('email'); ?></th>
+            <th><?php echo get_string('role'); ?></th>
+            <th><?php echo get_string('manage:createuserspreadsheet:col:cohorts_add', 'local_eduvidual'); ?></th>
+            <th><?php echo get_string('manage:createuserspreadsheet:col:cohorts_remove', 'local_eduvidual'); ?></th>
+            <th><?php echo get_string('password'); ?></th>
+            <th><?php echo get_string('manage:createuserspreadsheet:col:result', 'local_eduvidual'); ?></th>
         </tr>
         <?php
         foreach($objs AS $obj) {
@@ -204,7 +213,9 @@ if (optional_param('datavalidated', 0, PARAM_INT) == 1) {
             <td><?php echo @$obj->lastname; ?></td>
             <td><?php echo @$obj->email; ?></td>
             <td><?php echo @$obj->role; ?></td>
-            <td><?php echo @$obj->bunch; ?></td>
+            <td><?php echo @$obj->cohorts_add; ?></td>
+            <td><?php echo @$obj->cohorts_remove; ?></td>
+            <td><?php echo @$obj->password; ?></td>
             <td><?php echo @$obj->payload->action; ?></td>
         </tr>
             <?php
@@ -219,16 +230,5 @@ if (optional_param('datavalidated', 0, PARAM_INT) == 1) {
         <input type="submit" value="<?php echo get_string('manage:createuserspreadsheet:import:datavalidated', 'local_eduvidual'); ?>" class="btn btn-primary btn-block" />
     </form>
 
-    <?php
-} else {
-    ?>
-    <ul>
-        <li>id:<br /><?php echo get_string('manage:createuserspreadsheet:import:description:id', 'local_eduvidual'); ?></li>
-        <li>firstname:<br /><?php echo get_string('manage:createuserspreadsheet:import:description:firstname', 'local_eduvidual'); ?></li>
-        <li>lastname:<br /><?php echo get_string('manage:createuserspreadsheet:import:description:lastname', 'local_eduvidual'); ?></li>
-        <li>email:<br /><?php echo get_string('manage:createuserspreadsheet:import:description:email', 'local_eduvidual'); ?></li>
-        <li>role:<br /><?php echo get_string('manage:createuserspreadsheet:import:description:role', 'local_eduvidual'); ?></li>
-        <li>bunch:<br /><?php echo get_string('manage:createuserspreadsheet:import:description:bunch', 'local_eduvidual'); ?></li>
-    </ul>
     <?php
 }

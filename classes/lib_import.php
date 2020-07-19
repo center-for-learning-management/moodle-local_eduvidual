@@ -273,11 +273,6 @@ class local_eduvidual_lib_import_compiler_user extends local_eduvidual_lib_impor
         if (!isset($obj->id)) {
             $obj->id = 0;
         }
-        if ($obj->id > 0) {
-            $payload->action = 'Update #' . $obj->id;
-        } else {
-            $payload->action = 'Create';
-        }
         if (empty($obj->firstname)) {
             $colors = file($CFG->dirroot . '/local/eduvidual/templates/names.colors', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
             $color_key = array_rand($colors, 1);
@@ -335,8 +330,7 @@ class local_eduvidual_lib_import_compiler_user extends local_eduvidual_lib_impor
         }
 
         // Check if email is already taken and set userid accordingly.
-        $chk = $DB->get_records_sql('SELECT id FROM {user} WHERE username LIKE ? OR email LIKE ?', array($obj->email, $obj->email));
-        $ids = array_keys($chk);
+        $ids = array_keys($DB->get_records_sql('SELECT id FROM {user} WHERE username LIKE ? OR email LIKE ?', array($obj->email, $obj->email)));
         if (count($ids) > 0) {
             if (count($ids) == 1) {
                 // Set the userid given.
@@ -348,6 +342,11 @@ class local_eduvidual_lib_import_compiler_user extends local_eduvidual_lib_impor
                     $obj->id = $ids[0];
                 }
             }
+        }
+        if ($obj->id > 0) {
+            $payload->action = get_string('update');
+        } else {
+            $payload->action = get_string('create');
         }
 
         if (!empty($obj->id)) {
