@@ -33,6 +33,13 @@ function local_eduvidual_after_config() {
     if (in_array($script, $scripts)) {
         \local_eduvidual\lib_wshelper::buffer();
     }
+
+    /* Prepared code for custom config of bigbluebutton server.
+    $CFG->bigbluebuttonbn['server_url'] = '';
+    $CFG->{'bigbluebuttonbn_server_url'} = '';
+    $CFG->bigbluebuttonbn['shared_secret'] = '';
+    $CFG->{'bigbluebuttonbn_shared_secret'} = '';
+    */
 }
 
 function local_eduvidual_after_require_login() {
@@ -103,14 +110,13 @@ function local_eduvidual_before_standard_html_head() {
     }
     $inject_styles[] = "</style>";
 
-    $inject_styles = array("<style type=\"text/css\" id=\"local_eduvidual_style_orgbanner\">");
-    if (!empty($org->orgbanner)) {
-        $inject_styles[] = "body #page-header .card { background-image: url(" . $org->orgbanner . ") !important; }";
+    $inject_styles[] = "<style type=\"text/css\" id=\"local_eduvidual_style_org\">";
+    if (!empty($org->customcss)) {
+        $inject_styles[] = $org->customcss;
     }
-    $inject_styles[] = "</style>";
-
-    $inject_styles = array("<style type=\"text/css\" id=\"local_eduvidual_style_org\">");
-    if (!empty($org->customcss)) $inject_styles[] = $org->customcss;
+    if (!empty($org->banner)) {
+        $inject_styles[] = "body #page-header .card { background-image: url(" . $org->banner . ") !important; }";
+    }
     $inject_styles[] = "</style>";
 
     \local_eduvidual\lib_helper::fix_navbar();
@@ -143,14 +149,14 @@ function local_eduvidual_extend_navigation($navigation) {
     if (in_array($highestrole, array('Manager', 'Teacher'))) {
         $label = get_string('createcourse:here', 'local_eduvidual');
         $link = new moodle_url('/local/eduvidual/pages/createcourse.php', array());
-        $icon = new pix_icon('/t/cohort', '', '');
+        $icon = new pix_icon('create-course', '', 'local_eduvidual');
         $nodecreatecourse = $nodehome->add($label, $link, navigation_node::NODETYPE_LEAF, $label, 'createcourse', $icon);
         $nodecreatecourse->showinflatnavigation = true;
     }
 
     $label = get_string('Browse_org', 'local_eduvidual');
     $link = new moodle_url('/local/eduvidual/pages/myorgs.php');
-    $icon = new pix_icon('/i/withsubcat', '', '');
+    $icon = new pix_icon('my-orgs', '', 'local_eduvidual');
     $nodemyorgs = $nodehome->add($label, $link, navigation_node::NODETYPE_LEAF, $label, 'browseorgs', $icon);
     $nodemyorgs->showinflatnavigation = true;
 }
@@ -233,7 +239,7 @@ function local_eduvidual_extend_navigation_user_settings($nav, $user, $context, 
  * Extend users profile
  */
 function local_eduvidual_myprofile_navigation($tree, $user, $iscurrentuser, $course) {
-    global $DB;
+    global $CFG, $DB;
     $category = new \core_user\output\myprofile\category('eduvidual', get_string('pluginname', 'local_eduvidual'), null);
     $tree->add_category($category);
     if (is_siteadmin()) {
