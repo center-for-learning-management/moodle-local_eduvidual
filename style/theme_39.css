@@ -47,9 +47,6 @@ body {
 .editing .course-content ul.periods li.section.main:last-child {
   border-bottom: none;
 }
-#page-content #region-main.has-blocks {
-    width: calc(100% - 275px);
-}
 
 #page-content a:link,
 #page-content a:visited,
