@@ -62,13 +62,14 @@ body {
 #page-content .icon {
   color: #10507f;
 }
-#page-content .btn-primary {
+#page-content .btn-primary,
+#page-content .btn-block {
   background-color: #10507f;
   border-color: #10507f;
-  color: #fff;
+  color: #fff !important;
 }
 #page-content .btn {
-  color: #fff !important;
+  color: #fff;
   text-decoration: none !important;
 }
 #page-content .btn:focus {
@@ -79,6 +80,10 @@ body {
 #page-content .btn-secondary {
   color: #535353 !important;
   background-color: #f7f7f7;
+}
+#page-content .disabled {
+  background-color: #DEDEDE;
+  color: #535353 !important;
 }
 #page-content .btn-outline-primary {
   background-color: #10507f;
@@ -97,8 +102,7 @@ body {
 #page-content .section-modchooser-text {
   color: #535353;
 }
-#page-content #region-main-box h3,
-#page-content #region-main-box h5 {
+#page-content #region-main-box h3 {
   margin-top: 2rem;
 }
 #page-content #region-main-box p a {
@@ -207,6 +211,25 @@ body {
   background-color: #10507f;
   color: #fff;
 }
+#page-content #region-main-box [role='main'] [data-region="calendar"] #calendarviewdropdown {
+  color: #10507f !important;
+}
+#page-content #region-main-box [role='main'] [data-region="calendar"] #calendarviewdropdown:hover {
+  color: #fff !important;
+}
+#page-content #region-main-box [role='main'] [data-region="calendar"] #calendarviewdropdown:hover .icon {
+  color: #fff !important;
+}
+#page-content #region-main-box [role='main'] [data-region="calendar"] #course {
+  border: solid #6c757d 1px;
+}
+#page-content #region-main-box [role='main'] [data-region="calendar"] #course:hover {
+  background-color: #f8f9fa;
+}
+#page-content #region-main-box [role='main'] [data-region="calendar"] .dropdown-item.active {
+  background-color: #10507f;
+  color: #fff;
+}
 #page-content #region-main-box [role='main'] .nav-tabs {
   margin-bottom: 0px !important;
   border-bottom: 5px solid #10507f;
@@ -242,9 +265,12 @@ body {
 #page-content #region-main-box [role='main'] .generaltable a:visited,
 #page-content #region-main-box [role='main'] .generaltable a:hover,
 #page-content #region-main-box [role='main'] .generaltable a:active {
+  color: #535353;
+  border: none;
+  text-decoration: none;
+}
+#page-content #region-main-box .calendar_filters .icon {
   color: #535353 !important;
-  border: none !important;
-  text-decoration: none !important;
 }
 #page-content #region-main-box .user-grade {
   color: #535353;
@@ -428,7 +454,7 @@ nav .nav-link:focus {
 				.list-group-item-action{
 					background-color: #fff;
 					border-bottom: 1px solid @eduvidgrau;
-					border-top: 1px solid @eduvidgrau;	
+					border-top: 1px solid @eduvidgrau;
 					& .media-body{
 						background: -webkit-linear-gradient(left, #000 90%, #fff);
 						-webkit-background-clip: text;
@@ -442,7 +468,7 @@ nav .nav-link:focus {
 					& .media-body{
 						background: -webkit-linear-gradient(left, #fff 90%, @eduvidblau);
 						-webkit-background-clip: text;
-						-webkit-text-fill-color: transparent;				
+						-webkit-text-fill-color: transparent;
 					}
 				}
 				.media-body{
@@ -534,7 +560,7 @@ nav .nav-link:focus {
 								color:@eduvidfontdark !important;
 							}
 						}
-						
+
 					}*/
   }
   #nav-drawer.closed .list-group .list-group-item-action .media-left,
@@ -591,6 +617,9 @@ nav .nav-link:focus {
     color: #fff;
     border: none;
     text-decoration: none;
+  }
+  #nav-drawer.closed .list-group .active_tree_node .media-left img.icon {
+    filter: invert(1);
   }
   #nav-drawer.closed .list-group .active_tree_node:hover a:link,
   #nav-drawer.closed .list-group .active_tree_node:hover a:visited,
@@ -792,9 +821,17 @@ a.dropdown-toggle:focus,
     -webkit-box-shadow: none;
     box-shadow: none;
   }
-  body.drawer-open-left,
-  #page {
-    margin-left: 120px;
+  body:not(.drawer-open-left) #page {
+    margin-left: 50px;
+    margin-right: 10px;
+    width: calc(100% - 50px) !important;
+}
+body.drawer-open-left {
+    margin-left: 0px;
+}
+  body.drawer-open-left #page {
+    margin-left: 250px;
+    width: calc(100% - 250px) !important;
   }
   #nav-drawer[aria-hidden="false"] {
     width: 250px;
@@ -919,4 +956,10 @@ a.dropdown-toggle:focus,
 #next-activity-link,
 #prev-activity-link {
   background-color: #10507f;
+}
+.drawer-ease {
+  -webkit-transition: none !important;
+  -moz-transition: none !important;
+  -o-transition: none !important;
+  transition: none !important;
 }
