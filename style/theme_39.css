@@ -47,6 +47,10 @@ body {
 .editing .course-content ul.periods li.section.main:last-child {
   border-bottom: none;
 }
+#page-content #region-main.has-blocks {
+    width: calc(100% - 275px);
+}
+
 #page-content a:link,
 #page-content a:visited,
 #page-content a:hover,
@@ -454,7 +458,7 @@ nav .nav-link:focus {
 				.list-group-item-action{
 					background-color: #fff;
 					border-bottom: 1px solid @eduvidgrau;
-					border-top: 1px solid @eduvidgrau;	
+					border-top: 1px solid @eduvidgrau;
 					& .media-body{
 						background: -webkit-linear-gradient(left, #000 90%, #fff);
 						-webkit-background-clip: text;
@@ -468,7 +472,7 @@ nav .nav-link:focus {
 					& .media-body{
 						background: -webkit-linear-gradient(left, #fff 90%, @eduvidblau);
 						-webkit-background-clip: text;
-						-webkit-text-fill-color: transparent;				
+						-webkit-text-fill-color: transparent;
 					}
 				}
 				.media-body{
@@ -560,7 +564,7 @@ nav .nav-link:focus {
 								color:@eduvidfontdark !important;
 							}
 						}
-						
+
 					}*/
   }
   #nav-drawer.closed .list-group .list-group-item-action .media-left,
