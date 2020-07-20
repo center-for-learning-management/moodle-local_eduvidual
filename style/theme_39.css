@@ -12,6 +12,9 @@
 body {
   background-color: #f7f7f7;
 }
+div.d-inline-block[data-region="drawer-toggle"] {
+    width: 50px;
+}
 #page-header {
   padding: 0px !important;
 }
