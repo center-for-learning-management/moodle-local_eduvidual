@@ -32,6 +32,8 @@ function xmldb_local_eduvidual_install(){
     $chk = $DB->get_record('user_info_category', array('name' => $obj->name));
     if (empty($chk->id)) {
         $catid = $DB->insert_record('user_info_category', $obj, true);
+    } else {
+        $catid = $chk->id;
     }
 
     $obj = new \stdClass;
@@ -58,6 +60,8 @@ function xmldb_local_eduvidual_install(){
     $chk = $DB->get_record('user_info_field', array('shortname' => $obj->shortname));
     if (empty($chk->id)) {
         $id = $DB->insert_record('user_info_field', $obj, true);
+    } else {
+        $id = $chk->id;
     }
     set_config('fieldid_secret', $id, 'local_eduvidual');
 
@@ -86,6 +90,8 @@ function xmldb_local_eduvidual_install(){
     $chk = $DB->get_record('user_info_field', array('shortname' => $obj->shortname));
     if (empty($chk->id)) {
         $id = $DB->insert_record('user_info_field', $obj, true);
+    } else {
+        $id = $chk->id;
     }
 
     set_config('fieldid_supportflag', $id, 'local_eduvidual');
