@@ -206,7 +206,7 @@ if (!is_siteadmin()) {
                 if (!$roleinuse) {
                     $previousrole = get_config('local_eduvidual', 'defaultorgrole' . $type);
                     //$reply['previousrole'] = $previousrole;
-                    if (!empty($previousrole)) {
+                    if (!empty($previousrole) && $previousrole != $role) {
                         // We remove the previously set roles.
                         //$reply['unassigning'] = array();
                         $members = $DB->get_records('local_eduvidual_orgid_userid', array('role' => ucfirst($type)), 'orgid ASC', '*');
