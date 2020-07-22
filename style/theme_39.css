@@ -1,4 +1,9 @@
 /* LESS Document */
+
+#nav-drawer a[data-parent-key="mycourses"] {
+    display: none !important;
+}
+
 :root {
   --blue: #10507f;
   --primary: #10507f;
