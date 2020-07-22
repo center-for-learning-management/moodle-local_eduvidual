@@ -219,8 +219,8 @@ if (!is_siteadmin()) {
                                 $contextid = $context->id;
                             }
                             if (empty($contextid)) continue;
-                            //$reply['unassigning'][] = $member->userid . ' / ' . $context->id;
-                            role_unassign($previousrole, $member->userid, $context->id);
+                            //$reply['unassigning'][] = $member->userid . ' / ' . $contextid;
+                            role_unassign($previousrole, $member->userid, $contextid);
                         }
                     }
                     if (!empty($role)) {
