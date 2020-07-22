@@ -56,8 +56,8 @@ $PAGE->set_heading(get_string('login'));
 	<div id="page" class="container ">
 
 		<header class="container justify-content-center">
-			<img src="<?php echo $CFG->wwwroot; ?>/local/eduvidual/pix/icon.svg" alt="eduvidual Logo">
-			<h1>eduvidual - <?php echo get_string('your_learning_environment', 'local_eduvidual'); ?></h1>
+			<img style="min-height: 120px;" src="<?php echo $CFG->wwwroot; ?>/local/eduvidual/pix/icon.svg" alt="eduvidual Logo">
+			<h1 style="display: none;">eduvidual - <?php echo get_string('your_learning_environment', 'local_eduvidual'); ?></h1>
 		</header>
 
 		<main class="page-wrapper justify-content-center">
