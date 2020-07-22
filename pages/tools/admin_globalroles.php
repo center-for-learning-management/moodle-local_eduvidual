@@ -22,7 +22,7 @@
  */
 
 /**
- * Ensure that every organiation has a support course.
+ * Ensure that all global roles are set correctly!
  */
 
 require_once('../../../../config.php');
