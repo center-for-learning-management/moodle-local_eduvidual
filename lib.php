@@ -340,16 +340,8 @@ function local_eduvidual_pluginfile($course, $cm, $context, $filearea, $args, $f
     // user really does have access to the file in question.
     $restrict_to_org = array('orgfiles', 'orgbanner');
     if (in_array($filearea, $restrict_to_org)) {
-        global $CFG;
-
-        $orgs = \local_eduvidual\locallib::get_organisations('*');
-        $ok = false;
-        foreach($orgs AS $org) {
-            if ($org->orgid == $itemid) {
-                $ok = true;
-            }
-        }
-        if (!$ok) {
+        $orgrole = \local_eduvidual\locallib::get_orgrole($itemid);
+        if (empty($orgrole) && !is_siteadmin()) {
             return false;
         }
     }
