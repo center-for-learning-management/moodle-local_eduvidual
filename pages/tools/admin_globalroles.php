@@ -60,7 +60,7 @@ foreach ($roles AS $role => $type) {
             $context = \context_system::instance();
             $previousrole = get_config('local_eduvidual', 'defaultglobalrole' . $type);
             //$reply['previousrole'] = $previousrole;
-            if (!empty($previousrole)) {
+            if (!empty($previousrole) && $previousrole != $role) {
                 // We remove the previously set roles.
                 $assignments = $DB->get_records('role_assignments', array('roleid' => $previousrole, 'contextid' => $context->id));
                 foreach ($assignments AS $assignment) {
