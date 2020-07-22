@@ -37,6 +37,7 @@ if ($data = $form->get_data()) {
         'content' => get_string('store:success', 'local_eduvidual'),
         'type' => 'success'
     ));
+    echo "<script>window.sessionStorage.clear();</script>\n";
 }
 
 $form->set_data($org);
