@@ -54,7 +54,6 @@ function local_eduvidual_before_standard_html_head() {
         redirect($CFG->wwwroot . '/login');
     }
 
-
     // Protect question banks on course level.
     if (!empty($PAGE->context->contextlevel) && $PAGE->context->contextlevel == CONTEXT_COURSE) {
         if (strpos($_SERVER["SCRIPT_FILENAME"], '/question/edit.php') > 0
@@ -192,7 +191,7 @@ function local_eduvidual_extend_navigation_course($nav, $course, $context) {
         //$node = $nav->find('courseadmin', null);   // 'courseadmin' is the menu key
         $nav->add(get_string('deletecourse'), new moodle_url('/course/delete.php?id=' . $course->id));
     }
-    if (\local_eduvidual\locallib::is_manager($course->category)) {
+    if (\local_eduvidual\locallib::is_manager($course->category) && !has_capability('moodle/course:update', $coursecontext)) {
         $nav->add(get_string('manage:enrolmeasteacher', 'local_eduvidual'), new \moodle_url('/local/eduvidual/pages/redirects/forceenrol.php', array('courseid' => $course->id)));
     }
     if ($otherusers = $nav->find('otherusers', global_navigation::TYPE_SETTING)) {
