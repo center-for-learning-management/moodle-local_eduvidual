@@ -50,7 +50,7 @@ class locallib {
             $params = array($role->roleid, $syscontext->id, $coursecontext->id, 'moodle/question:viewall', 'moodle/question:viewmine');
             $chks = $DB->get_records_sql($sql, $params);
             foreach ($chks as $chk) {
-                if (!empty($chks->id)) return true;
+                if (!empty($chk->id)) return true;
             }
         }
     }
