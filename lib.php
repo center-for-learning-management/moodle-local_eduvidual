@@ -49,11 +49,6 @@ function local_eduvidual_after_require_login() {
 function local_eduvidual_before_standard_html_head() {
     global $CFG, $CONTEXT, $COURSE, $DB, $OUTPUT, $PAGE, $USER;
 
-    // Fore redirect to login from frontpage.
-    if (($USER->id < 2 || isguestuser($USER)) && substr($_SERVER["SCRIPT_FILENAME"], -strlen('/index.php')) == '/index.php') {
-        redirect($CFG->wwwroot . '/login');
-    }
-
     // Protect question banks on course level.
     if (!empty($PAGE->context->contextlevel) && $PAGE->context->contextlevel == CONTEXT_COURSE) {
         if (strpos($_SERVER["SCRIPT_FILENAME"], '/question/edit.php') > 0
@@ -191,7 +186,7 @@ function local_eduvidual_extend_navigation_course($nav, $course, $context) {
         //$node = $nav->find('courseadmin', null);   // 'courseadmin' is the menu key
         $nav->add(get_string('deletecourse'), new moodle_url('/course/delete.php?id=' . $course->id));
     }
-    if (\local_eduvidual\locallib::is_manager($course->category) && !has_capability('moodle/course:update', $coursecontext)) {
+    if (\local_eduvidual\locallib::is_manager($course->category)) {
         $nav->add(get_string('manage:enrolmeasteacher', 'local_eduvidual'), new \moodle_url('/local/eduvidual/pages/redirects/forceenrol.php', array('courseid' => $course->id)));
     }
     if ($otherusers = $nav->find('otherusers', global_navigation::TYPE_SETTING)) {
@@ -250,7 +245,7 @@ function local_eduvidual_myprofile_navigation($tree, $user, $iscurrentuser, $cou
     if (is_siteadmin()) {
         $node = new \core_user\output\myprofile\node('eduvidual', 'eduvidualsecret', $user->id . '#' . \local_eduvidual\locallib::get_user_secret($user->id));
         $category->add_node($node);
-        $memberships = \local_eduvidual\locallib::get_user_memberships();
+        $memberships = \local_eduvidual\locallib::get_user_memberships($user->id);
         foreach ($memberships AS $membership) {
             $org = $DB->get_record('local_eduvidual_org', array('orgid' => $membership->orgid));
             if (empty($org->id)) continue;
@@ -345,8 +340,16 @@ function local_eduvidual_pluginfile($course, $cm, $context, $filearea, $args, $f
     // user really does have access to the file in question.
     $restrict_to_org = array('orgfiles', 'orgbanner');
     if (in_array($filearea, $restrict_to_org)) {
-        $orgrole = \local_eduvidual\locallib::get_orgrole($itemid);
-        if (empty($orgrole) && !is_siteadmin()) {
+        global $CFG;
+
+        $orgs = \local_eduvidual\locallib::get_organisations('*');
+        $ok = false;
+        foreach($orgs AS $org) {
+            if ($org->orgid == $itemid) {
+                $ok = true;
+            }
+        }
+        if (!$ok) {
             return false;
         }
     }
