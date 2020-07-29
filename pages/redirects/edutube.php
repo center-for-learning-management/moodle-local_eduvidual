@@ -51,6 +51,8 @@ if (empty($authurl) || empty($authtoken)) {
                         AND (
                             orgid LIKE '______'
                             OR
+                            orgid LIKE '_______'
+                            OR
                             orgid LIKE '322__'
                         ) AND role IN ('Student', 'Teacher', 'Manager')";
         $memberships = $DB->get_records_sql($sql, array($USER->id));
