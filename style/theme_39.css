@@ -1,9 +1,4 @@
 /* LESS Document */
-
-#nav-drawer a[data-parent-key="mycourses"] {
-    display: none !important;
-}
-
 :root {
   --blue: #10507f;
   --primary: #10507f;
@@ -47,12 +42,18 @@ body {
   right: 0px;
   top: 8px;
 }
+#page-header #search,
+#page-header .p-0 {
+  top: 10px;
+}
+#page-header .form-control:focus {
+  border: none !important;
+}
 .editing .course-content ul.topics li.section.main:last-child,
 .editing .course-content ul.weeks li.section.main:last-child,
 .editing .course-content ul.periods li.section.main:last-child {
   border-bottom: none;
 }
-
 #page-content a:link,
 #page-content a:visited,
 #page-content a:hover,
@@ -74,6 +75,14 @@ body {
   border-color: #10507f;
   color: #fff !important;
 }
+#page-content .btn-primary .icon,
+#page-content .btn-block .icon {
+  color: #fff;
+}
+#page-content #id_advancedadddiscussion {
+  color: #535353;
+  border: solid 1px #535353;
+}
 #page-content .btn {
   color: #fff;
   text-decoration: none !important;
@@ -93,10 +102,12 @@ body {
 }
 #page-content .btn-outline-primary {
   background-color: #10507f;
+  color: #fff !important;
 }
 #page-content .btn-outline-dark,
 #page-content .btn-dark {
   background-color: #535353;
+  color: #fff !important;
 }
 #page-content .editor_atto_wrap .icon,
 #page-content .filemanager .icon {
@@ -145,6 +156,10 @@ body {
 }
 #page-content #region-main-box .course-content .single-section .nav-link.active .sectionname {
   color: #fff;
+}
+#page-content #region-main-box .course-content .single-section .nav-link.disabled {
+  border: none !important;
+  background-color: #fff !important;
 }
 #page-content #region-main-box .course-content .single-section .nav-tabs {
   margin-bottom: 0px !important;
@@ -251,6 +266,10 @@ body {
 }
 #page-content #region-main-box [role='main'] .nav-tabs .nav-link.active .sectionname {
   color: #fff;
+}
+#page-content #region-main-box [role='main'] .nav-tabs .nav-link.disabled {
+  border: none !important;
+  background-color: #fff !important;
 }
 #page-content #region-main-box [role='main'] .nav-tabs:nth-child(2) {
   color: #fff;
@@ -460,7 +479,7 @@ nav .nav-link:focus {
 				.list-group-item-action{
 					background-color: #fff;
 					border-bottom: 1px solid @eduvidgrau;
-					border-top: 1px solid @eduvidgrau;
+					border-top: 1px solid @eduvidgrau;	
 					& .media-body{
 						background: -webkit-linear-gradient(left, #000 90%, #fff);
 						-webkit-background-clip: text;
@@ -474,7 +493,7 @@ nav .nav-link:focus {
 					& .media-body{
 						background: -webkit-linear-gradient(left, #fff 90%, @eduvidblau);
 						-webkit-background-clip: text;
-						-webkit-text-fill-color: transparent;
+						-webkit-text-fill-color: transparent;				
 					}
 				}
 				.media-body{
@@ -566,7 +585,7 @@ nav .nav-link:focus {
 								color:@eduvidfontdark !important;
 							}
 						}
-
+						
 					}*/
   }
   #nav-drawer.closed .list-group .list-group-item-action .media-left,
@@ -727,9 +746,6 @@ a.dropdown-toggle:focus,
   #nav-drawer[aria-hidden="true"] .list-group-item {
     display: none;
   }
-  /*	body.drawer-open-left, #page{
-		margin-left: 220px;
-	}*/
   #nav-drawer[aria-hidden="false"] {
     width: 80px;
     left: 0;
@@ -816,12 +832,18 @@ a.dropdown-toggle:focus,
     margin-right: 10px;
     width: calc(100% - 50px) !important;
   }
+  body:not(.drawer-open-left) .footnote {
+    padding-left: 75px !important;
+  }
   body.drawer-open-left {
     margin-left: 0px;
   }
   body.drawer-open-left #page {
     margin-left: 250px;
     width: calc(100% - 250px) !important;
+  }
+  body.drawer-open-left .footnote {
+    padding-left: 275px !important;
   }
   #nav-drawer[aria-hidden="true"] .list-group-item {
     display: block;
@@ -925,9 +947,6 @@ a.dropdown-toggle:focus,
 #page-footer {
   display: none;
 }
-.footnote {
-  padding-left: 140px !important;
-}
 .footnote .text_to_html {
   width: 100%;
   padding-right: 4rem;
@@ -980,10 +999,27 @@ a.dropdown-toggle:focus,
 #next-activity-link,
 #prev-activity-link {
   background-color: #10507f;
+  color: #fff !important;
 }
 .drawer-ease {
   -webkit-transition: none !important;
   -moz-transition: none !important;
   -o-transition: none !important;
   transition: none !important;
+}
+[data-toggle="dropdown"] {
+  color: #10507f !important;
+}
+[data-toggle="dropdown"]:hover {
+  color: #fff !important;
+}
+[data-toggle="dropdown"]:hover .icon {
+  color: #fff !important;
+}
+.dropdown-item.active {
+  color: #fff !important;
+  background-color: #10507f;
+}
+.forum-post-container a:link {
+  text-decoration: underline !important;
 }
