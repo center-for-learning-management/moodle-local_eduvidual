@@ -26,6 +26,16 @@ defined('MOODLE_INTERNAL') || die;
 
 function local_eduvidual_after_config() {
     global $CFG, $PAGE;
+
+    // Fore redirect to login from frontpage.
+    if ((!isloggedin() || isguestuser($USER)) && $_SERVER["SCRIPT_FILENAME"] == $CFG->dirroot . '/index.php') {
+        if (!isloggedin()) {
+            redirect($CFG->wwwroot . '/login');
+        } else {
+            redirect($CFG->wwwroot . '/my');
+        }
+    }
+
     $PAGE->add_body_class('theme-' . $CFG->theme);
     // Check for particular scripts, whose output has to be protected.
     $scripts = array('/question/category.php', '/question/edit.php', '/user/selector/search.php');
@@ -48,16 +58,6 @@ function local_eduvidual_after_require_login() {
 
 function local_eduvidual_before_standard_html_head() {
     global $CFG, $CONTEXT, $COURSE, $DB, $OUTPUT, $PAGE, $USER;
-
-    // Fore redirect to login from frontpage.
-    if ((!isloggedin() || isguestuser($USER)) && $_SERVER["SCRIPT_FILENAME"] == $CFG->dirroot . '/index.php') {
-        if (!isloggedin()) {
-            redirect($CFG->wwwroot . '/login');
-        } else {
-            redirect($CFG->wwwroot . '/my');
-        }
-    }
-
 
     // Protect question banks on course level.
     if (!empty($PAGE->context->contextlevel) && $PAGE->context->contextlevel == CONTEXT_COURSE) {
