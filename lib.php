@@ -51,7 +51,12 @@ function local_eduvidual_before_standard_html_head() {
 
     // Fore redirect to login from frontpage.
     if ((!isloggedin() || isguestuser($USER)) && $_SERVER["SCRIPT_FILENAME"] == $CFG->dirroot . '/index.php') {
-        redirect($CFG->wwwroot . '/login');
+        if (!isloggedin()) {
+            redirect($CFG->wwwroot . '/login');
+        } else {
+            redirect($CFG->wwwroot . '/my');
+        }
+
     }
 
 
