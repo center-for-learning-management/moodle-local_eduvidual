@@ -49,6 +49,12 @@ function local_eduvidual_after_require_login() {
 function local_eduvidual_before_standard_html_head() {
     global $CFG, $CONTEXT, $COURSE, $DB, $OUTPUT, $PAGE, $USER;
 
+    // Fore redirect to login from frontpage.
+    if ((!isloggedin() || isguestuser($USER)) && $_SERVER["SCRIPT_FILENAME"] == $CFG->dirroot . '/index.php') {
+        redirect($CFG->wwwroot . '/login');
+    }
+
+
     // Protect question banks on course level.
     if (!empty($PAGE->context->contextlevel) && $PAGE->context->contextlevel == CONTEXT_COURSE) {
         if (strpos($_SERVER["SCRIPT_FILENAME"], '/question/edit.php') > 0
