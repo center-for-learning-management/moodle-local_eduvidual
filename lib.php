@@ -56,7 +56,6 @@ function local_eduvidual_before_standard_html_head() {
         } else {
             redirect($CFG->wwwroot . '/my');
         }
-
     }
 
 
@@ -238,7 +237,7 @@ function local_eduvidual_extend_navigation_user_settings($nav, $user, $context, 
         $node->add(get_string('preferences:selectbg:title', 'local_eduvidual'), new moodle_url('/local/eduvidual/pages/preferences.php', array('act' => 'backgrounds', 'userid' => $user->id)));
         $sysctx = \context_system::instance();
         if (has_capability('moodle/question:viewall', $sysctx, $user)) {
-            $node->add(get_string('preferences:questioncategories', 'local_eduvidual'), new moodle_url('/local/eduvidual/pages/preferences.php', array('act' => 'qcats', 'userid' => $user->id));
+            $node->add(get_string('preferences:questioncategories', 'local_eduvidual'), new moodle_url('/local/eduvidual/pages/preferences.php', array('act' => 'qcats', 'userid' => $user->id)));
         }
 
         $users = $DB->get_records('user', array('email' => $user->email, 'suspended' => 0));
