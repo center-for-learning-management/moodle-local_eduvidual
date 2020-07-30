@@ -25,7 +25,7 @@
 
 defined('MOODLE_INTERNAL') || die;
 
-if (isloggedin() && !is_guestuser()) {
+if (isloggedin() && !isguestuser()) {
     $stage = optional_param('stage', 0, PARAM_INT);
     switch ($stage) {
         case 0:
