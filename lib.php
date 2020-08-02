@@ -351,6 +351,8 @@ function local_eduvidual_pluginfile($course, $cm, $context, $filearea, $args, $f
 
     // Use the itemid to retrieve any relevant data records and perform any security checks to see if the
     // user really does have access to the file in question.
+    /*
+    ** UPDATE: We will not restrict this anymore, otherwise courses with guest access will not show the correct styling!
     $restrict_to_org = array('orgfiles', 'orgbanner');
     if (in_array($filearea, $restrict_to_org)) {
         global $CFG;
@@ -366,6 +368,7 @@ function local_eduvidual_pluginfile($course, $cm, $context, $filearea, $args, $f
             return false;
         }
     }
+    */
 
     // Extract the filename / filepath from the $args array.
     $filename = array_pop($args); // The last item in the $args array.
