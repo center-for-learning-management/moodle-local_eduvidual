@@ -206,7 +206,7 @@ if (!is_siteadmin()) {
                 if (!$roleinuse) {
                     $previousrole = get_config('local_eduvidual', 'defaultorgrole' . $type);
                     //$reply['previousrole'] = $previousrole;
-                    if (!empty($previousrole)) {
+                    if (!empty($previousrole) && $previousrole != $role) {
                         // We remove the previously set roles.
                         //$reply['unassigning'] = array();
                         $members = $DB->get_records('local_eduvidual_orgid_userid', array('role' => ucfirst($type)), 'orgid ASC', '*');
@@ -274,11 +274,11 @@ if (!is_siteadmin()) {
                     $context = \context_system::instance();
                     $previousrole = get_config('local_eduvidual', 'defaultglobalrole' . $type);
                     //$reply['previousrole'] = $previousrole;
-                    if (!empty($previousrole)) {
+                    if (!empty($previousrole) && $previousrole != $role) {
                         // We remove the previously set roles.
                         $assignments = $DB->get_records('role_assignments', array('roleid' => $previousrole, 'contextid' => $context->id));
                         foreach ($assignments AS $assignment) {
-                            role_unassign($previousrole, $assignment->userid, $contextid);
+                            role_unassign($previousrole, $assignment->userid, $context->id);
                         }
                     }
                     if (!empty($role)) {

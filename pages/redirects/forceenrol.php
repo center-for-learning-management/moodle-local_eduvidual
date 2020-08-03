@@ -46,7 +46,7 @@ if (!empty($org->orgid) && ($is_manager || is_siteadmin())) {
     echo $OUTPUT->render_from_template('local_eduvidual/alert', array(
         'content' => get_string('access_denied', 'local_eduvidual'),
         'type' => 'danger',
-        'url' => new \moodle_url('/course/view.php', array('id' => $courseid),
+        'url' => new \moodle_url('/course/view.php', array('id' => $courseid)),
     ));
     echo $OUTPUT->footer();
 }

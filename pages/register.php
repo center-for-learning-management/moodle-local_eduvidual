@@ -30,7 +30,6 @@ require_once($CFG->libdir . '/adminlib.php');
 $orgid = optional_param('orgid', 0, PARAM_INT);
 
 $PAGE->set_context(context_system::instance());
-$PAGE->set_pagelayout('mydashboard');
 $PAGE->set_url('/local/eduvidual/pages/register.php', array());
 $PAGE->set_title(get_string('Registration', 'local_eduvidual'));
 $PAGE->set_heading(get_string('Registration', 'local_eduvidual'));
@@ -38,7 +37,7 @@ $PAGE->set_heading(get_string('Registration', 'local_eduvidual'));
 
 echo $OUTPUT->header();
 
-if ($USER->id > 1) {
+if (isloggedin() && !isguestuser()) {
     echo $OUTPUT->render_from_template(
         'local_eduvidual/register',
         (object) array(

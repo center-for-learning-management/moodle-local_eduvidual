@@ -25,7 +25,17 @@
 defined('MOODLE_INTERNAL') || die;
 
 function local_eduvidual_after_config() {
-    global $CFG, $PAGE;
+    global $CFG, $PAGE, $USER;
+
+    // Fore redirect to login from frontpage.
+    if ((!isloggedin() || isguestuser($USER)) && $_SERVER["SCRIPT_FILENAME"] == $CFG->dirroot . '/index.php') {
+        if (!isloggedin()) {
+            redirect($CFG->wwwroot . '/login');
+        } else {
+            redirect($CFG->wwwroot . '/my');
+        }
+    }
+
     $PAGE->add_body_class('theme-' . $CFG->theme);
     // Check for particular scripts, whose output has to be protected.
     $scripts = array('/question/category.php', '/question/edit.php', '/user/selector/search.php');
@@ -220,19 +230,22 @@ function local_eduvidual_extend_navigation_user($parentnode, $user, $context, $c
  */
 function local_eduvidual_extend_navigation_user_settings($nav, $user, $context, $course, $coursecontext) {
     global $DB, $USER;
-    $node = $nav->add_node(navigation_node::create(get_string('pluginname', 'local_eduvidual')));
-    //print_r($nav);die();
-    //$nav->add(get_string('test'), new moodle_url('/local/eduvidual/pages/preferendes.php'));
-    $node->add(get_string('preferences:selectbg:title', 'local_eduvidual'), new moodle_url('/local/eduvidual/pages/preferences.php?act=backgrounds'));
-    $sysctx = \context_system::instance();
-    if (has_capability('moodle/question:viewall', $sysctx)) {
-        $node->add(get_string('preferences:questioncategories', 'local_eduvidual'), new moodle_url('/local/eduvidual/pages/preferences.php?act=qcats'));
+    if (!isguestuser($user)) {
+        $node = $nav->add_node(navigation_node::create(get_string('pluginname', 'local_eduvidual')));
+        //print_r($nav);die();
+        //$nav->add(get_string('test'), new moodle_url('/local/eduvidual/pages/preferendes.php'));
+        $node->add(get_string('preferences:selectbg:title', 'local_eduvidual'), new moodle_url('/local/eduvidual/pages/preferences.php', array('act' => 'backgrounds', 'userid' => $user->id)));
+        $sysctx = \context_system::instance();
+        if (has_capability('moodle/question:viewall', $sysctx, $user)) {
+            $node->add(get_string('preferences:questioncategories', 'local_eduvidual'), new moodle_url('/local/eduvidual/pages/preferences.php', array('act' => 'qcats', 'userid' => $user->id)));
+        }
+
+        $users = $DB->get_records('user', array('email' => $user->email, 'suspended' => 0));
+        if (count($users) > 0) {
+            $node->add(get_string('user:merge_accounts', 'local_eduvidual'), new moodle_url('/local/eduvidual/pages/user_merge.php', array('userid' => $user->id)));
+        }
     }
 
-    $users = $DB->get_records('user', array('email' => $USER->email, 'suspended' => 0));
-    if (count($users) > 0) {
-        $node->add(get_string('user:merge_accounts', 'local_eduvidual'), new moodle_url('/local/eduvidual/pages/user_merge.php'));
-    }
 }
 
 /**
@@ -245,7 +258,7 @@ function local_eduvidual_myprofile_navigation($tree, $user, $iscurrentuser, $cou
     if (is_siteadmin()) {
         $node = new \core_user\output\myprofile\node('eduvidual', 'eduvidualsecret', $user->id . '#' . \local_eduvidual\locallib::get_user_secret($user->id));
         $category->add_node($node);
-        $memberships = \local_eduvidual\locallib::get_user_memberships();
+        $memberships = \local_eduvidual\locallib::get_user_memberships($user->id);
         foreach ($memberships AS $membership) {
             $org = $DB->get_record('local_eduvidual_org', array('orgid' => $membership->orgid));
             if (empty($org->id)) continue;
@@ -338,6 +351,8 @@ function local_eduvidual_pluginfile($course, $cm, $context, $filearea, $args, $f
 
     // Use the itemid to retrieve any relevant data records and perform any security checks to see if the
     // user really does have access to the file in question.
+    /*
+    ** UPDATE: We will not restrict this anymore, otherwise courses with guest access will not show the correct styling!
     $restrict_to_org = array('orgfiles', 'orgbanner');
     if (in_array($filearea, $restrict_to_org)) {
         global $CFG;
@@ -353,6 +368,7 @@ function local_eduvidual_pluginfile($course, $cm, $context, $filearea, $args, $f
             return false;
         }
     }
+    */
 
     // Extract the filename / filepath from the $args array.
     $filename = array_pop($args); // The last item in the $args array.

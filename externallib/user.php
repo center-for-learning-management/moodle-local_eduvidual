@@ -66,6 +66,9 @@ class local_eduvidual_external_user extends external_api {
 
         $PAGE->set_context(\context_system::instance());
         $orgmenus = \local_eduvidual\lib_helper::orgmenus();
+        if (count($orgmenus) == 0) {
+            return "";
+        }
 
         return $OUTPUT->render_from_template('local_eduvidual/orgmenu', array('menuright' => 1, 'orgmenus' => $orgmenus));
     }

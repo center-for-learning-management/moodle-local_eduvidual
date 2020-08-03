@@ -27,23 +27,7 @@ function xmldb_local_eduvidual_upgrade($oldversion) {
     global $DB;
     $dbman = $DB->get_manager();
 
-    /*
-
-        ATTENTION!!!!!!!!!!!
-        We have to change the block_eduvidual to local_eduvidual.
-        The current tables of the old plugin will be renamed, before the old
-        plugin gets uninstalled. Then we will install the local-Plugin,
-        delete its tables and rename the old tables for the new plugin.
-
-        Therefore some database changes will not haven taken effect.
-
-        For that reason, AFTER installing the local_plugin, we have to enable
-        this piece of code, so that all database changes will take effect!
-
-        ENSURE WE HAVE RUN /local/eduvidual/pages/tools/admin_block2local.php
-        BEFORE THIS IS ENABLED!
-
-    if ($oldversion < 2020xxxx00) {
+    if ($oldversion < 2020072200) {
         $table = new xmldb_table('local_eduvidual_userextra');
         if ($dbman->table_exists($table)) {
             $dbman->drop_table($table);
@@ -64,10 +48,8 @@ function xmldb_local_eduvidual_upgrade($oldversion) {
             $DB->set_field('user', 'email', 'a' . $user->id . '@a.eduvidual.at', array('id' => $user->id));
         }
 
-        upgrade_plugin_savepoint(true, 2020xxxx00, 'local', 'eduvidual');
+        upgrade_plugin_savepoint(true, 2020072200, 'local', 'eduvidual');
     }
-    */
-
 
     return true;
 }

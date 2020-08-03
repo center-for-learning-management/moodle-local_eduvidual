@@ -38,18 +38,19 @@ class locallib {
         if (empty($user)) $user = $USER;
         if ($USER->id == $user->id && is_siteadmin() && $doanything) return true;
 
+        $syscontext = \context_system::instance();
         $roles = get_user_roles($coursecontext, $user->id);
         foreach ($roles as $role) {
             // We only accept roles in the course context itself.
             if ($role->contextid != $coursecontext->id) continue;
-            $sql = "SELECT id FROM {role_capabilities}
+            $sql = "SELECT id,contextid FROM {role_capabilities}
                         WHERE roleid=?
-                            AND contextid=?
+                            AND (contextid=? OR contextid=?)
                             AND (capability=? OR capability=?)";
-            $params = array($role->id, $coursecontext->id, 'moodle/question:viewall', 'moodle/question:viewmine');
+            $params = array($role->roleid, $syscontext->id, $coursecontext->id, 'moodle/question:viewall', 'moodle/question:viewmine');
             $chks = $DB->get_records_sql($sql, $params);
             foreach ($chks as $chk) {
-                if (!empty($chks->id)) return true;
+                if (!empty($chk->id)) return true;
             }
         }
     }
