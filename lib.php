@@ -25,7 +25,7 @@
 defined('MOODLE_INTERNAL') || die;
 
 function local_eduvidual_after_config() {
-    global $CFG, $PAGE;
+    global $CFG, $PAGE, $USER;
 
     // Fore redirect to login from frontpage.
     if ((!isloggedin() || isguestuser($USER)) && $_SERVER["SCRIPT_FILENAME"] == $CFG->dirroot . '/index.php') {
