@@ -42,8 +42,6 @@ if (!in_array(\local_eduvidual\locallib::get_highest_role(), $allow) && !is_site
 }
 
 // Used to determine if we can teach in this org
-$orgas = \local_eduvidual\locallib::get_organisations('Teacher');
-
 $PAGE->set_title(get_string('teacher:createcourse', 'local_eduvidual'));
 $PAGE->set_heading(get_string('teacher:createcourse', 'local_eduvidual'));
 
