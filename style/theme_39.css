@@ -84,7 +84,7 @@ body {
   border: solid 1px #535353;
 }
 #page-content .btn {
-  color: #fff;
+  color: #fff !important;
   text-decoration: none !important;
 }
 #page-content .btn:focus {
@@ -118,6 +118,9 @@ body {
 }
 #page-content .section-modchooser-text {
   color: #535353;
+}
+#page-content #region-main-box .dropdown:hover [data-toggle="dropdown"]:hover {
+  color: #10507f !important;
 }
 #page-content #region-main-box h3 {
   margin-top: 2rem;
@@ -212,6 +215,16 @@ body {
 }
 #page-content #region-main-box [role='main'] .btn-icon .icon {
   color: #535353;
+}
+#page-content #region-main-box [role='main'] [data-region="filter"] .dropdown.show #groupingdropdown,
+#page-content #region-main-box [role='main'] [data-region="filter"] .dropdown.show #sortingdropdown,
+#page-content #region-main-box [role='main'] [data-region="filter"] .dropdown.show #displaydropdown {
+  color: #fff !important;
+}
+#page-content #region-main-box [role='main'] [data-region="filter"] .dropdown.show #groupingdropdown .icon,
+#page-content #region-main-box [role='main'] [data-region="filter"] .dropdown.show #sortingdropdown .icon,
+#page-content #region-main-box [role='main'] [data-region="filter"] .dropdown.show #displaydropdown .icon {
+  color: #fff !important;
 }
 #page-content #region-main-box [role='main'] [data-region="filter"] .dropdown #groupingdropdown,
 #page-content #region-main-box [role='main'] [data-region="filter"] .dropdown #sortingdropdown,
@@ -335,6 +348,18 @@ body {
 #page-content #region-main-box #graded_users_selector,
 #page-content #region-main-box .reporttable {
   margin-top: 1rem;
+}
+#page-content #region-main-box [data-content="forum-discussion"] a:link,
+#page-content #region-main-box [data-content="forum-discussion"] a:visited,
+#page-content #region-main-box [data-content="forum-discussion"] a:hover,
+#page-content #region-main-box [data-content="forum-discussion"] a:active {
+  color: #535353 !important;
+  border: none !important;
+  text-decoration: none !important;
+}
+#page-content #region-main-box [data-action="forum-advanced-reply"] {
+  color: #535353 !important;
+  border: solid 1px #535353;
 }
 #page-navbar {
   background-color: rgba(255, 255, 255, 0.8);
@@ -1007,14 +1032,14 @@ a.dropdown-toggle:focus,
   -o-transition: none !important;
   transition: none !important;
 }
-[data-toggle="dropdown"] {
+nav [data-toggle="dropdown"] {
   color: #10507f !important;
 }
-[data-toggle="dropdown"]:hover {
-  color: #fff !important;
+nav [data-toggle="dropdown"]:hover {
+  color: #10507f !important;
 }
-[data-toggle="dropdown"]:hover .icon {
-  color: #fff !important;
+nav [data-toggle="dropdown"]:hover .icon {
+  color: #10507f !important;
 }
 .dropdown-item.active {
   color: #fff !important;
