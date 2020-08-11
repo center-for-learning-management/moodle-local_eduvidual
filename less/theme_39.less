@@ -151,7 +151,7 @@ body{
 	}
 
 	.btn{
-		color:#fff;
+		color:#fff !important;
 		text-decoration: none !important;
 		&:focus{
 			outline:none;
@@ -187,6 +187,11 @@ body{
 		color:@eduvidfontdark;
 	}
 	#region-main-box{
+		.dropdown:hover{
+			[data-toggle="dropdown"]:hover{
+				color:@eduvidblau !important;
+			}
+		}
 		h3{
 			margin-top:2rem;
 		}
@@ -276,6 +281,14 @@ body{
 				}
 			}
 			[data-region="filter"]{
+				.dropdown.show{
+					#groupingdropdown,#sortingdropdown,#displaydropdown{
+						color:#fff !important;
+						.icon{
+							color:#fff !important;
+						}
+					}
+				}
 				.dropdown{
 					#groupingdropdown,#sortingdropdown,#displaydropdown{
 						color:@eduvidblau !important;
@@ -377,6 +390,13 @@ body{
 		}
 		#graded_users_selector,.reporttable{
 			margin-top:1rem;
+		}
+		[data-content="forum-discussion"]{
+			.ahreffaerben(@eduvidfontdark) !important;
+		}
+		[data-action="forum-advanced-reply"]{
+			color:@eduvidfontdark !important;
+			border: solid 1px @eduvidfontdark;
 		}
 	}
 }
@@ -1025,16 +1045,19 @@ a.dropdown-toggle:focus,
 	-o-transition:none !important;
 	transition:none !important;
 }
-//Dropdown-Felder
-[data-toggle="dropdown"]{
-	color:@eduvidblau !important;
-}
-[data-toggle="dropdown"]:hover{
-	.icon{
-		color:#fff !important;
+//Dropdown-Felder in der NAV-Leiste oben
+nav{
+	[data-toggle="dropdown"]{
+		color:@eduvidblau !important;
 	}
-	color:#fff !important;
+	[data-toggle="dropdown"]:hover{
+		.icon{
+			color:@eduvidblau !important;
+		}
+		color:@eduvidblau !important;
+	}
 }
+
 //Aktiv ausgewähltes in einer Dropdown-Liste
 .dropdown-item.active{
 	color:#fff !important;
