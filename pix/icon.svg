@@ -9,7 +9,7 @@
 	.st3{fill:#FFFFFF;}
 	.st4{clip-path:url(#SVGID_2_);}
 	.st5{fill:#1C8ADB;}
-	.st6{opacity:0.42;enable-background:new    ;}
+	.st6{opacity:0.42;fill:url(#SVGID_3_);enable-background:new    ;}
 </style>
 <path class="st0" d="M106.5,54.4h189.8c2.5,0,4.5,2,4.5,4.5v12.5c0,2.5-2,4.5-4.5,4.5H106.5c-2.5,0-4.5-2-4.5-4.5V58.8
 	C102.1,56.4,104,54.4,106.5,54.4z"/>
@@ -147,73 +147,32 @@
 </g>
 <g>
 	<defs>
-		<circle id="SVGID_1_" cx="50.4" cy="50.2" r="42.7"/>
+		<circle id="SVGID_1_" cx="52.1" cy="47.8" r="44.1"/>
 	</defs>
 	<clipPath id="SVGID_2_">
 		<use xlink:href="#SVGID_1_"  style="overflow:visible;"/>
 	</clipPath>
 	<g class="st4">
-		<g>
-			<circle class="st5" cx="50.4" cy="50.2" r="42.7"/>
-		</g>
-		<g class="st6">
-			<g>
-				<defs>
-					<path id="SVGID_3_" d="M33.2,90.7l20.9-20.9c0.3-0.3,0.5-0.6,0.5-1c0.6-0.6,0.7-1.2,0.3-1.8c0.3-0.5,0.3-1,0-1.4
-						c0.4-0.6,0.3-1.1,0-1.4c0.3-0.4,0.3-0.9,0.2-1.5l0.6-0.6c0.3-0.3,0.6-0.7,0.7-1.2c0.5-7.1,6.2-9.8,6.5-17.3
-						c0-9.3-6.4-14-12.7-14c-2.8,0-5.6,1-7.8,2.7c-0.4,0.3-0.7,0.6-1,0.9L9.7,65C13.6,75.8,21.5,84.3,33.2,90.7L33.2,90.7z"/>
-				</defs>
-				<clipPath id="SVGID_4_">
-					<use xlink:href="#SVGID_3_"  style="overflow:visible;"/>
-				</clipPath>
-				<g style="clip-path:url(#SVGID_4_);">
-					
-						<image style="overflow:visible;" width="69" height="69" xlink:href="data:image/png;base64,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" transform="matrix(1 0 0 1 6 23.9)">
-					</image>
-				</g>
-			</g>
-		</g>
-		<g>
-			<path class="st3" d="M50.4,31.1c2.9,0,5.6,1.1,7.6,3.1c2.3,2.2,3.5,5.5,3.5,9.3c-0.1,3.5-1.6,5.8-3.1,8.3c-1.5,2.5-3.1,5-3.4,8.7
-				c-0.2,0.3-0.4,0.5-0.7,0.7l-0.9,0.6l0.2,1.1c0,0.1,0,0.2,0,0.4l-0.8,1l0.6,0.7L53,65.7l0.5,0.6l-0.4,0.6l0.4,0.7L53,68.1v0.5
-				c-0.3,0.2-1.2,0.6-2.7,0.6s-2.4-0.4-2.7-0.6v-0.5l-0.4-0.5l0.4-0.7l-0.4-0.6l0.5-0.6l-0.5-0.8l0.6-0.7l-0.8-1c0-0.1,0-0.2,0-0.4
-				l0.2-1.1l-0.9-0.6c-0.3-0.2-0.5-0.4-0.7-0.7c-0.3-3.7-1.9-6.3-3.4-8.7c-1.5-2.5-2.9-4.8-3.1-8.3c0-3.8,1.2-7.1,3.5-9.3
-				C44.8,32.3,47.5,31.2,50.4,31.1 M50.4,29.5c-6.4,0-12.7,4.7-12.7,14c0.3,7.6,6,10.2,6.5,17.3c0.2,0.7,0.7,1.2,1.4,1.7
-				c-0.1,0.6-0.1,1.2,0.2,1.6c-0.3,0.3-0.4,0.8,0,1.4c-0.3,0.4-0.3,0.9,0,1.4c-0.3,0.6-0.2,1.2,0.3,1.8c0,1.4,2.1,2.1,4.3,2.1
-				s4.3-0.7,4.3-2.1c0.6-0.6,0.7-1.2,0.3-1.8c0.3-0.5,0.3-1,0-1.4c0.4-0.6,0.3-1.1,0-1.4c0.3-0.4,0.3-1,0.2-1.6
-				c0.7-0.4,1.2-1,1.4-1.7c0.5-7.1,6.2-9.8,6.5-17.3C63.1,34.3,56.7,29.6,50.4,29.5L50.4,29.5z"/>
-		</g>
+		<circle class="st5" cx="52.1" cy="47.8" r="44.1"/>
+		
+			<linearGradient id="SVGID_3_" gradientUnits="userSpaceOnUse" x1="49.5309" y1="-155.6" x2="25.4814" y2="-131.5515" gradientTransform="matrix(1 0 0 1 0 204.7244)">
+			<stop  offset="0" style="stop-color:#000000"/>
+			<stop  offset="1" style="stop-color:#000000;stop-opacity:0"/>
+		</linearGradient>
+		<path class="st6" d="M34.4,89.7L56,68.1c0.3-0.3,0.5-0.6,0.5-1.1c0.6-0.6,0.7-1.2,0.3-1.8c0.4-0.5,0.4-1,0-1.5
+			c0.4-0.7,0.3-1.1,0-1.5c0.3-0.4,0.4-1,0.2-1.6l0.6-0.6c0.4-0.3,0.6-0.7,0.8-1.2c0.5-7.3,6.4-10.1,6.7-17.9
+			c0-9.6-6.6-14.4-13.1-14.5c-2.9,0-5.8,1-8.1,2.8c-0.4,0.3-0.7,0.6-1.1,1L10,63.2C14.1,74.3,22.3,83,34.4,89.7L34.4,89.7z"/>
+		<path class="st3" d="M52.1,28.1c3,0,5.8,1.2,7.9,3.2c2.4,2.3,3.6,5.6,3.6,9.6c-0.1,3.6-1.6,6-3.2,8.5c-1.6,2.6-3.2,5.2-3.5,9
+			c-0.2,0.3-0.4,0.5-0.7,0.7l-1,0.6l0.2,1.1c0,0.1,0,0.2,0,0.4l-0.8,1l0.6,0.7l-0.5,0.8l0.5,0.6l-0.4,0.6l0.4,0.7l-0.5,0.5v0.5
+			c-0.3,0.2-1.3,0.6-2.8,0.6c-1.5,0-2.5-0.4-2.8-0.6v-0.5l-0.5-0.5l0.4-0.7l-0.4-0.6l0.5-0.6l-0.5-0.8l0.6-0.7l-0.8-1
+			c0-0.1,0-0.2,0-0.4l0.2-1.1l-1-0.6c-0.3-0.2-0.5-0.4-0.7-0.7c-0.3-3.8-2-6.5-3.5-9c-1.6-2.6-3-5-3.2-8.5c0-4,1.3-7.3,3.6-9.6
+			C46.3,29.3,49.1,28.2,52.1,28.1 M52.1,26.5C45.5,26.5,39,31.4,39,41c0.3,7.8,6.2,10.6,6.7,17.9c0.2,0.7,0.7,1.3,1.4,1.7
+			c-0.1,0.6-0.1,1.2,0.2,1.7c-0.3,0.3-0.4,0.8,0,1.5c-0.4,0.5-0.4,0.9,0,1.5c-0.3,0.6-0.3,1.2,0.3,1.8c0,1.4,2.2,2.1,4.4,2.1
+			c2.2,0,4.4-0.7,4.4-2.1c0.6-0.6,0.7-1.2,0.3-1.8c0.4-0.5,0.4-1,0-1.5c0.4-0.7,0.3-1.1,0-1.5c0.3-0.5,0.4-1,0.2-1.7
+			c0.7-0.4,1.2-1,1.4-1.7c0.5-7.3,6.4-10.1,6.7-17.9C65.2,31.4,58.7,26.5,52.1,26.5L52.1,26.5z"/>
 	</g>
 </g>
 <g>
-	<path class="st3" d="M50.3,63.9c-1.7,0-3.5-0.4-4.6-1.2l1-1.3c1.7,1.3,6.4,0.9,7.4,0l1.1,1.1C54.4,63.4,52.3,63.9,50.3,63.9z"/>
+	<path class="st3" d="M52,62c-1.8,0-3.6-0.4-4.7-1.2l1-1.3c1.8,1.4,6.6,1,7.6,0l1.2,1.2C56.2,61.4,54.1,62,52,62z"/>
 </g>
 </svg>
