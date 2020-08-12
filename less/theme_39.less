@@ -149,7 +149,23 @@ body{
 		color:@eduvidfontdark !important;
 		border:solid 1px @eduvidfontdark;
 	}
-
+	[data-region="paging-control-container"]{
+		.btn{
+			color:@eduvidfontdark !important;
+			&:hover{
+				color:#fff !important;
+				.icon{
+					color:#fff !important;
+				}
+			}
+		}
+		.dropdown-item{
+			&.active{
+				background-color: @eduvidblau;
+				color:#fff;
+			}
+		}
+	}
 	.btn{
 		color:#fff !important;
 		text-decoration: none !important;
@@ -402,6 +418,9 @@ body{
 			.hide-on-print{
 				.ahreffaerben(@eduvidfontdark) !important;
 			}
+		}
+		.formsettingheading{
+			.ahreffaerben(@eduvidfontdark) !important;
 		}
 	}
 }
@@ -1008,24 +1027,6 @@ a.dropdown-toggle:focus,
 		font-size: 0.8em;
 		position: relative;
 		top:15px;
-	}
-}
-
-#paging-control-limit-container-0{
-	.btn{
-		color:@eduvidfontdark !important;
-		&:hover{
-			color:#fff !important;
-			.icon{
-				color:#fff !important;
-			}
-		}
-	}
-	.dropdown-item{
-		&.active{
-			background-color: @eduvidblau;
-			color:#fff;
-		}
 	}
 }
 
