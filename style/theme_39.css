@@ -80,7 +80,7 @@ body {
   color: #fff;
 }
 #page-content #id_advancedadddiscussion {
-  color: #535353;
+  color: #535353 !important;
   border: solid 1px #535353;
 }
 #page-content .btn {
@@ -360,6 +360,14 @@ body {
 #page-content #region-main-box [data-action="forum-advanced-reply"] {
   color: #535353 !important;
   border: solid 1px #535353;
+}
+#page-content #region-main-box .ui-eduvidual .hide-on-print a:link,
+#page-content #region-main-box .ui-eduvidual .hide-on-print a:visited,
+#page-content #region-main-box .ui-eduvidual .hide-on-print a:hover,
+#page-content #region-main-box .ui-eduvidual .hide-on-print a:active {
+  color: #535353 !important;
+  border: none !important;
+  text-decoration: none !important;
 }
 #page-navbar {
   background-color: rgba(255, 255, 255, 0.8);
