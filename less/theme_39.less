@@ -146,7 +146,7 @@ body{
 	}
 	//Foren und Diskussions-Buttons
 	#id_advancedadddiscussion{
-		color:@eduvidfontdark;
+		color:@eduvidfontdark !important;
 		border:solid 1px @eduvidfontdark;
 	}
 
@@ -397,6 +397,11 @@ body{
 		[data-action="forum-advanced-reply"]{
 			color:@eduvidfontdark !important;
 			border: solid 1px @eduvidfontdark;
+		}
+		.ui-eduvidual{
+			.hide-on-print{
+				.ahreffaerben(@eduvidfontdark) !important;
+			}
 		}
 	}
 }
