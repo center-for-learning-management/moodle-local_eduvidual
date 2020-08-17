@@ -16,10 +16,38 @@
 }}
 
 <div class="ui-eduvidual__">
+    <input type="hidden" id="orgid-{{uniqid}}" value="{{orgid}}" />
     <h5>{{#str}} manage:coursesettings, local_eduvidual {{/str}}</h5>
     <p>{{#str}} manage:coursesettings:description, local_eduvidual {{/str}}</p>
+    {{#has_bbb_installed}}
+    <h6>{{#str}} manage:coursesettings:overridebigbluebutton, local_eduvidual {{/str}}</h6>
+    <p class="alert alert-info">{{#str}} manage:coursesettings:overridebigbluebutton:description, local_eduvidual {{/str}}</p>
+    <table class="generaltable">
+        <tr>
+            <th>{{#str}} config_server_url, mod_bigbluebuttonbn {{/str}}</th>
+            <td>
+                <input type="text" class="form-field bbb_serverurl-{{uniqid}}"
+                    value="{{bbb_serverurl}}" />
+            </td>
+        </tr>
+        <tr>
+            <th>{{#str}} config_shared_secret, mod_bigbluebuttonbn {{/str}}</th>
+            <td>
+                <input type="text" class="form-field bbb_sharedsecret-{{uniqid}}"
+                    value="{{bbb_sharedsecret}}" />
+            </td>
+        </tr>
+        <tr>
+            <th colspan="3">
+                <a href="#" class="btn btn-primary btn-block"
+                    onclick="var a = this; require(['local_eduvidual/manager'], function(M) { M.overrideBBB('{{uniqid}}', a); }); return false;">
+                    {{#str}} save {{/str}}
+                </a>
+            </th>
+        </tr>
+    </table>
+    {{/has_bbb_installed}}
     <h6>{{#str}} manage:coursesettings:overriderolenames, local_eduvidual {{/str}}</h6>
-    <input type="hidden" id="orgid-{{uniqid}}" value="{{orgid}}" />
     <table class="generaltable">
         <tr>
             <th>{{#str}} shortname {{/str}}</th>

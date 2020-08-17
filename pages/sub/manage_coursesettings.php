@@ -37,9 +37,15 @@ foreach ($roles as &$role) {
     }
 }
 
+$bbb_serverurl = $DB->get_record('local_eduvidual_overrides', array('orgid' => $org->orgid, 'field' => 'bigbluebuttonbn_server_url'));
+$bbb_sharedsecret = $DB->get_record('local_eduvidual_overrides', array('orgid' => $org->orgid, 'field' => 'bigbluebuttonbn_shared_secret'));
+
 echo $OUTPUT->render_from_template(
     'local_eduvidual/manage_coursesettings',
     (object) array(
+        'bbb_serverurl' => !empty($bbb_serverurl->value) ? $bbb_serverurl->value : '',
+        'bbb_sharedsecret' => !empty($bbb_sharedsecret->value) ? $bbb_sharedsecret->value : '',
+        'has_bbb_installed' => file_exists($CFG->dirroot . '/mod/bigbluebuttonbn/version.php'),
         'overrideroles' => $roles,
         'orgid' => $org->orgid,
         'wwwroot' => $CFG->wwwroot,
