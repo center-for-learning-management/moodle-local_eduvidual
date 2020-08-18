@@ -280,7 +280,7 @@ function local_eduvidual_myprofile_navigation($tree, $user, $iscurrentuser, $cou
             $org = $DB->get_record('local_eduvidual_org', array('orgid' => $membership->orgid));
             if (empty($org->id)) continue;
             $link = '<a href="' . $CFG->wwwroot . '/local/eduvidual/pages/manage.php?orgid=' . $org->orgid . '">' . $org->name . ' (' . $membership->role . ')</a>';
-            $node = new \core_user\output\myprofile\node('eduvidual', 'eduvidualmembership-' . $membership->orgid, $link);
+            $node = new \core_user\output\myprofile\node('eduvidual', 'eduvidualmembership-' . $membership->orgid . '-' . $membership->role, $link);
             $category->add_node($node);
         }
     }
