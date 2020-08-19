@@ -56,8 +56,8 @@ $subcat4 = optional_param('subcat4', '', PARAM_TEXT);
 $basement = optional_param('basement', '', PARAM_ALPHANUM);
 
 $subcats1 = \local_eduvidual\locallib::get_orgsubcats($orgid, 'subcats1');
-$subcats2 = \local_eduvidual\locallib::get_orgsubcats($orgid, 'subcats2');
-$subcats3 = \local_eduvidual\locallib::get_orgsubcats($orgid, 'subcats3');
+$subcats2 = \local_eduvidual\locallib::get_orgsubcats($orgid, 'subcats2', $subcat1);
+$subcats3 = \local_eduvidual\locallib::get_orgsubcats($orgid, 'subcats3', $subcat2);
 
 $redirect = '';
 $msg = array();
@@ -75,6 +75,7 @@ if ($formsent) {
             !empty($subcat1) && !empty($subcats1) && !in_array($subcat1, $subcats1) ||
             !empty($subcat2) && !empty($subcats2) && !in_array($subcat2, $subcats2) ||
             !empty($subcat3) && !empty($subcats3) && !in_array($subcat3, $subcats3)) {
+
         $msg[] = $OUTPUT->render_from_template('local_eduvidual/alert', array(
             'content' => get_string('missing_permission', 'local_eduvidual'),
             'url' => $CFG->wwwroot . '/my',
