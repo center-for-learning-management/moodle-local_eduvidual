@@ -157,7 +157,7 @@ if (optional_param('datavalidated', 0, PARAM_INT) == 1) {
         if(empty($user->secret)) {
             $user->secret = \local_eduvidual\locallib::get_user_secret($u->id);
         }
-        echo $u->id . '#' . $user->secret;
+        echo $user->secret;
         ?>
                 </td>
             </tr>
