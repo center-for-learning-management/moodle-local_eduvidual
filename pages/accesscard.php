@@ -47,7 +47,7 @@ if ($USER->id > 1 && !isguestuser($USER)) {
         <div class="grid-eq-2">
             <div style="text-align: center;">
                 <h4><?php echo get_string('accesscard:card_access', 'local_eduvidual'); ?></h4>
-                <div class="item" style="background-image: url(<?php echo $backgroundcard; ?>)">
+                <div class="item" style="background-image: url(<?php echo $CFG->wwwroot . '/' . $backgroundcard; ?>)">
                     <div class="name">
                         <div class="firstname"><?php echo $USER->firstname; ?></div>
                         <div class="lastname"><?php echo $USER->lastname; ?></div>
