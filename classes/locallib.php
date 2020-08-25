@@ -141,6 +141,14 @@ class locallib {
         }
         return $sorted;
     }
+    /**
+     * Returns the dummydomain for creating user accounts without email.
+     * @param pattern (String) to be prepended before wwwroot, by default 'doesnotexist'
+     */
+    public static function get_dummydomain($pattern = "doesnotexist.") {
+        global $CFG;
+        return '@' . $pattern . str_replace(array('https://', 'http://', 'www.'), '', $CFG->wwwroot);
+    }
 
     /**
      * Get the preferred orgid for a user.

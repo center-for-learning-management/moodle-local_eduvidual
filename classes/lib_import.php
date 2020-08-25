@@ -283,7 +283,7 @@ class local_eduvidual_lib_import_compiler_user extends local_eduvidual_lib_impor
             $animal_key = array_rand($animals, 1);
             $obj->lastname = $animals[$animal_key];
         }
-        $dummydomain = '@doesnotexist.' . str_replace(array('https://', 'http://', 'www.'), '', $CFG->wwwroot);
+        $dummydomain = \local_eduvidual\locallib::get_dummydomain();
         if (empty($obj->email)) {
             $pattern = 'e-' . date("Ym") . '-';
             $usernameformat= $pattern . '%1$04d';
@@ -311,7 +311,7 @@ class local_eduvidual_lib_import_compiler_user extends local_eduvidual_lib_impor
         $obj->firstname = trim($obj->firstname);
         $obj->lastname = trim($obj->lastname);
         $obj->role = trim(ucfirst(strtolower($obj->role)));
-        $obj->username = trim($obj->username);
+        $obj->username = trim(str_replace($dummydomain, '', $obj->username));
         if (empty($obj->cohorts_add) && !empty($obj->bunch)) {
             // Translate the old name to its new name.
             $obj->cohorts_add = $obj->bunch;

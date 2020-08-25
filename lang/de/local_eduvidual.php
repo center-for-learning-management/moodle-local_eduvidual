@@ -304,6 +304,7 @@ $string['import:invalid_role'] = 'Ungültige Rolle angegeben (erlaubt: Manager, 
 $string['import:invalid_org'] = 'Sie haben keine Berechtigung dieses Nutzerkonto zu verwalten!';
 $string['import:invalid_username_or_email'] = 'Benutzername oder e-Mail werden bereits von einem anderen Konto verwendet, das Sie nicht verwalten dürfen.';
 $string['import:issiteadmin'] = 'Administratoren/innen können nicht verwaltet werden';
+$string['import:skipped'] = 'ausgelassen';
 
 $string['invalid_character'] = 'Ungültiges Zeichen';
 $string['invalid_orgcoursebasement'] = 'Ungültige Kursvorlage gewählt!';

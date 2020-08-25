@@ -87,10 +87,15 @@ if (optional_param('datavalidated', 0, PARAM_INT) == 1) {
                 $u->confirmed = 1;
                 $u->mnethostid = 1;
 
-                $otheru = $DB->get_record('user', array('username' => $u->email));
+                $sql = "SELECT id,username,email
+                            FROM {user}
+                            WHERE username LIKE ?
+                                AND id<>?";
+                $params = array($user->username, $u->id);
+                $otheru = $DB->get_record_sql($sql, $params);
                 if (empty($otheru->id)) {
                     // Ok, we can update the username too.
-                    $u->username = $u->email;
+                    $u->username = $user->username;
                 }
 
                 user_update_user($u, false);
@@ -148,7 +153,7 @@ if (optional_param('datavalidated', 0, PARAM_INT) == 1) {
             // Unpack afterwards to restore previous state
             $user->payload = json_decode($user->payload);
         } else {
-            echo 'skipped';
+            echo get_string('import:skipped', 'local_eduvidual');
         }
         ?>
                 </td>
