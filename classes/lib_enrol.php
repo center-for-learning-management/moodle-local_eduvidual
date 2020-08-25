@@ -253,9 +253,8 @@ class lib_enrol {
         if (count(self::$backgrounds) > 0) {
             $bgurl = str_replace($CFG->wwwroot, '', self::$backgrounds[array_rand(self::$backgrounds, 1)]);
         }
-        echo $bgurl;
+
         if (!empty($userid) && !isguestuser($userid)) {
-            echo "set user preference $userid";
             set_user_preference('local_eduvidual_backgroundcard', $bgurl, $userid);
         }
         return $bgurl;
