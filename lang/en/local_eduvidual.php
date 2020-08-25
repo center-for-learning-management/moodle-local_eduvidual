@@ -303,6 +303,7 @@ $string['import:invalid_email'] = 'Invalid e-Mail';
 $string['import:invalid_role'] = 'Invalid role specified (allowed: Manager, Teacher, Student, Parent or remove)';
 $string['import:invalid_org'] = 'Not allowed to manage this user account, not in your organisation';
 $string['import:invalid_username_or_email'] = 'Username or e-Mail already taken by another user, that is not in your organisation';
+$string['import:issiteadmin'] = 'You cannot manage site admins!';
 
 $string['invalid_character'] = 'Invalid character';
 $string['invalid_orgcoursebasement'] = 'Invalid Basement selected!';

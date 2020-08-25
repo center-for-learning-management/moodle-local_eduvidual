@@ -355,6 +355,10 @@ class local_eduvidual_lib_import_compiler_user extends local_eduvidual_lib_impor
                 $payload->processed = false;
                 $payload->action = get_string('import:invalid_org', 'local_eduvidual');
             }
+            if (is_siteadmin($obj->id)) {
+                $payload->processed = false;
+                $payload->action = get_string('import:issiteadmin', 'local_eduvidual');
+            }
         } else {
             // Test if username or email already taken.
             $chk = $DB->get_records_sql('SELECT id FROM {user} WHERE username LIKE ? OR username LIKE ? OR email LIKE ? OR email LIKE ?', array($obj->username, $obj->email, $obj->username, $obj->email));
@@ -364,6 +368,7 @@ class local_eduvidual_lib_import_compiler_user extends local_eduvidual_lib_impor
                 $payload->action = get_string('import:invalid_username_or_email', 'local_eduvidual');
             }
         }
+
         // Set default language to german.
         $obj->lang = 'de';
 
