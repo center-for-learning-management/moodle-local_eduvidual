@@ -78,22 +78,8 @@ foreach ($orgs AS $org) {
         if (empty($supportcourse->id)) {
             echo "<li class='alert alert-danger'><strong>Error creating supportcourse</strong></li>\n";
         } else {
+            echo "<li class='alert alert-success'>Supportcourse created successfully <a href=\"$CFG->wwwroot/course/view.php?id=$supportcourse->id\">#$supportcourse->id</a></li>\n";
             $DB->set_field('local_eduvidual_org', 'supportcourseid', $supportcourse->id, array('orgid' => $org->orgid));
-            // Retrieve first forum from course and configure it as supportforum.
-            $sql = "SELECT * FROM {forum} WHERE course=? LIMIT 0,1";
-            $forum = $DB->get_record_sql($sql, array($supportcourse->id));
-            if (empty($forum->id)) {
-                echo "<li class='alert alert-danger'>Supportcourse created successfully <a href=\"$CFG->wwwroot/course/view.php?id=$supportcourse->id\">#$supportcourse->id</a>, but there is no forum to set as support forum.</li>\n";
-            } else {
-                \local_edusupport\lib::supportforum_enable($forum->id);
-                echo "<li>Supportcourse created successfully with <a href=\"$CFG->wwwroot/course/view.php?id=$supportcourse->id\">#$supportcourse->id</a></li>\n";
-                if ($org->orgid > 500000 && $org->orgid < 600000) {
-                    // School from Salzburg
-                    echo "<li>Added dedicated supporter #2098</li>\n";
-                    \local_edusupport\lib::supportforum_setdedicatedsupporter($forum->id, 2098);
-                }
-            }
-
             // Now enrol all users of that organisation.
             $members = $DB->get_records('local_eduvidual_orgid_userid', array('orgid' => $org->orgid));
             $managers = array();
@@ -106,6 +92,30 @@ foreach ($orgs AS $org) {
             \local_eduvidual\lib_enrol::course_manual_enrolments(array($supportcourse->id), $others, get_config('local_eduvidual', 'defaultrolestudent'));
             echo "<li>Added " . count($managers) . " Managers with teacher role</li>\n";
             echo "<li>Added " . count($others) . " Users with student role</li>\n";
+
+            // Retrieve all forums from course and configure as supportforum.
+            $sql = "SELECT * FROM {forum} WHERE course=?";
+            $forums = $DB->get_records_sql($sql, array($supportcourse->id));
+            if (count($forums) == 0) {
+                echo "<li class='alert alert-danger'>There are no forums in supportcourse <a href=\"$CFG->wwwroot/course/view.php?id=$supportcourse->id\">#$supportcourse->id</a></li>\n";
+            } else {
+                foreach ($forums AS $forum) {
+                    \local_edusupport\lib::supportforum_enable($forum->id);
+                    // Add subscriptions for managers.
+                    foreach ($managers AS $managerid) {
+                        $chk = $DB->get_record('forum_subscription', array('userid' => $managerid, 'forum' => $forum->id));
+                        if (empty($chk->id)) {
+                            echo "<li>Added subscription for Manager #$managerid in forum #$forum->id</li>\n";
+                            $DB->insert_record('forum_subscription', array('userid' => $managerid, 'forum' => $forum->id));
+                        }
+                    }
+                    if ($org->orgid > 500000 && $org->orgid < 600000) {
+                        // School from Salzburg
+                        echo "<li>Added dedicated supporter #2098</li>\n";
+                        \local_edusupport\lib::supportforum_setdedicatedsupporter($forum->id, 2098);
+                    }
+                }
+            }
         }
         echo "</ul></li>\n";
     }
