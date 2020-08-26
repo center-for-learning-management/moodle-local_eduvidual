@@ -101,6 +101,7 @@ if (optional_param('datavalidated', 0, PARAM_INT) == 1) {
                 user_update_user($u, false);
                 if (!empty($user->password)) {
                     update_internal_user_password($u, $user->password, false);
+                    set_user_preference('auth_forcepasswordchange', true, $u->id);
                 }
             } else {
                 $action = 'create';
@@ -122,6 +123,7 @@ if (optional_param('datavalidated', 0, PARAM_INT) == 1) {
                     $user->password = $user->secret;
                 }
                 update_internal_user_password($u, $user->password, false);
+                set_user_preference('auth_forcepasswordchange', true, $u->id);
 
                 $user->id = $u->id;
 
