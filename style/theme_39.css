@@ -83,6 +83,18 @@ body {
   color: #535353 !important;
   border: solid 1px #535353;
 }
+#page-content [aria-controls="menudayfilter"],
+#page-content [aria-controls="menusortby"] {
+  color: #10507f !important;
+}
+#page-content [aria-controls="menudayfilter"]:hover,
+#page-content [aria-controls="menusortby"]:hover {
+  color: #fff !important;
+}
+#page-content [aria-controls="menudayfilter"]:hover .icon,
+#page-content [aria-controls="menusortby"]:hover .icon {
+  color: #fff !important;
+}
 #page-content [data-region="paging-control-container"] .btn {
   color: #535353 !important;
 }
@@ -97,7 +109,6 @@ body {
   color: #fff;
 }
 #page-content .btn {
-  color: #fff !important;
   text-decoration: none !important;
 }
 #page-content .btn:focus {
