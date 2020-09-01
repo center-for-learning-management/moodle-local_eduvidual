@@ -149,6 +149,16 @@ body{
 		color:@eduvidfontdark !important;
 		border:solid 1px @eduvidfontdark;
 	}
+	//Controls im rechten Block einfärben
+	[aria-controls="menudayfilter"],[aria-controls="menusortby"]{
+		color:@eduvidblau !important;
+		&:hover{
+			color:#fff !important;
+			.icon{
+				color:#fff !important;
+			}
+		}
+	}
 	[data-region="paging-control-container"]{
 		.btn{
 			color:@eduvidfontdark !important;
@@ -167,7 +177,7 @@ body{
 		}
 	}
 	.btn{
-		color:#fff !important;
+		//color:#fff !important;
 		text-decoration: none !important;
 		&:focus{
 			outline:none;
@@ -1074,3 +1084,4 @@ nav{
 		text-decoration: underline !important;
 	}
 }
+
