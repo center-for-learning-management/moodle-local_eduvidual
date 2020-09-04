@@ -791,6 +791,12 @@ nav .nav-link:focus {
   border: none;
   text-decoration: none;
 }
+.d-print-block .card-body .coursename {
+  font-weight: bold;
+}
+.d-print-block .card-body .text-muted .categoryname {
+  font-size: 0.8em;
+}
 .form-control {
   margin-bottom: 5px;
 }
