@@ -11,29 +11,64 @@
 }
 
 @media (min-width: 1024px) {
+	html,body{
+		height: 97%;
+	}
+	header{
+		margin:60px 0 60px 0 !important;
+		img{
+			height: 7.5rem;
+		}
+	}
+	#page-login-index {
+		position: relative;
+		min-height:100%;
+	}
     #page {
-        width: 60%;
+        width: 40%;
     }
+	footer{
+		//position: fixed;
+		position: absolute;
+		bottom: 0;
+	}	
 }
 @media (min-width: 800px) and (max-width: 1023px) {
+	header{
+		img{
+			height:5rem;
+		}
+	}
     #page {
-        width: 80%;
-    }
+        width: 95%;
+    }	
+	footer{
+		position: fixed;
+	}
 }
 @media (min-width: 0px) and (max-width: 799px) {
+	header{
+		img{
+			height:4.5rem;
+		}
+	}
     #page {
         width: 95%;
     }
+	footer{
+		position: static;
+	}
 }
 
 #page-login-index {
-    header {
-        margin: 20px 0;
+	header {
+        margin: 50px 0;
     	text-align: center;
-        img {
-            height: 2.5em;
-        }
+		img{
+			display: inline-block;
+		}
         h1 {
+			text-indent: -9999px;
             display: inline-block;
         	font-size: 1.2em;
             color: #085180;
@@ -59,14 +94,37 @@
     	display: block;
     }
     .btn-block, .form-control {
+		color: #535353;
         background-color: #fff;
     	border-radius: 3px;
     	border: 1px solid #ccc;
     	padding: 5px;
     	margin-bottom: 10px;
     }
+	.btn-block:hover{
+		 background-color: #f9f9f9;
+		-webkit-transition: all 0.1s 0s ease-in;
+		-moz-transition: all 0.1s 0s ease-in;
+		-o-transition: all 0.1s 0s ease-in;
+		transition: all 0.1s 0s ease-in;
+		-webkit-box-shadow: 1px 1px 6px -3px rgba(43,43,43,1);
+		-moz-box-shadow: 1px 1px 6px -3px rgba(43,43,43,1);
+		box-shadow: 1px 1px 6px -3px rgba(43,43,43,1);
+	}
     .login-button.btn-block {
-        background-color: #085180; color: #fff;
+        background-color: #085180; 
+		color: #fff;
+		border:none;
+		&:hover{
+			background-color: #063630;
+			-webkit-transition: all 0.1s 0s ease-in;
+			-moz-transition: all 0.1s 0s ease-in;
+			-o-transition: all 0.1s 0s ease-in;
+			transition: all 0.1s 0s ease-in;
+			-webkit-box-shadow: 1px 1px 6px -3px rgba(43,43,43,1);
+			-moz-box-shadow: 1px 1px 6px -3px rgba(43,43,43,1);
+			box-shadow: 1px 1px 6px -3px rgba(43,43,43,1);
+		}
     }
     .btn-grey {
     	background-color: #f3f3f3;
@@ -78,6 +136,7 @@
         * {
         	text-align: center;
             display: block;
+			font-size: 0.85rem;
         }
     }
 
@@ -97,10 +156,6 @@
             flex: 1;
             border-bottom: 1px solid #eee;
         }
-    }
-    footer {
-        position: fixed; bottom: 0;
-        width: 100%;
     }
 }
 
@@ -123,8 +178,10 @@
 .btn-lower {
 	margin:40px 0px 40px 0px;
 }
-
-
+footer{
+		//bottom:0px;
+	width:100%;
+}
 .footer-menu {
 	background-color: #535353;
 	color: #fff; font-size: 0.8em;
@@ -136,3 +193,18 @@
     	color: #fff;
     }
 }
+a:hover{
+	text-decoration: none !important;
+	color: #000;
+}
+/* Buttons unten mit E-Mail und PW gleich breit wie oben */
+.form-row {margin-left: 0; margin-right: 0;}
+
+/* Format Alert */
+.alert-danger{
+	width:101%;
+}
+.alert{
+	margin-left: -4px;
+}
+
