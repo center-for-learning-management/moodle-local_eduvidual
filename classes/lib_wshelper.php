@@ -257,9 +257,12 @@ class lib_wshelper {
         if (is_siteadmin()) {
             $sql = "SELECT u.id,$sqlfullname name,u.email
                         FROM {user} u
-                        WHERE $sqlfullname LIKE ?
-                            OR email LIKE ?
-                            OR username LIKE ?
+                        WHERE deleted=0 AND
+                            (
+                                $sqlfullname LIKE ?
+                                OR email LIKE ?
+                                OR username LIKE ?
+                            )
                         ORDER BY $sqlfullname ASC
                         LIMIT 0,101";
 
@@ -275,9 +278,12 @@ class lib_wshelper {
             $sql = "SELECT u.id,$sqlfullname name,u.email
                         FROM {user} u
                         LEFT JOIN {local_eduvidual_orgid_userid} ou ON (ou.userid = u.id AND ou.orgid IN ($ownorgs) AND ou.orgid NOT IN ($protectedorgs))
-                        WHERE $sqlfullname LIKE ?
-                            OR email LIKE ?
-                            OR username LIKE ?
+                        WHERE deleted=0 AND
+                            (
+                                $sqlfullname LIKE ?
+                                OR email LIKE ?
+                                OR username LIKE ?
+                            )
                         ORDER BY $sqlfullname ASC
                         LIMIT 0,101";
 
@@ -438,9 +444,12 @@ class lib_wshelper {
             $sql = "SELECT u.id,$sqlfullname fullname,u.email
                         FROM {user} u
                         LEFT JOIN {user_enrolments} ue ON (ue.userid = u.id AND ue.enrolid = ?)
-                        WHERE $sqlfullname LIKE ?
-                            OR email LIKE ?
-                            OR username LIKE ?
+                        WHERE deleted=0 AND
+                            (
+                                $sqlfullname LIKE ?
+                                OR email LIKE ?
+                                OR username LIKE ?
+                            )
                         ORDER BY $sqlfullname ASC
                         LIMIT $from," . ($perpage+1);
             $sqlparams = array($enrolid, $search, $search, $search);
@@ -455,9 +464,12 @@ class lib_wshelper {
                         FROM {user} u
                         LEFT JOIN {user_enrolments} ue ON (ue.userid = u.id AND ue.enrolid = ?)
                         LEFT JOIN {local_eduvidual_orgid_userid} ou ON (ou.userid = u.id AND ou.orgid IN ($ownorgs) AND ou.orgid NOT IN ($protectedorgs))
-                        WHERE $sqlfullname LIKE ?
-                            OR email LIKE ?
-                            OR username LIKE ?
+                        WHERE deleted=0 AND
+                            (
+                                $sqlfullname LIKE ?
+                                OR email LIKE ?
+                                OR username LIKE ?
+                            )
                         ORDER BY $sqlfullname ASC
                         LIMIT $from," . ($perpage+1);
             $sqlparams = array($enrolid, $search, $search, $search);
