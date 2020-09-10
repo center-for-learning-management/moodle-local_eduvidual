@@ -245,7 +245,7 @@ class lib_wshelper {
         $search = optional_param('search', '', PARAM_TEXT);
         $sqlsearch = '%' . $search . '%';
 
-        global $DB;
+        global $DB, $USER;
         $result = new \stdClass; // json_decode($buffer);
         $result->results = array();
         $result->results[0]->name = get_string('enrolcandidatesmatching', 'enrol');
@@ -254,16 +254,39 @@ class lib_wshelper {
         $protectedorgs = get_config('local_eduvidual', 'protectedorgs');
         $sqlfullname = $DB->sql_fullname('u.firstname', 'u.lastname');
 
-        $sql = "SELECT u.id,$sqlfullname name
-                    FROM {user} u
-                    LEFT JOIN {local_eduvidual_orgid_userid} ou ON (ou.userid = u.id AND ou.orgid NOT IN ($protectedorgs))
-                    WHERE $sqlfullname LIKE ?
-                        OR email LIKE ?
-                        OR username LIKE ?
-                    ORDER BY $sqlfullname ASC
-                    LIMIT 0,101";
+        if (is_siteadmin()) {
+            $sql = "SELECT u.id,$sqlfullname name,u.email
+                        FROM {user} u
+                        WHERE $sqlfullname LIKE ?
+                            OR email LIKE ?
+                            OR username LIKE ?
+                        ORDER BY $sqlfullname ASC
+                        LIMIT 0,101";
 
-        $potentialusers = $DB->get_records_sql($sql, array($sqlsearch, $sqlsearch, $sqlsearch));
+            $sqlparams = array($sqlsearch, $sqlsearch, $sqlsearch);
+        } else {
+            $myorgs = array();
+            $_myorgs = $DB->get_records('local_eduvidual_orgid_userid', array('userid' => $USER->id));
+            foreach ($_myorgs AS $m) {
+                $myorgs[] = $m->orgid;
+            }
+            $ownorgs = implode(',', $myorgs);
+
+            $sql = "SELECT u.id,$sqlfullname name,u.email
+                        FROM {user} u
+                        LEFT JOIN {local_eduvidual_orgid_userid} ou ON (ou.userid = u.id AND ou.orgid IN ($ownorgs) AND ou.orgid NOT IN ($protectedorgs))
+                        WHERE $sqlfullname LIKE ?
+                            OR email LIKE ?
+                            OR username LIKE ?
+                        ORDER BY $sqlfullname ASC
+                        LIMIT 0,101";
+
+            $sqlparams = array($sqlsearch, $sqlsearch, $sqlsearch);
+        }
+
+
+
+        $potentialusers = $DB->get_records_sql($sql, $sqlparams);
 
         if (count($potentialusers) == 0) {
             if (!empty($search)) {
@@ -308,6 +331,10 @@ class lib_wshelper {
         } else {
             foreach ($potentialusers AS &$potentialuser) {
                 if (empty($potentialuser->id)) continue;
+                if (is_siteadmin() && !\local_eduvidual\locallib::is_connected($potentialuser->id)) {
+                    $potentialuser->name = '! ' . $potentialuser->name;
+                }
+                $potentialuser->name = $potentialuser->name . ' (' . $potentialuser->email . ')';
                 $result->results[0]->users[] = $potentialuser;
             }
         }
@@ -400,26 +427,48 @@ class lib_wshelper {
 
         $search = '%' . $search . '%';
 
-        global $DB, $PAGE;
+        global $DB, $PAGE, $USER;
 
         $result = array();
         $protectedorgs = get_config('local_eduvidual', 'protectedorgs');
         $sqlfullname = $DB->sql_fullname('u.firstname', 'u.lastname');
         $from = $page*$perpage;
 
-        $sql = "SELECT u.id,$sqlfullname fullname,u.email
-                    FROM {user} u
-                    LEFT JOIN {user_enrolments} ue ON (ue.userid = u.id AND ue.enrolid = ?)
-                    LEFT JOIN {local_eduvidual_orgid_userid} ou ON (ou.userid = u.id AND ou.orgid NOT IN ($protectedorgs))
-                    WHERE $sqlfullname LIKE ?
-                        OR email LIKE ?
-                        OR username LIKE ?
-                    ORDER BY $sqlfullname ASC
-                    LIMIT $from," . ($perpage+1);
+        if (is_siteadmin()) {
+            $sql = "SELECT u.id,$sqlfullname fullname,u.email
+                        FROM {user} u
+                        LEFT JOIN {user_enrolments} ue ON (ue.userid = u.id AND ue.enrolid = ?)
+                        WHERE $sqlfullname LIKE ?
+                            OR email LIKE ?
+                            OR username LIKE ?
+                        ORDER BY $sqlfullname ASC
+                        LIMIT $from," . ($perpage+1);
+            $sqlparams = array($enrolid, $search, $search, $search);
+        } else {
+            $myorgs = array();
+            $_myorgs = $DB->get_records('local_eduvidual_orgid_userid', array('userid' => $USER->id));
+            foreach ($_myorgs AS $m) {
+                $myorgs[] = $m->orgid;
+            }
+            $ownorgs = implode(',', $myorgs);
+            $sql = "SELECT u.id,$sqlfullname fullname,u.email
+                        FROM {user} u
+                        LEFT JOIN {user_enrolments} ue ON (ue.userid = u.id AND ue.enrolid = ?)
+                        LEFT JOIN {local_eduvidual_orgid_userid} ou ON (ou.userid = u.id AND ou.orgid IN ($ownorgs) AND ou.orgid NOT IN ($protectedorgs))
+                        WHERE $sqlfullname LIKE ?
+                            OR email LIKE ?
+                            OR username LIKE ?
+                        ORDER BY $sqlfullname ASC
+                        LIMIT $from," . ($perpage+1);
+            $sqlparams = array($enrolid, $search, $search, $search);
+        }
 
-        $potentialusers = $DB->get_records_sql($sql, array($enrolid, $search, $search, $search));
+        $potentialusers = $DB->get_records_sql($sql, $sqlparams);
         foreach ($potentialusers AS &$potentialuser) {
             if (empty($potentialuser->id)) continue;
+            if (is_siteadmin() && !\local_eduvidual\locallib::is_connected($potentialuser->id)) {
+                $potentialuser->fullname = '! ' . $potentialuser->fullname;
+            }
             $userpicture = new \user_picture($potentialuser);
             $userpicture->size = 1;
             // Size f1.
