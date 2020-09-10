@@ -277,7 +277,7 @@ class lib_wshelper {
 
             $sql = "SELECT u.id,$sqlfullname name,u.email
                         FROM {user} u
-                        LEFT JOIN {local_eduvidual_orgid_userid} ou ON (ou.userid = u.id AND ou.orgid IN ($ownorgs) AND ou.orgid NOT IN ($protectedorgs))
+                        JOIN {local_eduvidual_orgid_userid} ou ON (ou.userid = u.id AND ou.orgid IN ($ownorgs) AND ou.orgid NOT IN ($protectedorgs))
                         WHERE deleted=0 AND
                             (
                                 $sqlfullname LIKE ?
@@ -443,7 +443,7 @@ class lib_wshelper {
         if (is_siteadmin()) {
             $sql = "SELECT u.id,$sqlfullname fullname,u.email
                         FROM {user} u
-                        LEFT JOIN {user_enrolments} ue ON (ue.userid = u.id AND ue.enrolid = ?)
+                        JOIN {user_enrolments} ue ON (ue.userid = u.id AND ue.enrolid = ?)
                         WHERE deleted=0 AND
                             (
                                 $sqlfullname LIKE ?
@@ -463,7 +463,7 @@ class lib_wshelper {
             $sql = "SELECT u.id,$sqlfullname fullname,u.email
                         FROM {user} u
                         LEFT JOIN {user_enrolments} ue ON (ue.userid = u.id AND ue.enrolid = ?)
-                        LEFT JOIN {local_eduvidual_orgid_userid} ou ON (ou.userid = u.id AND ou.orgid IN ($ownorgs) AND ou.orgid NOT IN ($protectedorgs))
+                        JOIN {local_eduvidual_orgid_userid} ou ON (ou.userid = u.id AND ou.orgid IN ($ownorgs) AND ou.orgid NOT IN ($protectedorgs))
                         WHERE deleted=0 AND
                             (
                                 $sqlfullname LIKE ?
