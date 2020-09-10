@@ -52,45 +52,52 @@ $PAGE->set_heading(get_string('login'));
     <script type="text/javascript"> window.sessionStorage.clear(); </script>
 </head>
 
-<body id="page-login-index">
+<body>
+	<div id="page-login-index">
 	<div id="page" class="container ">
 
 		<header class="container justify-content-center">
-			<img style="min-height: 120px;" src="<?php echo $CFG->wwwroot; ?>/local/eduvidual/pix/icon.svg" alt="eduvidual Logo">
-			<h1 style="display: none;">eduvidual - <?php echo get_string('your_learning_environment', 'local_eduvidual'); ?></h1>
+			<img src="<?php echo $CFG->wwwroot; ?>/local/eduvidual/pix/icon.svg" alt="eduvidual Logo">
+			<h1>eduvidual - <?php echo get_string('your_learning_environment', 'local_eduvidual'); ?></h1>
 		</header>
 
 		<main class="page-wrapper justify-content-center">
 			<div class="login_buttons">
 				<div class="row justify-content-md-center">
 					<div class="col-lg-6 col-sm-12">
-						<a href="<?php echo $CFG->wwwroot; ?>/local/eduvidual/pages/redirects/login_oauth.php?issuer=Microsoft" title="Microsoft" id="eduvidual-btn-sso-microsoft" data-ajax="false"
-							class="btn btn-block" type="button" name="microsoft">
+						<a href="<?php echo $CFG->wwwroot; ?>/local/eduvidual/pages/redirects/login_oauth.php?issuer=Microsoft" title="Microsoft" id="eduvidual-btn-sso-microsoft" data-ajax="false">
+							<button class="btn btn-block" type="button" name="microsoft">
 							<img src="<?php echo $CFG->wwwroot; ?>/local/eduvidual/pix/logo_microsoft.svg" width="20" alt="Microsoft">&nbsp;Microsoft
+							</button>
 						</a>
 					</div>
 					<div class="col-lg-6 col-sm-12">
-						<a href="<?php echo $CFG->wwwroot; ?>/local/eduvidual/pages/redirects/login_oauth.php?issuer=Google" title="Google" id="eduvidual-btn-sso-google" data-ajax="false"
-							class="btn btn-block" type="button" name="google">
-							<img src="<?php echo $CFG->wwwroot; ?>/local/eduvidual/pix/logo_google.svg" width="20" alt="Google">&nbsp;Google
+						<a href="<?php echo $CFG->wwwroot; ?>/local/eduvidual/pages/redirects/login_oauth.php?issuer=Google" title="Google" id="eduvidual-btn-sso-google" data-ajax="false">
+							<button class="btn btn-block" type="button" name="google">
+								<img src="<?php echo $CFG->wwwroot; ?>/local/eduvidual/pix/logo_google.svg" width="20" alt="Google">&nbsp;Google
+							</button>
 						</a>
 					</div>
 				</div>
 
-				<div class="row justify-content-md-center__">
+				<div class="row justify-content-md-center">
 					<div class="col-lg-6 col-sm-12">
-						<a href="<?php echo $CFG->wwwroot; ?>/local/eduvidual/pages/redirects/login_mnet.php" title="<?php echo get_string('login:network_btn', 'local_eduvidual'); ?>" id="eduvidual-btn-sso-eduverbund" data-ajax="false"
-							class="btn btn-block" type="button" name="edu_verbund">
+						<a href="<?php echo $CFG->wwwroot; ?>/local/eduvidual/pages/redirects/login_mnet.php" title="<?php echo get_string('login:network_btn', 'local_eduvidual'); ?>" id="eduvidual-btn-sso-eduverbund" data-ajax="false"><button 
+							class="btn btn-block" name="edu_verbund">
 							<img src="<?php echo $CFG->wwwroot; ?>/pix/i/mnethost.svg" width="20" alt="<?php echo get_string('login:network_btn', 'local_eduvidual'); ?>">&nbsp;<?php echo get_string('login:network_btn', 'local_eduvidual'); ?>
+							</button>
 						</a>
+					</div>
+					<div class="col-lg-6 col-sm-12">
 					</div>
 					<?php
 					if ($edushare) {
 						?>
 						<div class="col-lg-6 col-sm-12">
-							<a href="<?php echo $CFG->wwwroot; ?>/auth/shibboleth_link/login.php?idp=https%3A%2F%2Ffederation.portal.at%2Fidp_metadata.xml" title="Portal.at" id="eduvidual-btn-sso-portal" data-ajax="false"
-								class="btn btn-block" type="button" name="portal">
+							<a href="<?php echo $CFG->wwwroot; ?>/auth/shibboleth_link/login.php?idp=https%3A%2F%2Ffederation.portal.at%2Fidp_metadata.xml" title="Portal.at" id="eduvidual-btn-sso-portal" data-ajax="false">
+								<button class="btn btn-block" type="button" name="portal">
 								<img src="<?php echo $CFG->wwwroot; ?>/local/eduvidual/pix/logo_portalat.png" width="20" alt="Portal.at">&nbsp;Portal.at
+								</button>
 							</a>
 						</div>
 						<?php
@@ -194,20 +201,20 @@ if ($errorcode > 0) {
 
 
 			<div class="btn-lower row justify-content-md-center">
-				<div class="col-lg-4 col-sm-12">
+				<div class="col-lg-6 col-sm-12">
 					<a href="<?php echo $CFG->wwwroot; ?>/login/verify_age_location.php" title="reg-einzelperson" data-ajax="false">
-						<button class="btn-block btn-grey" type="button" name="Als Einzelperson registrieren" id="reg-einzelperson">
+						<button class="btn-block btn" type="button" name="Als Einzelperson registrieren" id="reg-einzelperson">
 							<?php echo get_string('register:individual', 'local_eduvidual'); ?>
 						</button>
 					</a>
 				</div>
-				<div class="col-lg-4 col-sm-12">
+				<div class="col-lg-6 col-sm-12">
 					<form action="<?php echo $CFG->wwwroot; ?>/login/index.php" method="post" id="guestlogin">
 						<input type="hidden" name="logintoken" value="WBOYNquPhvP8c2NXtWKVztYVQ73yXVXH">
 						<input type="hidden" name="username" value="guest">
 						<input type="hidden" name="password" value="guest">
 						<a href="#" title="gast" id="eduvidual-btn-sso-gast" data-ajax="false">
-							<button class="btn-block btn-grey" type="submit" name="gast" id="gast">
+							<button class="btn-block btn" type="submit" name="gast" id="gast">
 								<?php echo get_string('loginguest'); ?>
 							</button>
 						</a>
@@ -239,5 +246,6 @@ if ($errorcode > 0) {
 			</div>
 		</div>
 	</footer>
+		</div>
 </body>
 </html>
