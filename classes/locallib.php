@@ -68,6 +68,8 @@ class locallib {
                     if (is_siteadmin()) {
                         $user[$namefield] = '! ' . $user[$namefield];
                         $users2[] = $user;
+                    } else {
+                        // @TODO if we filter the entries out and would have been more than 100, user would not see anything.
                     }
                 } else {
                     $users2[] = $user;
@@ -77,6 +79,8 @@ class locallib {
                     if (is_siteadmin()) {
                         $user->$namefield = '! ' . $user->$namefield;
                         $users2[] = $user;
+                    } else {
+                        // @TODO if we filter the entries out and would have been more than 100, user would not see anything.
                     }
                 } else {
                     $users2[] = $user;

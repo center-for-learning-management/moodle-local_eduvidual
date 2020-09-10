@@ -226,12 +226,92 @@ class lib_wshelper {
         echo $buffer;
     }
     private static function buffer_user_selector_search($buffer) {
+        //die($buffer);
+        /**
+         * If we use the default buffer and only remove items, results with more than 100 users will
+         * not show anything. Therefore we need to rewrite it and show our own results.
+         * Results should contain:
+         *    id,fullname,email,profileimageurlsmall,profileimageurl
+         */
+        /* OLD CODE
         $result = json_decode($buffer);
         if (!empty($result->results)) {
             if (!empty($result->results[0]->users)) {
                 $result->results[0]->users = \local_eduvidual\locallib::filter_userlist($result->results[0]->users, 'id', 'name');
             }
         }
+        echo json_encode($result, JSON_NUMERIC_CHECK);
+        */
+        $search = optional_param('search', '', PARAM_TEXT);
+        $sqlsearch = '%' . $search . '%';
+
+        global $DB;
+        $result = new \stdClass; // json_decode($buffer);
+        $result->results = array();
+        $result->results[0]->name = get_string('enrolcandidatesmatching', 'enrol');
+        $result->results[0]->users = array();
+
+        $protectedorgs = get_config('local_eduvidual', 'protectedorgs');
+        $sqlfullname = $DB->sql_fullname('u.firstname', 'u.lastname');
+
+        $sql = "SELECT u.id,$sqlfullname name
+                    FROM {user} u
+                    LEFT JOIN {local_eduvidual_orgid_userid} ou ON (ou.userid = u.id AND ou.orgid NOT IN ($protectedorgs))
+                    WHERE $sqlfullname LIKE ?
+                        OR email LIKE ?
+                        OR username LIKE ?
+                    ORDER BY $sqlfullname ASC
+                    LIMIT 0,101";
+
+        $potentialusers = $DB->get_records_sql($sql, array($sqlsearch, $sqlsearch, $sqlsearch));
+        error_log("count " . count($potentialusers));
+        if (count($potentialusers) == 0) {
+            if (!empty($search)) {
+                $a = new \stdClass;
+                $a->search = $search;
+                $result->results[0] = (object)array(
+                    'name' => get_string('nouserstoshow', 'local_eduvidual', $a),
+                    'users' => array(),
+                );
+                $result->results[1] = (object)array(
+                    'name' => get_string('pleaseusesearch'),
+                    'users' => array(),
+                );
+            } else {
+                $result->results[0] = (object)array(
+                    'name' => array(
+                        get_string('pleaseusesearch')
+                    ),
+                );
+            }
+
+        } elseif (count($potentialusers) > 100) {
+            if (!empty($search)) {
+                $a = new \stdClass;
+                $a->count = '> 100'; //count($potentialusers);
+                $a->search = $search;
+                $result->results[0] = (object)array(
+                    'name' => array(
+                        get_string('toomanyusersmatchsearch', '', $a),
+                        get_string('pleasesearchmore')
+                    ),
+                );
+            } else {
+                $count = '> 100'; //count($potentialusers);
+                $result->results[0] = (object)array(
+                    'name' => array(
+                        get_string('toomanyuserstoshow', '', $count),
+                        get_string('pleaseusesearch')
+                    ),
+                );
+            }
+        } else {
+            foreach ($potentialusers AS &$potentialuser) {
+                if (empty($potentialuser->id)) continue;
+                $result->results[0]->users[] = $potentialuser;
+            }
+        }
+
         echo json_encode($result, JSON_NUMERIC_CHECK);
     }
     private static function buffer_web_lib_ajax_getnavbranch($buffer) {
@@ -307,8 +387,51 @@ class lib_wshelper {
         }
         return $result;
     }
+    /**
+     * @param params: array with numbered index. 0 is courseid, 1 is enrolid, 2 is search, 3 is searchanywhere, 4 is page, 5 is perpage
+     */
     private static function override_core_enrol_external_get_potential_users($result, $params) {
-        return \local_eduvidual\locallib::filter_userlist($result, 'id', 'fullname');
+        $courseid = $params[0];
+        $enrolid = $params[1];
+        $search = $params[2];
+        $searchanywhere = $params[3];
+        $page = $params[4];
+        $perpage = $params[5];
+
+        $search = '%' . $search . '%';
+
+        global $DB, $PAGE;
+
+        $result = array();
+        $protectedorgs = get_config('local_eduvidual', 'protectedorgs');
+        $sqlfullname = $DB->sql_fullname('u.firstname', 'u.lastname');
+        $from = $page*$perpage;
+
+        $sql = "SELECT u.id,$sqlfullname fullname,u.email
+                    FROM {user} u
+                    LEFT JOIN {user_enrolments} ue ON (ue.userid = u.id AND ue.enrolid = ?)
+                    LEFT JOIN {local_eduvidual_orgid_userid} ou ON (ou.userid = u.id AND ou.orgid NOT IN ($protectedorgs))
+                    WHERE $sqlfullname LIKE ?
+                        OR email LIKE ?
+                        OR username LIKE ?
+                    ORDER BY $sqlfullname ASC
+                    LIMIT $from," . ($perpage+1);
+
+        $potentialusers = $DB->get_records_sql($sql, array($enrolid, $search, $search, $search));
+        foreach ($potentialusers AS &$potentialuser) {
+            if (empty($potentialuser->id)) continue;
+            $userpicture = new \user_picture($potentialuser);
+            $userpicture->size = 1;
+            // Size f1.
+            $potentialuser->profileimageurl = $userpicture->get_url($PAGE)->out(false);
+            $userpicture->size = 0;
+            // Size f2.
+            $potentialuser->profileimageurlsmall = $userpicture->get_url($PAGE)->out(false);
+            $result[] = $potentialuser;
+        }
+        return $result;
+
+        //return \local_eduvidual\locallib::filter_userlist($result, 'id', 'fullname');
     }
     private static function override_core_external_get_fragment($result, $params) {
         global $DB, $USER;

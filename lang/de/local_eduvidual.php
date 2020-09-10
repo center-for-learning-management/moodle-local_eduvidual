@@ -477,6 +477,7 @@ $string['missing_capability'] = 'Erforderliches Recht fehlt';
 
 $string['n_a'] = 'n/a';
 $string['name_too_short'] = 'Der Name ist zu kurz';
+$string['nouserstoshow'] = 'Keine Nutzer/innen gefunden mit Suche nach {$a->search}';
 
 $string['oauth2:nosuchissuer'] = 'Kein oAuth Service für {$a->issuer} konfiguriert!';
 $string['or'] = 'oder';

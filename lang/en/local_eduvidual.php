@@ -478,6 +478,7 @@ $string['missing_capability'] = 'Missing capability';
 
 $string['n_a'] = 'n/a';
 $string['name_too_short'] = 'Name too short';
+$string['nouserstoshow'] = 'No users found for search {$a->search}';
 
 $string['oauth2:nosuchissuer'] = 'No oAuth service for {$a->issuer} was configured!';
 $string['or'] = 'or';
