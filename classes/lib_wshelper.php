@@ -264,7 +264,7 @@ class lib_wshelper {
                     LIMIT 0,101";
 
         $potentialusers = $DB->get_records_sql($sql, array($sqlsearch, $sqlsearch, $sqlsearch));
-        error_log("count " . count($potentialusers));
+
         if (count($potentialusers) == 0) {
             if (!empty($search)) {
                 $a = new \stdClass;
