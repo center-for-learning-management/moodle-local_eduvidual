@@ -253,6 +253,7 @@ class lib_wshelper {
 
         $protectedorgs = get_config('local_eduvidual', 'protectedorgs');
         $sqlfullname = $DB->sql_fullname('u.firstname', 'u.lastname');
+        $sqlfullnamerev = $DB->sql_fullname('u.lastname','u.firstname');
 
         if (is_siteadmin()) {
             $sql = "SELECT u.id,$sqlfullname name,u.email
@@ -260,13 +261,14 @@ class lib_wshelper {
                         WHERE deleted=0 AND
                             (
                                 $sqlfullname LIKE ?
+                                OR $sqlfullnamerev LIKE ?
                                 OR email LIKE ?
                                 OR username LIKE ?
                             )
                         ORDER BY $sqlfullname ASC
                         LIMIT 0,101";
 
-            $sqlparams = array($sqlsearch, $sqlsearch, $sqlsearch);
+            $sqlparams = array($sqlsearch, $sqlsearch, $sqlsearch, $sqlsearch);
         } else {
             $myorgs = array();
             $_myorgs = $DB->get_records('local_eduvidual_orgid_userid', array('userid' => $USER->id));
@@ -281,13 +283,14 @@ class lib_wshelper {
                         WHERE deleted=0 AND
                             (
                                 $sqlfullname LIKE ?
+                                OR $sqlfullnamerev LIKE ?
                                 OR email LIKE ?
                                 OR username LIKE ?
                             )
                         ORDER BY $sqlfullname ASC
                         LIMIT 0,101";
 
-            $sqlparams = array($sqlsearch, $sqlsearch, $sqlsearch);
+            $sqlparams = array($sqlsearch, $sqlsearch, $sqlsearch, $sqlsearch);
         }
 
 
@@ -438,6 +441,7 @@ class lib_wshelper {
         $result = array();
         $protectedorgs = get_config('local_eduvidual', 'protectedorgs');
         $sqlfullname = $DB->sql_fullname('u.firstname', 'u.lastname');
+        $sqlfullnamerev = $DB->sql_fullname('u.lastname', 'u.firstname');
         $from = $page*$perpage;
 
         if (is_siteadmin()) {
@@ -447,12 +451,13 @@ class lib_wshelper {
                         WHERE deleted=0 AND
                             (
                                 $sqlfullname LIKE ?
+                                OR $sqlfullnamerev LIKE ?
                                 OR email LIKE ?
                                 OR username LIKE ?
                             )
                         ORDER BY $sqlfullname ASC
                         LIMIT $from," . ($perpage+1);
-            $sqlparams = array($enrolid, $search, $search, $search);
+            $sqlparams = array($enrolid, $search, $search, $search, $search);
         } else {
             $myorgs = array();
             $_myorgs = $DB->get_records('local_eduvidual_orgid_userid', array('userid' => $USER->id));
@@ -467,12 +472,13 @@ class lib_wshelper {
                         WHERE deleted=0 AND
                             (
                                 $sqlfullname LIKE ?
+                                OR $sqlfullnamerev LIKE ?
                                 OR email LIKE ?
                                 OR username LIKE ?
                             )
                         ORDER BY $sqlfullname ASC
                         LIMIT $from," . ($perpage+1);
-            $sqlparams = array($enrolid, $search, $search, $search);
+            $sqlparams = array($enrolid, $search, $search, $search, $search);
         }
 
         $potentialusers = $DB->get_records_sql($sql, $sqlparams);
