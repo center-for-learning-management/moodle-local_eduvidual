@@ -46,6 +46,9 @@ body {
 #page-header .p-0 {
   top: 10px;
 }
+#page-header .p-2 {
+  padding: 0 !important;
+}
 #page-header .form-control:focus {
   border: none !important;
 }
@@ -373,6 +376,12 @@ body {
 #page-content #region-main-box .reporttable {
   margin-top: 1rem;
 }
+#page-content #region-main-box [data-content="forum-discussion"] {
+  /*a:link,a:visited, a:hover, a:active{
+				color:@eduvidfontdark;
+				border: none;
+			}*/
+}
 #page-content #region-main-box [data-content="forum-discussion"] a:link,
 #page-content #region-main-box [data-content="forum-discussion"] a:visited,
 #page-content #region-main-box [data-content="forum-discussion"] a:hover,
@@ -400,6 +409,9 @@ body {
   color: #535353 !important;
   border: none !important;
   text-decoration: none !important;
+}
+#page-content #region-main-box [data-region="post"] .post-content-container a {
+  text-decoration: underline !important;
 }
 #page-navbar {
   background-color: rgba(255, 255, 255, 0.8);
