@@ -113,6 +113,10 @@ body{
 		top:10px;
 		
 	}
+	//Breadcrumbs im Dashboard
+	.p-2{
+		padding:0 !important;
+	}
 	.form-control:focus{
 		border:none !important;
 	}
@@ -419,6 +423,10 @@ body{
 		}
 		[data-content="forum-discussion"]{
 			.ahreffaerben(@eduvidfontdark) !important;
+			/*a:link,a:visited, a:hover, a:active{
+				color:@eduvidfontdark;
+				border: none;
+			}*/
 		}
 		[data-action="forum-advanced-reply"]{
 			color:@eduvidfontdark !important;
@@ -431,6 +439,13 @@ body{
 		}
 		.formsettingheading{
 			.ahreffaerben(@eduvidfontdark) !important;
+		}
+		[data-region="post"]{
+			.post-content-container{
+				a{
+					text-decoration: underline !important;
+				}
+			}
 		}
 	}
 }
