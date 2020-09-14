@@ -88,6 +88,10 @@ function local_eduvidual_before_standard_html_head() {
         }
     }
 
+    // Direct JS commands.
+    $PAGE->requires->js('/local/eduvidual/js/direct.js');
+    $PAGE->requires->js('/local/eduvidual/js/ajax_observer.js');
+
     // Main styles for eduvidual.
     $PAGE->requires->css('/local/eduvidual/style/main.css');
     $PAGE->requires->css('/local/eduvidual/style/spinner.css');
@@ -124,7 +128,6 @@ function local_eduvidual_before_standard_html_head() {
     if (strpos($_SERVER["SCRIPT_FILENAME"], '/course/delete.php') > 0) {
         $PAGE->requires->js_call_amd("local_eduvidual/jsinjector", "modifyRedirectUrl", array('coursedelete'));
     }
-    $PAGE->requires->js('/local/eduvidual/js/ajax_observer.js');
 
     // Now inject organisation-specific resources.
     $inject_styles = array("<style type=\"text/css\" id=\"local_eduvidual_style_userextra\">");
