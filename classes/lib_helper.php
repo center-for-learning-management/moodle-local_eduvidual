@@ -143,7 +143,7 @@ class lib_helper {
             $rc->execute_plan();
             $rc->destroy();
 
-            $course = $DB->get_record('course', array('id' => $newcourseid), '*', MUST_EXIST);
+            $course = $DB->get_record('course', array('id' => $targetcourse->id), '*', MUST_EXIST);
             $course->fullname = $fullname;
             $course->shortname = $shortname;
             $course->visible = $visible;
