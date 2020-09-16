@@ -48,6 +48,7 @@ class lib_helper {
         require_once($CFG->dirroot . '/course/lib.php');
         $coursedata = (object) array(
             'category' => $categoryid,
+            'fullname' => $fullname,
             'shortname' => $shortname,
             'visible' => $visible,
         );
@@ -114,7 +115,8 @@ class lib_helper {
             foreach ($backupsettings as $name => $value) {
                 $setting = $rc->get_plan()->get_setting($name);
                 if ($setting->get_status() == \backup_setting::NOT_LOCKED) {
-                    $setting->set_value($value);
+                    // Deactivated, caused permission error.
+                    //$setting->set_value($value);
                 }
             }
 
