@@ -106,10 +106,7 @@ class lib_helper {
                 $file->extract_to_pathname(get_file_packer('application/vnd.moodle.backup'), $backupbasepath);
             }
 
-            // Create new course.
-            $newcourseid = \restore_dbops::create_new_course($fullname, $shortname, $categoryid);
-
-            $rc = new \restore_controller($backupid, $newcourseid,
+            $rc = new \restore_controller($backupid, $targetcourse->id,
                     \backup::INTERACTIVE_NO, \backup::MODE_SAMESITE, $USER->id, \backup::TARGET_NEW_COURSE);
 
             foreach ($backupsettings as $name => $value) {
