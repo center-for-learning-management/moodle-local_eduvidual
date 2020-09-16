@@ -399,6 +399,7 @@ class lib_wshelper {
     private static function override_core_course_external_get_enrolled_courses_by_timeline_classification($result, $params) {
         global $DB;
         if (!empty($result['courses'])) {
+            $parentcoursecats = array();
             foreach ($result['courses'] AS $id => &$course) {
                 if ($id == 0) {
                     // We attempted to inject some code that modifies the layout and functionality of the course cards.
@@ -411,14 +412,15 @@ class lib_wshelper {
                 $course->hasprogress = false;
                 $context = \context_course::instance($course->id);
                 $path = explode('/', $context->path);
-                $coursecategory = array();
-                for ($a = 2; $a < count($path) -1; $a++) {
-                    $ccontext = $DB->get_record('context', array('id' => $path[$a]));
-                    $category = $DB->get_record('course_categories', array('id' => $ccontext->instanceid));
-                    $coursecategory[] = $category->name;
-                    break;
+                if (count($path) > 1) {
+                    $orgcontextid = $path[2];
+                    if (empty($parentcoursecats[$orgcontextid])) {
+                        $ccontext = $DB->get_record('context', array('id' => $orgcontextid));
+                        $category = $DB->get_record('course_categories', array('id' => $ccontext->instanceid));
+                        $parentcoursecats[$orgcontextid] = $category->name;
+                    }
+                    $course->coursecategory = $parentcoursecats[$orgcontextid];
                 }
-                $course->coursecategory = implode(' > ', $coursecategory);
             }
         }
         return $result;
