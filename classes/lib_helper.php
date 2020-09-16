@@ -42,27 +42,22 @@ class lib_helper {
         // Grant a role that allows course duplication in source and target category
         $basecourse = $DB->get_record('course', array('id' => $courseid));
         $sourcecontext = \context_course::instance($courseid);
-        $targetcontext = \context_coursecat::instance($categoryid);
+        //$targetcontext = \context_coursecat::instance($categoryid);
 
-        $roletoassign = 1; // Manager
-        $revokesourcerole = true;
+        // Create new course
+        require_once($CFG->dirroot . '/course/lib.php');
+        $coursedata = (object) array(
+            'category' => $categoryid,
+            'shortname' => $shortname,
+            'visible' => $visible,
+        );
+        $targetcourse = \create_course($coursedata);
 
-        $roles = get_user_roles($sourcecontext, $USER->id, false);
-        foreach($roles AS $role) {
-            if ($role->roleid == $roletoassign) {
-                // User had this role before - we do not revoke!
-                $revokesourcerole = false;
-            }
-        }
-        $roles = get_user_roles($targetcontext, $USER->id, false);
-        foreach($roles AS $role) {
-            if ($role->roleid == $roletoassign) {
-                // User had this role before - we do not revoke!
-                $revoketargetrole = false;
-            }
-        }
-        role_assign($roletoassign, $USER->id, $sourcecontext->id);
-        role_assign($roletoassign, $USER->id, $targetcontext->id);
+        // Enrol user as teacher
+        $roleid = get_config('local_eduvidual', 'defaultroleteacher');
+        \local_eduvidual\lib_enrol::course_manual_enrolments(array($targetcourse->id), array($USER->id), $roleid);
+
+        // Import from old course
 
         try {
             $backupsettings = array(
@@ -90,7 +85,8 @@ class lib_helper {
             $settings = $bc->get_plan()->get_settings();
             foreach($settings AS $setting) {
                 if (!empty($backupsettings[$setting->get_name()])) {
-                    $setting->set_value($backupsettings[$setting->get_name()]);
+                    // Deactivated, caused permission error.
+                    //$setting->set_value($backupsettings[$setting->get_name()]);
                 }
             }
 
@@ -169,13 +165,6 @@ class lib_helper {
                 'content' => $e->getMessage(),
                 'type' => 'danger',
             ));
-        } finally {
-            if (!empty($revokesourcerole)) {
-                role_unassign($roletoassign, $USER->id, $sourcecontext->id);
-            }
-            if (!empty($revokestargetrole)) {
-                role_unassign($roletoassign, $USER->id, $targetcontext->id);
-            }
         }
     }
     /**
