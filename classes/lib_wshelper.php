@@ -458,7 +458,7 @@ class lib_wshelper {
                             )
                         ORDER BY $sqlfullname ASC
                         LIMIT $from," . ($perpage+1);
-            $sqlparams = array($enrolid, $search, $search, $search, $search);
+            $sqlparams = array($search, $search, $search, $search);
         } else {
             $myorgs = array();
             $_myorgs = $DB->get_records('local_eduvidual_orgid_userid', array('userid' => $USER->id));
@@ -478,7 +478,7 @@ class lib_wshelper {
                             )
                         ORDER BY $sqlfullname ASC
                         LIMIT $from," . ($perpage+1);
-            $sqlparams = array($enrolid, $search, $search, $search, $search);
+            $sqlparams = array($search, $search, $search, $search);
         }
 
         $potentialusers = $DB->get_records_sql($sql, $sqlparams);
