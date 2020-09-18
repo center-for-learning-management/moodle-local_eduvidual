@@ -93,7 +93,7 @@ $PAGE->set_heading(get_string('login'));
                     if ($edushare) {
                         ?>
                         <div class="col-lg-6 col-sm-12">
-                            <a href="<?php echo $CFG->wwwroot; ?>/auth/shibboleth_link/login.php?idp=https%3A%2F%2Fdigitaleschuleprod.b2clogin.com%2Fdigitaleschuleprod.onmicrosoft.com%2FB2C_1A_signin_saml%2Fsamlp%2Fmetadata" title="Portal Digitale Schule (PODS)" id="eduvidual-btn-sso-pods" data-ajax="false">
+                            <a href="<?php echo $CFG->wwwroot; ?>/auth/shibboleth_link/login.php?idp=https%3A%2F%2Fdigitaleschuleprod.onmicrosoft.com%2FB2C_1A_signin_saml" title="Portal Digitale Schule (PODS)" id="eduvidual-btn-sso-pods" data-ajax="false">
                                 <button class="btn btn-block" type="button" name="portal">
                                 <img src="<?php echo $CFG->wwwroot; ?>/local/eduvidual/pix/logo_pods.svg" width="20" alt="PODS">&nbsp;Portal Digitale Schule
                                 </button>
