@@ -226,7 +226,7 @@ body{
 			margin-top:2rem;
 		}
 		p, div{
-			& a{
+			& a:not(.aalink){
 				text-decoration: underline;
 			}
 		}
@@ -241,6 +241,11 @@ body{
 				background-color: @hintergrundfarbe;
 			}
 			.single-section{
+				.nav-item{
+					a{
+						text-decoration: none !important;
+					}
+				}
 				.nav-link{
 					.tab_content  {
 						& marker{				
@@ -279,6 +284,9 @@ body{
 						box-shadow: 0px 3px 6 px #00000029;
 						opacity: 1;
 						padding:7px 10px;
+						a{
+							text-decoration: none !important;
+						}
 					}
 				}
 			}
@@ -363,6 +371,9 @@ body{
 			.nav-tabs{
 				.nav-link{
 					.NavigationsTabsLevel1();
+					& a:not(.nav-link){
+						text-decoration: underline;
+					}
 				}
 				.NavigationsTabsLevel2();
 				border-bottom: 5px solid @eduvidblau;
@@ -445,6 +456,11 @@ body{
 				a{
 					text-decoration: underline !important;
 				}
+			}
+		}
+		#block-region-side-pre{
+			a{
+				text-decoration: none;
 			}
 		}
 	}
@@ -653,6 +669,7 @@ nav{
 			background-color: transparent;
 			z-index:9999;
 		}
+		.ahreffaerben(@eduvidfontdark);
 		//overflow-x: hidden;
 		//overflow: visible;
 		&.closed{
