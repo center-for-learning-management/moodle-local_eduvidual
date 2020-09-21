@@ -152,8 +152,8 @@ body {
 #page-content #region-main-box h3 {
   margin-top: 2rem;
 }
-#page-content #region-main-box p a,
-#page-content #region-main-box div a {
+#page-content #region-main-box p a:not(.aalink),
+#page-content #region-main-box div a:not(.aalink) {
   text-decoration: underline;
 }
 #page-content #region-main-box .form-control {
@@ -163,6 +163,9 @@ body {
   margin-top: 1rem;
   padding: 0.5rem 1rem;
   background-color: #f7f7f7;
+}
+#page-content #region-main-box .course-content .single-section .nav-item a {
+  text-decoration: none !important;
 }
 #page-content #region-main-box .course-content .single-section .nav-link {
   border-radius: 5px 5px 0 0;
@@ -225,6 +228,10 @@ body {
   box-shadow: 0px 3px 6 px #00000029;
   opacity: 1;
   padding: 7px 10px;
+}
+#page-content #region-main-box .course-content .single-section .section-navigation .mdl-left a,
+#page-content #region-main-box .course-content .single-section .section-navigation .mdl-right a {
+  text-decoration: none !important;
 }
 #page-content #region-main-box .course-content ul.topics li.section,
 #page-content #region-main-box .course-content ul.weeks li.section {
@@ -311,6 +318,9 @@ body {
 #page-content #region-main-box [role='main'] .nav-tabs .nav-link.disabled {
   border: none !important;
   background-color: #fff !important;
+}
+#page-content #region-main-box [role='main'] .nav-tabs .nav-link a:not(.nav-link) {
+  text-decoration: underline;
 }
 #page-content #region-main-box [role='main'] .nav-tabs:nth-child(2) {
   color: #fff;
@@ -413,6 +423,9 @@ body {
 }
 #page-content #region-main-box [data-region="post"] .post-content-container a {
   text-decoration: underline !important;
+}
+#page-content #region-main-box #block-region-side-pre a {
+  text-decoration: none;
 }
 #page-navbar {
   background-color: rgba(255, 255, 255, 0.8);
@@ -618,6 +631,14 @@ nav .nav-link:focus {
     width: 250px;
     background-color: transparent;
     z-index: 9999;
+  }
+  #nav-drawer a:link,
+  #nav-drawer a:visited,
+  #nav-drawer a:hover,
+  #nav-drawer a:active {
+    color: #535353;
+    border: none;
+    text-decoration: none;
   }
   #nav-drawer.closed {
     left: 0;
