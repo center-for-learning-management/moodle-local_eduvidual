@@ -152,7 +152,8 @@ body {
 #page-content #region-main-box h3 {
   margin-top: 2rem;
 }
-#page-content #region-main-box p a {
+#page-content #region-main-box p a,
+#page-content #region-main-box div a {
   text-decoration: underline;
 }
 #page-content #region-main-box .form-control {
@@ -1092,4 +1093,14 @@ nav [data-toggle="dropdown"]:hover .icon {
 }
 .forum-post-container a:link {
   text-decoration: underline !important;
+}
+span.mdl-left:empty,
+span.mdl-right:empty {
+  display: none;
+}
+a:not([class]):focus {
+  background-color: rgba(255, 255, 255, 0);
+}
+.card.border-0.bg-transparent {
+  border: 1px solid rgba(0, 0, 0, 0.125) !important;
 }
