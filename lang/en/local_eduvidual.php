@@ -303,6 +303,8 @@ $string['import:invalid_email'] = 'Invalid e-Mail';
 $string['import:invalid_role'] = 'Invalid role specified (allowed: Manager, Teacher, Student, Parent or remove)';
 $string['import:invalid_org'] = 'Not allowed to manage this user account, not in your organisation';
 $string['import:invalid_username_or_email'] = 'Username or e-Mail already taken by another user, that is not in your organisation';
+$string['import:issiteadmin'] = 'You cannot manage site admins!';
+$string['import:skipped'] = 'skipped';
 
 $string['invalid_character'] = 'Invalid character';
 $string['invalid_orgcoursebasement'] = 'Invalid Basement selected!';
@@ -384,6 +386,8 @@ $string['manage:bunch:allmanagers'] = 'All managers';
 $string['manage:coursecategories'] = 'Course Categories';
 $string['manage:coursesettings'] = 'Course settings';
 $string['manage:coursesettings:description'] = 'The following options allow to set particular settings for new created courses. Changes are no applied to existing courses.';
+$string['manage:coursesettings:overridebigbluebutton'] = 'Override big blue button settings';
+$string['manage:coursesettings:overridebigbluebutton:description'] = 'By default, a big blue button server is provided by this site. If for any reason, you want to configure a separate big blue button server for all courses withing your organization, you can specify its details here.';
 $string['manage:coursesettings:overriderolenames'] = 'Override role names';
 $string['manage:createuseranonymous'] = 'Create anonymous User';
 $string['manage:createuseranonymous:amount'] = 'Amount';
@@ -474,6 +478,7 @@ $string['missing_capability'] = 'Missing capability';
 
 $string['n_a'] = 'n/a';
 $string['name_too_short'] = 'Name too short';
+$string['nouserstoshow'] = 'No users found for search {$a->search}';
 
 $string['oauth2:nosuchissuer'] = 'No oAuth service for {$a->issuer} was configured!';
 $string['or'] = 'or';

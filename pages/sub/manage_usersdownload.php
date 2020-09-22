@@ -48,7 +48,7 @@ if (\local_eduvidual\locallib::get_orgrole($orgid) != "Manager" && !is_siteadmin
         'firstname' => 'firstname',
         'lastname' => 'lastname',
         'role' => 'role',
-        'cohort_add' => 'cohort_add',
+        'cohorts_add' => 'cohorts_add',
         'secret' => 'secret',
     );
 

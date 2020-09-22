@@ -26,6 +26,7 @@ namespace local_eduvidual;
 defined('MOODLE_INTERNAL') || die;
 
 class lib_enrol {
+    private static $backgrounds = array(); // holds possible backgrounds
     /**
      * Adds a user to the cohort of an org.
      * @param userid (int) the userid.
@@ -235,22 +236,25 @@ class lib_enrol {
      * @return url to random background
     **/
     public static function choose_background($userid = 0){
-        global $DB;
-        $context = \context_system::instance();
-        $fs = get_file_storage();
-        $files = $fs->get_area_files($context->id, 'local_eduvidual', 'backgrounds_cards', 0);
-        $urls = array();
-        foreach ($files as $file) {
-            if (str_replace('.', '', $file->get_filename()) != ""){
-                $urls[] = '' . \moodle_url::make_pluginfile_url($file->get_contextid(), $file->get_component(), $file->get_filearea(), $file->get_itemid(), $file->get_filepath(), $file->get_filename());
+        global $CFG;
+        if (count(self::$backgrounds) == 0) {
+            // We need to load possible backgrounds
+            $context = \context_system::instance();
+            $fs = get_file_storage();
+            $files = $fs->get_area_files($context->id, 'local_eduvidual', 'backgrounds_cards', 0);
+            self::$backgrounds = array();
+            foreach ($files as $file) {
+                if (str_replace('.', '', $file->get_filename()) != ""){
+                    self::$backgrounds[] = '' . \moodle_url::make_pluginfile_url($file->get_contextid(), $file->get_component(), $file->get_filearea(), $file->get_itemid(), $file->get_filepath(), $file->get_filename());
+                }
             }
         }
-
         $bgurl = '';
-        if (count($urls) > 0) {
-            $bgurl = $urls[array_rand($urls, 1)];
+        if (count(self::$backgrounds) > 0) {
+            $bgurl = str_replace($CFG->wwwroot, '', self::$backgrounds[array_rand(self::$backgrounds, 1)]);
         }
-        if ($userid > 0 && !isguestuser($userid)) {
+
+        if (!empty($userid) && !isguestuser($userid)) {
             set_user_preference('local_eduvidual_backgroundcard', $bgurl, $userid);
         }
         return $bgurl;

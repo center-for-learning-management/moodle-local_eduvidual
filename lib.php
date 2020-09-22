@@ -25,7 +25,7 @@
 defined('MOODLE_INTERNAL') || die;
 
 function local_eduvidual_after_config() {
-    global $CFG, $PAGE, $USER;
+    global $CFG, $DB, $PAGE, $USER;
 
     // Fore redirect to login from frontpage.
     if ((!isloggedin() || isguestuser($USER)) && $_SERVER["SCRIPT_FILENAME"] == $CFG->dirroot . '/index.php') {
@@ -44,12 +44,29 @@ function local_eduvidual_after_config() {
         \local_eduvidual\lib_wshelper::buffer();
     }
 
-    /* Prepared code for custom config of bigbluebutton server.
-    $CFG->bigbluebuttonbn['server_url'] = '';
-    $CFG->{'bigbluebuttonbn_server_url'} = '';
-    $CFG->bigbluebuttonbn['shared_secret'] = '';
-    $CFG->{'bigbluebuttonbn_shared_secret'} = '';
-    */
+    if (strpos($_SERVER["SCRIPT_FILENAME"], '/mod/bigbluebuttonbn/view.php') > 0
+        || strpos($_SERVER["SCRIPT_FILENAME"], '/mod/bigbluebuttonbn/bbb_view.php') > 0) {
+        $cmid = optional_param('id', 0, PARAM_INT);
+        if (!empty($cmid)) {
+            $cm = get_coursemodule_from_id('bigbluebuttonbn', $cmid, 0, false, IGNORE_MISSING);
+            if (!empty($cm->course)) {
+                $course = $DB->get_record('course', array('id' => $cm->course), '*', IGNORE_MISSING);
+                if (!empty($course->id)) {
+                    $org = \local_eduvidual\locallib::get_org_by_courseid($course->id);
+                    if (!empty($org->orgid)) {
+                        $bbb_serverurl = $DB->get_record('local_eduvidual_overrides', array('orgid' => $org->orgid, 'field' => 'bigbluebuttonbn_server_url'));
+                        $bbb_sharedsecret = $DB->get_record('local_eduvidual_overrides', array('orgid' => $org->orgid, 'field' => 'bigbluebuttonbn_shared_secret'));
+                        if (!empty($bbb_serverurl->value) && !empty($bbb_sharedsecret->value)) {
+                            $CFG->bigbluebuttonbn['server_url'] = $bbb_serverurl->value;
+                            $CFG->{'bigbluebuttonbn_server_url'} = $bbb_serverurl->value;
+                            $CFG->bigbluebuttonbn['shared_secret'] = $bbb_sharedsecret->value;
+                            $CFG->{'bigbluebuttonbn_shared_secret'} = $bbb_sharedsecret->value;
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 
 function local_eduvidual_after_require_login() {
@@ -70,6 +87,10 @@ function local_eduvidual_before_standard_html_head() {
             }
         }
     }
+
+    // Direct JS commands.
+    $PAGE->requires->js('/local/eduvidual/js/direct.js');
+    $PAGE->requires->js('/local/eduvidual/js/ajax_observer.js');
 
     // Main styles for eduvidual.
     $PAGE->requires->css('/local/eduvidual/style/main.css');
@@ -107,7 +128,6 @@ function local_eduvidual_before_standard_html_head() {
     if (strpos($_SERVER["SCRIPT_FILENAME"], '/course/delete.php') > 0) {
         $PAGE->requires->js_call_amd("local_eduvidual/jsinjector", "modifyRedirectUrl", array('coursedelete'));
     }
-    $PAGE->requires->js('/local/eduvidual/js/ajax_observer.js');
 
     // Now inject organisation-specific resources.
     $inject_styles = array("<style type=\"text/css\" id=\"local_eduvidual_style_userextra\">");
@@ -263,7 +283,7 @@ function local_eduvidual_myprofile_navigation($tree, $user, $iscurrentuser, $cou
             $org = $DB->get_record('local_eduvidual_org', array('orgid' => $membership->orgid));
             if (empty($org->id)) continue;
             $link = '<a href="' . $CFG->wwwroot . '/local/eduvidual/pages/manage.php?orgid=' . $org->orgid . '">' . $org->name . ' (' . $membership->role . ')</a>';
-            $node = new \core_user\output\myprofile\node('eduvidual', 'eduvidualmembership-' . $membership->orgid, $link);
+            $node = new \core_user\output\myprofile\node('eduvidual', 'eduvidualmembership-' . $membership->orgid . '-' . $membership->role, $link);
             $category->add_node($node);
         }
     }

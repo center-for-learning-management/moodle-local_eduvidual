@@ -50,7 +50,7 @@
 
         {{#users}}
             {{#format_cards}}
-            <div class="item" style="display: inline-block; background-image: url({{backgroundcard}})">
+            <div class="item" style="display: inline-block; background-image: url({{wwwroot}}/{{backgroundcard}})">
                 <div class="name">
                     <div class="firstname">{{firstname}}</div>
                     <div class="lastname">{{lastname}}</div>
@@ -58,7 +58,7 @@
                 <div class="username">
                     <a href="#" style="text-decoration: none; color: unset;"
                         onclick="require(['local_eduvidual/manager'], function(M) { M.editProfile({{orgid}}, {{id}}, { run: function() { top.location.reload(); } }); }); return false;">
-                        {{email}}
+                        {{displayusername}}
                     </a>
                 </div>
                 <div class="contact">{{email}}</div>

@@ -303,6 +303,8 @@ $string['import:invalid_email'] = 'Ungültige e-Mail';
 $string['import:invalid_role'] = 'Ungültige Rolle angegeben (erlaubt: Manager, Teacher, Student, Parent or remove)';
 $string['import:invalid_org'] = 'Sie haben keine Berechtigung dieses Nutzerkonto zu verwalten!';
 $string['import:invalid_username_or_email'] = 'Benutzername oder e-Mail werden bereits von einem anderen Konto verwendet, das Sie nicht verwalten dürfen.';
+$string['import:issiteadmin'] = 'Administratoren/innen können nicht verwaltet werden';
+$string['import:skipped'] = 'ausgelassen';
 
 $string['invalid_character'] = 'Ungültiges Zeichen';
 $string['invalid_orgcoursebasement'] = 'Ungültige Kursvorlage gewählt!';
@@ -383,6 +385,8 @@ $string['manage:bunch:allmanagers'] = 'Alle Manager/innen';
 $string['manage:coursecategories'] = 'Kurskategorien';
 $string['manage:coursesettings'] = 'Kurseinstellungen';
 $string['manage:coursesettings:description'] = 'Die folgenden Einstellungen ermöglicht es, Standardwerte für neu erstellte Kurse zu setzen. Änderungen werden bei bestehenden Kursen nicht angewendet!';
+$string['manage:coursesettings:overridebigbluebutton'] = 'Überschreibe BigBlueButton-Einstellungen';
+$string['manage:coursesettings:overridebigbluebutton:description'] = 'Diese Moodle-Instanz bietet einen BigBlueButton-Server an, der für normale Anwendungen ausreichend ist. Sollten Sie aus irgendwelchen Gründen einen alternativen BigBlueButton-Server für alle Kurse in Ihrer Organisation einstellen wollen, geben Sie bitte die Serverdaten hier ein.';
 $string['manage:coursesettings:overriderolenames'] = 'Überschreibe Rollen-Namen';
 $string['manage:createuseranonymous'] = 'Anonyme Nutzer/innen erstellen';
 $string['manage:createuseranonymous:amount'] = 'Anzahl';
@@ -473,6 +477,7 @@ $string['missing_capability'] = 'Erforderliches Recht fehlt';
 
 $string['n_a'] = 'n/a';
 $string['name_too_short'] = 'Der Name ist zu kurz';
+$string['nouserstoshow'] = 'Keine Nutzer/innen gefunden mit Suche nach {$a->search}';
 
 $string['oauth2:nosuchissuer'] = 'Kein oAuth Service für {$a->issuer} konfiguriert!';
 $string['or'] = 'oder';

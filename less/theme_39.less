@@ -113,6 +113,10 @@ body{
 		top:10px;
 		
 	}
+	//Breadcrumbs im Dashboard
+	.p-2{
+		padding:0 !important;
+	}
 	.form-control:focus{
 		border:none !important;
 	}
@@ -146,12 +150,38 @@ body{
 	}
 	//Foren und Diskussions-Buttons
 	#id_advancedadddiscussion{
-		color:@eduvidfontdark;
+		color:@eduvidfontdark !important;
 		border:solid 1px @eduvidfontdark;
 	}
-
+	//Controls im rechten Block einfärben
+	[aria-controls="menudayfilter"],[aria-controls="menusortby"]{
+		color:@eduvidblau !important;
+		&:hover{
+			color:#fff !important;
+			.icon{
+				color:#fff !important;
+			}
+		}
+	}
+	[data-region="paging-control-container"]{
+		.btn{
+			color:@eduvidfontdark !important;
+			&:hover{
+				color:#fff !important;
+				.icon{
+					color:#fff !important;
+				}
+			}
+		}
+		.dropdown-item{
+			&.active{
+				background-color: @eduvidblau;
+				color:#fff;
+			}
+		}
+	}
 	.btn{
-		color:#fff !important;
+		//color:#fff !important;
 		text-decoration: none !important;
 		&:focus{
 			outline:none;
@@ -195,8 +225,8 @@ body{
 		h3{
 			margin-top:2rem;
 		}
-		p{
-			& a{
+		p, div{
+			& a:not(.aalink){
 				text-decoration: underline;
 			}
 		}
@@ -211,6 +241,11 @@ body{
 				background-color: @hintergrundfarbe;
 			}
 			.single-section{
+				.nav-item{
+					a{
+						text-decoration: none !important;
+					}
+				}
 				.nav-link{
 					.tab_content  {
 						& marker{				
@@ -249,6 +284,9 @@ body{
 						box-shadow: 0px 3px 6 px #00000029;
 						opacity: 1;
 						padding:7px 10px;
+						a{
+							text-decoration: none !important;
+						}
 					}
 				}
 			}
@@ -333,6 +371,9 @@ body{
 			.nav-tabs{
 				.nav-link{
 					.NavigationsTabsLevel1();
+					& a:not(.nav-link){
+						text-decoration: underline;
+					}
 				}
 				.NavigationsTabsLevel2();
 				border-bottom: 5px solid @eduvidblau;
@@ -393,10 +434,34 @@ body{
 		}
 		[data-content="forum-discussion"]{
 			.ahreffaerben(@eduvidfontdark) !important;
+			/*a:link,a:visited, a:hover, a:active{
+				color:@eduvidfontdark;
+				border: none;
+			}*/
 		}
 		[data-action="forum-advanced-reply"]{
 			color:@eduvidfontdark !important;
 			border: solid 1px @eduvidfontdark;
+		}
+		.ui-eduvidual{
+			.hide-on-print{
+				.ahreffaerben(@eduvidfontdark) !important;
+			}
+		}
+		.formsettingheading{
+			.ahreffaerben(@eduvidfontdark) !important;
+		}
+		[data-region="post"]{
+			.post-content-container{
+				a{
+					text-decoration: underline !important;
+				}
+			}
+		}
+		#block-region-side-pre{
+			a{
+				text-decoration: none;
+			}
 		}
 	}
 }
@@ -604,6 +669,7 @@ nav{
 			background-color: transparent;
 			z-index:9999;
 		}
+		.ahreffaerben(@eduvidfontdark);
 		//overflow-x: hidden;
 		//overflow: visible;
 		&.closed{
@@ -762,6 +828,18 @@ nav{
 		.card-text{
 			padding:16px 25px;
 			.ahreffaerben(#000);
+		}
+	}
+}
+.d-print-block{
+	.card-body{
+		.coursename{
+			font-weight: bold;
+		}
+		.text-muted{
+			.categoryname{
+				font-size: 0.8em;
+			}
 		}
 	}
 }
@@ -1006,24 +1084,6 @@ a.dropdown-toggle:focus,
 	}
 }
 
-#paging-control-limit-container-0{
-	.btn{
-		color:@eduvidfontdark !important;
-		&:hover{
-			color:#fff !important;
-			.icon{
-				color:#fff !important;
-			}
-		}
-	}
-	.dropdown-item{
-		&.active{
-			background-color: @eduvidblau;
-			color:#fff;
-		}
-	}
-}
-
 //Buttons:
 #back-to-top{
 	z-index: 99999;
@@ -1068,3 +1128,13 @@ nav{
 		text-decoration: underline !important;
 	}
 }
+span.mdl-left:empty,span.mdl-right:empty{
+	display:none;
+}
+a:not([class]):focus{
+	background-color: rgba(255,255,255,0);
+}
+.card.border-0.bg-transparent{
+	border:1px solid rgba(0,0,0,.125) !important;
+}
+

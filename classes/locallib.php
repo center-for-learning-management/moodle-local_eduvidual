@@ -68,6 +68,8 @@ class locallib {
                     if (is_siteadmin()) {
                         $user[$namefield] = '! ' . $user[$namefield];
                         $users2[] = $user;
+                    } else {
+                        // @TODO if we filter the entries out and would have been more than 100, user would not see anything.
                     }
                 } else {
                     $users2[] = $user;
@@ -77,6 +79,8 @@ class locallib {
                     if (is_siteadmin()) {
                         $user->$namefield = '! ' . $user->$namefield;
                         $users2[] = $user;
+                    } else {
+                        // @TODO if we filter the entries out and would have been more than 100, user would not see anything.
                     }
                 } else {
                     $users2[] = $user;
@@ -140,6 +144,14 @@ class locallib {
             }
         }
         return $sorted;
+    }
+    /**
+     * Returns the dummydomain for creating user accounts without email.
+     * @param pattern (String) to be prepended before wwwroot, by default 'doesnotexist'
+     */
+    public static function get_dummydomain($pattern = "doesnotexist.") {
+        global $CFG;
+        return '@' . $pattern . str_replace(array('https://', 'http://', 'www.'), '', $CFG->wwwroot);
     }
 
     /**
