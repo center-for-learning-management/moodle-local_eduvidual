@@ -124,16 +124,23 @@ switch($cohort) {
         $entries = $DB->get_records_sql('SELECT u.* FROM {cohort_members} AS cm, {user} AS u WHERE u.deleted=0 AND cm.userid=u.id AND cm.cohortid=? ORDER BY u.lastname ASC, u.firstname ASC', array($cohort));
 }
 
+$dummydomain = \local_eduvidual\locallib::get_dummydomain();
+
 $users = array();
 $userids = array();
 $cnt = 0;
 foreach($entries AS $user) {
     profile_load_data($user);
     $role = $DB->get_record('local_eduvidual_orgid_userid', array('orgid' => $orgid, 'userid' => $user->id));
-    $user->backgroundcard = get_user_preferences('local_eduvidual_backgroundcard', $user->id);
+    $user->backgroundcard = get_user_preferences('local_eduvidual_backgroundcard', '', $user->id);
+	if (empty($user->backgroundcard)) {
+		$user->backgroundcard = \local_eduvidual\lib_enrol::choose_background($user->id);
+	}
     $user->role = $role->role;
     $user->userpicture = $OUTPUT->user_picture($user, array('size' => 200));
     $user->secret_encoded = rawurlencode($user->id . '#' . $user->profile_field_secret);
+	$user->displayusername = $user->username;
+
     $cnt++;
     if ($cnt == 18) {
         $cnt = 0;

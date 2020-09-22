@@ -226,12 +226,128 @@ class lib_wshelper {
         echo $buffer;
     }
     private static function buffer_user_selector_search($buffer) {
+        //die($buffer);
+        /**
+         * If we use the default buffer and only remove items, results with more than 100 users will
+         * not show anything. Therefore we need to rewrite it and show our own results.
+         * Results should contain:
+         *    id,fullname,email,profileimageurlsmall,profileimageurl
+         */
+        /* OLD CODE
         $result = json_decode($buffer);
         if (!empty($result->results)) {
             if (!empty($result->results[0]->users)) {
                 $result->results[0]->users = \local_eduvidual\locallib::filter_userlist($result->results[0]->users, 'id', 'name');
             }
         }
+        echo json_encode($result, JSON_NUMERIC_CHECK);
+        */
+        $search = optional_param('search', '', PARAM_TEXT);
+        $sqlsearch = '%' . $search . '%';
+
+        global $DB, $USER;
+        $result = new \stdClass; // json_decode($buffer);
+        $result->results = array();
+        $result->results[0]->name = get_string('enrolcandidatesmatching', 'enrol');
+        $result->results[0]->users = array();
+
+        $protectedorgs = get_config('local_eduvidual', 'protectedorgs');
+        $sqlfullname = $DB->sql_fullname('u.firstname', 'u.lastname');
+        $sqlfullnamerev = $DB->sql_fullname('u.lastname','u.firstname');
+
+        if (is_siteadmin()) {
+            $sql = "SELECT u.id,$sqlfullname name,u.email
+                        FROM {user} u
+                        WHERE deleted=0 AND
+                            (
+                                $sqlfullname LIKE ?
+                                OR $sqlfullnamerev LIKE ?
+                                OR email LIKE ?
+                                OR username LIKE ?
+                            )
+                        ORDER BY $sqlfullname ASC
+                        LIMIT 0,101";
+
+            $sqlparams = array($sqlsearch, $sqlsearch, $sqlsearch, $sqlsearch);
+        } else {
+            $myorgs = array();
+            $_myorgs = $DB->get_records('local_eduvidual_orgid_userid', array('userid' => $USER->id));
+            foreach ($_myorgs AS $m) {
+                $myorgs[] = $m->orgid;
+            }
+            $ownorgs = implode(',', $myorgs);
+
+            $sql = "SELECT u.id,$sqlfullname name,u.email
+                        FROM {user} u
+                        JOIN {local_eduvidual_orgid_userid} ou ON (ou.userid = u.id AND ou.orgid IN ($ownorgs) AND ou.orgid NOT IN ($protectedorgs))
+                        WHERE deleted=0 AND
+                            (
+                                $sqlfullname LIKE ?
+                                OR $sqlfullnamerev LIKE ?
+                                OR email LIKE ?
+                                OR username LIKE ?
+                            )
+                        ORDER BY $sqlfullname ASC
+                        LIMIT 0,101";
+
+            $sqlparams = array($sqlsearch, $sqlsearch, $sqlsearch, $sqlsearch);
+        }
+
+
+
+        $potentialusers = $DB->get_records_sql($sql, $sqlparams);
+
+        if (count($potentialusers) == 0) {
+            if (!empty($search)) {
+                $a = new \stdClass;
+                $a->search = $search;
+                $result->results[0] = (object)array(
+                    'name' => get_string('nouserstoshow', 'local_eduvidual', $a),
+                    'users' => array(),
+                );
+                $result->results[1] = (object)array(
+                    'name' => get_string('pleaseusesearch'),
+                    'users' => array(),
+                );
+            } else {
+                $result->results[0] = (object)array(
+                    'name' => array(
+                        get_string('pleaseusesearch')
+                    ),
+                );
+            }
+
+        } elseif (count($potentialusers) > 100) {
+            if (!empty($search)) {
+                $a = new \stdClass;
+                $a->count = '> 100'; //count($potentialusers);
+                $a->search = $search;
+                $result->results[0] = (object)array(
+                    'name' => array(
+                        get_string('toomanyusersmatchsearch', '', $a),
+                        get_string('pleasesearchmore')
+                    ),
+                );
+            } else {
+                $count = '> 100'; //count($potentialusers);
+                $result->results[0] = (object)array(
+                    'name' => array(
+                        get_string('toomanyuserstoshow', '', $count),
+                        get_string('pleaseusesearch')
+                    ),
+                );
+            }
+        } else {
+            foreach ($potentialusers AS &$potentialuser) {
+                if (empty($potentialuser->id)) continue;
+                if (is_siteadmin() && !\local_eduvidual\locallib::is_connected($potentialuser->id)) {
+                    $potentialuser->name = '! ' . $potentialuser->name;
+                }
+                $potentialuser->name = $potentialuser->name . ' (' . $potentialuser->email . ')';
+                $result->results[0]->users[] = $potentialuser;
+            }
+        }
+
         echo json_encode($result, JSON_NUMERIC_CHECK);
     }
     private static function buffer_web_lib_ajax_getnavbranch($buffer) {
@@ -283,6 +399,7 @@ class lib_wshelper {
     private static function override_core_course_external_get_enrolled_courses_by_timeline_classification($result, $params) {
         global $DB;
         if (!empty($result['courses'])) {
+            $parentcoursecats = array();
             foreach ($result['courses'] AS $id => &$course) {
                 if ($id == 0) {
                     // We attempted to inject some code that modifies the layout and functionality of the course cards.
@@ -295,20 +412,93 @@ class lib_wshelper {
                 $course->hasprogress = false;
                 $context = \context_course::instance($course->id);
                 $path = explode('/', $context->path);
-                $coursecategory = array();
-                for ($a = 2; $a < count($path) -1; $a++) {
-                    $ccontext = $DB->get_record('context', array('id' => $path[$a]));
-                    $category = $DB->get_record('course_categories', array('id' => $ccontext->instanceid));
-                    $coursecategory[] = $category->name;
-                    break;
+                if (count($path) > 1) {
+                    $orgcontextid = $path[2];
+                    if (empty($parentcoursecats[$orgcontextid])) {
+                        $ccontext = $DB->get_record('context', array('id' => $orgcontextid));
+                        $category = $DB->get_record('course_categories', array('id' => $ccontext->instanceid));
+                        $parentcoursecats[$orgcontextid] = $category->name;
+                    }
+                    $course->coursecategory = $parentcoursecats[$orgcontextid];
                 }
-                $course->coursecategory = implode(' > ', $coursecategory);
             }
         }
         return $result;
     }
+    /**
+     * @param params: array with numbered index. 0 is courseid, 1 is enrolid, 2 is search, 3 is searchanywhere, 4 is page, 5 is perpage
+     */
     private static function override_core_enrol_external_get_potential_users($result, $params) {
-        return \local_eduvidual\locallib::filter_userlist($result, 'id', 'fullname');
+        $courseid = $params[0];
+        $enrolid = $params[1];
+        $search = $params[2];
+        $searchanywhere = $params[3];
+        $page = $params[4];
+        $perpage = $params[5];
+
+        $search = '%' . $search . '%';
+
+        global $DB, $PAGE, $USER;
+
+        $result = array();
+        $protectedorgs = get_config('local_eduvidual', 'protectedorgs');
+        $sqlfullname = $DB->sql_fullname('u.firstname', 'u.lastname');
+        $sqlfullnamerev = $DB->sql_fullname('u.lastname', 'u.firstname');
+        $from = $page*$perpage;
+
+        if (is_siteadmin()) {
+            $sql = "SELECT u.id,$sqlfullname fullname,u.email
+                        FROM {user} u
+                        WHERE deleted=0 AND
+                            (
+                                $sqlfullname LIKE ?
+                                OR $sqlfullnamerev LIKE ?
+                                OR email LIKE ?
+                                OR username LIKE ?
+                            )
+                        ORDER BY $sqlfullname ASC
+                        LIMIT $from," . ($perpage+1);
+            $sqlparams = array($search, $search, $search, $search);
+        } else {
+            $myorgs = array();
+            $_myorgs = $DB->get_records('local_eduvidual_orgid_userid', array('userid' => $USER->id));
+            foreach ($_myorgs AS $m) {
+                $myorgs[] = $m->orgid;
+            }
+            $ownorgs = implode(',', $myorgs);
+            $sql = "SELECT u.id,$sqlfullname fullname,u.email
+                        FROM {user} u
+                        JOIN {local_eduvidual_orgid_userid} ou ON (ou.userid = u.id AND ou.orgid IN ($ownorgs) AND ou.orgid NOT IN ($protectedorgs))
+                        WHERE deleted=0 AND
+                            (
+                                $sqlfullname LIKE ?
+                                OR $sqlfullnamerev LIKE ?
+                                OR email LIKE ?
+                                OR username LIKE ?
+                            )
+                        ORDER BY $sqlfullname ASC
+                        LIMIT $from," . ($perpage+1);
+            $sqlparams = array($search, $search, $search, $search);
+        }
+
+        $potentialusers = $DB->get_records_sql($sql, $sqlparams);
+        foreach ($potentialusers AS &$potentialuser) {
+            if (empty($potentialuser->id)) continue;
+            if (is_siteadmin() && !\local_eduvidual\locallib::is_connected($potentialuser->id)) {
+                $potentialuser->fullname = '! ' . $potentialuser->fullname;
+            }
+            $userpicture = new \user_picture($potentialuser);
+            $userpicture->size = 1;
+            // Size f1.
+            $potentialuser->profileimageurl = $userpicture->get_url($PAGE)->out(false);
+            $userpicture->size = 0;
+            // Size f2.
+            $potentialuser->profileimageurlsmall = $userpicture->get_url($PAGE)->out(false);
+            $result[] = $potentialuser;
+        }
+        return $result;
+
+        //return \local_eduvidual\locallib::filter_userlist($result, 'id', 'fullname');
     }
     private static function override_core_external_get_fragment($result, $params) {
         global $DB, $USER;

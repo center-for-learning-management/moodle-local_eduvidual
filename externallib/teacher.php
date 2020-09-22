@@ -56,12 +56,13 @@ class local_eduvidual_external_teacher extends external_api {
         if (!empty($params['subcat1'])) {
             $seltree['subcats2'] = \local_eduvidual\locallib::get_orgsubcats($org->orgid, 'subcats2', $params['subcat1']);
         }
-        if (!empty($params['subcat2'])) {
+        if ((!empty($params['subcat1']) && empty($org->subcats2lbl)) || !empty($params['subcat2'])) {
             $seltree['subcats3'] = \local_eduvidual\locallib::get_orgsubcats($org->orgid, 'subcats3', $params['subcat2']);
         }
 
         for ($a = 1; $a <= 3; $a++) {
             $seltree['subcat' . $a] = $params['subcat' . $a];
+            if (empty($org->subcats2lbl)) continue;
             if ($a > 1 && empty($seltree['subcat' . ($a-1)])) $seltree['subcat' . $a] = '';
             if (is_array($seltree['subcats' . $a]) && !empty($params['subcat' . $a]) && !in_array($params['subcat' . $a], $seltree['subcats' . $a])) $seltree['subcat' . $a] = '';
         }

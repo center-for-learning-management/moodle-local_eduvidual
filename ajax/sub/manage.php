@@ -413,6 +413,29 @@ switch ($act) {
             $reply['error'] = 'not_siteadmin';
         }
     break;
+    case 'override_bigbluebutton':
+        $new_serverurl = optional_param('bbb_serverurl', '', PARAM_URL);
+        $new_sharedsecret = optional_param('bbb_sharedsecret', '', PARAM_ALPHANUM);
+
+        $bbb_serverurl = $DB->get_record('local_eduvidual_overrides', array('orgid' => $org->orgid, 'field' => 'bigbluebuttonbn_server_url'));
+        if (!empty($bbb_serverurl->id)) {
+            $reply['setfieldurl'] = $new_serverurl;
+            $DB->set_field('local_eduvidual_overrides', 'value', $new_serverurl, array('orgid' => $org->orgid, 'field' => 'bigbluebuttonbn_server_url'));
+        } else {
+            $reply['insertfieldurl'] = $new_serverurl;
+            $DB->insert_record('local_eduvidual_overrides', array('orgid' => $org->orgid, 'field' => 'bigbluebuttonbn_server_url', 'value' => $new_serverurl));
+        }
+
+        $bbb_sharedsecret = $DB->get_record('local_eduvidual_overrides', array('orgid' => $org->orgid, 'field' => 'bigbluebuttonbn_shared_secret'));
+        if (!empty($bbb_sharedsecret->id)) {
+            $reply['setfieldsecret'] = $new_sharedsecret;
+            $DB->set_field('local_eduvidual_overrides', 'value', $new_sharedsecret, array('orgid' => $org->orgid, 'field' => 'bigbluebuttonbn_shared_secret'));
+        } else {
+            $reply['insertfieldsecret'] = $new_sharedsecret;
+            $DB->insert_record('local_eduvidual_overrides', array('orgid' => $org->orgid, 'field' => 'bigbluebuttonbn_shared_secret', 'value' => $new_sharedsecret));
+        }
+        $reply['status'] = 'ok';
+    break;
     case 'override_rolenames':
         $overrides = json_decode(optional_param('roles', '{}', PARAM_TEXT));
         $sql = "SELECT r.id

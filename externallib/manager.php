@@ -107,6 +107,7 @@ class local_eduvidual_external_manager extends external_api {
             $reply->success = -1;
         } else {
             require_once($CFG->dirroot . '/local/eduvidual/classes/manage_user_form.php');
+            $dummydomain = \local_eduvidual\locallib::get_dummydomain();
             $context = context_system::instance();
             $PAGE->set_context($context);
             $mform = new local_eduvidual_manage_user_form();
@@ -116,6 +117,7 @@ class local_eduvidual_external_manager extends external_api {
                 $user->firstname = $params['firstname'];
                 $user->lastname = $params['lastname'];
                 $user->email = $params['email'];
+                $user->username = str_replace($dummydomain, '', $user->email);
 
                 $otheru = $DB->get_record('user', array('username' => $user->email));
                 if (empty($otheru->id)) {

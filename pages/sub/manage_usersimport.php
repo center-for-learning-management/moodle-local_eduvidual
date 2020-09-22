@@ -87,15 +87,21 @@ if (optional_param('datavalidated', 0, PARAM_INT) == 1) {
                 $u->confirmed = 1;
                 $u->mnethostid = 1;
 
-                $otheru = $DB->get_record('user', array('username' => $u->email));
+                $sql = "SELECT id,username,email
+                            FROM {user}
+                            WHERE username LIKE ?
+                                AND id<>?";
+                $params = array($user->username, $u->id);
+                $otheru = $DB->get_record_sql($sql, $params);
                 if (empty($otheru->id)) {
                     // Ok, we can update the username too.
-                    $u->username = $u->email;
+                    $u->username = $user->username;
                 }
 
                 user_update_user($u, false);
                 if (!empty($user->password)) {
                     update_internal_user_password($u, $user->password, false);
+                    set_user_preference('auth_forcepasswordchange', true, $u->id);
                 }
             } else {
                 $action = 'create';
@@ -117,6 +123,7 @@ if (optional_param('datavalidated', 0, PARAM_INT) == 1) {
                     $user->password = $user->secret;
                 }
                 update_internal_user_password($u, $user->password, false);
+                set_user_preference('auth_forcepasswordchange', true, $u->id);
 
                 $user->id = $u->id;
 
@@ -148,7 +155,7 @@ if (optional_param('datavalidated', 0, PARAM_INT) == 1) {
             // Unpack afterwards to restore previous state
             $user->payload = json_decode($user->payload);
         } else {
-            echo 'skipped';
+            echo get_string('import:skipped', 'local_eduvidual');
         }
         ?>
                 </td>
@@ -157,7 +164,7 @@ if (optional_param('datavalidated', 0, PARAM_INT) == 1) {
         if(empty($user->secret)) {
             $user->secret = \local_eduvidual\locallib::get_user_secret($u->id);
         }
-        echo $u->id . '#' . $user->secret;
+        echo $user->secret;
         ?>
                 </td>
             </tr>

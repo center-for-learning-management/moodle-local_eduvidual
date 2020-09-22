@@ -331,6 +331,19 @@ define(['jquery', 'core/ajax', 'core/modal_events', 'core/modal_factory', 'core/
             });
         },
         /**
+         * Custom org settings - override big blue button settings.
+         * @param uniqid of the form.
+         * @param signalitem that shows success / failure.
+         */
+        overrideBBB: function(uniqid, signalitem) {
+            var orgid = $('#orgid-' + uniqid).val();
+            var bbb_serverurl = $('.bbb_serverurl-' + uniqid).val();
+            var bbb_sharedsecret = $('.bbb_sharedsecret-' + uniqid).val();
+            require(['local_eduvidual/main'], function(MAIN) {
+                MAIN.connect({ module: 'manage', act: 'override_bigbluebutton', orgid: orgid, bbb_serverurl: bbb_serverurl, bbb_sharedsecret: bbb_sharedsecret }, { signalItem: $(signalitem) });
+            });
+        },
+        /**
          * Custom org settings - override role names of course roles.
          * @param uniqid of the form.
          * @param signalitem that shows success / failure.
