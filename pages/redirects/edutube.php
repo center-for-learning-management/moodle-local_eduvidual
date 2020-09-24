@@ -26,7 +26,7 @@ require_once('../../../../config.php');
 require_login();
 
 $PAGE->set_context(context_system::instance());
-$PAGE->set_pagelayout('dashboard');
+$PAGE->set_pagelayout('mydashboard');
 $PAGE->set_url('/local/eduvidual/pages/redirects/edutube.php', array());
 $PAGE->set_title(get_string('edutube:title', 'local_eduvidual'));
 $PAGE->set_heading(get_string('edutube:title', 'local_eduvidual'));
