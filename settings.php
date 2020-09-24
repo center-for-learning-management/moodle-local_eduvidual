@@ -74,4 +74,22 @@ if ($hassiteconfig) {
             PARAM_TEXT
         )
     );
+    $settings->add(
+        new admin_setting_configtext(
+            'local_eduvidual/edutubeauthurl',
+            get_string('edutube:edutubeauthurl', 'local_eduvidual'),
+            '',
+            '',
+            PARAM_TEXT
+        )
+    );
+    $settings->add(
+        new admin_setting_configtext(
+            'local_eduvidual/edutubeauthtoken',
+            get_string('edutube:edutubeauthtoken', 'local_eduvidual'),
+            '',
+            '',
+            PARAM_TEXT
+        )
+    );
 }
