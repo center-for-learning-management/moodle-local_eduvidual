@@ -85,7 +85,6 @@ if (optional_param('datavalidated', 0, PARAM_INT) == 1) {
                 $u->lastname = $user->lastname;
                 $u->email = $user->email;
                 $u->confirmed = 1;
-                $u->mnethostid = 1;
 
                 $sql = "SELECT id,username,email
                             FROM {user}
