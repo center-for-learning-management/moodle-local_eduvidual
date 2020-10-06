@@ -41,13 +41,23 @@ class local_eduvidual_trashbin extends \core\task\scheduled_task {
             require_once($CFG->dirroot . '/lib/coursecatlib.php');
             $categories = $DB->get_records('course_categories', array('parent' => $trashcategory));
             foreach($categories AS $category) {
-                $cat = \coursecat::get($category->id);
-                $cat->delete_full();
+                echo "Removing category $category->id\n";
+                try {
+                    $cat = \coursecat::get($category->id);
+                    $cat->delete_full();
+                } catch(\Exception $e) {
+                     echo "Exception " . $e->getMessage();
+                }
             }
             require_once($CFG->dirroot . '/course/lib.php');
             $courses = $DB->get_records('course', array('category' => $trashcategory));
             foreach($courses AS $course) {
-                \delete_course($course);
+                echo "Removing course $course->id\n";
+                try {
+                     \delete_course($course);
+                } catch(\Exception $e) {
+                     echo "Exception " . $e->getMessage();
+                }
             }
             \rebuild_course_cache();
         }
