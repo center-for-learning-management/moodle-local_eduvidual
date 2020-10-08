@@ -408,14 +408,16 @@ class locallib {
         if (count($orgids) == 0) {
             $orgids = self::is_connected_orglist($srcuserid);
         }
-        $strorgids = implode(',', $orgids);
-
+        if (empty($orgids)) {
+                $orgids = [0];
+        }
+        list($insql, $inparams) = $DB->get_in_or_equal($orgids);
         $sql = "SELECT DISTINCT(userid)
                     FROM {local_eduvidual_orgid_userid}
                     WHERE userid=?
-                        AND orgid IN ($strorgids)";
+                        AND orgid $insql";
         $params = array($touserid);
-        $chks = $DB->get_records_sql($sql, $params);
+        $chks = $DB->get_records_sql($sql, array_merge($params,$inparams));
 
         foreach ($chks AS $chk) {
             if (!empty($chk->userid) && $chk->userid == $touserid) {
