@@ -103,10 +103,10 @@ foreach ($orgs AS $org) {
                     \local_edusupport\lib::supportforum_enable($forum->id);
                     // Add subscriptions for managers.
                     foreach ($managers AS $managerid) {
-                        $chk = $DB->get_record('forum_subscription', array('userid' => $managerid, 'forum' => $forum->id));
+                        $chk = $DB->get_record('forum_subscriptions', array('userid' => $managerid, 'forum' => $forum->id));
                         if (empty($chk->id)) {
                             echo "<li>Added subscription for Manager #$managerid in forum #$forum->id</li>\n";
-                            $DB->insert_record('forum_subscription', array('userid' => $managerid, 'forum' => $forum->id));
+                            $DB->insert_record('forum_subscriptions', array('userid' => $managerid, 'forum' => $forum->id));
                         }
                     }
                     if ($org->orgid > 500000 && $org->orgid < 600000) {
