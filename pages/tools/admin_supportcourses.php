@@ -69,6 +69,8 @@ echo "<ul>\n";
 require_once($CFG->dirroot . '/course/externallib.php');
 $orgs = $DB->get_records('local_eduvidual_org', array('authenticated' => 1));
 foreach ($orgs AS $org) {
+    // Reload entry, if another process created the course in the meanwhile
+    $org = $DB->get_record('local_eduvidual_org', array('orgid' => $org->orgid));
     $course = $DB->get_record('course', array('id' => $org->supportcourseid), 'id', IGNORE_MISSING);
     if (!empty($org->supportcourseid) && !empty($course->id)) {
         echo "<li>$org->name has a supportcourse with <a href=\"$CFG->wwwroot/course/view.php?id=$course->id\">#$course->id</a></li>\n";
@@ -78,6 +80,7 @@ foreach ($orgs AS $org) {
         if (empty($supportcourse->id)) {
             echo "<li class='alert alert-danger'><strong>Error creating supportcourse</strong></li>\n";
         } else {
+            \local_eduvidual\lib_enrol::course_manual_enrolments(array($supportcourse->id), array($USER->id), -1);
             echo "<li class='alert alert-success'>Supportcourse created successfully <a href=\"$CFG->wwwroot/course/view.php?id=$supportcourse->id\">#$supportcourse->id</a></li>\n";
             $DB->set_field('local_eduvidual_org', 'supportcourseid', $supportcourse->id, array('orgid' => $org->orgid));
             // Now enrol all users of that organisation.
