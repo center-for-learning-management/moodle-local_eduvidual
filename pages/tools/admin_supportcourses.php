@@ -72,14 +72,17 @@ foreach ($orgs AS $org) {
     // Reload entry, if another process created the course in the meanwhile
     $org = $DB->get_record('local_eduvidual_org', array('orgid' => $org->orgid));
     $course = $DB->get_record('course', array('id' => $org->supportcourseid), 'id', IGNORE_MISSING);
+    $coursen = $DB->get_record('course', array('shortname' => 'helpdesk_' . $org->orgid), 'id', IGNORE_MISSING);
     if (!empty($org->supportcourseid) && !empty($course->id)) {
         echo "<li>$org->name has a supportcourse with <a href=\"$CFG->wwwroot/course/view.php?id=$course->id\">#$course->id</a></li>\n";
     } else {
         echo "<li>$org->name needs a supportcourse<ul>\n";
         $supportcourse = \local_eduvidual\lib_helper::duplicate_course($template, 'Helpdesk (' . $org->name . ')', 'helpdesk_' . $org->orgid, $org->categoryid, 1);
-        if (empty($supportcourse->id)) {
-            echo "<li class='alert alert-danger'><strong>Error creating supportcourse</strong></li>\n";
-        } else {
+        if (!empty($org->supportcourseid) && !empty($course->id)) {
+        echo "<li>$org->name has a supportcourse with <a href=\"$CFG->wwwroot/course/view.php?id=$course->id\">#$course->id</a></li>\n";
+    } elseif (!empty($coursen->id)) {
+        echo "<li>$org->name is currently getting a supportcourse with <a href=\"$CFG->wwwroot/course/view.php?id=$coursen->id\">#$coursen->id</a></li>\n";
+    } else {
             \local_eduvidual\lib_enrol::course_manual_enrolments(array($supportcourse->id), array($USER->id), -1);
             echo "<li class='alert alert-success'>Supportcourse created successfully <a href=\"$CFG->wwwroot/course/view.php?id=$supportcourse->id\">#$supportcourse->id</a></li>\n";
             $DB->set_field('local_eduvidual_org', 'supportcourseid', $supportcourse->id, array('orgid' => $org->orgid));
