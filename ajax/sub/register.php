@@ -152,6 +152,33 @@ if (isloggedin() && !isguestuser()) {
                         $course->summary = '<p>Digitaler Schulhof der Schule ' . $org->name . '</p>';
                         $DB->set_field('course', 'summary', $course->summary, array('id' => $course->id));
                     }
+                    if (empty($org->supportcourseid) && file_exists($CFG->dirroot . '/local/edusupport/version.php')) {
+                        // Create a support course for this org.
+                        $template = get_config('local_eduvidual', 'supportcourse_template');
+                        if (!empty($template)) {
+                            // Duplicate our template.
+                            $supportcourse = \local_eduvidual\lib_helper::duplicate_course($template, 'Helpdesk (' . $org->name . ')', 'helpdesk_' . $org->orgid, $org->categoryid, 1);
+                            if (!empty($supportcourse->id)) {
+                                // Remove news forum in that course.
+                                $sql = "SELECT * FROM {forum} WHERE type='news')";
+                                $newsforums = $DB->get_records('forum', array('type' => 'news', 'course' => $supportcourse->id));
+                                foreach ($newsforums as $newsforum) {
+                                    $cm = \get_coursemodule_from_instance('forum', $newsforum->forumid);
+                                    \course_delete_module($cmid);
+                                }
+                                $sql = "SELECT * FROM {forum} WHERE course=? AND type='general'";
+                                $forums = $DB->get_records_sql($sql, array($supportcourse->id));
+                                foreach ($forums as $forum) {
+                                    \local_edusupport\lib::supportforum_enable($forum->id);
+                                    if ($org->orgid > 500000 && $org->orgid < 600000) {
+                                        // School from Salzburg
+                                        \local_edusupport\lib::supportforum_setdedicatedsupporter($forum->id, 2098);
+                                    }
+                                }
+                            }
+
+                        }
+                    }
 
                     $reply['roleset'] = \local_eduvidual\lib_enrol::role_set($USER->id, $org, 'Manager');
 

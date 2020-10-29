@@ -45,9 +45,55 @@ if (!is_siteadmin()) {
     die();
 }
 
+echo $OUTPUT->header();
+
+// We accidentially created some courses multiple times. We remove those, that we do not need.
+// REMOVING WRONG COURSES
+/*
+$sql = "SELECT * FROM {local_edusupport}
+            WHERE courseid NOT IN (
+                     SELECT supportcourseid FROM {local_eduvidual_org}
+                         WHERE supportcourseid>0
+                 )
+                 AND courseid<>606";
+$wrongs = $DB->get_records_sql($sql);
+foreach ($wrongs as $wrong) {
+     $course = $DB->get_record('course', array('id' => $wrong->courseid));
+     if (empty($course->id)) {
+          // This course has already been removed and is a ghost.
+          echo "Removing ghost #$wrong->forumid<br />";
+          $DB->delete_records('local_edusupport', array('forumid' => $wrong->forumid));
+          continue;
+     }
+     $forums = $DB->get_records('local_edusupport', array('courseid' => $wrong->id));
+     foreach ($forums as $forum) {
+          echo "Removing supportforum #$forum->id<br />";
+          \local_edusupport\lib::supportforum_disable($forum->id);
+     }
+     echo "Removing course #$course->id<br />";
+     flush();
+     \delete_course($course);
+}
+die();
+*/
+
+
+// Accidentially moodle created news forums after duplicating the template. We do not want news forums. We remove them.
+/*
+$sql = "SELECT * FROM {local_edusupport} WHERE forumid IN (SELECT id FROM {forum} WHERE type='news')";
+$newsforums = $DB->get_records_sql($sql);
+foreach ($newsforums as $newsforum) {
+    \local_edusupport\lib::supportforum_disable($newsforum->forumid);
+    $cm = \get_coursemodule_from_instance('forum', $newsforum->forumid);
+    echo "Delete cm #$cm->id<br />";
+    \course_delete_module($cmid);
+}
+die();
+*/
+
+
 $template = get_config('local_eduvidual', 'supportcourse_template');
 if (empty($template)) {
-    echo $OUTPUT->header();
     echo $OUTPUT->render_from_template('local_eduvidual/alert', array(
         'content' => get_string('admin:supportcourse:missingsetup', 'local_eduvidual'),
         'type' => 'danger'
@@ -56,7 +102,7 @@ if (empty($template)) {
     die();
 }
 
-echo $OUTPUT->header();
+
 
 $templatecourse = $DB->get_record('course', array('id' => $template), '*', IGNORE_MISSING);
 if (empty($templatecourse->id)) {
@@ -76,14 +122,14 @@ foreach ($orgs AS $org) {
     $coursen = $DB->get_record('course', array('shortname' => 'helpdesk_' . $org->orgid), 'id', IGNORE_MISSING);
     if (!empty($org->supportcourseid) && !empty($course->id)) {
         echo "<li>$org->name has a supportcourse with <a href=\"$CFG->wwwroot/course/view.php?id=$course->id\">#$course->id</a></li>\n";
-    } else {
-        echo "<li>$org->name needs a supportcourse<ul>\n";
-        $supportcourse = \local_eduvidual\lib_helper::duplicate_course($template, 'Helpdesk (' . $org->name . ')', 'helpdesk_' . $org->orgid, $org->categoryid, 1);
-        if (!empty($org->supportcourseid) && !empty($course->id)) {
-        echo "<li>$org->name has a supportcourse with <a href=\"$CFG->wwwroot/course/view.php?id=$course->id\">#$course->id</a></li>\n";
     } elseif (!empty($coursen->id)) {
         echo "<li>$org->name is currently getting a supportcourse with <a href=\"$CFG->wwwroot/course/view.php?id=$coursen->id\">#$coursen->id</a></li>\n";
     } else {
+        echo "<li>$org->name needs a supportcourse<ul>\n";
+        $supportcourse = \local_eduvidual\lib_helper::duplicate_course($template, 'Helpdesk (' . $org->name . ')', 'helpdesk_' . $org->orgid, $org->categoryid, 1);
+        if (empty($supportcourse->id)) {
+            echo "<li class='alert alert-danger'><strong>Error creating supportcourse</strong></li>\n";
+        } else {
             \local_eduvidual\lib_enrol::course_manual_enrolments(array($supportcourse->id), array($USER->id), -1);
             echo "<li class='alert alert-success'>Supportcourse created successfully <a href=\"$CFG->wwwroot/course/view.php?id=$supportcourse->id\">#$supportcourse->id</a></li>\n";
             $DB->set_field('local_eduvidual_org', 'supportcourseid', $supportcourse->id, array('orgid' => $org->orgid));
@@ -101,7 +147,7 @@ foreach ($orgs AS $org) {
             echo "<li>Added " . count($others) . " Users with student role</li>\n";
 
             // Retrieve all forums from course and configure as supportforum.
-            $sql = "SELECT * FROM {forum} WHERE course=?";
+            $sql = "SELECT * FROM {forum} WHERE course=? AND type='general'";
             $forums = $DB->get_records_sql($sql, array($supportcourse->id));
             if (count($forums) == 0) {
                 echo "<li class='alert alert-danger'>There are no forums in supportcourse <a href=\"$CFG->wwwroot/course/view.php?id=$supportcourse->id\">#$supportcourse->id</a></li>\n";

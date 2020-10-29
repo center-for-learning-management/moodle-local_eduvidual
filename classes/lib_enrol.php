@@ -128,6 +128,10 @@ class lib_enrol {
             if ($role == 'remove') {
                 // Remove from orgcourse
                 self::course_manual_enrolments(array($org->courseid, $org->supportcourseid), array($userid), -1);
+                // Remove from supportcourse
+                if (!empty($org->supportcourseid)) {
+                    \local_eduvidual\lib_enrol::course_manual_enrolments(array($org->supportcourseid), array($userid), -1);
+                }
 
                 // Remove from orgcategory
                 $orgcatcontext = \context_coursecat::instance($org->categoryid, IGNORE_MISSING);
@@ -185,6 +189,21 @@ class lib_enrol {
 
                     // Add user to orgcourse
                     self::set_orgcourserole($org, $role, $userid);
+
+                    // If we have a support course, add us there too.
+                    if (!empty($org->supportcourseid)) {
+                        $assignrole = ($role == 'Manager') ? get_config('local_eduvidual', 'defaultroleteacher') : get_config('local_eduvidual', 'defaultrolestudent');
+                        \local_eduvidual\lib_enrol::course_manual_enrolments(array($org->supportcourseid), array($userid), $assignrole);
+                        if ($role == 'Manager') {
+                            $forums = $DB->get_records('local_edusupport', array('courseid' => $org->supportcourseid));
+                            foreach ($forums as $forum) {
+                                $chk = $DB->get_record('forum_subscriptions', array('userid' => $userid, 'forum' => $forum->id));
+                                if (empty($chk->id)) {
+                                    $DB->insert_record('forum_subscriptions', array('userid' => $userid, 'forum' => $forum->id));
+                                }
+                            }
+                        }
+                    }
                     $reply['status'] = 'ok';
                 }
 
