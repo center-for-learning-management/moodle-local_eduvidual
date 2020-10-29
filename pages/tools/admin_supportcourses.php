@@ -48,7 +48,20 @@ if (!is_siteadmin()) {
 echo $OUTPUT->header();
 
 // We accidentially created some courses multiple times. We remove those, that we do not need.
-// REMOVING WRONG COURSES
+// REMOVE WRONG COURSES BY MANUAL LIST
+/*
+$list = explode(",", "");
+for ($a = 0; $a<count($list); $a++) {
+    $courseid = $list[$a];
+    if (empty($courseid)) continue;
+    $course = $DB->get_record('course', array('id' => $courseid));
+    if (empty($course->id)) continue;
+    echo "Removing course #$course->id<br />";
+    flush();
+    \delete_course($course);
+}
+*/
+// REMOVING WRONG COURSES BY AUTOMATED LIST
 /*
 $sql = "SELECT * FROM {local_edusupport}
             WHERE courseid NOT IN (
