@@ -69,6 +69,7 @@ echo "<ul>\n";
 require_once($CFG->dirroot . '/course/externallib.php');
 $orgs = $DB->get_records('local_eduvidual_org', array('authenticated' => 1));
 foreach ($orgs AS $org) {
+    if ($org->categoryid == 0) continue;
     // Reload entry, if another process created the course in the meanwhile
     $org = $DB->get_record('local_eduvidual_org', array('orgid' => $org->orgid));
     $course = $DB->get_record('course', array('id' => $org->supportcourseid), 'id', IGNORE_MISSING);
