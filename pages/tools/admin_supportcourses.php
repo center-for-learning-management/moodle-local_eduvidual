@@ -123,6 +123,56 @@ if (empty($templatecourse->id)) {
     echo $OUTPUT->footer();
     die();
 }
+/*
+// Some supportforums were not enabled. We go through all and test if we should activate them.
+echo "<ul>\n";
+require_once($CFG->dirroot . '/course/externallib.php');
+$orgs = $DB->get_records_sql("SELECT * FROM {local_eduvidual_org} WHERE supportcourseid>0");
+foreach ($orgs AS $org) {
+    if ($org->categoryid == 0) continue;
+    $supportcourse = $DB->get_record('course', array('id' => $org->supportcourseid), 'id', IGNORE_MISSING);
+
+    echo "<li class='alert alert-success'>Re-activate supportcourse <a href=\"$CFG->wwwroot/course/view.php?id=$supportcourse->id\">#$supportcourse->id</a></li>\n";
+    // Retrieve all forums from course and configure as supportforum.
+    $sql = "SELECT * FROM {forum} WHERE course=? AND type='general'";
+    $forums = $DB->get_records_sql($sql, array($supportcourse->id));
+    if (count($forums) == 0) {
+        echo "<li class='alert alert-danger'>There are no forums in supportcourse <a href=\"$CFG->wwwroot/course/view.php?id=$supportcourse->id\">#$supportcourse->id</a></li>\n";
+    } else {
+        $members = $DB->get_records('local_eduvidual_orgid_userid', array('orgid' => $org->orgid));
+        $managers = array();
+        $others = array();
+        foreach ($members AS $member) {
+            if ($member->role == 'Manager') $managers[] = $member->userid;
+            else $others[] = $member->userid;
+        }
+        foreach ($forums AS $forum) {
+            if (\local_edusupport\lib::is_supportforum($forum->id)) {
+                echo "<li>Skipping forum #$forum->id</li>\n";
+                continue;
+            }
+            echo "<li>Enabling forum #$forum->id</li>\n";
+            \local_edusupport\lib::supportforum_enable($forum->id);
+            // Add subscriptions for managers.
+            foreach ($managers AS $managerid) {
+                $chk = $DB->get_record('forum_subscriptions', array('userid' => $managerid, 'forum' => $forum->id));
+                if (empty($chk->id)) {
+                    echo "<li>Added subscription for Manager #$managerid in forum #$forum->id</li>\n";
+                    $DB->insert_record('forum_subscriptions', array('userid' => $managerid, 'forum' => $forum->id));
+                }
+            }
+            if ($org->orgid > 500000 && $org->orgid < 600000) {
+                // School from Salzburg
+                 echo "<li>Added dedicated supporter #2098</li>\n";
+                 \local_edusupport\lib::supportforum_setdedicatedsupporter($forum->id, 2098);
+             }
+         }
+     }
+ }
+ echo "</ul>\n";
+ die();
+*/
+
 
 echo "<ul>\n";
 require_once($CFG->dirroot . '/course/externallib.php');
