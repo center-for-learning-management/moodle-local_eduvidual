@@ -47,7 +47,19 @@ function local_eduvidual_after_config() {
     if (strpos($_SERVER["SCRIPT_FILENAME"], '/mod/bigbluebuttonbn/view.php') > 0
         || strpos($_SERVER["SCRIPT_FILENAME"], '/mod/bigbluebuttonbn/guestlink.php') > 0
         || strpos($_SERVER["SCRIPT_FILENAME"], '/mod/bigbluebuttonbn/bbb_view.php') > 0) {
-        $cmid = optional_param('id', 0, PARAM_INT);
+        if (strpos($_SERVER["SCRIPT_FILENAME"], '/mod/bigbluebuttonbn/guestlink.php') > 0) {
+            // get cmid dependent on guestlinkid (gid)
+            $gid = optional_param('gid', '', PARAM_ALPHANUM);
+            $bbb = $DB->get_record('bigbluebuttonbn', array('guestlinkid' => $gid));
+            if ($bbb->guestlinkenabled) {
+                list($course, $cm) = get_course_and_cm_from_instance($bbb, 'bigbluebuttonbn');
+                if (!empty($cm->id)) {
+                    $cmid = $cm->id;
+                }
+            }
+        } else {
+            $cmid = optional_param('id', 0, PARAM_INT);
+        }
         if (!empty($cmid)) {
             $cm = get_coursemodule_from_id('bigbluebuttonbn', $cmid, 0, false, IGNORE_MISSING);
             if (!empty($cm->course)) {
