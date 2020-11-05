@@ -45,6 +45,7 @@ function local_eduvidual_after_config() {
     }
 
     if (strpos($_SERVER["SCRIPT_FILENAME"], '/mod/bigbluebuttonbn/view.php') > 0
+        || strpos($_SERVER["SCRIPT_FILENAME"], '/mod/bigbluebuttonbn/guestlink.php') > 0
         || strpos($_SERVER["SCRIPT_FILENAME"], '/mod/bigbluebuttonbn/bbb_view.php') > 0) {
         $cmid = optional_param('id', 0, PARAM_INT);
         if (!empty($cmid)) {
