@@ -57,6 +57,13 @@ function local_eduvidual_after_config() {
                     $cmid = $cm->id;
                 }
             }
+        } elseif(strpos($_SERVER["SCRIPT_FILENAME"], '/mod/bigbluebuttonbn/bbb_ajax.php') > 0) {
+            $bbbtn = optional_param('bigbluebuttonbn', 0, PARAM_INT);
+            $bbb = $DB->get_record('bigbluebuttonbn', array('id' => $bbbtn));
+            list($course, $cm) = get_course_and_cm_from_instance($bbb, 'bigbluebuttonbn');
+            if (!empty($cm->id)) {
+                $cmid = $cm->id;
+            }
         } else {
             $cmid = optional_param('id', 0, PARAM_INT);
         }
