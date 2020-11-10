@@ -170,7 +170,8 @@ function local_eduvidual_before_standard_html_head() {
     }
     $inject_styles[] = "</style>";
 
-    \local_eduvidual\lib_helper::fix_navbar();
+    // Disabled, needs performance tests.
+    // \local_eduvidual\lib_helper::fix_navbar();
 
     return implode("\n", $inject_styles);
 }
