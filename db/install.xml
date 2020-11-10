@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<XMLDB PATH="local/eduvidual/db" VERSION="20191102" COMMENT="XMLDB file for Moodle local/eduvidual"
+<XMLDB PATH="local/eduvidual/db" VERSION="20201110" COMMENT="XMLDB file for Moodle local/eduvidual"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
 >
@@ -39,6 +39,7 @@
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="orgid" TYPE="int" LENGTH="20" NOTNULL="true" SEQUENCE="false" COMMENT="ID of Organization"/>
+        <FIELD NAME="orgclass" TYPE="int" LENGTH="1" NOTNULL="false" SEQUENCE="false"/>
         <FIELD NAME="name" TYPE="char" LENGTH="250" NOTNULL="true" SEQUENCE="false"/>
         <FIELD NAME="mail" TYPE="char" LENGTH="250" NOTNULL="false" SEQUENCE="false"/>
         <FIELD NAME="phone" TYPE="char" LENGTH="50" NOTNULL="false" SEQUENCE="false"/>

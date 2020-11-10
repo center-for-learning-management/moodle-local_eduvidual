@@ -51,5 +51,18 @@ function xmldb_local_eduvidual_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2020072200, 'local', 'eduvidual');
     }
 
+    if ($oldversion < 2020111000) {
+        // Define field orgclass to be added to local_eduvidual_org.
+        $table = new xmldb_table('local_eduvidual_org');
+        $field = new xmldb_field('orgclass', XMLDB_TYPE_INTEGER, '1', null, null, null, null, 'orgid');
+
+        // Conditionally launch add field orgclass.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+        // Eduvidual savepoint reached.
+        upgrade_plugin_savepoint(true, 2020111000, 'local', 'eduvidual');
+    }
+
     return true;
 }

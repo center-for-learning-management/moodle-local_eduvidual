@@ -308,7 +308,9 @@ class locallib {
         if (empty($userid)) $userid = $USER->id;
         $memberships = $DB->get_records('local_eduvidual_orgid_userid', array('userid' => $userid));
         $highest = '';
+        $orgids = array();
         foreach ($memberships AS $membership) {
+            $orgids[] = $membership->orgid;
             switch ($membership->role) {
                 case 'Parent':
                 case 'Student':
@@ -320,6 +322,21 @@ class locallib {
                 case 'Manager':
                     $highest = $membership->role;
                 break;
+            }
+        }
+        // Determine orgtype and set cookies.
+        if (count($orgids) > 0) {
+            $orgids = implode(',', $orgids);
+            $sql = "SELECT orgid,orgclass
+                        FROM {local_eduvidual_org}
+                        WHERE orgclass IS NOT NULL
+                            AND orgid IN ($orgids)
+                        ORDER BY orgclass ASC
+                        LIMIT 0,1";
+            $primaryorg = $DB->get_record_sql($sql);
+            if (!empty($primaryorg->orgid)) {
+                setcookie('x-orgid', $primaryorg->orgid);
+                setcookie('x-orgclass', $primaryorg->orgclass);
             }
         }
         return $highest;
