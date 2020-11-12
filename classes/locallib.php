@@ -547,10 +547,20 @@ class locallib {
      * Set the X-orgclass and X-orgid for the current user.
      */
     public static function set_xorg_data() {
-        global $DB, $USER;
+        global $_COOKIE, $DB, $USER;
 
-        $primaryorg = (object) array('orgid' => '');
-        if (isloggedin() && !isguestuser()) {
+        $xorgcl = 'X-orgclass';
+        $xorgid = 'X-orgid';
+        $xuseri = 'X-userid';
+        $fallback = 0;
+
+        if (!empty($_COOKIE[$xuseri]) && $_COOKIE[$xuserid] == $USER->id) {
+            // We have data for this user. Set header and return.
+            header($xorgcl . ': ' . $_COOKIE[$xorgcl]);
+            header($xorgid . ': ' . $_COOKIE[$xorgid]);
+            return;
+        } elseif (isloggedin() && !isguestuser()) {
+            $primaryorg = (object) array('orgid' => '');
             $sql = "SELECT o.orgid,o.orgclass
                         FROM {local_eduvidual_org} o, {local_eduvidual_orgid_userid} ou
                         WHERE o.orgid=ou.orgid
@@ -559,16 +569,21 @@ class locallib {
                         ORDER BY orgclass ASC
                         LIMIT 0,1";
             $primaryorg = $DB->get_record_sql($sql, array($USER->id));
+
+            if (!empty($primaryorg->orgid)) {
+                header($xorgid . ': ' . $primaryorg->orgid);
+                header($xorgcl . ': ' . $primaryorg->orgclass);
+                setcookie($xorgid, $primaryorg->orgid, 0,'/');
+                setcookie($xorgcl, $primaryorg->orgclass, 0,'/');
+                setcookie($xuseri, $USER->id, 0,'/');
+                return;
+            }
         }
 
-        if (!empty($primaryorg->orgid)) {
-            header('X-orgid: ' . $primaryorg->orgid);
-            header('X-orgclass: ' . $primaryorg->orgclass);
-            setcookie('X-orgclass', $primaryorg->orgclass, 0,'/');
-        } else {
-            header('X-orgid: 0');
-            header('X-orgclass: 0');
-            setcookie('X-orgclass', '0', 0,'/');
-        }
+        // Fallback to default value.
+        header("$xorgid: $fallback");
+        header("$xorgcl: $fallback");
+        setcookie($xorgid, $fallback, 0,'/');
+        setcookie($xorgcl, $fallback, 0,'/');
     }
 }
