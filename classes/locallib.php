@@ -335,13 +335,13 @@ class locallib {
                         LIMIT 0,1";
             $primaryorg = $DB->get_record_sql($sql);
             if (!empty($primaryorg->orgid)) {
-                header('x-orgid: ' . $primaryorg->orgid);
-                header('x-orgclass: ' . $primaryorg->orgclass);
-                setcookie('x-orgclass', $primaryorg->orgclass, 0,'/');
+                header('X-orgid: ' . $primaryorg->orgid);
+                header('X-orgclass: ' . $primaryorg->orgclass);
+                setcookie('X-orgclass', $primaryorg->orgclass, 0,'/');
             } else {
-                header('x-orgid: 0');
-                header('x-orgclass: 0');
-                setcookie('x-orgclass', '0', 0,'/');
+                header('X-orgid: 0');
+                header('X-orgclass: 0');
+                setcookie('X-orgclass', '0', 0,'/');
             }
         }
         return $highest;
