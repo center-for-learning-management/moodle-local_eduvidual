@@ -554,36 +554,32 @@ class locallib {
         $xuseri = 'X-userid';
         $fallback = 0;
 
-        if (!empty($_COOKIE[$xuseri]) && $_COOKIE[$xuseri] == $USER->id) {
+        if (empty($_COOKIE[$xuseri]) || $_COOKIE[$xuseri] != $USER->id) {
+            if (isloggedin() && !isguestuser()) {
+                $primaryorg = (object) array('orgid' => '');
+                $sql = "SELECT o.orgid,o.orgclass
+                            FROM {local_eduvidual_org} o, {local_eduvidual_orgid_userid} ou
+                            WHERE o.orgid=ou.orgid
+                                AND o.orgclass IS NOT NULL
+                                AND ou.userid=?
+                            ORDER BY orgclass ASC
+                            LIMIT 0,1";
+                $primaryorg = $DB->get_record_sql($sql, array($USER->id));
+
+                if (!empty($primaryorg->orgid)) {
+                    header($xorgid . ': ' . $primaryorg->orgid);
+                    header($xorgcl . ': ' . $primaryorg->orgclass);
+                    setcookie($xorgid, $primaryorg->orgid, 0,'/');
+                    setcookie($xorgcl, $primaryorg->orgclass, 0,'/');
+                    setcookie($xuseri, $USER->id, 0,'/');
+                    return;
+                }
+            }
+        } else {
             // We have data for this user. Set header and return.
             header($xorgcl . ': ' . $_COOKIE[$xorgcl]);
             header($xorgid . ': ' . $_COOKIE[$xorgid]);
             return;
-        } elseif (isloggedin() && !isguestuser()) {
-            $primaryorg = (object) array('orgid' => '');
-            $sql = "SELECT o.orgid,o.orgclass
-                        FROM {local_eduvidual_org} o, {local_eduvidual_orgid_userid} ou
-                        WHERE o.orgid=ou.orgid
-                            AND o.orgclass IS NOT NULL
-                            AND ou.userid=?
-                        ORDER BY orgclass ASC
-                        LIMIT 0,1";
-            $primaryorg = $DB->get_record_sql($sql, array($USER->id));
-
-            if (!empty($primaryorg->orgid)) {
-                header($xorgid . ': ' . $primaryorg->orgid);
-                header($xorgcl . ': ' . $primaryorg->orgclass);
-                setcookie($xorgid, $primaryorg->orgid, 0,'/');
-                setcookie($xorgcl, $primaryorg->orgclass, 0,'/');
-                setcookie($xuseri, $USER->id, 0,'/');
-                return;
-            }
         }
-
-        // Fallback to default value.
-        header("$xorgid: $fallback");
-        header("$xorgcl: $fallback");
-        setcookie($xorgid, $fallback, 0,'/');
-        setcookie($xorgcl, $fallback, 0,'/');
     }
 }
