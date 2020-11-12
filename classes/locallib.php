@@ -308,9 +308,7 @@ class locallib {
         if (empty($userid)) $userid = $USER->id;
         $memberships = $DB->get_records('local_eduvidual_orgid_userid', array('userid' => $userid));
         $highest = '';
-        $orgids = array();
         foreach ($memberships AS $membership) {
-            $orgids[] = $membership->orgid;
             switch ($membership->role) {
                 case 'Parent':
                 case 'Student':
@@ -322,26 +320,6 @@ class locallib {
                 case 'Manager':
                     $highest = $membership->role;
                 break;
-            }
-        }
-        // Determine orgtype and set cookies.
-        if (count($orgids) > 0) {
-            $orgids = implode(',', $orgids);
-            $sql = "SELECT orgid,orgclass
-                        FROM {local_eduvidual_org}
-                        WHERE orgclass IS NOT NULL
-                            AND orgid IN ($orgids)
-                        ORDER BY orgclass ASC
-                        LIMIT 0,1";
-            $primaryorg = $DB->get_record_sql($sql);
-            if (!empty($primaryorg->orgid)) {
-                header('X-orgid: ' . $primaryorg->orgid);
-                header('X-orgclass: ' . $primaryorg->orgclass);
-                setcookie('X-orgclass', $primaryorg->orgclass, 0,'/');
-            } else {
-                header('X-orgid: 0');
-                header('X-orgclass: 0');
-                setcookie('X-orgclass', '0', 0,'/');
             }
         }
         return $highest;
@@ -564,5 +542,33 @@ class locallib {
             echo "\t\t<option value=\"" . $key . "\"" . (($key == $act)?' selected':'') . ">" . get_string($actions[$key], 'local_eduvidual') . "</option>\n";
         }
         echo "\t</select>\n";
+    }
+    /**
+     * Set the X-orgclass and X-orgid for the current user.
+     */
+    public static function set_xorg_data() {
+        global $DB, $USER;
+
+        $primaryorg = (object) array('orgid' => '');
+        if (isloggedin() && !isguestuser()) {
+            $sql = "SELECT o.orgid,o.orgclass
+                        FROM {local_eduvidual_org} o, {local_eduvidual_orgid_userid} ou
+                        WHERE o.orgid=ou.orgid
+                            AND o.orgclass IS NOT NULL
+                            AND ou.userid=?
+                        ORDER BY orgclass ASC
+                        LIMIT 0,1";
+            $primaryorg = $DB->get_record_sql($sql, array($USER->id));
+        }
+
+        if (!empty($primaryorg->orgid)) {
+            header('X-orgid: ' . $primaryorg->orgid);
+            header('X-orgclass: ' . $primaryorg->orgclass);
+            setcookie('X-orgclass', $primaryorg->orgclass, 0,'/');
+        } else {
+            header('X-orgid: 0');
+            header('X-orgclass: 0');
+            setcookie('X-orgclass', '0', 0,'/');
+        }
     }
 }
