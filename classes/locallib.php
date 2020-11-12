@@ -554,7 +554,7 @@ class locallib {
         $xuseri = 'X-userid';
         $fallback = 0;
 
-        if (!empty($_COOKIE[$xuseri]) && $_COOKIE[$xuserid] == $USER->id) {
+        if (!empty($_COOKIE[$xuseri]) && $_COOKIE[$xuseri] == $USER->id) {
             // We have data for this user. Set header and return.
             header($xorgcl . ': ' . $_COOKIE[$xorgcl]);
             header($xorgid . ': ' . $_COOKIE[$xorgid]);
