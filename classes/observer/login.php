@@ -38,14 +38,6 @@ class login {
         profile_load_data($user);
         //error_log(json_encode($user, JSON_NUMERIC_CHECK));
 
-        if (!empty(get_config('local_eduvidual', 'phplist_dbhost'))) {
-            // Check for phplist-lists.
-            require_once($CFG->dirroot . '/local/eduvidual/classes/lib_phplist.php');
-            \local_eduvidual_lib_phplist::check_users_authtype(array($USER));
-            \local_eduvidual_lib_phplist::check_user_role($USER->id);
-        }
-
-
         // We only check for roles managed by profile for mnet accounts
         if ($user->auth == 'mnet') {
             $org;
