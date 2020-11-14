@@ -545,6 +545,7 @@ class locallib {
     }
     /**
      * Set the X-orgclass and X-orgid for the current user.
+     * @return the given X-orgclass.
      */
     public static function set_xorg_data() {
         global $_COOKIE, $DB, $USER;
@@ -572,14 +573,14 @@ class locallib {
                     setcookie($xorgid, $primaryorg->orgid, 0,'/');
                     setcookie($xorgcl, $primaryorg->orgclass, 0,'/');
                     setcookie($xuseri, $USER->id, 0,'/');
-                    return;
+                    return $primaryorg->orgclass;
                 }
             }
         } else {
             // We have data for this user. Set header and return.
             header($xorgcl . ': ' . $_COOKIE[$xorgcl]);
             header($xorgid . ': ' . $_COOKIE[$xorgid]);
-            return;
+            return $_COOKIE[$xorgcl];
         }
     }
 }
