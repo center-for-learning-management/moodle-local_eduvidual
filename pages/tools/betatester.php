@@ -27,7 +27,7 @@
 
 require_once('../../../../config.php');
 
-$setto = optional_param('setto', 0, PARAM_INT);
+$setto = optional_param('setto', '', PARAM_ALPHANUM);
 
 $PAGE->set_context(context_system::instance());
 $PAGE->set_pagelayout('admin');
@@ -37,6 +37,15 @@ $PAGE->set_heading('Beta test');
 
 if (!empty($setto)) {
     switch ($setto) {
+        case 'tester':
+            if (is_siteadmin()) {
+                $host = optional_param('host', '', PARAM_ALPHANUM);
+                setcookie('X-orgclass', 'tester', 0, '/');
+                setcookie('X-usehost', $host, 0, '/');
+                $_COOKIE['X-orgclass'] = 'tester';
+                $_COOKIE['X-usehost'] = $host;
+            }
+        break;
         case 9:
             setcookie('X-orgclass', $setto, 0, '/');
             $_COOKIE['X-orgclass'] = 9;
@@ -84,5 +93,31 @@ if ($_COOKIE['X-orgclass'] != 9) {
     </a>
     <?php
 }
+
+if (is_siteadmin()) {
+    ?>
+    <hr />
+    <p>Bestimmten Server einstellen:</p>
+    <a href="<?php echo $url_setoff; ?>" class="btn btn-primary btn-block">
+        Deaktivieren
+    </a>
+    <?php
+    $servers = array("evweb01","evweb02","evweb03","evweb04","evweb05","evweb06","evcron01");
+    foreach ($servers as $server) {
+        $url_seton = $CFG->wwwroot . '/local/eduvidual/pages/tools/betatester.php?setto=tester&host=' . $server;
+        ?>
+        <a href="<?php echo $url_seton; ?>" class="btn btn-secondary btn-block">
+            <?php
+            if ($_COOKIE['X-usehost'] == $server) {
+                echo "Aktiv: $server";
+            } else {
+                echo "Aktiviere $server";
+            }
+            ?>
+        </a>
+        <?php
+    }
+}
+
 
 echo $OUTPUT->footer();
