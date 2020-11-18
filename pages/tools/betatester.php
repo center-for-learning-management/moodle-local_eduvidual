@@ -102,7 +102,7 @@ if (is_siteadmin()) {
         Deaktivieren
     </a>
     <?php
-    $servers = array("evweb01","evweb02","evweb03","evweb04","evweb05","evweb06","evcron01");
+    $servers = array("mdcommunity","evweb01","evweb02","evweb03","evweb04","evweb05","evweb06","evcron01");
     foreach ($servers as $server) {
         $url_seton = $CFG->wwwroot . '/local/eduvidual/pages/tools/betatester.php?setto=tester&host=' . $server;
         ?>
