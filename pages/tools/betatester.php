@@ -108,7 +108,7 @@ if (is_siteadmin()) {
         ?>
         <a href="<?php echo $url_seton; ?>" class="btn btn-secondary btn-block">
             <?php
-            if ($_COOKIE['X-usehost'] == $server) {
+            if ($_COOKIE['X-orgclass'] == 'tester' && $_COOKIE['X-usehost'] == $server) {
                 echo "Aktiv: $server";
             } else {
                 echo "Aktiviere $server";
