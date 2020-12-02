@@ -154,7 +154,7 @@ if ($formsent) {
                         // Create course here
                         $fullname = $coursename;
                         $categoryid = $targcat->id;
-                        $shortname = '[' . $USER->id . '-' . date('YmdHis') . '] ' . $coursename . '(' . $org->orgid . ')';
+                        $shortname = $org->orgid . '-' . $USER->id . '-' . date('YmdHis');
 
                         if (strlen($fullname) > 5) {
                             require_once($CFG->dirroot . '/course/externallib.php');
