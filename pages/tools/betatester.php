@@ -28,10 +28,11 @@
 require_once('../../../../config.php');
 
 $setto = optional_param('setto', '', PARAM_ALPHANUM);
+$varnish = optional_param('varnish', '', PARAM_ALPHANUM);
 
 $PAGE->set_context(context_system::instance());
 $PAGE->set_pagelayout('admin');
-$PAGE->set_url('/local/eduvidual/pages/tools/betatester.php', array('setto' => $setto));
+$PAGE->set_url('/local/eduvidual/pages/tools/betatester.php', array('setto' => $setto, 'varnish' => $varnish));
 $PAGE->set_title('Beta test');
 $PAGE->set_heading('Beta test');
 
@@ -46,14 +47,39 @@ if (!empty($setto)) {
                 $_COOKIE['X-usehost'] = $host;
             }
         break;
+        case 'admin':
+            if (is_siteadmin()) {
+                setcookie('X-orgclass', 'admin', 0, '/');
+                setcookie('X-usehost', 'evcron01', 0, '/');
+                $_COOKIE['X-orgclass'] = 'admin';
+                $_COOKIE['X-usehost'] = 'evcron01';
+            }
+        break;
         case 9:
             setcookie('X-orgclass', $setto, 0, '/');
             $_COOKIE['X-orgclass'] = 9;
         break;
         default:
             setcookie('X-userid', 0, 0, '/');
+            $_COOKIE['X-orgclass'] = '';
             $_COOKIE['X-orgclass'] = \local_eduvidual\locallib::set_xorg_data();
+            setcookie('X-usehost', '', time()-3600, '/');
+            unset($_COOKIE['X-usehost']);
     }
+}
+
+if (!empty($varnish)) {
+    switch ($varnish) {
+        case 'on':
+            setcookie('X-use-varnish', 'true', 0, '/');
+            $_COOKIE['X-use-varnish'] = 'true';
+        break;
+        case 'off':
+            setcookie('X-use-varnish', '', time()-3600, '/');
+            unset($_COOKIE['X-use-varnish']);
+        break;
+    }
+
 }
 
 
@@ -94,13 +120,57 @@ if ($_COOKIE['X-orgclass'] != 9) {
     <?php
 }
 
+
+?>
+
+<hr />
+<h4>Site varnish</h4>
+
+Mit der "varnish"-Option testen wir eine Methode zur beschleunigten Auslieferung von Dateien.
+
+<?php
+
+if (empty($_COOKIE['X-use-varnish'])) {
+    ?>
+    <a href="<?php echo $CFG->wwwroot; ?>/local/eduvidual/pages/tools/betatester.php?varnish=on" class="btn btn-primary btn-block">
+        Aktivieren
+    </a>
+    <?php
+} else {
+    ?>
+    <a href="<?php echo $CFG->wwwroot; ?>/local/eduvidual/pages/tools/betatester.php?varnish=off" class="btn btn-primary btn-block">
+        Deaktivieren
+    </a>
+    <?php
+}
+
 if (is_siteadmin()) {
     ?>
     <hr />
-    <p>Bestimmten Server einstellen:</p>
+    <h4>Wartungsmodus (evcron01):</h4>
+    <?php
+    if (!empty($_COOKIE['X-orgclass']) && $_COOKIE['X-orgclass'] == 'admin') {
+        ?>
+        <a href="<?php echo $CFG->wwwroot; ?>/local/eduvidual/pages/tools/betatester.php?setto=-1" class="btn btn-primary btn-block">
+            Deaktivieren
+        </a>
+        <?php
+    } else {
+        ?>
+        <a href="<?php echo $CFG->wwwroot; ?>/local/eduvidual/pages/tools/betatester.php?setto=admin" class="btn btn-primary btn-block">
+            Aktivieren
+        </a>
+        <?php
+    }
+
+    ?>
+
+    <hr />
+    <h4>Bestimmten Server einstellen:</h4>
     <a href="<?php echo $url_setoff; ?>" class="btn btn-primary btn-block">
         Deaktivieren
     </a>
+
     <?php
     $servers = array("mdcommunity","evweb01","evweb02","evweb03","evweb04","evweb05","evweb06","evcron01");
     foreach ($servers as $server) {
@@ -118,6 +188,5 @@ if (is_siteadmin()) {
         <?php
     }
 }
-
 
 echo $OUTPUT->footer();
