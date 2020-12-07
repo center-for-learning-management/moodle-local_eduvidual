@@ -67,7 +67,6 @@ class local_eduvidual_lib_phplist {
      * Calls users authtype for all users with mnethostid > 1 or auth oauth2
      * Should be called on login for every user.
      * @param users (optional) array containing users - if empty will load all.
-     * @return array with syncmessages.
      */
     public static function check_users_authtype($users = array()){
         global $DB;
@@ -116,26 +115,25 @@ class local_eduvidual_lib_phplist {
                 }
             }
         }
-        $syncmessages = array();
+
         foreach ($listids AS $listid) {
             if (empty($listid)) continue;
             $listtype = 'Unknown';
             if (in_array($listid, $listids_mnet)) $listtype = 'MNet';
             if (in_array($listid, $listids_google)) $listtype = 'Google';
             if (in_array($listid, $listids_microsoft)) $listtype = 'Microsoft';
-            $syncmessages[] = array('type' => 'success', 'content' => "Added " . (!empty($added[$listid]) ? $added[$listid] : "n/a") . " users to list #$listid for $listtype");
+            echo "Added " . (!empty($added[$listid]) ? $added[$listid] : "n/a") . " users to list #$listid for $listtype";
         }
-        return $syncmessages;
     }
     /**
      * Does a full one-way sync.
      * @return array that holds messages for output by template alert.
     **/
     public static function sync() {
-        $syncmessages = self::connect_externaldb();
+        self::connect_externaldb();
 
         // If db connection was unsuccessful - return.
-        if (!self::$externalconnected) return $syncmessages;
+        if (!self::$externalconnected) return;
 
         $lists = array('manager', 'parent', 'teacher', 'student');
         $ignores = explode(',', get_config('local_eduvidual', 'phplist_ignore_patterns'));
@@ -144,7 +142,7 @@ class local_eduvidual_lib_phplist {
             $listids = explode(',', get_config('local_eduvidual', 'phplist_' . $list . '_lists'));
             if (count($listids) > 0 && !empty($listids[0])) {
                 $users = self::get_users($list);
-                $syncmessages[] = array('type' => 'warning', 'content' => 'Syncing list ' . ucfirst($list) . ' with ' . count($users) . ' users');
+                echo "Syncing list " . ucfirst($list) . " with " . count($users) . " users\n";
                 // Ensure the user is in the database, set the field "phplistuserid" in the user-object.
                 foreach($users AS &$user) {
                     self::get_phplistuserid($user);
@@ -164,11 +162,11 @@ class local_eduvidual_lib_phplist {
                         }
                     }
                 }
-                $syncmessages[] = array('type' => 'success', 'content' => "Added $added users to lists for $list");
+                echo "Added $added users to lists for $list";
             }
         }
-        $syncmessages = array_merge($syncmessages, self::check_users_authtype());
-        return $syncmessages;
+        self::check_users_authtype();
+        return;
     }
 
 
@@ -177,7 +175,6 @@ class local_eduvidual_lib_phplist {
      * @return array that holds messages for output by template alert.
     **/
     private static function connect_externaldb() {
-        $syncmessages = array();
         if (!self::$externalconnected) {
             // Ensure the db connection to the external db works
             $dbhost = get_config('local_eduvidual', 'phplist_dbhost');
@@ -189,17 +186,16 @@ class local_eduvidual_lib_phplist {
 
                 // Check connection
                 if (isset(self::$externaldb->connect_error)) {
-                    $syncmessages[] = array('type' => 'danger', 'content' => "Connection failed: " . self::$externaldb->connect_error);
+                    echo "Connection failed: " . self::$externaldb->connect_error;
                 } else {
                     self::$externaldb->select_db($dbname);
                     self::$externalconnected = true;
                 }
             } catch(Exception $e) {
-                $syncmessages[] = array('type' => 'danger', 'content' => "Connection failed: " . self::$externaldb->connect_error);
+                echo "Connection failed: " . self::$externaldb->connect_error;
             }
 
         }
-        return $syncmessages;
     }
     /**
      * Fetches a list of users based on a target group.

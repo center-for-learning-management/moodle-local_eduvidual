@@ -43,6 +43,15 @@ $tasks = array(
         'month' => '*',
     ),
     array(
+        'classname' => 'local_eduvidual\task\local_eduvidual_phplist',
+        'blocking' => 0,
+        'minute' => 30,
+        'hour' => 3,
+        'day' => '*',
+        'dayofweek' => '*',
+        'month' => '*',
+    ),
+    array(
         'classname' => 'local_eduvidual\task\local_eduvidual_trashbin',
         'blocking' => 0,
         'minute' => 0,
