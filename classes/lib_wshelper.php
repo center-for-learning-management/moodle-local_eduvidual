@@ -137,18 +137,20 @@ class lib_wshelper {
                             $params = array();
 
                             $url = parse_url($a->getAttribute('href'));
-                            parse_str($url['query'], $params);
-                            if (!empty($params['edit'])) {
-                                $catid = intval($params['edit']);
-                                if (!in_array($catid, $managed_qcats)) {
-                                    $remove = false;
-                                } else {
-                                    $chk = $DB->get_record('local_eduvidual_userqcats', array('userid' => $USER->id, 'categoryid' => $catid));
-                                    if (empty($chk->id)) {
-                                        $removeList[] = $li;
+                            if (!empty($url['query'])) {
+                                parse_str($url['query'], $params);
+                                if (!empty($params['edit'])) {
+                                    $catid = intval($params['edit']);
+                                    if (!in_array($catid, $managed_qcats)) {
+                                        $remove = false;
+                                    } else {
+                                        $chk = $DB->get_record('local_eduvidual_userqcats', array('userid' => $USER->id, 'categoryid' => $catid));
+                                        if (empty($chk->id)) {
+                                            $removeList[] = $li;
+                                        }
                                     }
+                                    $break = true;
                                 }
-                                $break = true;
                             }
                             if ($break) break;
                         }
