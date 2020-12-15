@@ -36,6 +36,7 @@ class login {
         $user = $DB->get_record('user', array('id' => $data->userid));
         require_once($CFG->dirroot . '/user/profile/lib.php');
         profile_load_data($user);
+        \local_eduvidual\locallib::get_user_secret($user->id);
         //error_log(json_encode($user, JSON_NUMERIC_CHECK));
 
         // We only check for roles managed by profile for mnet accounts
