@@ -49,6 +49,7 @@ if (\local_eduvidual\locallib::get_orgrole($orgid) != "Manager" && !is_siteadmin
         'lastname' => 'lastname',
         'role' => 'role',
         'cohorts_add' => 'cohorts_add',
+        'cohorts_remove' => 'cohorts_remove',
         'secret' => 'secret',
     );
 
@@ -86,6 +87,7 @@ if (\local_eduvidual\locallib::get_orgrole($orgid) != "Manager" && !is_siteadmin
         } else {
             $record->cohorts_add = '';
         }
+        $record->cohorts_remove = '';
 
         $record->secret = $record->id . '#' . $r->profile_field_secret;
         return $record;
