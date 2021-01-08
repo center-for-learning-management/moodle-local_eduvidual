@@ -220,7 +220,7 @@ function local_eduvidual_extend_navigation($navigation) {
  */
 function local_eduvidual_extend_navigation_category_settings($nav, $context) {
     global $DB;
-    $org = $DB->get_record('local_eduvidual_org', array('categoryid' => $context->instanceid));
+    $org = \local_eduvidual\locallib::get_org_by_context($context->id);
     if (!empty($org->orgid) && (\local_eduvidual\locallib::get_orgrole($org->orgid) == 'Manager' || is_siteadmin())) {
         $label = get_string('Management', 'local_eduvidual');
         $link = new moodle_url('/local/eduvidual/pages/manage.php', array('orgid' => $org->orgid));
@@ -304,7 +304,7 @@ function local_eduvidual_myprofile_navigation($tree, $user, $iscurrentuser, $cou
         $category->add_node($node);
         $memberships = \local_eduvidual\locallib::get_user_memberships($user->id);
         foreach ($memberships AS $membership) {
-            $org = $DB->get_record('local_eduvidual_org', array('orgid' => $membership->orgid));
+            $org = \local_eduvidual\locallib::get_org('orgid', $membership->orgid);
             if (empty($org->id)) continue;
             $link = '<a href="' . $CFG->wwwroot . '/local/eduvidual/pages/manage.php?orgid=' . $org->orgid . '">' . $org->name . ' (' . $membership->role . ')</a>';
             $node = new \core_user\output\myprofile\node('eduvidual', 'eduvidualmembership-' . $membership->orgid . '-' . $membership->role, $link);

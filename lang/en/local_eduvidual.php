@@ -185,7 +185,8 @@ $string['app:login_wrong_credentials'] = 'Wrong login credentials!';
 $string['app:login_wrong_token'] = 'Wrong login token!';
 $string['app:open_in_app'] = 'Open eduvidual-App';
 
-$string['cachedef_appcache'] = 'This is the session cache used if in app mode';
+$string['cachedef_application'] = 'This is the application cache';
+$string['cachedef_session'] = 'This is the session cache';
 
 $string['categories:coursecategories'] = 'Courses & categories';
 

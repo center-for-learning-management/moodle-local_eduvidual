@@ -415,13 +415,15 @@ class lib_wshelper {
                 $context = \context_course::instance($course->id);
                 $path = explode('/', $context->path);
                 if (count($path) > 1) {
-                    $orgcontextid = $path[2];
-                    if (empty($parentcoursecats[$orgcontextid])) {
-                        $ccontext = $DB->get_record('context', array('id' => $orgcontextid));
+                    $ccontext = \context::instance_by_id($path[2]);
+                    $cname = \local_eduvidual\locallib::cache('application', 'categoryname-' . $ccontext->instanceid);
+                    if (empty($cname)) {
                         $category = $DB->get_record('course_categories', array('id' => $ccontext->instanceid));
-                        $parentcoursecats[$orgcontextid] = $category->name;
+                        $cname = \local_eduvidual\locallib::cache('application', 'categoryname-' . $ccontext->instanceid);
+                        \local_eduvidual\locallib::cache('application', 'categoryname-' . $ccontext->instanceid, $cname);
                     }
-                    $course->coursecategory = $parentcoursecats[$orgcontextid];
+
+                    $course->coursecategory = $cname;
                 }
             }
         }

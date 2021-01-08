@@ -185,8 +185,6 @@ $string['app:login_wrong_credentials'] = 'Benutzer oder Passwort sind falsch!';
 $string['app:login_wrong_token'] = 'Der Login-Token ist falsch!';
 $string['app:open_in_app'] = 'Öffne eduvidual-App';
 
-$string['cachedef_appcache'] = 'Das ist der Session-Cache des App-Modus';
-
 $string['categories:coursecategories'] = 'Kurse & Kategorien';
 
 $string['check_js:description'] = 'Die angeforderte Seite benötigt aktiviertes JavaScript. Falls Sie nicht weitergeleitet werden, ist JavaScript in Ihrem Browser möglicherweise deaktiviert.';

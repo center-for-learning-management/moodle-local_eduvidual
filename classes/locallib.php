@@ -26,6 +26,39 @@ namespace local_eduvidual;
 defined('MOODLE_INTERNAL') || die;
 
 class locallib {
+    protected static $cache_application;
+    protected static $cache_session;
+
+    /**
+     * Method used as getter and setter for caches.
+     * @param type either application or session
+     * @param key (optional) used to get a certain key from the cache
+     * @param value (optional) used to set a value for a certain key in the cache
+     * @param delete (optional) delete this key.
+     */
+    public static function cache($type, $key = '', $value = '', $delete = 0) {
+        if (!in_array($type, array('application', 'session'))) return;
+        $cache = self::${'cache_' . $type};
+        if (empty($cache)) {
+            $cache = \cache::make('local_eduvidual', 'application');
+            self::${'cache_' . $type} = $cache;
+        }
+        if (!empty($key) && !empty($delete)) {
+            $cache->delete($key);
+            return;
+        } elseif (!empty($key) && !empty($value)) {
+            // We act as setter
+            $cache->set($key, $value);
+            return $value;
+        } elseif (!empty($key)) {
+            // We act as getter
+            return $cache->get($key);
+        } else {
+            // We return the cache itself.
+            return $cache;
+        }
+    }
+
     /**
      * We only want users to access the question bank if the capabilities were
      * given by roles in the course context. We do not want this capability
@@ -37,6 +70,9 @@ class locallib {
         global $DB, $USER;
         if (empty($user)) $user = $USER;
         if ($USER->id == $user->id && is_siteadmin() && $doanything) return true;
+
+        $canaccess = self::cache('session', 'can_access_course_questionbank');
+        if (!empty($canaccess)) return ($canaccess == 1) ? true : false;
 
         $syscontext = \context_system::instance();
         $roles = get_user_roles($coursecontext, $user->id);
@@ -50,9 +86,14 @@ class locallib {
             $params = array($role->roleid, $syscontext->id, $coursecontext->id, 'moodle/question:viewall', 'moodle/question:viewmine');
             $chks = $DB->get_records_sql($sql, $params);
             foreach ($chks as $chk) {
-                if (!empty($chk->id)) return true;
+                if (!empty($chk->id)) {
+                    self::cache('session', 'can_access_course_questionbank', 1);
+                    return true;
+                }
             }
         }
+        // We are not allowed.
+        self::cache('session', 'can_access_course_questionbank', -1);
     }
     /**
      * Filter a list of users given. Only connected users shall be kept.
@@ -168,6 +209,36 @@ class locallib {
     }
 
     /**
+     * Get an org by a specific field parameter.
+     * Uses cache api.
+     * @param field the field to use.
+     * @param value that the field must have.
+     */
+    public static function get_org($field, $value) {
+        global $DB;
+        $orgid = self::cache('session', "orgid-$field-$value");
+        if (!empty($orgid)) {
+            $org = self::cache('session', "org-$orgid");
+        }
+        if (!empty($org)) return $org;
+
+        $org = $DB->get_record('local_eduvidual_org', array($field => $value));
+        if (!empty($org->orgid)) {
+            // Store this org in cache.
+            self::cache('session', "org-$org->orgid", $org);
+            // Use the requested field anyway.
+            self::cache('session', "orgid-$field-$value", $org->orgid);
+            // Use some other fields too.
+            self::cache('session', "orgid-orgid-$org->orgid", $org->orgid);
+            self::cache('session', "orgid-categoryid-$org->categoryid", $org->orgid);
+            self::cache('session', "orgid-courseid-$org->courseid", $org->orgid);
+            self::cache('session', "orgid-supportcourseid-$org->supportcourseid", $org->orgid);
+        }
+
+        return $org;
+    }
+
+    /**
      * Get organisation by categoryid.
      * @param int categoryid (optional) if not set determine current course.
      * @return Object organization
@@ -177,14 +248,10 @@ class locallib {
         if (empty($categoryid)) {
             $categoryid = $COURSE->category;
         }
+        $ctx = \context_coursecat::instance($categoryid);
+        if (empty($ctx->id)) return false;
 
-        $category = $DB->get_record('context', array('contextlevel' => CONTEXT_COURSECAT, 'instanceid' => $categoryid), '*', IGNORE_MISSING);
-        if (empty($category->id)) return false;
-        $path = explode('/', $category->path);
-        $catcontext =$DB->get_record('context', array('id' => $path[2]));
-
-        // Get organisation by top level course category.
-        return $DB->get_record('local_eduvidual_org', array('categoryid' => $catcontext->instanceid));
+        return self::get_org_by_context($ctx->id);
     }
 
     /**
@@ -194,12 +261,12 @@ class locallib {
     public static function get_org_by_context($ctxid = 0) {
         global $CONTEXT, $DB, $PAGE;
         if (empty($ctxid)) $ctxid = $PAGE->context->id;
-        $ctx = $DB->get_record('context', array('id' => $ctxid));
+        $ctx = \context::instance_by_id($ctxid);
         if (empty($ctx->id)) return;
         $path = explode("/", $ctx->path);
         if (count($path) < 3) return;
-        $rootctx = $DB->get_record('context', array('id' => $path[2]));
-        return $DB->get_record('local_eduvidual_org', array('categoryid' => $rootctx->instanceid));
+        $rootctx = \context::instance_by_id($path[2]);
+        return self::get_org('categoryid', $rootctx->instanceid);
     }
 
     /**
@@ -209,9 +276,9 @@ class locallib {
      */
     public static function get_org_by_courseid($courseid) {
         global $DB;
-        $course = $DB->get_record('course', array('id' => $courseid), '*', IGNORE_MISSING);
-        if (empty($course->id)) return;
-        return self::get_org_by_categoryid($course->category);
+        $ctx = \context_course::instance($courseid);
+        if (empty($ctx->id)) return;
+        return self::get_org_by_context($ctx->id);
     }
 
     /**
@@ -306,6 +373,10 @@ class locallib {
     public static function get_highest_role($userid = 0) {
         global $DB, $USER;
         if (empty($userid)) $userid = $USER->id;
+
+        $highest = self::cache('session', "highestrole-$userid");
+        if (!empty($highest)) return $highest;
+
         $memberships = $DB->get_records('local_eduvidual_orgid_userid', array('userid' => $userid));
         $highest = '';
         foreach ($memberships AS $membership) {
@@ -322,6 +393,7 @@ class locallib {
                 break;
             }
         }
+        self::cache('session', "highestrole-$userid", $highest);
         return $highest;
     }
 
@@ -456,14 +528,22 @@ class locallib {
         global $DB, $USER;
         if (empty($categoryid)) {
             // Check if user is manager in any organization.
-            $chk = $DB->get_record('local_eduvidual_orgid_userid', array('role' => 'Manager', 'userid' => $USER->id));
-            return !empty($chk->orgid);
+            $ismanager = self::cache('session', "ismanager");
+            if (empty($ismanager)) {
+                $chk = $DB->get_record('local_eduvidual_orgid_userid', array('role' => 'Manager', 'userid' => $USER->id));
+                $ismanager = self::cache('session', "ismanager", !empty($chk->orgid));
+            }
+            return $ismanager;
         } else {
             // Check if user is manager in a particular organization.
-            $org = self::get_org_by_categoryid($categoryid);
-            if (empty($org->orgid)) return false;
-            $chk = $DB->get_record('local_eduvidual_orgid_userid', array('orgid' => $org->orgid, 'role' => 'Manager', 'userid' => $USER->id));
-            return !empty($chk->orgid);
+            $ismanager = self::cache('session', "ismanager-$categoryid");
+            if (empty($ismanager)) {
+                $org = self::get_org_by_categoryid($categoryid);
+                if (empty($org->orgid)) return false;
+                $chk = $DB->get_record('local_eduvidual_orgid_userid', array('orgid' => $org->orgid, 'role' => 'Manager', 'userid' => $USER->id));
+                $ismanager = self::cache('session', "ismanager", !empty($chk->orgid));
+            }
+            return $ismanager;
         }
     }
 
@@ -484,37 +564,6 @@ class locallib {
             }
         }
         return $files;
-    }
-    /**
-     * Show a selector for all organistions a user has
-     * @param role Role that is required ('Teacher', 'Manager', '*')
-     * @param orgid org that should be selected. if not given tries to retrieve orgid via optional_param.
-    **/
-    public static function print_org_selector($role = '*', $orgid = 0) {
-        global $DB,$PAGE;
-
-        $orgs = self::get_organisations($role);
-        $act = optional_param('act', '', PARAM_TEXT);
-        if ($orgid == 0) {
-            $orgid = optional_param('orgid', 0, PARAM_INT);
-        }
-        if ($orgid > 0) {
-            $org = $DB->get_record('local_eduvidual_org', array('orgid' => $orgid));
-        } else {
-            $org = new stdClass();
-            $org->orgid = 0;
-            $org->name = get_string('none');
-        }
-
-        $favorgid = \local_eduvidual\locallib::get_favorgid();
-
-        $parts = parse_url($PAGE->url);
-        $url = $parts['scheme'] . '://' . $parts['host'] . $parts['path'];
-        echo "\t<select onchange=\"var sel = this; require(['local_eduvidual/main'], function(MAIN) { MAIN.navigate('" . $url . "?act=" . $act . "&orgid=' + sel.value); });\">\n";
-        foreach($orgs AS $org) {
-            echo "\t\t<option value=\"" . $org->orgid . "\"" . (((empty($orgid) && $orgid == $favorgid) || $orgid == $org->orgid)?' selected="selected"':'') . ">" . $org->orgid . " | " . $org->name . "</option>\n";
-        }
-        echo "\t</select>\n";
     }
     /**
      * Show a selector for all actions that are available
