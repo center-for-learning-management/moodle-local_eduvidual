@@ -419,7 +419,7 @@ class lib_wshelper {
                     $cname = \local_eduvidual\locallib::cache('application', 'categoryname-' . $ccontext->instanceid);
                     if (empty($cname)) {
                         $category = $DB->get_record('course_categories', array('id' => $ccontext->instanceid));
-                        $cname = \local_eduvidual\locallib::cache('application', 'categoryname-' . $ccontext->instanceid);
+                        $cname = \local_eduvidual\locallib::cache('application', 'categoryname-' . $ccontext->instanceid, $category->name);
                         \local_eduvidual\locallib::cache('application', 'categoryname-' . $ccontext->instanceid, $cname);
                     }
 
