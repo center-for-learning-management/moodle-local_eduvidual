@@ -71,7 +71,8 @@ class locallib {
         if (empty($user)) $user = $USER;
         if ($USER->id == $user->id && is_siteadmin() && $doanything) return true;
 
-        $canaccess = self::cache('session', 'can_access_course_questionbank');
+        $cachefieldid = "can_access_course_questionbank-" . $user->id . "-" . $coursecontext->id;
+        $canaccess = self::cache('session', $cachefieldid;
         if (!empty($canaccess)) return ($canaccess == 1) ? true : false;
 
         $syscontext = \context_system::instance();
@@ -87,13 +88,13 @@ class locallib {
             $chks = $DB->get_records_sql($sql, $params);
             foreach ($chks as $chk) {
                 if (!empty($chk->id)) {
-                    self::cache('session', 'can_access_course_questionbank', 1);
+                    self::cache('session', $cachefieldid, 1);
                     return true;
                 }
             }
         }
         // We are not allowed.
-        self::cache('session', 'can_access_course_questionbank', -1);
+        self::cache('session', $cachefieldid, -1);
     }
     /**
      * Filter a list of users given. Only connected users shall be kept.
