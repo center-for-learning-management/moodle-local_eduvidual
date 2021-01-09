@@ -72,7 +72,7 @@ class locallib {
         if ($USER->id == $user->id && is_siteadmin() && $doanything) return true;
 
         $cachefieldid = "can_access_course_questionbank-" . $user->id . "-" . $coursecontext->id;
-        $canaccess = self::cache('session', $cachefieldid;
+        $canaccess = self::cache('session', $cachefieldid);
         if (!empty($canaccess)) return ($canaccess == 1) ? true : false;
 
         $syscontext = \context_system::instance();
