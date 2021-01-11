@@ -130,8 +130,9 @@ $users = array();
 $userids = array();
 $cnt = 0;
 foreach($entries AS $user) {
-    profile_load_data($user);
     $role = $DB->get_record('local_eduvidual_orgid_userid', array('orgid' => $orgid, 'userid' => $user->id));
+    if (empty($role->role)) continue;
+    profile_load_data($user);
     $user->backgroundcard = get_user_preferences('local_eduvidual_backgroundcard', '', $user->id);
 	if (empty($user->backgroundcard)) {
 		$user->backgroundcard = \local_eduvidual\lib_enrol::choose_background($user->id);
