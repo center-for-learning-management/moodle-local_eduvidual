@@ -28,6 +28,7 @@ defined('MOODLE_INTERNAL') || die;
 class lib_helper {
     /**
      * Duplicate a course.
+     * Since 2021 this is only used by admins, so we don't care about capabilities.
      * @param courseid to duplicate
      * @param fullname
      * @param shortname
@@ -40,7 +41,7 @@ class lib_helper {
         require_once($CFG->dirroot . '/backup/util/includes/restore_includes.php');
 
         // Grant a role that allows course duplication in source and target category
-        $basecourse = $DB->get_record('course', array('id' => $courseid));
+        $basecourse = \get_course($courseid);
         $sourcecontext = \context_course::instance($courseid);
         //$targetcontext = \context_coursecat::instance($categoryid);
 
@@ -54,12 +55,7 @@ class lib_helper {
         );
         $targetcourse = \create_course($coursedata);
 
-        // Enrol user as teacher
-        $roleid = get_config('local_eduvidual', 'defaultroleteacher');
-        \local_eduvidual\lib_enrol::course_manual_enrolments(array($targetcourse->id), array($USER->id), $roleid);
-
         // Import from old course
-
         try {
             $backupsettings = array(
                 'activities' => 1,
@@ -143,13 +139,14 @@ class lib_helper {
             $rc->execute_plan();
             $rc->destroy();
 
-            $course = $DB->get_record('course', array('id' => $targetcourse->id), '*', MUST_EXIST);
+            $course = \get_course($targetcourse->id);
             $course->fullname = $fullname;
             $course->shortname = $shortname;
             $course->visible = $visible;
 
             // Set shortname and fullname back.
             $DB->update_record('course', $course);
+            rebuild_course_cache($course->id);
 
             if (empty($CFG->keeptempdirectoriesonbackup)) {
                 fulldelete($backupbasepath);
