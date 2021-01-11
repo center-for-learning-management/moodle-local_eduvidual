@@ -190,6 +190,8 @@ $string['categories:coursecategories'] = 'Kurse & Kategorien';
 $string['check_js:description'] = 'Die angeforderte Seite benötigt aktiviertes JavaScript. Falls Sie nicht weitergeleitet werden, ist JavaScript in Ihrem Browser möglicherweise deaktiviert.';
 $string['check_js:title'] = 'JavaScript';
 
+$string['coursebackupnotset'] = 'Kursvorlage nicht gefunden.';
+
 $string['courses:enrol:byqrcode'] = 'Aufnahme via QR Code';
 $string['courses:enrol:courseusers'] = 'Benutzer in {$a->name}';
 $string['courses:enrol:enrol'] = 'Aufnehmen';

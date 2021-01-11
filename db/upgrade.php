@@ -63,6 +63,16 @@ function xmldb_local_eduvidual_upgrade($oldversion) {
         // Eduvidual savepoint reached.
         upgrade_plugin_savepoint(true, 2020111000, 'local', 'eduvidual');
     }
+    if ($oldversion < 2021011100) {
+        // Schedule a course backup for all template courses.
+        $courseids = array(
+            get_config('local_eduvidual', 'coursebasementempty'),
+            get_config('local_eduvidual', 'coursebasementrestore'),
+            get_config('local_eduvidual', 'coursebasementtemplate')
+        );
+        set_config('coursebasement-scheduled', implode(',', $courseids), 'local_eduvidual');
+        upgrade_plugin_savepoint(true, 2021011100, 'local', 'eduvidual');
+    }
 
     return true;
 }

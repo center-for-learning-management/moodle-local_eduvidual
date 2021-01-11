@@ -193,6 +193,8 @@ $string['categories:coursecategories'] = 'Courses & categories';
 $string['check_js:description'] = 'The page you requested required JavaScript to be enabled. If you are not redirected to the desired page, probably JavaScript is not enabled.';
 $string['check_js:title'] = 'JavaScript';
 
+$string['coursebackupnotset'] = 'Coursetemplate not found';
+
 $string['courses:enrol:byqrcode'] = 'Enrol by QR Code';
 $string['courses:enrol:courseusers'] = 'Users in {$a->name}';
 $string['courses:enrol:enrol'] = 'Enrol';
@@ -564,6 +566,8 @@ $string['role:Teacher'] = 'Teacher';
 
 $string['start_with_at'] = 'Start with an  "@"-sign';
 $string['supportarea'] = 'Supportarea';
+
+$string['task:coursetemplates:title'] = 'Creates a backup when a template course has been modified.';
 
 $string['teacher:addfromcatalogue'] = 'Resource catalogue';
 $string['teacher:course:enrol'] = 'Enrol users';

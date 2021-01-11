@@ -397,7 +397,18 @@ class locallib {
         self::cache('session', "highestrole-$userid", $highest);
         return $highest;
     }
-
+    /**
+     * Create a temporary directory and return its path.
+     * @return path to tempdir.
+     */
+    public static function get_tempdir() {
+        global $CFG;
+        $dir = $CFG->tempdir . '/eduvidiual-coursefiles';
+        if (!is_dir($dir)) {
+            mkdir($dir);
+        }
+        return $dir;
+    }
     /**
      * Get all orgs a user is member of. Optionally you can filter by role.
      * @param userid if empty will use $USER
@@ -547,7 +558,18 @@ class locallib {
             return $ismanager;
         }
     }
-
+    /**
+     * Checks whether a course is a template course.
+     * @param courseid to check.
+     * @return true or false.
+     */
+    public static function is_templatecourse($courseid) {
+        $identifiers = array('coursebasementempty', 'coursebasementrestore', 'coursebasementtemplate');
+        foreach ($identifiers as $identifier) {
+            if ($courseid == get_config('local_eduvidual', $identifier)) return true;
+        }
+        return false;
+    }
     /**
      * List all files from a certain file area
      */

@@ -155,16 +155,75 @@ if ($formsent) {
                         $fullname = $coursename;
                         $categoryid = $targcat->id;
                         $shortname = $org->orgid . '-' . $USER->id . '-' . date('YmdHis');
+                        if (strlen($shortname) > 30) $shortname = substr($shortname, 0, 30);
 
                         if (strlen($fullname) > 5) {
-                            require_once($CFG->dirroot . '/course/externallib.php');
-                            if (strlen($shortname) > 30) $shortname = substr($shortname, 0, 30);
-                            // Grant a role that allows course duplication in source and target category
-                            $basecourse = $DB->get_record('course', array('id' => $basementcourseid));
+                            // First check if the template is valid.
+                            require_once($CFG->dirroot.'/backup/util/includes/restore_includes.php');
+                            $fs = \get_file_storage();
+                            $files = $fs->get_area_files(\context_course::instance($basementcourseid)->id, 'local_eduvidual', 'coursebackup', 0, '', false);
+                            $files = array_values($files);
 
-                            $course = \local_eduvidual\lib_helper::duplicate_course($basecourse->id, $fullname, $shortname, $categoryid, 1);
+                            if (!isset($files[0])) {
+                                throw new \moodle_exception('coursebackupnotset', 'local_eduvidual');
+                            }
 
-                            if (!empty($course->id)) {
+                            // Now create a course.
+                            require_once($CFG->dirroot.'/course/lib.php');
+                            $data = (object) array(
+                                'category' => $categoryid,
+                                'fullname' => $fullname,
+                                'shortname' => $shortname,
+
+                            );
+                            $course = \create_course($data);
+
+                            // Enrol the user.
+                            $enroluser = !empty($enroluser) ? $enroluser : $USER->id;
+                            $context = \context_course::instance($course->id);
+                            $role = get_config('local_eduvidual', 'defaultroleteacher');
+                            $enroluser = optional_param('setteacher', 0, PARAM_INT);
+                            if (empty($enroluser) || $enroluser == 0) $enroluser = $USER->id;
+
+                            // Enrol user as teacher.
+                            \local_eduvidual\lib_enrol::course_manual_enrolments(array($course->id), array($enroluser), $role);
+
+                            $fp = \get_file_packer('application/vnd.moodle.backup');
+                            $backuptempdir = \make_backup_temp_directory('template' . $basementcourseid);
+                            $files[0]->extract_to_pathname($fp, $backuptempdir);
+
+                            $settings = [
+                                'overwrite_conf' => true,
+                                'users' => false,
+                                'keep_roles_and_enrolments' => false,
+                                'keep_groups_and_groupings' => false,
+                            ];
+
+                            try {
+                                // Now restore the course.
+                                $target = \backup::TARGET_EXISTING_DELETING;
+                                $rc = new \restore_controller('template' . $basementcourseid, $course->id, \backup::INTERACTIVE_NO,
+                                    \backup::MODE_IMPORT, $USER->id, $target);
+
+                                foreach ($settings as $settingname => $value) {
+                                    $plan = $rc->get_plan();
+                                    if (!empty($plan)) {
+                                        $setting = $rc->get_plan()->get_setting($settingname);
+                                        if ($setting->get_status() == \base_setting::NOT_LOCKED) {
+                                            $rc->get_plan()->get_setting($settingname)->set_value($value);
+                                        }
+                                    }
+
+                                }
+                                $rc->execute_precheck();
+                                $rc->execute_plan();
+                                $rc->destroy();
+                            } catch (\Exception $e) {
+                                if ($rc) {
+                                    \core\notification::error('Restore failed with status: ' . $rc->get_status());
+                                }
+                                throw $e;
+                            } finally {
                                 $course->startdate = (date("m") < 6)?strtotime((date("Y")-1) . '0901000000'):strtotime(date("Y") . '0901000000');
                                 $DB->set_field('course', 'startdate', $course->startdate, array('id' => $course->id));
                                 $course->enddate = (date("m") < 6)?strtotime((date("Y")) . '0831000000'):strtotime((date("Y")+1) . '0831000000');
@@ -177,14 +236,6 @@ if ($formsent) {
                                 if (!empty($subcat4)) $course->summary .= $org->subcats4lbl . ': ' . $subcat4 . "<br />\n";
                                 $DB->set_field('course', 'summary', $course->summary, array('id' => $course->id));
 
-                                $enroluser = !empty($enroluser) ? $enroluser : $USER->id;
-                                $context = \context_course::instance($course->id);
-                                $role = get_config('local_eduvidual', 'defaultroleteacher');
-                                $enroluser = optional_param('setteacher', 0, PARAM_INT);
-                                if (empty($enroluser) || $enroluser == 0) $enroluser = $USER->id;
-
-                                // Enrol user as teacher.
-                                \local_eduvidual\lib_enrol::course_manual_enrolments(array($course->id), array($enroluser), $role);
                                 // Override course settings based on organizational standards.
                                 \local_eduvidual\lib_helper::override_coursesettings($course->id);
 
@@ -199,8 +250,9 @@ if ($formsent) {
                                     'url' => $redirect,
                                     'type' => 'success',
                                 ));
+                            }
 
-                            } else {
+                            if (empty($course->id)) {
                                 $msg[] = $OUTPUT->render_from_template('local_eduvidual/alert', array(
                                     'content' => get_string('createcourse:createerror', 'local_eduvidual'),
                                     'url' => $CFG->wwwroot . '/my',

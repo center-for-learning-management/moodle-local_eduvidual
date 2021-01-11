@@ -16,16 +16,26 @@
 
 /**
  * @package    local_eduvidual
- * @copyright  2018 Digital Education Society (http://www.dibig.at),
- *             2020 and ongoing Center for Learning Management (http://www.lernmanagement.at)
+ * @copyright  2021 Center for Learningmanagement (www.lernmanagement.at)
  * @author     Robert Schrenk
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+namespace local_eduvidual\observer;
+
 defined('MOODLE_INTERNAL') || die;
 
-$plugin->version  = 2021011100;
-$plugin->requires = 2019111803;  // Requires Moodle 3.8.3.
-$plugin->component = 'local_eduvidual';
-$plugin->release = '2.1 (Build: 2021011100)';
-$plugin->maturity = MATURITY_STABLE;
+
+class course_changed {
+    public static function event($event) {
+        $entry = (object)$event->get_data();
+        if (\local_eduvidual\locallib::is_templatecourse($entry->courseid)) {
+            set_config(
+                'coursebasement-scheduled',
+                get_config('local_eduvidual','coursebasement-scheduled') .
+                    ',' . $entry->courseid,
+                'local_eduvidual'
+            );
+        }
+    }
+}

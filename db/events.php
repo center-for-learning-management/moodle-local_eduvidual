@@ -36,3 +36,18 @@ $observers[] = array(
         'includefile' => '/local/eduvidual/classes/observer/login.php',
         'priority' => 9999,
     );
+
+$events = array(
+    '\core\event\course_module_created',
+    '\core\event\course_module_deleted',
+    '\core\event\course_module_updated',
+    '\core\event\course_updated',
+
+);
+foreach ($events AS $event) {
+    $observers[] = array(
+            'eventname' => $event,
+            'callback' => '\local_eduvidual\observer\course_changed::event',
+            'priority' => 9999,
+        );
+}
