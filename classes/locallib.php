@@ -553,7 +553,7 @@ class locallib {
                 $org = self::get_org_by_categoryid($categoryid);
                 if (empty($org->orgid)) return false;
                 $chk = $DB->get_record('local_eduvidual_orgid_userid', array('orgid' => $org->orgid, 'role' => 'Manager', 'userid' => $USER->id));
-                $ismanager = self::cache('session', "ismanager", !empty($chk->orgid));
+                $ismanager = self::cache('session', "ismanager-$categoryid", !empty($chk->orgid));
             }
             return $ismanager;
         }
