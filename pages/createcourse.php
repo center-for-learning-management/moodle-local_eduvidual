@@ -224,17 +224,17 @@ if ($formsent) {
                                 }
                                 throw $e;
                             } finally {
+                                $course->fullname = $fullname;
+                                $course->shortname = $shortname;
                                 $course->startdate = (date("m") < 6)?strtotime((date("Y")-1) . '0901000000'):strtotime(date("Y") . '0901000000');
-                                $DB->set_field('course', 'startdate', $course->startdate, array('id' => $course->id));
                                 $course->enddate = (date("m") < 6)?strtotime((date("Y")) . '0831000000'):strtotime((date("Y")+1) . '0831000000');
-                                $DB->set_field('course', 'enddate', $course->enddate, array('id' => $course->id));
-
                                 $course->summary = "";
                                 if (!empty($subcat1)) $course->summary .= $org->subcats1lbl . ': ' . $subcat1 . "<br />\n";
                                 if (!empty($subcat2)) $course->summary .= $org->subcats2lbl . ': ' . $subcat2 . "<br />\n";
                                 if (!empty($subcat3)) $course->summary .= $org->subcats3lbl . ': ' . $subcat3 . "<br />\n";
                                 if (!empty($subcat4)) $course->summary .= $org->subcats4lbl . ': ' . $subcat4 . "<br />\n";
-                                $DB->set_field('course', 'summary', $course->summary, array('id' => $course->id));
+                                $DB->update_record('course', $course);
+                                rebuild_course_cache($course->id);
 
                                 // Override course settings based on organizational standards.
                                 \local_eduvidual\lib_helper::override_coursesettings($course->id);
