@@ -94,7 +94,7 @@ class mobile {
     }
     public static function course_create_init() {
         return array(
-            'javascript' => 'return true;';
+            'javascript' => 'return true;',
         );
     }
 }
