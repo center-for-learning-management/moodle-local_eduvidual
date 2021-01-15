@@ -42,7 +42,7 @@ $assignments = $DB->get_records('role_assignments', array('roleid' => 1));
 echo "<ul>\n";
 foreach ($assignments as $assignment) {
     echo "<li>Unassigning $assignment->userid from $assignment->contextid</li>\n";
-    role_unassign(1, $assignment->userid, $assignment->contextid);
+    role_unassign($assignment->roleid, $assignment->userid, $assignment->contextid);
 }
 echo "</ul>";
 
