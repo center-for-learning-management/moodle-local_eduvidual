@@ -36,7 +36,7 @@ $PAGE->set_heading(get_string('manage:enrolmeasteacher', 'local_eduvidual'));
 $org = \local_eduvidual\locallib::get_org_by_courseid($courseid);
 
 
-$is_manager = !empty($org->categoryid) && \local_eduvidual\locallib::is_manager($org->categoryid);
+$is_manager = !empty($org->categoryid) && \local_eduvidual\locallib::is_manager($org->categoryid, true);
 
 if (!empty($org->orgid) && ($is_manager || is_siteadmin())) {
     \local_eduvidual\lib_enrol::course_manual_enrolments(array($courseid), array($USER->id), get_config('local_eduvidual', 'defaultroleteacher'));

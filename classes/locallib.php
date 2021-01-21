@@ -538,22 +538,27 @@ class locallib {
     public static function is_manager($categoryid = 0) {
         if (is_siteadmin()) return true;
         global $DB, $USER;
+        $ismanager = false;
         if (empty($categoryid)) {
             // Check if user is manager in any organization.
-            $ismanager = self::cache('session', "ismanager");
+            if (empty($nocaches)) {
+                $ismanager = self::cache('session', "ismanager");
+            }
             if (empty($ismanager)) {
                 $chk = $DB->get_record('local_eduvidual_orgid_userid', array('role' => 'Manager', 'userid' => $USER->id));
-                $ismanager = self::cache('session', "ismanager", !empty($chk->orgid));
+                $ismanager = self::cache('session', "ismanager-$USER->id", !empty($chk->orgid));
             }
             return $ismanager;
         } else {
             // Check if user is manager in a particular organization.
-            $ismanager = self::cache('session', "ismanager-$categoryid");
+            if (empty($nocaches)) {
+                $ismanager = self::cache('session', "ismanager-$USER->id-$categoryid");
+            }
             if (empty($ismanager)) {
                 $org = self::get_org_by_categoryid($categoryid);
                 if (empty($org->orgid)) return false;
                 $chk = $DB->get_record('local_eduvidual_orgid_userid', array('orgid' => $org->orgid, 'role' => 'Manager', 'userid' => $USER->id));
-                $ismanager = self::cache('session', "ismanager-$categoryid", !empty($chk->orgid));
+                $ismanager = self::cache('session', "ismanager-$USER->id-$categoryid", !empty($chk->orgid));
             }
             return $ismanager;
         }
