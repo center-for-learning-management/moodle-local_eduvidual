@@ -40,7 +40,7 @@ class locallib {
         if (!in_array($type, array('application', 'session'))) return;
         $cache = self::${'cache_' . $type};
         if (empty($cache)) {
-            $cache = \cache::make('local_eduvidual', 'application');
+            $cache = \cache::make('local_eduvidual', $type);
             self::${'cache_' . $type} = $cache;
         }
         if (!empty($key) && !empty($delete)) {
@@ -535,7 +535,7 @@ class locallib {
      * Check if the current user is manager in any, or in a particular organization, based on category.
      * @param int categoryid (optional)
      */
-    public static function is_manager($categoryid = 0) {
+    public static function is_manager($categoryid = 0, $nocaches = false) {
         if (is_siteadmin()) return true;
         global $DB, $USER;
         $ismanager = false;
