@@ -65,7 +65,7 @@ if (optional_param('datavalidated', 0, PARAM_INT) == 1) {
         $user = $users[$a];
         ?>
         <tr<?php if(strtolower($user->role) == 'remove') { echo " style=\"text-decoration: line-through;\""; } ?>>
-            <td><img src="/pix/i/<?php echo ((isset($user->payload->processed) && $user->payload->processed)?'completion-auto-pass':'completion-auto-fail'); ?>.svg" /></td>
+            <td><img class="icon" src="/pix/i/<?php echo ((isset($user->payload->processed) && $user->payload->processed)?'completion-auto-pass':'completion-auto-fail'); ?>.svg" /></td>
             <td><?php echo @$user->firstname; ?></td>
             <td><?php echo @$user->lastname; ?></td>
             <td><?php echo @$user->email; ?></td>
