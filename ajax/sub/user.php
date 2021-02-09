@@ -61,13 +61,7 @@ switch ($act) {
             if (!in_array($editor, $valid)) {
                 $reply['error'] = 'invalid choice';
             } else {
-                $entry = $DB->get_record('user_preferences', array('userid' => $USER->id, 'name' => 'htmleditor'));
-                if (isset($entry->id) && $entry->id > 0) {
-                    $entry->value = $editor;
-                    $DB->update_record('user_preferences', $entry);
-                    $reply['status'] = 'ok';
-                } else {
-                    $DB->insert_record('user_preferences', (object) array('userid' => $USER->id, 'name' => 'htmleditor', 'value' => $editor));
+                if (set_user_preference('htmleditor', $editor)) {
                     $reply['status'] = 'ok';
                 }
             }
