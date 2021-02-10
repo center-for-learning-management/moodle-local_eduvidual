@@ -36,6 +36,7 @@
 	&.active{
 		background-color: @eduvidblau;
 		color:#fff;
+		border:none;
 		.sectionname{
 			color:#fff;
 		}
@@ -58,8 +59,13 @@
 				text-underline-position: under;	
 			}
 			color:#fff;
-			.sectionname{
+			//Änderung von .sectionname auf innertab, da sonst die Änderungen der User im Frontend nicht angewendet werden.
+			//.sectionname{
+			innertab{
 				color:#fff;
+								&.tab_initial{
+					color:@eduvidblau;
+				}		
 			}
 		}
 	}
@@ -73,6 +79,15 @@
 body{	
 	background-color:@hintergrundfarbe;
 }
+
+//Alle dropdown-items
+.dropdown-item:hover{
+	color:#fff !important;
+	& .icon{
+		color:#fff !important;
+	}
+}
+
 //Seiteninhalt oben (Breadcrumbs usw.)
 #page-header{
 	padding:0px !important;
@@ -139,6 +154,14 @@ body{
 	}
 	.icon{
 		color:@eduvidblau;
+		&.fa{
+			&.fa-plus{
+				&.fa-fw{
+					color:#fff;
+					padding-top:10px;
+				}
+			}
+		}
 	}
 	.btn-primary, .btn-block{
 		background-color:@eduvidblau;
@@ -225,7 +248,12 @@ body{
 		h3{
 			margin-top:2rem;
 		}
-		p, div{
+		[dir="ltr"]{
+			a:not(.aalink){
+				//text-decoration: underline;
+			}
+		}
+		p{
 			& a:not(.aalink){
 				text-decoration: underline;
 			}
@@ -254,9 +282,10 @@ body{
 							color:#fff;
 						}
 						&.tab_initial{
-							color:#fff;
+							//color:#fff;
+							//color:@eduvidblau;
 						}
-						color:@eduvidblau;
+						//color:@eduvidblau;
 					}
 					.NavigationsTabsLevel1();
 				}
@@ -305,6 +334,7 @@ body{
 		[role='main']{
 			.page-item.active .page-link{
 				background-color: @eduvidblau;
+				color:white;
 				border:none;
 			}
 			.mform{
@@ -583,6 +613,23 @@ nav{
 			text-align: center;
 		}
 	}
+	#page-content{
+		#region-main-box{
+			.course-content,[role="main"]{
+				.single-section{
+					.nav-tabs:nth-child(2){
+						.nav-link{
+							.sectionname{
+								color:@eduvidblau;
+							}
+						}
+					}
+				}
+			}
+		}
+
+	}
+
 }
 @media @tablet{
 	nav{
@@ -753,6 +800,7 @@ nav{
 				.active_tree_node{
 					background-color:@eduvidblau;
 					.ahreffaerben(#fff);
+					color:#fff;
 					//color:#fff!important;
 					& .media-left{
 						display:block;
@@ -943,7 +991,7 @@ a.dropdown-toggle:focus,
 	}
 }
 @media @desktop{
-	//NacDrawer ist eingeklappt -->Page breiter
+	//NavDrawer ist eingeklappt -->Page breiter
 	body:not(.drawer-open-left) #page {
 		margin-left: 50px;
 		margin-right: 10px;
@@ -1030,8 +1078,10 @@ a.dropdown-toggle:focus,
 					background:@menumouseover;
 				}
 			}
+			//Issue #
 			.active_tree_node{
 				background-color:@eduvidblau;
+				color:#fff;
 				.ahreffaerben(#fff);
 				//color:#fff !important;
 			}
@@ -1044,6 +1094,9 @@ a.dropdown-toggle:focus,
 			.media-body{
 				
 			}
+		}
+		&[role="presention"]{
+			right:calc(100% - 120px);
 		}
 	}
 	#page-footer {
@@ -1137,4 +1190,4 @@ a:not([class]):focus{
 .card.border-0.bg-transparent{
 	border:1px solid rgba(0,0,0,.125) !important;
 }
-
+// 
