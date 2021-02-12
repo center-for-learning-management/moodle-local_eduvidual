@@ -97,6 +97,25 @@ class lib_wshelper {
      * These are the buffer-functions, that should OUTPUT something using echo.
      * Function names reveal the php-script buffer_ + php-script-path
      */
+    private static function buffer_enrol_manual_manage($buffer) {
+        global $DB, $USER;
+
+        $buffer = mb_convert_encoding($buffer, 'HTML-ENTITIES', "UTF-8");
+        $dom = new \DOMDocument();
+        $dom->loadHTML($buffer, LIBXML_NOWARNING | LIBXML_NOERROR);
+
+        $select = $dom->getElementById('addselect');
+        $options = $select->getElementsByTagName('option');
+
+        foreach ($options as $option) {
+            $userid = $option->getAttribute('value');
+            if (empty($userid) || intval($userid) == 0 || !\local_eduvidual\locallib::is_connected($userid)) {
+                $option->parentNode->removeChild($option);
+            }
+        }
+
+        echo $dom->saveHTML();
+    }
     private static function buffer_question_category($buffer) {
         global $DB, $USER;
 
@@ -115,7 +134,8 @@ class lib_wshelper {
         if (!empty($parts[1])) {
             $removeList = array();
             $parts[1] = mb_convert_encoding($parts[1], 'HTML-ENTITIES', "UTF-8");
-            $doc = \DOMDocument::loadHTML($parts[1], LIBXML_NOWARNING | LIBXML_NOERROR);
+            $doc = new \DOMDocument();
+            $doc->loadHTML($parts[1], LIBXML_NOWARNING | LIBXML_NOERROR);
 
             $divs = $doc->getElementsByTagName('div');
             foreach ($divs as $div) {
