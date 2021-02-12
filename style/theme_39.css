@@ -12,6 +12,12 @@
 body {
   background-color: #f7f7f7;
 }
+.dropdown-item:hover {
+  color: #fff !important;
+}
+.dropdown-item:hover .icon {
+  color: #fff !important;
+}
 #page-header {
   padding: 0px !important;
 }
@@ -71,6 +77,10 @@ body {
 }
 #page-content .icon {
   color: #10507f;
+}
+#page-content .icon.fa.fa-plus.fa-fw {
+  color: #fff;
+  padding-top: 10px;
 }
 #page-content .btn-primary,
 #page-content .btn-block {
@@ -152,8 +162,7 @@ body {
 #page-content #region-main-box h3 {
   margin-top: 2rem;
 }
-#page-content #region-main-box p a:not(.aalink),
-#page-content #region-main-box div a:not(.aalink) {
+#page-content #region-main-box p a:not(.aalink) {
   text-decoration: underline;
 }
 #page-content #region-main-box .form-control {
@@ -172,21 +181,16 @@ body {
   border-color: #10507f;
   margin-right: 5px;
 }
-#page-content #region-main-box .course-content .single-section .nav-link .tab_content {
-  color: #10507f;
-}
 #page-content #region-main-box .course-content .single-section .nav-link .tab_content marker {
   border-radius: 5px 5px 0 0;
   border-color: #10507f;
   background-color: #10507f;
   color: #fff;
 }
-#page-content #region-main-box .course-content .single-section .nav-link .tab_content.tab_initial {
-  color: #fff;
-}
 #page-content #region-main-box .course-content .single-section .nav-link.active {
   background-color: #10507f;
   color: #fff;
+  border: none;
 }
 #page-content #region-main-box .course-content .single-section .nav-link.active .sectionname {
   color: #fff;
@@ -210,8 +214,11 @@ body {
   text-decoration: underline;
   text-underline-position: under;
 }
-#page-content #region-main-box .course-content .single-section .nav-tabs:nth-child(2) .nav-link .sectionname {
+#page-content #region-main-box .course-content .single-section .nav-tabs:nth-child(2) .nav-link innertab {
   color: #fff;
+}
+#page-content #region-main-box .course-content .single-section .nav-tabs:nth-child(2) .nav-link innertab.tab_initial {
+  color: #10507f;
 }
 #page-content #region-main-box .course-content .single-section .topics .content .section {
   margin-top: 0px;
@@ -240,6 +247,7 @@ body {
 }
 #page-content #region-main-box [role='main'] .page-item.active .page-link {
   background-color: #10507f;
+  color: white;
   border: none;
 }
 #page-content #region-main-box [role='main'] .mform {
@@ -311,6 +319,7 @@ body {
 #page-content #region-main-box [role='main'] .nav-tabs .nav-link.active {
   background-color: #10507f;
   color: #fff;
+  border: none;
 }
 #page-content #region-main-box [role='main'] .nav-tabs .nav-link.active .sectionname {
   color: #fff;
@@ -334,8 +343,11 @@ body {
   text-decoration: underline;
   text-underline-position: under;
 }
-#page-content #region-main-box [role='main'] .nav-tabs:nth-child(2) .nav-link .sectionname {
+#page-content #region-main-box [role='main'] .nav-tabs:nth-child(2) .nav-link innertab {
   color: #fff;
+}
+#page-content #region-main-box [role='main'] .nav-tabs:nth-child(2) .nav-link innertab.tab_initial {
+  color: #10507f;
 }
 #page-content #region-main-box [role='main'] .generaltable a:link,
 #page-content #region-main-box [role='main'] .generaltable a:visited,
@@ -542,6 +554,10 @@ nav .nav-link:focus {
   #page-wrapper .footnote .footer-right {
     text-align: center;
   }
+  #page-content #region-main-box .course-content .single-section .nav-tabs:nth-child(2) .nav-link .sectionname,
+  #page-content #region-main-box [role="main"] .single-section .nav-tabs:nth-child(2) .nav-link .sectionname {
+    color: #10507f;
+  }
 }
 @media only screen and (min-width: 768px) and (max-width: 1199px) {
   nav .mr-1 {
@@ -722,6 +738,7 @@ nav .nav-link:focus {
   }
   #nav-drawer.closed .list-group .active_tree_node {
     background-color: #10507f;
+    color: #fff;
   }
   #nav-drawer.closed .list-group .active_tree_node a:link,
   #nav-drawer.closed .list-group .active_tree_node a:visited,
@@ -978,7 +995,7 @@ a.dropdown-toggle:focus,
   #nav-drawer[aria-hidden="false"] body.drawer-ease #page {
     margin-left: 50px;
     margin-right: 10px;
-    width: calc(50%) !important;
+    width: calc(100% - 50px) !important;
   }
   #nav-drawer[aria-hidden="false"] .media {
     display: -webkit-inline-box;
@@ -1016,6 +1033,7 @@ a.dropdown-toggle:focus,
   }
   #nav-drawer[aria-hidden="false"] .list-group .active_tree_node {
     background-color: #10507f;
+    color: #fff;
   }
   #nav-drawer[aria-hidden="false"] .list-group .active_tree_node a:link,
   #nav-drawer[aria-hidden="false"] .list-group .active_tree_node a:visited,
@@ -1027,6 +1045,9 @@ a.dropdown-toggle:focus,
   }
   #nav-drawer[aria-hidden="false"] .list-group .media-left .icon {
     display: inline;
+  }
+  #nav-drawer[aria-hidden="false"][role="presention"] {
+    right: calc(100% - 120px);
   }
   #page-footer {
     margin-left: 40px;
