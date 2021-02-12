@@ -500,11 +500,18 @@ class locallib {
                     FROM {local_eduvidual_orgid_userid}
                     WHERE userid=?
                         AND orgid $insql";
+
+        // If we already had a positive result for this search in cache, use it.
+        $cachefieldid = "isconnected-" . $touserid . "-" . md5($sql);
+        $isconnected = self::cache('session', $cachefieldid);
+        if ($isconnected) return true;
+
         $params = array($touserid);
         $chks = $DB->get_records_sql($sql, array_merge($params,$inparams));
 
         foreach ($chks AS $chk) {
             if (!empty($chk->userid) && $chk->userid == $touserid) {
+                self::cache('session', $cachefieldid, 1);
                 return true;
             }
         }
