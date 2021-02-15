@@ -125,7 +125,7 @@ if (isloggedin() && !isguestuser()) {
                     $org->name = $name;
                     $DB->set_field('local_eduvidual_org', 'name', $name, array('orgid' => $org->orgid));
 
-                    require_once($CFG->dirroot . '/lib/coursecatlib.php');
+                    //require_once($CFG->dirroot . '/lib/coursecatlib.php');
                     require_once($CFG->dirroot . '/course/externallib.php');
 
                     if (empty($org->categoryid)) {
@@ -134,7 +134,7 @@ if (isloggedin() && !isguestuser()) {
                         $data->name = $org->name;
                         $data->description = $org->name;
                         $data->idnumber = $org->orgid;
-                        $category = \coursecat::create($data);
+                        $category = \core_course_category::create($data);
                         $org->categoryid = $category->id;
                         $DB->set_field('local_eduvidual_org', 'categoryid', $org->categoryid, array('orgid' => $org->orgid));
                     }
