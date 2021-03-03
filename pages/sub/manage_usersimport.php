@@ -35,7 +35,7 @@ require_once($CFG->dirroot . '/local/eduvidual/classes/lib_import.php');
 $helper = new local_eduvidual_lib_import();
 $compiler = new local_eduvidual_lib_import_compiler_user();
 $helper->set_compiler($compiler);
-$helper->set_fields(array('id', 'username', 'email', 'firstname', 'lastname', 'cohorts_add', 'cohorts_remove', 'bunch'));
+$helper->set_fields(array('id', 'username', 'email', 'firstname', 'lastname', 'password', 'forcechangepassword', 'cohorts_add', 'cohorts_remove', 'bunch'));
 
 if (optional_param('datavalidated', 0, PARAM_INT) == 1) {
     $helper->load_post();
@@ -57,7 +57,8 @@ if (optional_param('datavalidated', 0, PARAM_INT) == 1) {
                 <th><?php echo get_string('manage:createuserspreadsheet:col:cohorts_add', 'local_eduvidual'); ?></th>
                 <th><?php echo get_string('manage:createuserspreadsheet:col:cohorts_remove', 'local_eduvidual'); ?></th>
                 <th><?php echo get_string('password'); ?></th>
-                            <th><?php echo get_string('manage:createuserspreadsheet:col:result', 'local_eduvidual'); ?></th>
+                <th><?php echo get_string('forcechangepassword', 'auth'); ?></th>
+                <th><?php echo get_string('manage:createuserspreadsheet:col:result', 'local_eduvidual'); ?></th>
                 <th><?php echo get_string('secret', 'local_eduvidual'); ?></th>
             </tr>
     <?php
@@ -73,6 +74,7 @@ if (optional_param('datavalidated', 0, PARAM_INT) == 1) {
             <td><?php echo @$user->cohorts_add; ?></td>
             <td><?php echo @$user->cohorts_remove; ?></td>
             <td><?php echo @$user->password; ?></td>
+            <td><?php echo @$user->forcechangepassword; ?></td>
             <td>
         <?php
         if ($user->payload->processed) {
@@ -100,6 +102,8 @@ if (optional_param('datavalidated', 0, PARAM_INT) == 1) {
                 user_update_user($u, false);
                 if (!empty($user->password)) {
                     update_internal_user_password($u, $user->password, false);
+                }
+                if (!empty($user->forcechangepassword)) {
                     set_user_preference('auth_forcepasswordchange', true, $u->id);
                 }
             } else {
@@ -208,6 +212,7 @@ if (optional_param('datavalidated', 0, PARAM_INT) == 1) {
             <th><?php echo get_string('manage:createuserspreadsheet:col:cohorts_add', 'local_eduvidual'); ?></th>
             <th><?php echo get_string('manage:createuserspreadsheet:col:cohorts_remove', 'local_eduvidual'); ?></th>
             <th><?php echo get_string('password'); ?></th>
+            <th><?php echo get_string('forcechangepassword', 'auth'); ?></th>
             <th><?php echo get_string('manage:createuserspreadsheet:col:result', 'local_eduvidual'); ?></th>
         </tr>
         <?php
@@ -222,6 +227,7 @@ if (optional_param('datavalidated', 0, PARAM_INT) == 1) {
             <td><?php echo @$obj->cohorts_add; ?></td>
             <td><?php echo @$obj->cohorts_remove; ?></td>
             <td><?php echo @$obj->password; ?></td>
+            <td><?php echo @$obj->forcechangepassword; ?></td>
             <td><?php echo @$obj->payload->action; ?></td>
         </tr>
             <?php

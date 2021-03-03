@@ -43,6 +43,7 @@ if (\local_eduvidual\locallib::get_orgrole($orgid) != "Manager" && !is_siteadmin
 } else {
     $columns = array(
         'id' => 'id',
+        'auth' => 'auth',
         'username' => 'username',
         'email' => 'email',
         'firstname' => 'firstname',
@@ -51,10 +52,12 @@ if (\local_eduvidual\locallib::get_orgrole($orgid) != "Manager" && !is_siteadmin
         'cohorts_add' => 'cohorts_add',
         'cohorts_remove' => 'cohorts_remove',
         'secret' => 'secret',
+        'password' => 'password',
+        'forcechangepassword' => 'forcechangepassword',
     );
 
     list($insql, $params) = $DB->get_in_or_equal($userids);
-    $sql = "SELECT u.id,u.username,u.email,u.firstname,u.lastname,ou.role
+    $sql = "SELECT u.id,u.auth,u.username,u.email,u.firstname,u.lastname,ou.role
                 FROM {user} u, {local_eduvidual_orgid_userid} ou
                 WHERE u.id=ou.userid
                     AND ou.role IS NOT NULL
@@ -90,6 +93,8 @@ if (\local_eduvidual\locallib::get_orgrole($orgid) != "Manager" && !is_siteadmin
         $record->cohorts_remove = '';
 
         $record->secret = $record->id . '#' . $r->profile_field_secret;
+        $record->password = '';
+        $record->forcechangepassword = 0;
         return $record;
     });
     $rs->close();

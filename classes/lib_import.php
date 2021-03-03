@@ -359,7 +359,7 @@ class local_eduvidual_lib_import_compiler_user extends local_eduvidual_lib_impor
                 $payload->processed = false;
                 $payload->action = get_string('import:issiteadmin', 'local_eduvidual');
             }
-            if (!empty($obj->password)) {
+            if (!empty($obj->password) || !empty($obj->forcechangepassword)) {
                 $canchangepasswordsfor = array("manual", "self");
                 $usero = \core_user::get_user($obj->id, 'id,auth');
                 if (!empty($usero->id) && !in_array($usero->auth, $canchangepasswordsfor)) {
