@@ -66,7 +66,7 @@ if (optional_param('datavalidated', 0, PARAM_INT) == 1) {
         $user = $users[$a];
         ?>
         <tr<?php if(strtolower($user->role) == 'remove') { echo " style=\"text-decoration: line-through;\""; } ?>>
-            <td><img class="icon" src="/pix/i/<?php echo ((isset($user->payload->processed) && $user->payload->processed)?'completion-auto-pass':'completion-auto-fail'); ?>.svg" /></td>
+            <td align="center"><img class="icon" src="/pix/i/<?php echo ((isset($user->payload->processed) && $user->payload->processed)?'completion-auto-pass':'completion-auto-fail'); ?>.svg" /></td>
             <td><?php echo @$user->firstname; ?></td>
             <td><?php echo @$user->lastname; ?></td>
             <td><?php echo @$user->email; ?></td>
@@ -219,7 +219,7 @@ if (optional_param('datavalidated', 0, PARAM_INT) == 1) {
         foreach($objs AS $obj) {
             ?>
         <tr>
-            <td><img src="/pix/i/<?php echo ((isset($obj->payload->processed) && $obj->payload->processed)?'completion-auto-pass':'completion-auto-fail'); ?>.svg" /></td>
+            <td align="center"><img class="icon" src="/pix/i/<?php echo ((isset($obj->payload->processed) && $obj->payload->processed)?'completion-auto-pass':'completion-auto-fail'); ?>.svg" /></td>
             <td><?php echo @$obj->firstname; ?></td>
             <td><?php echo @$obj->lastname; ?></td>
             <td><?php echo @$obj->email; ?></td>
