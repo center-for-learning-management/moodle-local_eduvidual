@@ -295,6 +295,7 @@ $string['createmodule:invalid'] = 'Ungültige Moduldaten';
 $string['createmodule:requiredfield'] = 'Dieses Feld ist erforderlich!';
 $string['db_error'] = 'Datenbank-Fehler!';
 
+$string['import:cannotchangepassword'] = 'Passwort für Kontotyp {$a->auth} kann nicht geändert werden.';
 $string['import:created'] = '#{$a->id} erstellt';
 $string['import:failed'] = 'FEHLER!';
 $string['import:removed'] = '#{$a->id} entfernt';

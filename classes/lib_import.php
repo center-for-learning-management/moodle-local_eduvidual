@@ -359,6 +359,12 @@ class local_eduvidual_lib_import_compiler_user extends local_eduvidual_lib_impor
                 $payload->processed = false;
                 $payload->action = get_string('import:issiteadmin', 'local_eduvidual');
             }
+            $canchangepasswordsfor = array("manual", "self");
+            $usero = \core_user::get_user($obj->id, 'id,auth');
+            if (!empty($usero->id) && !in_array($usero->auth, $canchangepasswordsfor)) {
+                $payload->processed = false;
+                $payload->action = get_string('import:cannotchangepassword', 'local_eduvidual', $usero);
+            }
         } else {
             // Test if username or email already taken.
             $chk = $DB->get_records_sql('SELECT id FROM {user} WHERE username LIKE ? OR username LIKE ? OR email LIKE ? OR email LIKE ?', array($obj->username, $obj->email, $obj->username, $obj->email));

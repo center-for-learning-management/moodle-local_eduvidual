@@ -299,6 +299,7 @@ $string['createmodule:invalid'] = 'Invalid module data';
 $string['createmodule:requiredfield'] = 'This field is required!';
 $string['db_error'] = 'Database error!';
 
+$string['import:cannotchangepassword'] = 'Cannot change passwort for account type {$a->auth}';
 $string['import:created'] = 'Created #{$a->id}';
 $string['import:failed'] = 'Failed!';
 $string['import:removed'] = 'Removed #{$a->id}';
