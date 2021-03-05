@@ -404,3 +404,17 @@ body#page-my-index {
         }
     }
 }
+
+/**
+ * Hide cohort-id column from cohorts table
+ **/
+#page-cohort-index, #page-cohort-edit {
+    table#cohorts {
+        th.id, td.id {
+            display: none;
+        }
+    }
+    #fitem_id_idnumber {
+        display: none;
+    }
+}
