@@ -273,11 +273,12 @@ class locallib {
     /**
      * Get organisation by courseid.
      * @param int courseid
+     * @param int strictness
      * @return Object organization
      */
-    public static function get_org_by_courseid($courseid) {
+    public static function get_org_by_courseid($courseid, $strictness = MUST_EXIST) {
         global $DB;
-        $ctx = \context_course::instance($courseid);
+        $ctx = \context_course::instance($courseid, $strictness);
         if (empty($ctx->id)) return;
         return self::get_org_by_context($ctx->id);
     }
