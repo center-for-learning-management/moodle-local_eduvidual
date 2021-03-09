@@ -23,14 +23,15 @@
 
 require_once('../../../config.php');
 
-$edushare = optional_param('edushare', 0, PARAM_INT);
 $errorcode = optional_param('errorcode', 0, PARAM_INT);
 
 $PAGE->set_context(context_system::instance());
 $PAGE->set_pagelayout('login');
-$PAGE->set_url('/local/eduvidual/pages/login.php', array('edushare' => $edushare));
+$PAGE->set_url('/local/eduvidual/pages/login.php', array());
 $PAGE->set_title(get_string('login'));
 $PAGE->set_heading(get_string('login'));
+
+$idp = rawurlencode("http://digitaleschuleprod.onmicrosoft.com/B2C_1A_signin_saml");
 
 ?>
 <!DOCTYPE html>
@@ -89,26 +90,14 @@ $PAGE->set_heading(get_string('login'));
                         </a>
                     </div>
 
-                    <?php
-                    if ($edushare) {
-                        $idp = rawurlencode("http://digitaleschuleprod.onmicrosoft.com/B2C_1A_signin_saml");
-                        ?>
-                        <div class="col-lg-6 col-sm-12">
-                            <a href="<?php echo $CFG->wwwroot; ?>/auth/shibboleth_link/login.php?idp=<?php echo $idp; ?>"
-                                title="Portal Digitale Schule (PODS)" id="eduvidual-btn-sso-pods" data-ajax="false">
-                                <button class="btn btn-block" type="button" name="portal">
-                                <img src="<?php echo $CFG->wwwroot; ?>/local/eduvidual/pix/logo_pods.svg" width="20" alt="PODS">&nbsp;Portal Digitale Schule
-                                </button>
-                            </a>
-                        </div>
-                        <?php
-                    } else {
-                        ?>
-                        <div class="col-lg-6 col-sm-12">
-                        </div>
-                        <?php
-                    }
-                    ?>
+                    <div class="col-lg-6 col-sm-12">
+                        <a href="<?php echo $CFG->wwwroot; ?>/auth/shibboleth_link/login.php?idp=<?php echo $idp; ?>"
+                            title="Portal Digitale Schule (PODS)" id="eduvidual-btn-sso-pods" data-ajax="false">
+                            <button class="btn btn-block" type="button" name="portal">
+                            <img src="<?php echo $CFG->wwwroot; ?>/local/eduvidual/pix/logo_pods.svg" width="20" alt="PODS">&nbsp;Portal Digitale Schule
+                            </button>
+                        </a>
+                    </div>
                 </div>
             </div><!-- Ende Login-Buttons -->
 
