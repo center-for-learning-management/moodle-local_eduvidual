@@ -94,7 +94,7 @@ $idp = rawurlencode("http://digitaleschuleprod.onmicrosoft.com/B2C_1A_signin_sam
                         <a href="<?php echo $CFG->wwwroot; ?>/auth/shibboleth_link/login.php?idp=<?php echo $idp; ?>"
                             title="Portal Digitale Schule (PODS)" id="eduvidual-btn-sso-pods" data-ajax="false">
                             <button class="btn btn-block" type="button" name="portal">
-                            <img src="<?php echo $CFG->wwwroot; ?>/local/eduvidual/pix/logo_pods.svg" width="20" alt="PODS">&nbsp;Portal Digitale Schule
+                                <img src="<?php echo $CFG->wwwroot; ?>/local/eduvidual/pix/logo_pods-32x32.png" width="20" alt="PODS">&nbsp;Portal Digitale Schule
                             </button>
                         </a>
                     </div>
