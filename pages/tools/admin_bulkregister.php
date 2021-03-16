@@ -83,10 +83,10 @@ if (!empty($orgids) && !empty($manageruserid)) {
                 $msgs[] = "=> Setting up roles<br />";
                 \local_eduvidual\lib_enrol::role_set($manageruserid, $org, 'Manager');
 
-                $org->authenticated = 1;
+                $org->authenticated = time();
                 $org->authtan = '';
-                $DB->set_field('local_eduvidual_org', 'authenticated', 1, array('orgid' => $org->orgid));
-                $DB->set_field('local_eduvidual_org', 'authtan', '', array('orgid' => $org->orgid));
+                $DB->set_field('local_eduvidual_org', 'authenticated', $org->authenticated, array('orgid' => $org->orgid));
+                $DB->set_field('local_eduvidual_org', 'authtan', $org->authtan, array('orgid' => $org->orgid));
             }
         }
     }

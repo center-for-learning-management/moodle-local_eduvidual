@@ -25,7 +25,7 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'loc
                 console.log(o.result);
                 if (o.data.stage == 0) {
                     $('#local_eduvidual_registration_stage-1, #local_eduvidual_registration_stage-0-error').css({ display: 'none'});
-                    if (o.result.authenticated == 1) {
+                    if (o.result.authenticated > 0) {
                         $('#local_eduvidual_registration_stage-0-error').css({ display: 'block'});
                     } else {
                         $('#local_eduvidual_registration_stage-1').css({ display: 'block'});

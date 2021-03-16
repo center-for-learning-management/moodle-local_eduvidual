@@ -40,7 +40,7 @@ class local_eduvidual_external_admin extends external_api {
     public static function org_gps($lon1, $lon2, $lat1, $lat2, $includenonegroup, $advanceddata = 0) {
         global $CFG, $DB, $PAGE;
 
-        
+
         if (!is_siteadmin()) {
             return json_encode(array());
         }
@@ -57,7 +57,7 @@ class local_eduvidual_external_admin extends external_api {
                         AND lon>? AND lon<?
                         AND lat>? AND lat<?";
         if ($params['includenonegroup'] != 1) {
-            $sql .= " AND (authenticated = 1 OR lpf IS NOT NULL)";
+            $sql .= " AND (authenticated > 0 OR lpf IS NOT NULL)";
         }
         $orgsinbounds = $DB->get_records_sql($sql, array($params['lon1'],$params['lon2'],$params['lat1'],$params['lat2']));
         return json_encode($orgsinbounds, JSON_NUMERIC_CHECK);

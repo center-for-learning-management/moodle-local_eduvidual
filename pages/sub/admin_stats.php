@@ -86,7 +86,7 @@ for ($z = 0; $z < 2; $z++) {
                         FROM {local_eduvidual_org}
                         WHERE orgid LIKE '______'
                             $rest
-                            AND authenticated=1
+                            AND authenticated>0
                         GROUP BY ord
                         ORDER BY ord ASC";
             $registered = $DB->get_records_sql($sql, array());
@@ -105,7 +105,7 @@ for ($z = 0; $z < 2; $z++) {
                         WHERE orgid LIKE '______'
                             $rest
                             AND lpf IS NOT NULL
-                            AND authenticated=1
+                            AND authenticated>0
                         GROUP BY ord
                         ORDER BY ord ASC";
             $lpfeduv = $DB->get_records_sql($sql, array());
@@ -126,7 +126,7 @@ for ($z = 0; $z < 2; $z++) {
                         FROM {local_eduvidual_org}
                         WHERE orgid LIKE '______'
                             $rest
-                            AND authenticated=1
+                            AND authenticated>0
                         GROUP BY ord
                         ORDER BY ord ASC";
             $registered = $DB->get_records_sql($sql, array());
@@ -145,7 +145,7 @@ for ($z = 0; $z < 2; $z++) {
                         WHERE orgid LIKE '______'
                             $rest
                             AND lpf IS NOT NULL
-                            AND authenticated=1
+                            AND authenticated>0
                         GROUP BY ord
                         ORDER BY ord ASC";
             $lpfeduv = $DB->get_records_sql($sql, array());

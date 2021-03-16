@@ -222,10 +222,10 @@ if (isloggedin() && !isguestuser()) {
                                 email_to_user($touser, $fromuser, $subject, $messagetext, $messagehtml, "", true);
                             }
                         }
-                        $org->authenticated = 1;
+                        $org->authenticated = time();
                         $org->authtan = '';
-                        $DB->set_field('local_eduvidual_org', 'authenticated', 1, array('orgid' => $org->orgid));
-                        $DB->set_field('local_eduvidual_org', 'authtan', '', array('orgid' => $org->orgid));
+                        $DB->set_field('local_eduvidual_org', 'authenticated', $org->authenticated, array('orgid' => $org->orgid));
+                        $DB->set_field('local_eduvidual_org', 'authtan', $org->authtan, array('orgid' => $org->orgid));
                         $reply['status'] = 'ok';
                     } else {
                         $reply['status'] = 'error';

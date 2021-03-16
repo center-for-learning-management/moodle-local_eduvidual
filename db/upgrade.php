@@ -73,6 +73,23 @@ function xmldb_local_eduvidual_upgrade($oldversion) {
         set_config('coursebasement-scheduled', implode(',', $courseids), 'local_eduvidual');
         upgrade_plugin_savepoint(true, 2021011100, 'local', 'eduvidual');
     }
+    if ($oldversion < 2021031600) {
+        // Changing type of field authenticated on table local_eduvidual_org to int.
+        $table = new xmldb_table('local_eduvidual_org');
+        $field = new xmldb_field('authenticated', XMLDB_TYPE_INTEGER, '10', null, null, null, '0', 'country');
+        $dbman->change_field_type($table, $field);
+
+        $sql = "SELECT c.id,c.timecreated
+                    FROM {course} c, {local_eduvidual_org} leo
+                    WHERE c.id=leo.courseid
+                        AND leo.authenticated > ?";
+        $orgcourses = $DB->get_records_sql($sql, array(0));
+        foreach ($orgcourses AS $orgcourse) {
+            $DB->set_field('local_eduvidual_org', 'authenticated', $orgcourse->timecreated, array('courseid' => $orgcourse->id));
+        }
+
+        upgrade_plugin_savepoint(true, 2021031600, 'local', 'eduvidual');
+    }
 
     return true;
 }

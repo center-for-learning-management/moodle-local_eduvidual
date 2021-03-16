@@ -82,7 +82,7 @@ class local_eduvidual_manage_data_form extends moodleform {
                 Mehr
                 	10	country	varchar(100)	utf8mb4_unicode_ci		Ja	NULL		Bearbeiten Bearbeiten	Löschen Löschen
                 Mehr
-                	11	authenticated	tinyint(1)			Ja	0		Bearbeiten Bearbeiten	Löschen Löschen
+                	11	authenticated	tinyint(10)			Ja	0		Bearbeiten Bearbeiten	Löschen Löschen
                 Mehr
                 	12	authtan	varchar(10)	utf8mb4_unicode_ci		Ja	NULL		Bearbeiten Bearbeiten	Löschen Löschen
                 Mehr

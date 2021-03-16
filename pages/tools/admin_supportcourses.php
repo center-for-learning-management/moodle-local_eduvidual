@@ -176,7 +176,8 @@ foreach ($orgs AS $org) {
 
 echo "<ul>\n";
 require_once($CFG->dirroot . '/course/externallib.php');
-$orgs = $DB->get_records('local_eduvidual_org', array('authenticated' => 1));
+$sql = "SELECT * FROM {local_eduvidual_org} WHERE authenticated > ?";
+$orgs = $DB->get_records_sql($sql, array(0));
 foreach ($orgs AS $org) {
     if ($org->categoryid == 0) continue;
     // Reload entry, if another process created the course in the meanwhile

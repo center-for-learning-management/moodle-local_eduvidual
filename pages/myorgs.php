@@ -36,7 +36,7 @@ echo $OUTPUT->header();
 if (is_siteadmin() && optional_param('showall', 0, PARAM_INT) == 1) {
     $sql = "SELECT orgid,'Administrator' AS role,name,categoryid,orgsize
             FROM {local_eduvidual_org}
-            WHERE authenticated=1
+            WHERE authenticated>0
             ORDER BY orgid ASC, name ASC";
     $params = array();
 } else {

@@ -326,13 +326,13 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'loc
                         orgs[i].classes = orgtypes[orgtype] + ' ' + districttypes[districttype];
 
                         var col = 'red';
-                        if (orgs[i].authenticated == 1 && orgs[i].lpf != null) {
+                        if (orgs[i].authenticated > 0 && orgs[i].lpf != null) {
                             col = 'orange';
                             counts.both++;
                             orgs[i].classes += ' both';
                             orgs[i].layer = 2;
                             orgs[i].url = URL.relativeUrl('/local/eduvidual/pages/myorgs.php?orgid=' + orgs[i].orgid);
-                        } else if(orgs[i].authenticated == 1) {
+                        } else if(orgs[i].authenticated > 0) {
                             col = 'green';
                             counts.eduv++;
                             orgs[i].classes += ' eduv';
