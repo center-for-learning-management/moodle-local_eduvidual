@@ -16,7 +16,38 @@
   }}
 <div class="local_eduvidual_admin_map" id="{{uniqid}}">
     <h4>{{#str}} admin:map, local_eduvidual {{/str}}</h4>
-    <div id="{{uniqid}}-map" style="height: 400px; border: 1px solid #AAA;"></div>
+    <div style="float: right;">
+        <div style="width: 100px; float: left; text-align: center;">{{#str}} year {{/str}}</div>
+        <div style="width: 50px; float: left; text-align: center;">{{#str}} month {{/str}}</div>
+        <div style="width: 50px; float: left; text-align: center;">{{#str}} day {{/str}}</div>
+        <div style="width: 50px; float: left; text-align: center;">{{#str}} hour {{/str}}</div>
+        <div style="width: 50px; float: left; text-align: center;">{{#str}} minute {{/str}}</div>
+    </div>
+    <div style="clear: both;float: right; margin-bottom: 10px;">
+        <div style="width: 100px; float: left;">
+            <input id="{{uniqid}}-year" value="{{year}}" type="number" min="2010" style="width: 100%;"
+                onchange="require(['local_eduvidual/admin'], function(ADMIN) { ADMIN.org_gps_list('{{uniqid}}'); });">
+        </div>
+        <div style="width: 50px; float: left;">
+            <input id="{{uniqid}}-month" value="{{month}}" type="number" min="1" max="12" style="width: 100%;"
+                onchange="require(['local_eduvidual/admin'], function(ADMIN) { ADMIN.org_gps_list('{{uniqid}}'); });">
+        </div>
+        <div style="width: 50px; float: left;">
+            <input id="{{uniqid}}-day" value="{{day}}" type="number" min="1" max="31" style="width: 100%;"
+                onchange="require(['local_eduvidual/admin'], function(ADMIN) { ADMIN.org_gps_list('{{uniqid}}'); });">
+        </div>
+        <div style="width: 50px; float: left;">
+            <input id="{{uniqid}}-hour" value="{{hour}}" type="number" min="0" max="23" style="width: 100%;"
+                onchange="require(['local_eduvidual/admin'], function(ADMIN) { ADMIN.org_gps_list('{{uniqid}}'); });">
+        </div>
+        <div style="width: 50px; float: left;">
+            <input id="{{uniqid}}-minute" value="{{minute}}" type="number" min="0" max="59" style="width: 100%;"
+                onchange="require(['local_eduvidual/admin'], function(ADMIN) { ADMIN.org_gps_list('{{uniqid}}'); });">
+            <input type="hidden" id="{{uniqid}}-second" value="{{second}}">
+        </div>
+    </div>
+
+    <div id="{{uniqid}}-map" style="height: 400px; border: 1px solid #AAA; clear: both;"></div>
     <div style="text-align: right; margin-bottom: 10px;">
         <div style="display: inline-block;">
                 {{#pix}} google-maps-pin-green, local_eduvidual {{/pix}}
@@ -30,9 +61,13 @@
             {{#pix}} google-maps-pin-blue, local_eduvidual {{/pix}}
             {{#str}} admin:map:lpf, local_eduvidual {{/str}}
         </div>
+        <div style="display: inline-block;" id="{{uniqid}}-legend-none">
+            {{#pix}} google-maps-pin-lightgray, local_eduvidual {{/pix}}
+            {{#str}} admin:map:none, local_eduvidual {{/str}}
+        </div>
     </div>
     <input type="checkbox" id="{{uniqid}}-include-nonegroup"
-        onchange="require(['local_eduvidual/admin'], function(ADMIN) { ADMIN.org_gps('{{uniqid}}'); });"/>
+        onchange="require(['local_eduvidual/admin'], function(ADMIN) { ADMIN.org_gps_list('{{uniqid}}'); });"/>
         <label for="{{uniqid}}-include-nonegroup">{{#str}} admin:map:includenonegroup, local_eduvidual {{/str}}</label>
     <input type="checkbox" id="{{uniqid}}-count-invisibles"
         onchange="require(['local_eduvidual/admin'], function(ADMIN) { ADMIN.org_gps_refresh('{{uniqid}}'); });"/>

@@ -251,14 +251,13 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'loc
             if (typeof lat1 === 'undefined') lat1 = -200;
             if (typeof lat2 === 'undefined') lat2 = 200;
 
-            console.log('ADMIN.org_gps(uniqid, lon1, lon2, lat1, lat2)',uniqid, lon1, lon2, lat1, lat2);
+            console.log('ADMIN.org_gps(uniqid, lon1, lon2, lat1, lat2)', uniqid, lon1, lon2, lat1, lat2);
             var includenonegroup = $('#' + uniqid + '-include-nonegroup').prop('checked') ? 1 : 0;
             var method = 'local_eduvidual_admin_org_gps';
             var data = { lon1: lon1, lon2: lon2, lat1: lat1, lat2: lat2, includenonegroup: includenonegroup, advanceddata: 0 };
             if (typeof ADMIN.map !== 'undefined') {
                 ADMIN.map.remove();
             }
-            $('#' + uniqid + '-legend td.none').parent().css('display', includenonegroup ? 'table-row' : 'none');
 
             if (ADMIN.debug_gps) console.log('Sending to ' + method, data);
             //MAIN.spinnerGrid(true);
@@ -271,200 +270,8 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'loc
                     if (ADMIN.debug_gps) console.log('Got response', data);
                     //MAIN.spinnerGrid(false);
 
-                    var orgs = data;
-
-                    var smallest_lat = 200;
-                    var smallest_lon = 200;
-                    var biggest_lat = -200;
-                    var biggest_lon = -200;
-                    var counts = {
-                        'both': 0,
-                        'eduv': 0,
-                        'lpf': 0,
-                        'none': 0,
-                    };
-
-                    var layers = [
-                        L.layerGroup(),
-                        L.layerGroup(),
-                        L.layerGroup(),
-                        L.layerGroup(),
-                    ];
-
-                    var districttypes = {
-                        0: '',
-                        1: 'Burgenland',
-                        2: 'Kärnten',
-                        3: 'Niederösterreich',
-                        4: 'Oberösterreich',
-                        5: 'Salzburg',
-                        6: 'Steiermark',
-                        7: 'Tirol',
-                        8: 'Vorarlberg',
-                        9: 'Wien',
-                    };
-
-                    var orgtypes = {
-                        0: 'Sonstige',
-                        1: 'VS',
-                        2: 'MS',
-                        3: 'Sonderschule',
-                        4: 'PTS',
-                        5: 'BS',
-                        6: 'Gymnasium',
-                        7: 'HTL',
-                        8: 'HAK',
-                        9: 'HUM',
-                    };
-
-                    Object.keys(orgs).forEach(function(i){
-                        if (ADMIN.refresh_identifier != refresh_identifier) return; // Immediately abort!
-                        orgs[i].url = URL.relativeUrl('/local/eduvidual/pages/myorgs.php?orgid=' + orgs[i].orgid); // Set an url for this marker.
-
-                        var orgtype = orgs[i].orgid.toString().split('').pop();
-                        var districttype = orgs[i].orgid.toString().split('')[0];
-                        orgs[i].classes = orgtypes[orgtype] + ' ' + districttypes[districttype];
-
-                        var col = 'red';
-                        if (orgs[i].authenticated > 0 && orgs[i].lpf != null) {
-                            col = 'orange';
-                            counts.both++;
-                            orgs[i].classes += ' both';
-                            orgs[i].layer = 2;
-                            orgs[i].url = URL.relativeUrl('/local/eduvidual/pages/myorgs.php?orgid=' + orgs[i].orgid);
-                        } else if(orgs[i].authenticated > 0) {
-                            col = 'green';
-                            counts.eduv++;
-                            orgs[i].classes += ' eduv';
-                            orgs[i].layer = 3;
-                            orgs[i].url = URL.relativeUrl('/local/eduvidual/pages/myorgs.php?orgid=' + orgs[i].orgid);
-                        } else if(orgs[i].lpf != null){
-                            col = 'blue';
-                            counts.lpf++;
-                            orgs[i].classes += ' lpf';
-                            orgs[i].layer = 1;
-                            orgs[i].url = 'https://www3.lernplattform.schule.at/' + orgs[i].lpf;
-                        } else {
-                            col = 'lightgray';
-                            counts.none++;
-                            orgs[i].classes += ' none invisible';
-                            orgs[i].layer = 0;
-                            orgs[i].url = '';
-                        }
-                        if (col != 'lightgray' && orgtype > 0) {
-                            if (orgs[i].lon < smallest_lon) smallest_lon = orgs[i].lon;
-                            if (orgs[i].lon > biggest_lon) biggest_lon = orgs[i].lon;
-                            if (orgs[i].lat < smallest_lat) smallest_lat = orgs[i].lat;
-                            if (orgs[i].lat > biggest_lat) biggest_lat = orgs[i].lat;
-                        }
-                        orgs[i].marker = URL.relativeUrl('/local/eduvidual/pix/google-maps-pin-' + col + '.svg#' + orgs[i].classes + '#' + orgs[i].layer);
-
-                    });
-
-                    smallest_lat = 45.18189988240382;
-                    smallest_lon = 8.88805461218309;
-                    biggest_lat = 49.517950306694665;
-                    biggest_lon = 17.45739054968309;
-
-
-                    var bounds = [[smallest_lat, smallest_lon], [biggest_lat, biggest_lon ]];
-                    var center_lat = (smallest_lat + biggest_lat) / 2;
-                    var center_lon = (smallest_lon + biggest_lon) / 2;
-                    var center = [ center_lat, center_lon];
-                    if (ADMIN.debug_gps) console.log('Bounds', bounds);
-                    if (ADMIN.debug_gps) console.log('Center', center);
-
-                    var width = $('#' + uniqid + '-map').width();
-                    if (ADMIN.debug_gps) console.log('Width', width);
-                    if (ADMIN.debug_gps) console.log('Height', width / 4 * 3);
-                    $('#' + uniqid + '-map').css('height', width / 4 * 3 + 'px');
-
-                    var icon = L.icon({
-                        iconUrl: URL.relativeUrl('/local/eduvidual/pix/google-maps-pin-blue.svg'),
-                        iconRetinaUrl: URL.relativeUrl('/local/eduvidual/pix/google-maps-pin-blue.svg'),
-                        iconSize: [29, 24],
-                        iconAnchor: [9, 21],
-                        popupAnchor: [0, -14]
-                    });
-                    Object.keys(orgs).forEach(function(i) {
-                        if (ADMIN.refresh_identifier != refresh_identifier) return; // Immediately abort!
-                        var useIcon = icon;
-                        if (typeof orgs[i].marker !== 'undefined' && orgs[i].marker != '') {
-                            useIcon = L.icon({
-                                iconUrl: orgs[i].marker,
-                                iconRetinaUrl: orgs[i].marker,
-                                iconSize: [29, 24],
-                                iconAnchor: [9, 21],
-                                popupAnchor: [0, -14],
-                            });
-                        }
-
-                        var marker = L.marker(
-                            [orgs[i].lat, orgs[i].lon],
-                            {icon: useIcon}
-                        ).bindPopup(
-                            (typeof orgs[i].url !== 'undefined' && orgs[i].url != '')
-                            ? '<a href="' + orgs[i].url + '" target="_blank">' + orgs[i].name + ' (' + i + ')</a>'
-                            : orgs[i].name
-                        );
-
-                        marker.addTo(layers[orgs[i].layer]);
-                    });
-
-                    var today = new Date();
-                    var todaystr = [today.getFullYear(),String(today.getMonth()+1).padStart(2, '0'),String(today.getDate()).padStart(2, '0')].join('-');
-                    var mapRatio = 1/9*6; // Screenratio 9:6
-                    var mapboxUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
-                    var mapboxAttribution = 'Visualisierung der Moodle-Schulen in Österreich | ' + todaystr + ' | <a href="https://www.lernmanagement.at" target="_blank">Zentrum für Lernmanagement</a> | powered by &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>';
-
-                    ADMIN.map = L.map(uniqid + '-map', {
-                        boxZoom:  true,
-                        center: center,
-                        layers: layers,
-                        zoom: 14,
-                        zoomControl: false,
-                        zoomSnap: 0.5,
-                    });
-                    ADMIN.map.fitBounds(bounds, { maxZoom: 18 });
-                    ADMIN.map.on('moveend', function(ev) {
-                        ADMIN.org_gps_bounds(uniqid);
-                    });
-                    ADMIN.map.on('resize', function(ev) {
-                        if (ADMIN.debug_gps) console.log('Map was resized', ev);
-                        var width = $('#' + uniqid + '-map').width();
-                        if (ADMIN.debug_gps) console.log('Width', width);
-                        if (ADMIN.debug_gps) console.log('Height', width * mapRatio);
-                        $('#' + uniqid + '-map').css('height', width * mapRatio + 'px');
-                    });
-
-                    var baseLayers = {
-                        'normal': L.tileLayer( mapboxUrl, {
-                            attribution: mapboxAttribution,
-                            id: 'mapbox.normal',
-                            subdomains: ['a','b','c']
-                        })
-                    };
-                    baseLayers['normal'].addTo( ADMIN.map );
-
-                    L.control.zoom({
-                         position:'bottomright'
-                    }).addTo(ADMIN.map);
-
-                    // Now we append classes to all markers
-                    $('#' + uniqid + ' .leaflet-marker-pane img').each(function(i,e) {
-                        if (ADMIN.refresh_identifier != refresh_identifier) return; // Immediately abort!
-                        var iconurl = $(e).attr('src');
-                        var tmp = iconurl.split('#');
-                        if (tmp.length == 3) {
-                            $(e).addClass(tmp[1].replace(',', ' '));
-                            $(e).css('z-index', 990 + tmp[2]);
-                        }
-                    });
-
-                    $('#' + uniqid + '-map').css('height', $('#' + uniqid + '-map').width() * mapRatio + 'px');
-
-                    ADMIN.org_gps_bounds(uniqid);
-                    ADMIN.org_gps_refresh(uniqid);
+                    ADMIN.orgs = data;
+                    ADMIN.org_gps_list(uniqid);
                 },
                 fail: NOTIFICATION.exception
             }]);
@@ -495,6 +302,232 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'loc
                     }
                 }, 1000);
             }
+        },
+        /**
+         * Does the listing on the map and tables.
+         * @param uniqid
+         */
+        org_gps_list: function(uniqid) {
+            var ADMIN = this;
+            if (ADMIN.debug_gps) console.log('ADMIN.org_gps_list(uniqid)', uniqid);
+            if (typeof ADMIN.map !== 'undefined') {
+                ADMIN.map.remove();
+            }
+            var refresh_identifier = ADMIN.refresh_identifier;
+            var includenonegroup = $('#' + uniqid + '-include-nonegroup').prop('checked') ? 1 : 0;
+            $('#' + uniqid + '-legend td.none').parent().css('display', includenonegroup ? 'table-row' : 'none');
+            $('#' + uniqid + '-legend-none').css('display', includenonegroup ? 'inline-block' : 'none');
+            var orgs = ADMIN.orgs;
+            var timerefdate = new Date(
+                $('#' + uniqid + '-year').val(),
+                $('#' + uniqid + '-month').val(),
+                $('#' + uniqid + '-day').val(),
+                $('#' + uniqid + '-hour').val(),
+                $('#' + uniqid + '-minute').val(),
+                $('#' + uniqid + '-second').val(),
+                0
+            );
+            var timeref = Math.floor(timerefdate.getTime()/1000);
+
+            var smallest_lat = 200;
+            var smallest_lon = 200;
+            var biggest_lat = -200;
+            var biggest_lon = -200;
+            var counts = {
+                'both': 0,
+                'eduv': 0,
+                'lpf': 0,
+                'none': 0,
+            };
+
+            var layers = [
+                L.layerGroup(),
+                L.layerGroup(),
+                L.layerGroup(),
+                L.layerGroup(),
+            ];
+
+            var districttypes = {
+                0: '',
+                1: 'Burgenland',
+                2: 'Kärnten',
+                3: 'Niederösterreich',
+                4: 'Oberösterreich',
+                5: 'Salzburg',
+                6: 'Steiermark',
+                7: 'Tirol',
+                8: 'Vorarlberg',
+                9: 'Wien',
+            };
+
+            var orgtypes = {
+                0: 'Sonstige',
+                1: 'VS',
+                2: 'MS',
+                3: 'Sonderschule',
+                4: 'PTS',
+                5: 'BS',
+                6: 'Gymnasium',
+                7: 'HTL',
+                8: 'HAK',
+                9: 'HUM',
+            };
+
+            Object.keys(orgs).forEach(function(i){
+                console.log('refresh_identifier', ADMIN.refresh_identifier, refresh_identifier);
+                if (ADMIN.refresh_identifier != refresh_identifier) return; // Immediately abort!
+                orgs[i].url = URL.relativeUrl('/local/eduvidual/pages/myorgs.php?orgid=' + orgs[i].orgid); // Set an url for this marker.
+
+                var orgtype = orgs[i].orgid.toString().split('').pop();
+                var districttype = orgs[i].orgid.toString().split('')[0];
+                orgs[i].classes = orgtypes[orgtype] + ' ' + districttypes[districttype];
+
+                var col = 'red';
+                orgs[i].ignore = false;
+                if (orgs[i].authenticated > 0 && orgs[i].authenticated < timeref && orgs[i].lpf != null) {
+                    col = 'orange';
+                    counts.both++;
+                    orgs[i].classes += ' both';
+                    orgs[i].layer = 2;
+                    orgs[i].url = URL.relativeUrl('/local/eduvidual/pages/myorgs.php?orgid=' + orgs[i].orgid);
+                } else if(orgs[i].authenticated > 0 && orgs[i].authenticated < timeref) {
+                    col = 'green';
+                    counts.eduv++;
+                    orgs[i].classes += ' eduv';
+                    orgs[i].layer = 3;
+                    orgs[i].url = URL.relativeUrl('/local/eduvidual/pages/myorgs.php?orgid=' + orgs[i].orgid);
+                } else if(orgs[i].authenticated < timeref && orgs[i].lpf != null){
+                    col = 'blue';
+                    counts.lpf++;
+                    orgs[i].classes += ' lpf';
+                    orgs[i].layer = 1;
+                    orgs[i].url = 'https://www3.lernplattform.schule.at/' + orgs[i].lpf;
+                } else if(includenonegroup == 1) {
+                    col = 'lightgray';
+                    counts.none++;
+                    orgs[i].classes += ' none invisible';
+                    orgs[i].layer = 0;
+                    orgs[i].url = '';
+                } else {
+                    orgs[i].ignore = true;
+                }
+                if (col != 'lightgray' && orgtype > 0) {
+                    if (orgs[i].lon < smallest_lon) smallest_lon = orgs[i].lon;
+                    if (orgs[i].lon > biggest_lon) biggest_lon = orgs[i].lon;
+                    if (orgs[i].lat < smallest_lat) smallest_lat = orgs[i].lat;
+                    if (orgs[i].lat > biggest_lat) biggest_lat = orgs[i].lat;
+                }
+                orgs[i].marker = URL.relativeUrl('/local/eduvidual/pix/google-maps-pin-' + col + '.svg#' + orgs[i].classes + '#' + orgs[i].layer);
+            });
+
+            smallest_lat = 45.18189988240382;
+            smallest_lon = 8.88805461218309;
+            biggest_lat = 49.517950306694665;
+            biggest_lon = 17.45739054968309;
+
+
+            var bounds = [[smallest_lat, smallest_lon], [biggest_lat, biggest_lon ]];
+            var center_lat = (smallest_lat + biggest_lat) / 2;
+            var center_lon = (smallest_lon + biggest_lon) / 2;
+            var center = [ center_lat, center_lon];
+            if (ADMIN.debug_gps) console.log('Bounds', bounds);
+            if (ADMIN.debug_gps) console.log('Center', center);
+
+            var width = $('#' + uniqid + '-map').width();
+            if (ADMIN.debug_gps) console.log('Width', width);
+            if (ADMIN.debug_gps) console.log('Height', width / 4 * 3);
+            $('#' + uniqid + '-map').css('height', width / 4 * 3 + 'px');
+
+            var icon = L.icon({
+                iconUrl: URL.relativeUrl('/local/eduvidual/pix/google-maps-pin-blue.svg'),
+                iconRetinaUrl: URL.relativeUrl('/local/eduvidual/pix/google-maps-pin-blue.svg'),
+                iconSize: [29, 24],
+                iconAnchor: [9, 21],
+                popupAnchor: [0, -14]
+            });
+            Object.keys(orgs).forEach(function(i) {
+                if (ADMIN.refresh_identifier != refresh_identifier) return; // Immediately abort!
+                if (orgs[i].ignore) return; // Go to next item in loop.
+                var useIcon = icon;
+                if (typeof orgs[i].marker !== 'undefined' && orgs[i].marker != '') {
+                    useIcon = L.icon({
+                        iconUrl: orgs[i].marker,
+                        iconRetinaUrl: orgs[i].marker,
+                        iconSize: [29, 24],
+                        iconAnchor: [9, 21],
+                        popupAnchor: [0, -14],
+                    });
+                }
+
+                var marker = L.marker(
+                    [orgs[i].lat, orgs[i].lon],
+                    {icon: useIcon}
+                ).bindPopup(
+                    (typeof orgs[i].url !== 'undefined' && orgs[i].url != '')
+                    ? '<a href="' + orgs[i].url + '" target="_blank">' + orgs[i].name + ' (' + i + ')</a>'
+                    : orgs[i].name
+                );
+
+                marker.addTo(layers[orgs[i].layer]);
+            });
+
+            var todaystr = [
+                timerefdate.getFullYear(),
+                String(timerefdate.getMonth()+1).padStart(2, '0'),
+                String(timerefdate.getDate()).padStart(2, '0')
+            ].join('-');
+            var mapRatio = 1/9*6; // Screenratio 9:6
+            var mapboxUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+            var mapboxAttribution = 'Visualisierung der Moodle-Schulen in Österreich | ' + todaystr + ' | <a href="https://www.lernmanagement.at" target="_blank">Zentrum für Lernmanagement</a> | powered by &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>';
+
+            ADMIN.map = L.map(uniqid + '-map', {
+                boxZoom:  true,
+                center: center,
+                layers: layers,
+                zoom: 14,
+                zoomControl: false,
+                zoomSnap: 0.5,
+            });
+            ADMIN.map.fitBounds(bounds, { maxZoom: 18 });
+            ADMIN.map.on('moveend', function(ev) {
+                ADMIN.org_gps_bounds(uniqid);
+            });
+            ADMIN.map.on('resize', function(ev) {
+                if (ADMIN.debug_gps) console.log('Map was resized', ev);
+                var width = $('#' + uniqid + '-map').width();
+                if (ADMIN.debug_gps) console.log('Width', width);
+                if (ADMIN.debug_gps) console.log('Height', width * mapRatio);
+                $('#' + uniqid + '-map').css('height', width * mapRatio + 'px');
+            });
+
+            var baseLayers = {
+                'normal': L.tileLayer( mapboxUrl, {
+                    attribution: mapboxAttribution,
+                    id: 'mapbox.normal',
+                    subdomains: ['a','b','c']
+                })
+            };
+            baseLayers['normal'].addTo( ADMIN.map );
+
+            L.control.zoom({
+                 position:'bottomright'
+            }).addTo(ADMIN.map);
+
+            // Now we append classes to all markers
+            $('#' + uniqid + ' .leaflet-marker-pane img').each(function(i,e) {
+                if (ADMIN.refresh_identifier != refresh_identifier) return; // Immediately abort!
+                var iconurl = $(e).attr('src');
+                var tmp = iconurl.split('#');
+                if (tmp.length == 3) {
+                    $(e).addClass(tmp[1].replace(',', ' '));
+                    $(e).css('z-index', 990 + tmp[2]);
+                }
+            });
+
+            $('#' + uniqid + '-map').css('height', $('#' + uniqid + '-map').width() * mapRatio + 'px');
+
+            ADMIN.org_gps_bounds(uniqid);
+            ADMIN.org_gps_refresh(uniqid);
         },
         /**
          * Refresh current stats by reloading orgs in a specific rectangle.

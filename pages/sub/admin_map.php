@@ -158,6 +158,13 @@ if ($updatedb == 0) {
             ),
 
         ),
+        "timeref" => time(),
+        "year" => date("Y"),
+        "month" => date("m"),
+        "day" => date("d"),
+        "hour" => date("h"),
+        "minute" => date("i"),
+        "second" => date("s"),
     ));
 } else {
     echo "<h3>Updating GPS-Data</h3><ul>\n";
