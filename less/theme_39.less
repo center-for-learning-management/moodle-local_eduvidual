@@ -315,6 +315,7 @@ body{
 						padding:7px 10px;
 						a{
 							text-decoration: none !important;
+							color: #fff;						//Bugfix vom 10.3.2021: #92
 						}
 					}
 				}
@@ -493,6 +494,12 @@ body{
 				text-decoration: none;
 			}
 		}
+		//#64
+		.content{
+			a{
+				//text-decoration: underline;
+			}
+		}
 	}
 }
 //Navigationsleiste
@@ -574,6 +581,23 @@ nav{
 	}
 }
 @media @mobile{
+	#page-content .icon.fa.fa-plus.fa-fw{
+		color:@eduvidblau;
+		padding-top: 17px;
+    	padding-left: 7px;
+	}
+	// #62 16.3.2021
+	#page-content{
+		#region-main-box [role='main']{
+			.nav-tabs{
+				.nav-link.active {
+					.sectionname {	
+						color: #fff !important;
+					} 	
+				}
+			}
+		}
+	}
 	[data-region="drawer"] {
 		position: fixed;
 		width: 100%;
@@ -619,17 +643,17 @@ nav{
 				.single-section{
 					.nav-tabs:nth-child(2){
 						.nav-link{
+							// #93, 62: JT 21.3.2021
+							background-color:@eduvidblau;
 							.sectionname{
-								color:@eduvidblau;
+								color:fff;
 							}
 						}
 					}
 				}
 			}
 		}
-
 	}
-
 }
 @media @tablet{
 	nav{
