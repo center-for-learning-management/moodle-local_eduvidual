@@ -239,6 +239,7 @@ body {
 #page-content #region-main-box .course-content .single-section .section-navigation .mdl-left a,
 #page-content #region-main-box .course-content .single-section .section-navigation .mdl-right a {
   text-decoration: none !important;
+  color: #fff;
 }
 #page-content #region-main-box .course-content ul.topics li.section,
 #page-content #region-main-box .course-content ul.weeks li.section {
@@ -521,6 +522,14 @@ nav .nav-link:focus {
   box-shadow: none;
 }
 @media only screen and (max-width: 767px) {
+  #page-content .icon.fa.fa-plus.fa-fw {
+    color: #10507f;
+    padding-top: 17px;
+    padding-left: 7px;
+  }
+  #page-content #region-main-box [role='main'] .nav-tabs .nav-link.active .sectionname {
+    color: #fff !important;
+  }
   [data-region="drawer"] {
     position: fixed;
     width: 100%;
@@ -554,9 +563,13 @@ nav .nav-link:focus {
   #page-wrapper .footnote .footer-right {
     text-align: center;
   }
+  #page-content #region-main-box .course-content .single-section .nav-tabs:nth-child(2) .nav-link,
+  #page-content #region-main-box [role="main"] .single-section .nav-tabs:nth-child(2) .nav-link {
+    background-color: #10507f;
+  }
   #page-content #region-main-box .course-content .single-section .nav-tabs:nth-child(2) .nav-link .sectionname,
   #page-content #region-main-box [role="main"] .single-section .nav-tabs:nth-child(2) .nav-link .sectionname {
-    color: #10507f;
+    color: fff;
   }
 }
 @media only screen and (min-width: 768px) and (max-width: 1199px) {
