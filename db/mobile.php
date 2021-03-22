@@ -22,7 +22,7 @@
  */
 
 defined('MOODLE_INTERNAL') || die;
-
+/*
 $addons = [
     'local_eduvidual' => [ // Plugin identifier
         'handlers' => [ // Different places where the plugin will display content.
@@ -44,3 +44,4 @@ $addons = [
         ],
     ],
 ];
+*/
