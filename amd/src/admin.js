@@ -318,15 +318,22 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'loc
             $('#' + uniqid + '-legend td.none').parent().css('display', includenonegroup ? 'table-row' : 'none');
             $('#' + uniqid + '-legend-none').css('display', includenonegroup ? 'inline-block' : 'none');
             var orgs = ADMIN.orgs;
+
             var timerefdate = new Date(
                 $('#' + uniqid + '-year').val(),
-                $('#' + uniqid + '-month').val(),
+                $('#' + uniqid + '-month').val()-1,
                 $('#' + uniqid + '-day').val(),
                 $('#' + uniqid + '-hour').val(),
                 $('#' + uniqid + '-minute').val(),
                 $('#' + uniqid + '-second').val(),
                 0
             );
+            $('#' + uniqid + '-second').val(timerefdate.getSeconds());
+            $('#' + uniqid + '-minute').val(timerefdate.getMinutes());
+            $('#' + uniqid + '-hour').val(timerefdate.getHours());
+            $('#' + uniqid + '-day').val(timerefdate.getDate());
+            $('#' + uniqid + '-month').val(timerefdate.getMonth()+1);
+            $('#' + uniqid + '-year').val(timerefdate.getFullYear());
             var timeref = Math.floor(timerefdate.getTime()/1000);
 
             var smallest_lat = 200;

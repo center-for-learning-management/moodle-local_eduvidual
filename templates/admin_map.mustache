@@ -29,19 +29,19 @@
                 onchange="require(['local_eduvidual/admin'], function(ADMIN) { ADMIN.org_gps_list('{{uniqid}}'); });">
         </div>
         <div style="width: 50px; float: left;">
-            <input id="{{uniqid}}-month" value="{{month}}" type="number" min="1" max="12" style="width: 100%;"
+            <input id="{{uniqid}}-month" value="{{month}}" type="number" min="0" max="13" style="width: 100%;"
                 onchange="require(['local_eduvidual/admin'], function(ADMIN) { ADMIN.org_gps_list('{{uniqid}}'); });">
         </div>
         <div style="width: 50px; float: left;">
-            <input id="{{uniqid}}-day" value="{{day}}" type="number" min="1" max="31" style="width: 100%;"
+            <input id="{{uniqid}}-day" value="{{day}}" type="number" min="0" max="32" style="width: 100%;"
                 onchange="require(['local_eduvidual/admin'], function(ADMIN) { ADMIN.org_gps_list('{{uniqid}}'); });">
         </div>
         <div style="width: 50px; float: left;">
-            <input id="{{uniqid}}-hour" value="{{hour}}" type="number" min="0" max="23" style="width: 100%;"
+            <input id="{{uniqid}}-hour" value="{{hour}}" type="number" min="-1" max="24" style="width: 100%;"
                 onchange="require(['local_eduvidual/admin'], function(ADMIN) { ADMIN.org_gps_list('{{uniqid}}'); });">
         </div>
         <div style="width: 50px; float: left;">
-            <input id="{{uniqid}}-minute" value="{{minute}}" type="number" min="0" max="59" style="width: 100%;"
+            <input id="{{uniqid}}-minute" value="{{minute}}" type="number" min="-1" max="60" style="width: 100%;"
                 onchange="require(['local_eduvidual/admin'], function(ADMIN) { ADMIN.org_gps_list('{{uniqid}}'); });">
             <input type="hidden" id="{{uniqid}}-second" value="{{second}}">
         </div>
