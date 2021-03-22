@@ -188,6 +188,41 @@ foreach ($orgs AS $org) {
         echo "<li>$org->name has a supportcourse with <a href=\"$CFG->wwwroot/course/view.php?id=$course->id\">#$course->id</a></li>\n";
     } elseif (!empty($coursen->id)) {
         echo "<li>$org->name is currently getting a supportcourse with <a href=\"$CFG->wwwroot/course/view.php?id=$coursen->id\">#$coursen->id</a></li>\n";
+        $DB->set_field('local_eduvidual_org', 'supportcourseid', $coursen->id, array('orgid' => $org->orgid));
+        // Now enrol all users of that organisation.
+        $members = $DB->get_records('local_eduvidual_orgid_userid', array('orgid' => $org->orgid));
+        $managers = array();
+        $others = array();
+        foreach ($members AS $member) {
+            if ($member->role == 'Manager') $managers[] = $member->userid;
+            else $others[] = $member->userid;
+        }
+        \local_eduvidual\lib_enrol::course_manual_enrolments(array($coursen->id), $managers, get_config('local_eduvidual', 'defaultroleteacher'));
+        \local_eduvidual\lib_enrol::course_manual_enrolments(array($coursen->id), $others, get_config('local_eduvidual', 'defaultrolestudent'));
+        echo "<li>Added " . count($managers) . " Managers with teacher role</li>\n";
+        echo "<li>Added " . count($others) . " Users with student role</li>\n";
+        $sql = "SELECT * FROM {forum} WHERE course=? AND type='general'";
+        $forums = $DB->get_records_sql($sql, array($coursen->id));
+        if (count($forums) == 0) {
+            echo "<li class='alert alert-danger'>There are no forums in supportcourse <a href=\"$CFG->wwwroot/course/view.php?id=$coursen->id\">#$coursen->id</a></li>\n";
+        } else {
+            foreach ($forums AS $forum) {
+                \local_edusupport\lib::supportforum_enable($forum->id);
+                // Add subscriptions for managers.
+                foreach ($managers AS $managerid) {
+                    $chk = $DB->get_record('forum_subscriptions', array('userid' => $managerid, 'forum' => $forum->id));
+                    if (empty($chk->id)) {
+                        echo "<li>Added subscription for Manager #$managerid in forum #$forum->id</li>\n";
+                        $DB->insert_record('forum_subscriptions', array('userid' => $managerid, 'forum' => $forum->id));
+                    }
+                }
+                if ($org->orgid > 500000 && $org->orgid < 600000) {
+                    // School from Salzburg
+                    echo "<li>Added dedicated supporter #2098</li>\n";
+                    \local_edusupport\lib::supportforum_setdedicatedsupporter($forum->id, 2098);
+                }
+            }
+        }
     } else {
         echo "<li>$org->name needs a supportcourse<ul>\n";
         $supportcourse = \local_eduvidual\lib_helper::duplicate_course($template, 'Helpdesk (' . $org->name . ')', 'helpdesk_' . $org->orgid, $org->categoryid, 1);
