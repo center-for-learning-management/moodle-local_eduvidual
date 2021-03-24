@@ -123,7 +123,7 @@ class lib_enrol {
         if (!empty($org->orgid)) {
             // Get our current role.
             $current = $DB->get_record('local_eduvidual_orgid_userid', array('orgid' => $org->orgid, 'userid' => $userid));
-            if ($current->role == 'Manager' && $role != 'Manager') {
+            if (!empty($current->role) && $current->role == 'Manager' && $role != 'Manager') {
                 // We are currently Manager but should be degraded. Ensure, we are not the last manager of this org!
                 $allmanagers = $DB->get_records('local_eduvidual_orgid_userid', array('orgid' => $org->orgid, 'role' => 'Manager'));
                 if (count($allmanagers) == 1) {
