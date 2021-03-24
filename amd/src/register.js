@@ -37,7 +37,7 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'loc
                     STR.get_strings([
                         {'key' : 'mailregister:confirmation', component: 'local_eduvidual' },
                         {'key' : 'mailregister:confirmation:mailsent', component: 'local_eduvidual' },
-                        {'key' : 'ok' }
+                        {'key' : 'ok', component: 'core' }
                     ]).done(function(s) {
                         NOTIFICATION.alert(s[0], s[1], s[2]);
                     }).fail(NOTIFICATION.exception);
