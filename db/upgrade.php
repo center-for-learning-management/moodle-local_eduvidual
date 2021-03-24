@@ -90,6 +90,19 @@ function xmldb_local_eduvidual_upgrade($oldversion) {
 
         upgrade_plugin_savepoint(true, 2021031600, 'local', 'eduvidual');
     }
+    if ($oldversion < 2021032400) {
+        // Schedule a backup of support course template.
+        $supportcourseid = \get_config('local_eduvidual', 'supportcourse_template');
+        if (!empty($supportcourseid)) {
+            set_config(
+                'coursebasement-scheduled',
+                get_config('local_eduvidual','coursebasement-scheduled') .
+                    ',' . $supportcourseid,
+                'local_eduvidual'
+            );
+        }
+        upgrade_plugin_savepoint(true, 2021032400, 'local', 'eduvidual');
+    }
 
     return true;
 }

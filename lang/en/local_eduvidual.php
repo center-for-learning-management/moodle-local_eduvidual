@@ -546,11 +546,14 @@ $string['registration:description'] = 'If your organisation got an invitation to
 $string['registration:loginfirst'] = 'You have to login to this site before you can register an organization!';
 $string['registration:loginlink'] = 'Proceed to login page';
 $string['registration:name'] = 'Name of Organisation';
-$string['registration:name:description'] = 'Choose by yourself, but make it identifiable like "Hertha Firnberg Schools" or "HLW Deutschlandsberg". Maximum length are 30 characters!';
+$string['registration:name:description'] = 'You can choose the name by yourself, but please consider a unique name like "Hertha Firnberg Schools" or "HLW Deutschlandsberg". Maximum length are 30 characters!';
 $string['registration:token'] = 'Token';
+$string['registration:stage0:legend'] = 'Organization-ID';
 $string['registration:stage1'] = 'The Organisation-ID you entered is correct. You can now request a Token that will be sent to the official eMail-Address or your organisation.';
+$string['registration:stage1:legend'] = 'Request token';
 $string['registration:stage1:supportinfo'] = 'Is the mail address wrong? Please contact <a href="mailto:{$a}" target="_blank">{$a}</a>!';
 $string['registration:stage2'] = 'Please enter the Token that was sent to you. Optionally you can change the name of your organisation. (At least 5 chars an unique!):';
+$string['registration:stage2:legend'] = 'Finish registration';
 $string['registration:request'] = 'Request Token';
 $string['registration:validate'] = 'Validate Token';
 $string['registration:success'] = '<h3>Congratulations!</h3><p>Registration was successfull. You can now navigate to your newly created organisations space.</p>';

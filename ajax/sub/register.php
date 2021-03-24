@@ -119,6 +119,7 @@ if (isloggedin() && !isguestuser()) {
                 $reply['status'] = 'error';
                 $reply['error'] = 'err_name_already_taken';
             } else {
+                $reply['log'] = array();
                 $org = $DB->get_record('local_eduvidual_org', array('orgid' => $orgid, 'authtan' => $authtan));
 
                 if (isset($org->orgid) && $org->orgid == $orgid) {
@@ -145,8 +146,9 @@ if (isloggedin() && !isguestuser()) {
                     if (empty($org->courseid)) {
                         // Create an org-course for this org
                         $orgcoursebasement = get_config('local_eduvidual', 'orgcoursebasement');
-
+                        $reply['log'][] = "Lege Schulhof an";
                         $course = \local_eduvidual\lib_helper::duplicate_course($orgcoursebasement, 'Digitaler Schulhof (' . $org->orgid . ')', $org->orgid, $org->categoryid, 1);
+                        $reply['log'][] = $course;
                         $org->courseid = $course->id;
                         $DB->set_field('local_eduvidual_org', 'courseid', $org->courseid, array('orgid' => $org->orgid));
                         $course->summary = '<p>Digitaler Schulhof der Schule ' . $org->name . '</p>';
@@ -156,18 +158,27 @@ if (isloggedin() && !isguestuser()) {
                         // Create a support course for this org.
                         $template = get_config('local_eduvidual', 'supportcourse_template');
                         if (!empty($template)) {
+                            $reply['log'][] = "Lege Supportkurs an";
                             // Duplicate our template.
                             $supportcourse = \local_eduvidual\lib_helper::duplicate_course($template, 'Helpdesk (' . $org->name . ')', 'helpdesk_' . $org->orgid, $org->categoryid, 1);
+                            $reply['log'][] = $supportcourse;
                             if (!empty($supportcourse->id)) {
+                                $DB->set_field('local_eduvidual_org', 'supportcourseid', $supportcourse->id, array('orgid' => $org->orgid));
                                 // Remove news forum in that course.
                                 $sql = "SELECT * FROM {forum} WHERE type='news')";
                                 $newsforums = $DB->get_records('forum', array('type' => 'news', 'course' => $supportcourse->id));
+                                $reply['log'][] = "Lösche newsforen";
+                                $reply['log'][] = $newsforums;
                                 foreach ($newsforums as $newsforum) {
-                                    $cm = \get_coursemodule_from_instance('forum', $newsforum->forumid);
-                                    \course_delete_module($cmid);
+                                    $cm = \get_coursemodule_from_instance('forum', $newsforum->id);
+                                    if (!empty($cm->id)) {
+                                        \course_delete_module($cm->id);
+                                    }
                                 }
                                 $sql = "SELECT * FROM {forum} WHERE course=? AND type='general'";
                                 $forums = $DB->get_records_sql($sql, array($supportcourse->id));
+                                $reply['log'][] = "Aktiviere Supportforen";
+                                $reply['log'][] = $forums;
                                 foreach ($forums as $forum) {
                                     \local_edusupport\lib::supportforum_enable($forum->id);
                                     if ($org->orgid > 500000 && $org->orgid < 600000) {

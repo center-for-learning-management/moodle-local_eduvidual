@@ -37,6 +37,12 @@ class lib_helper {
      **/
     public static function duplicate_course($courseid, $fullname, $shortname, $categoryid, $visible = 1, $options = array()) {
         global $CFG, $DB, $USER;
+
+        // For template courses use new logic.
+        if (\local_eduvidual\locallib::is_templatecourse($courseid)) {
+            return self::duplicate_course_from_template($courseid, $categoryid, $fullname, $shortname, $USER->id);
+        }
+
         require_once($CFG->dirroot . '/backup/util/includes/backup_includes.php');
         require_once($CFG->dirroot . '/backup/util/includes/restore_includes.php');
 
@@ -83,7 +89,7 @@ class lib_helper {
             foreach($settings AS $setting) {
                 if (!empty($backupsettings[$setting->get_name()])) {
                     // Deactivated, caused permission error.
-                    //$setting->set_value($backupsettings[$setting->get_name()]);
+                    // $setting->set_value($backupsettings[$setting->get_name()]);
                 }
             }
 
@@ -157,10 +163,96 @@ class lib_helper {
 
             return $course;
         } catch(Exception $e) {
+            // There should be no direct output, this function is often used in ajax calls.
+            /*
             echo $OUTPUT->render_from_template('local_eduvidual/alert', array(
                 'content' => $e->getMessage(),
                 'type' => 'danger',
             ));
+            */
+        }
+    }
+    public static function duplicate_course_from_template($basementcourseid, $categoryid, $fullname, $shortname, $enroluser = 0) {
+        global $CFG, $DB, $USER;
+        // First check if the template is valid.
+        require_once($CFG->dirroot.'/backup/util/includes/restore_includes.php');
+        $fs = \get_file_storage();
+        $files = $fs->get_area_files(\context_course::instance($basementcourseid)->id, 'local_eduvidual', 'coursebackup', 0, '', false);
+        $files = array_values($files);
+
+        if (!isset($files[0])) {
+            throw new \moodle_exception('coursebackupnotset', 'local_eduvidual');
+        }
+
+        // Now create a course.
+        require_once($CFG->dirroot.'/course/lib.php');
+        $data = $DB->get_record('course', array('id' => $basementcourseid));
+        $data->category = $categoryid;
+        $data->fullname = $fullname;
+        $data->shortname = $shortname;
+        $course = \create_course($data);
+
+        // Enrol the user.
+        $enroluser = !empty($enroluser) ? $enroluser : $USER->id;
+        $context = \context_course::instance($course->id);
+        $role = get_config('local_eduvidual', 'defaultroleteacher');
+        $enroluser = optional_param('setteacher', 0, PARAM_INT);
+        if (empty($enroluser) || $enroluser == 0) $enroluser = $USER->id;
+
+        // Enrol user as teacher.
+        \local_eduvidual\lib_enrol::course_manual_enrolments(array($course->id), array($enroluser), $role);
+
+        $fp = \get_file_packer('application/vnd.moodle.backup');
+        $backuptempdir = \make_backup_temp_directory('template' . $basementcourseid);
+        $files[0]->extract_to_pathname($fp, $backuptempdir);
+
+        $settings = [
+            'logs' => false,
+            'grade_histories' => false,
+            'groups' => true,
+            'competencies' => true,
+            'contentbankcontent' => true,
+            'course_shortname' => $course->shortname,
+            'course_fullname' => $course->fullname,
+            'customfields' => true,
+            'overwrite_conf' => true,
+            'users' => false,
+            'keep_roles_and_enrolments' => false,
+            'keep_groups_and_groupings' => false,
+        ];
+
+        try {
+            // Now restore the course.
+            $target = \backup::TARGET_EXISTING_DELETING;
+            $rc = new \restore_controller('template' . $basementcourseid, $course->id, \backup::INTERACTIVE_NO,
+                \backup::MODE_IMPORT, $USER->id, $target);
+
+            foreach ($settings as $settingname => $value) {
+                $plan = $rc->get_plan();
+                if (!empty($plan)) {
+                    $setting = $rc->get_plan()->get_setting($settingname);
+                    if ($setting->get_status() == \base_setting::NOT_LOCKED) {
+                        $rc->get_plan()->get_setting($settingname)->set_value($value);
+                    }
+                }
+
+            }
+            $rc->execute_precheck();
+            $rc->execute_plan();
+            $rc->destroy();
+        } catch (\Exception $e) {
+            if ($rc) {
+                \core\notification::error('Restore failed with status: ' . $rc->get_status());
+            }
+            throw $e;
+        } finally {
+            $course->fullname = $fullname;
+            $course->sortname = $shortname;
+            $DB->update_record('course', $course);
+            rebuild_course_cache($course->id);
+            // Override course settings based on organizational standards.
+            \local_eduvidual\lib_helper::override_coursesettings($course->id);
+            return $course;
         }
     }
     /**

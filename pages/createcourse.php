@@ -170,12 +170,10 @@ if ($formsent) {
 
                             // Now create a course.
                             require_once($CFG->dirroot.'/course/lib.php');
-                            $data = (object) array(
-                                'category' => $categoryid,
-                                'fullname' => $fullname,
-                                'shortname' => $shortname,
-
-                            );
+                            $data = $DB->get_record('course', array('id' => $basementcourseid));
+                            $data->category = $categoryid;
+                            $data->fullname = $fullname;
+                            $data->shortname = $shortname;
                             $course = \create_course($data);
 
                             // Enrol the user.
@@ -193,6 +191,14 @@ if ($formsent) {
                             $files[0]->extract_to_pathname($fp, $backuptempdir);
 
                             $settings = [
+                                'logs' => false,
+                                'grade_histories' => false,
+                                'groups' => true,
+                                'competencies' => true,
+                                'contentbankcontent' => true,
+                                'course_shortname' => $course->shortname,
+                                'course_fullname' => $course->fullname,
+                                'customfields' => true,
                                 'overwrite_conf' => true,
                                 'users' => false,
                                 'keep_roles_and_enrolments' => false,

@@ -540,11 +540,14 @@ $string['registration:description'] = 'Bitte starten Sie die Registrierung, inde
 $string['registration:loginfirst'] = 'Bitte melden Sie sich an bevor Sie die Registrierung einer Schule starten!';
 $string['registration:loginlink'] = 'Zur Anmeldeseite';
 $string['registration:name'] = 'Name der Schule';
-$string['registration:name:description'] = 'Frei wählbar, möglichst eindeutig wie bspw. "Hertha Firnberg Schulen" oder "HLW Deutschlandsberg". Die maximale Länge beträgt 30 Zeichen!';
+$string['registration:name:description'] = 'Der Name ist frei wählbar, wählen Sie bitte einen möglichst eindeutigen Namen wie bspw. "Hertha Firnberg Schulen" oder "HLW Deutschlandsberg". Die maximale Länge beträgt 30 Zeichen!';
 $string['registration:token'] = 'Token';
+$string['registration:stage0:legend'] = 'Schulkennzahl';
 $string['registration:stage1'] = 'Die Schulkennzahl ist korrekt. Sie können nun einen Token anfordern, der an die offizielle Mailadresse der Schule zugestellt wird.';
+$string['registration:stage1:legend'] = 'Token anfordern';
 $string['registration:stage1:supportinfo'] = 'Ist die e-Mailadresse falsch? Bitte kontaktieren Sie <a href="mailto:{$a}" target="_blank">{$a}</a>!';
 $string['registration:stage2'] = 'Bitte geben Sie den Token ein, der Ihnen an die offizielle Mailadresse zugestellt wurde:';
+$string['registration:stage2:legend'] = 'Registrierung abschließen';
 $string['registration:request'] = 'Token anfordern';
 $string['registration:validate'] = 'Token validieren';
 $string['registration:success'] = '<h3>Gratulation!</h3><p>Die Registrierung war erfolgreich! Sie können nun zum Kursbereich Ihrer Schule navigieren.</p>';
