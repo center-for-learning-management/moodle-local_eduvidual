@@ -577,7 +577,7 @@ class locallib {
      * @return true or false.
      */
     public static function is_templatecourse($courseid) {
-        $identifiers = array('coursebasementempty', 'coursebasementrestore', 'coursebasementtemplate');
+        $identifiers = array('coursebasementempty', 'coursebasementrestore', 'coursebasementtemplate', 'supportcourse_template');
         foreach ($identifiers as $identifier) {
             if ($courseid == get_config('local_eduvidual', $identifier)) return true;
         }
