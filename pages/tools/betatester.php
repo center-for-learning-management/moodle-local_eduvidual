@@ -172,7 +172,7 @@ if (is_siteadmin()) {
     </a>
 
     <?php
-    $servers = array("mdcommunity","evweb01","evweb02","evweb03","evweb04","evweb05","evweb06","evweb07","evweb08","evweb09","evcron01");
+    $servers = array("evweb01","evweb02","evweb03","evweb04","evweb05","evweb06","evweb07","evweb08","evweb09","evcron01");
     foreach ($servers as $server) {
         $url_seton = $CFG->wwwroot . '/local/eduvidual/pages/tools/betatester.php?setto=tester&host=' . $server;
         ?>
