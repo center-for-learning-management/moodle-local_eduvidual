@@ -49,7 +49,8 @@ function local_eduvidual_after_config() {
     if (strpos($_SERVER["SCRIPT_FILENAME"], '/mod/bigbluebuttonbn/view.php') > 0
         || strpos($_SERVER["SCRIPT_FILENAME"], '/mod/bigbluebuttonbn/guestlink.php') > 0
         || strpos($_SERVER["SCRIPT_FILENAME"], '/mod/bigbluebuttonbn/bbb_ajax.php') > 0
-        || strpos($_SERVER["SCRIPT_FILENAME"], '/mod/bigbluebuttonbn/bbb_view.php') > 0) {
+        || strpos($_SERVER["SCRIPT_FILENAME"], '/mod/bigbluebuttonbn/bbb_view.php') > 0
+        || strpos($_SERVER["SCRIPT_FILENAME"], '/webservice/rest/server.php') > 0 && optional_param('component', '', PARAM_TEXT) == 'mod_bigbluebuttonbn') {
         if (strpos($_SERVER["SCRIPT_FILENAME"], '/mod/bigbluebuttonbn/guestlink.php') > 0) {
             // get cmid dependent on guestlinkid (gid)
             $gid = optional_param('gid', '', PARAM_ALPHANUM);
@@ -66,6 +67,16 @@ function local_eduvidual_after_config() {
             list($course, $cm) = get_course_and_cm_from_instance($bbb, 'bigbluebuttonbn');
             if (!empty($cm->id)) {
                 $cmid = $cm->id;
+            }
+        } elseif(strpos($_SERVER["SCRIPT_FILENAME"], '/webservice/rest/server.php') > 0) {
+            $params = array_merge($_GET, $_POST);
+            $args = $params['args'];
+            if (!empty($args)) {
+                foreach ($args as $i => $arg) {
+                    if (!empty($arg['name']) && $arg['name'] == 'cmid') {
+                        $cmid = $arg['value'];
+                    }
+                }
             }
         } else {
             $cmid = optional_param('id', 0, PARAM_INT);
