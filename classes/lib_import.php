@@ -330,7 +330,16 @@ class local_eduvidual_lib_import_compiler_user extends local_eduvidual_lib_impor
         }
 
         // Check if email is already taken and set userid accordingly.
-        $ids = array_keys($DB->get_records_sql('SELECT id FROM {user} WHERE username LIKE ? OR email LIKE ?', array($obj->email, $obj->email)));
+        $sql = "SELECT id
+                    FROM {user}
+                    WHERE
+                        username LIKE ? OR
+                        email LIKE ?";
+        $params = array(
+            str_replace('_', '[_]', $obj->email),
+            str_replace('_', '[_]', $obj->email)
+        );
+        $ids = array_keys($DB->get_records_sql($sql, $params));
         if (count($ids) > 0) {
             if (count($ids) == 1) {
                 // Set the userid given.
@@ -370,7 +379,20 @@ class local_eduvidual_lib_import_compiler_user extends local_eduvidual_lib_impor
 
         } else {
             // Test if username or email already taken.
-            $chk = $DB->get_records_sql('SELECT id FROM {user} WHERE username LIKE ? OR username LIKE ? OR email LIKE ? OR email LIKE ?', array($obj->username, $obj->email, $obj->username, $obj->email));
+            $sql = "SELECT id
+                        FROM {user}
+                        WHERE
+                            username LIKE ? OR
+                            username LIKE ? OR
+                            email LIKE ? OR
+                            email LIKE ?";
+            $params = array(
+                str_replace('_', '[_]', $obj->username),
+                str_replace('_', '[_]', $obj->email),
+                str_replace('_', '[_]', $obj->username),
+                str_replace('_', '[_]', $obj->email)
+            );
+            $chk = $DB->get_records_sql($sql, $params);
             $ids = array_keys($chk);
             if (count($ids) > 0) {
                 $payload->processed = false;
