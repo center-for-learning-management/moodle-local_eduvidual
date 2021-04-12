@@ -71,6 +71,12 @@ body {
   border: none;
   text-decoration: none;
 }
+#page-content .dropdown .show a:focus {
+  color: white;
+}
+#page-content .dropdown .show a:focus i {
+  color: white;
+}
 #page-content h3.sectionname {
   background-color: #f7f7f7;
   padding: 10px;
