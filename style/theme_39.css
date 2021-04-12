@@ -1176,3 +1176,6 @@ a:not([class]):focus {
 .gradeparent .gradereport-grader-table .action-icon .icon.fa.fa-plus.fa-fw {
   color: #10507f !important;
 }
+.expandsummaryicon i {
+  color: #10507f;
+}
