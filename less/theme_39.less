@@ -148,6 +148,20 @@ body{
 //Hauptinhalt der Seite
 #page-content{
 	.ahreffaerben(@eduvidfontdark);
+	// JT 2021-04-12: #120
+	.dropdown{
+		.show{
+			a{
+				&:focus{
+					color:white;
+					i{
+						color:white;
+					}
+				}
+
+			}
+		}
+	}
 	h3{
 		&.sectionname{
 			background-color:@hintergrundfarbe;
