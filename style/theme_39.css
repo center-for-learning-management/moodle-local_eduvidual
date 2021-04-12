@@ -1167,3 +1167,6 @@ a:not([class]):focus {
 #changenumsections .increase-sections i {
   color: #10507f !important;
 }
+.gradeparent .gradereport-grader-table .action-icon .icon.fa.fa-plus.fa-fw {
+  color: #10507f !important;
+}
