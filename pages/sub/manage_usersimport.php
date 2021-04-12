@@ -133,6 +133,12 @@ if (optional_param('datavalidated', 0, PARAM_INT) == 1) {
                 \local_eduvidual\lib_enrol::choose_background($user->id);
                 // Trigger event.
                 \core\event\user_created::create_from_userid($user->id)->trigger();
+
+                for ($b = $a + 1; $b < count($users); $b++) {
+                    if ($users[$b]->email == $user->email) {
+                        $users[$b]->id = $user->id;
+                    }
+                }
             }
             \local_eduvidual\lib_enrol::role_set($u->id, $org, $user->role);
             if (strtolower($user->role) != 'remove') {
