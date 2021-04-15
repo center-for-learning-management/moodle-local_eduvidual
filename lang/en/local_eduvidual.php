@@ -382,6 +382,7 @@ $string['manage:archive:target:title'] = 'Select target';
 $string['manage:archive:target:description'] = 'You have selected {$a->count} course(s).';
 $string['manage:archive:trashbin'] = 'Trashbin';
 $string['manage:archive:trashbin:description'] = 'Courses can be moved to a system-wide trashbin. As long as courses remain in the trashbin they can be recovered by any person who is enrolled as trainer in this course. Regularly the trashbin is emptied. Please ask your system administrator how often this happens!';
+$string['manage:authtype'] = 'Authentication';
 $string['manage:bunch:all'] = 'All';
 $string['manage:bunch:allwithoutbunch'] = 'All users without cohort';
 $string['manage:bunch:allparents'] = 'All parents';

@@ -377,6 +377,7 @@ $string['manage:archive:target:title'] = 'Ziel wählen';
 $string['manage:archive:target:description'] = 'Sie haben {$a->count} Kurs(e) gewählt.';
 $string['manage:archive:trashbin'] = 'Papierkorb';
 $string['manage:archive:trashbin:description'] = 'Kurse können in einen systemweiten Papierkorb geschoben werden. Solange Kurse im Papierkorb sind, können sie wiederhergestellt werden. Der Papierkorb wird regelmäßig geleert!';
+$string['manage:authtype'] = 'Authentifizierung';
 $string['manage:bunch:all'] = 'Alle';
 $string['manage:bunch:allwithoutbunch'] = 'Alle Nutzer/innen ohne "globale Gruppe"';
 $string['manage:bunch:allparents'] = 'Alle Erziehungsberechtigten';

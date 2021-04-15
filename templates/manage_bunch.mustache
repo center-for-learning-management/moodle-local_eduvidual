@@ -38,6 +38,7 @@
         <table class="generaltable">
             <thead>
                 <tr>
+                    <th>{{#str}} manage:authtype, local_eduvidual {{/str}}</th>
                     <th>{{#str}} email {{/str}}</th>
                     <th>{{#str}} firstname {{/str}}</th>
                     <th>{{#str}} lastname {{/str}}</th>
@@ -84,6 +85,7 @@
             {{/format_cards}}
             {{#format_list}}
             <tr>
+                <td>{{auth}}</td>
                 <td>
                     <a href="#" style="text-decoration: none; color: unset;"
                         onclick="require(['local_eduvidual/manager'], function(M) { M.editProfile({{orgid}}, {{id}}, { run: function() { top.location.reload(); } }); }); return false;">
