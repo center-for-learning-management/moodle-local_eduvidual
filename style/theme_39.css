@@ -81,12 +81,12 @@ body {
   background-color: #f7f7f7;
   padding: 10px;
 }
-#page-content .icon {
-  color: #10507f;
-}
-#page-content .icon.fa.fa-plus.fa-fw {
+#page-content .nav-link .icon.fa.fa-plus.fa-fw {
   color: #fff;
   padding-top: 10px;
+}
+#page-content .icon.fa.fa-plus.fa-fw {
+  color: #10507f;
 }
 #page-content .btn-primary,
 #page-content .btn-block {
