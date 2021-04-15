@@ -168,13 +168,24 @@ body{
 			padding:10px;
 		}
 	}
+	//2021-04-15: JT: #136: nur im NAV-Link das + auf weiß, alle anderen auf eduvidblau
+	.nav-link{
+		.icon{
+			&.fa{
+				&.fa-plus{
+					&.fa-fw{
+						color:#fff;
+						padding-top:10px;
+					}
+				}
+			}
+		}
+	}
 	.icon{
-		color:@eduvidblau;
 		&.fa{
 			&.fa-plus{
 				&.fa-fw{
-					color:#fff;
-					padding-top:10px;
+					color:@eduvidblau;
 				}
 			}
 		}
