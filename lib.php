@@ -129,7 +129,7 @@ function local_eduvidual_before_standard_html_head() {
     // Main styles for eduvidual.
     $PAGE->requires->css('/local/eduvidual/style/main.css');
     $PAGE->requires->css('/local/eduvidual/style/spinner.css');
-    $PAGE->requires->css('/local/eduvidual/style/ui.css');
+    //$PAGE->requires->css('/local/eduvidual/style/ui.css');
     // General boost-modifications.
     $PAGE->requires->css('/local/eduvidual/style/theme_boost.css');
     $PAGE->requires->css('/local/eduvidual/style/theme_39.css');

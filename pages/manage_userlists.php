@@ -28,26 +28,16 @@ require_once($CFG->dirroot. '/course/lib.php');
 
 $orgid = optional_param('orgid', 0, PARAM_INT);
 $cohort = optional_param('cohort', '', PARAM_TEXT);
-$format = optional_param('format', 'list', PARAM_TEXT);
+$format = optional_param('format', 'list', PARAM_ALPHANUM);
+$orderby = optional_param('orderby', 'lastname', PARAM_ALPHANUM);
+$orderasc = optional_param('orderasc', 'asc', PARAM_ALPHANUM);
 
 $org = $DB->get_record('local_eduvidual_org', array('orgid' => $orgid));
 $context = \context_coursecat::instance($org->categoryid);
 $PAGE->set_context($context);
 
-$cohorts = $DB->get_records_sql("SELECT id,name FROM {cohort} WHERE contextid=? ORDER BY name ASC", array($context->id));
-if (empty($cohort)) {
-	foreach ($cohorts AS $_cohort) {
-		$cohort = $_cohort->id;
-		break;
-	}
-
-}
-if (!empty($cohort)) {
-	$cohorto = $DB->get_record('cohort', array('id' => $cohort, 'contextid' => $context->id));
-}
-
 $PAGE->set_pagelayout('standard');
-$PAGE->set_url(new \moodle_url('/local/eduvidual/pages/manage_userlists.php', array('orgid' => $orgid, 'cohort' => $cohort, 'format' => $format)));
+$PAGE->set_url(new \moodle_url('/local/eduvidual/pages/manage_userlists.php', array('orgid' => $orgid, 'cohort' => $cohort, 'format' => $format, 'orderby' => $orderby)));
 $PAGE->set_title(!empty($cohorto->name) ? $cohorto->name : get_string('manage:userlist', 'local_eduvidual', $org));
 $PAGE->set_heading(!empty($cohorto->name) ? $cohorto->name : get_string('manage:userlist', 'local_eduvidual', $org));
 //$PAGE->set_cacheable(false);
@@ -64,67 +54,87 @@ if (!in_array(\local_eduvidual\locallib::get_orgrole($orgid), $allow) && !is_sit
 	exit;
 }
 
-
 $PAGE->navbar->add(get_string('Management', 'local_eduvidual'), new moodle_url('/local/eduvidual/pages/manage.php', array('orgid' => $orgid)));
 $PAGE->navbar->add(get_string('manage:userlist', 'local_eduvidual', $org), $PAGE->url);
 echo $OUTPUT->header();
 
-?>
-<form action="" method="get">
-    <input type="hidden" name="orgid" value="<?php echo $org->orgid; ?>" />
-    <div class="hide-on-print ui-eduvidual grid-eq-2">
-		<input type="hidden" name="orgid" value="<?php echo $org->orgid; ?>" />
-        <div>
-            <select name="cohort" onchange="this.form.submit();" style="width: 100%;">
-            <?php
+$cohorts = array_values($DB->get_records_sql("SELECT id,name FROM {cohort} WHERE contextid=? ORDER BY name ASC", array($context->id)));
+if (empty($cohort)) {
+	foreach ($cohorts AS $_cohort) {
+		$cohort = $_cohort->id;
+		break;
+	}
 
-            $urltobunch = $CFG->wwwroot . '/local/eduvidual/pages/manage_userlists.php?orgid=' . $org->orgid . '&cohort=';
-            $cohorts['___all'] = (object) array('name' => get_string('manage:bunch:all', 'local_eduvidual'));
-            $cohorts['___allparents'] = (object) array('name' => get_string('manage:bunch:allparents', 'local_eduvidual'));
-            $cohorts['___allstudents'] = (object) array('name' => get_string('manage:bunch:allstudents', 'local_eduvidual'));
-            $cohorts['___allteachers'] = (object) array('name' => get_string('manage:bunch:allteachers', 'local_eduvidual'));
-            $cohorts['___allmanagers'] = (object) array('name' => get_string('manage:bunch:allmanagers', 'local_eduvidual'));
-			foreach ($cohorts as $k => $c) {
-				?>
-                <option value="<?php echo $k; ?>"<?php if($cohort == $k) { echo " selected"; } ?>>
-                    <?php echo $c->name; ?>
-                </option>
-                <?php
-			}
-            ?>
-            </select>
-        </div>
-        <div>
-            <select name="format" onchange="this.form.submit();" style="width: 100%;">
-                <option value="cards"<?php if($format == 'cards') echo " selected"; ?>><?php echo get_string('manage:user_bunches:format:cards', 'local_eduvidual'); ?></option>
-                <option value="list"<?php if($format == 'list') echo " selected"; ?>><?php echo get_string('manage:user_bunches:format:list', 'local_eduvidual'); ?></option>
-            </select>
-        </div>
-    </div>
-</form>
-<?php
+}
+if (!empty($cohort)) {
+	$cohorto = $DB->get_record('cohort', array('id' => $cohort, 'contextid' => $context->id));
+}
+
+$cohorts[] = (object) array('id' => '___all', 'name' => get_string('manage:bunch:all', 'local_eduvidual'));
+$cohorts[] = (object) array('id' => '___allparents', 'name' => get_string('manage:bunch:allparents', 'local_eduvidual'));
+$cohorts[] = (object) array('id' => '___allstudents', 'name' => get_string('manage:bunch:allstudents', 'local_eduvidual'));
+$cohorts[] = (object) array('id' => '___allteachers', 'name' => get_string('manage:bunch:allteachers', 'local_eduvidual'));
+$cohorts[] = (object) array('id' => '___allmanagers', 'name' => get_string('manage:bunch:allmanagers', 'local_eduvidual'));
+
+foreach ($cohorts as &$c) {
+    $c->selected = ($cohort == $c->id);
+}
+
 require_once($CFG->dirroot . '/user/profile/lib.php');
+
+$orderasc = ($orderasc == 'asc') ? 'ASC' : 'DESC';
+
+switch ($orderby) {
+    case 'firstname':
+        $orderbysql = "u.firstname $orderasc, u.lastname $orderasc";
+    break;
+    case 'email':
+        $orderbysql = "u.email $orderasc";
+    break;
+    case 'role':
+        $orderbysql = "ou.role $orderasc";
+    break;
+    case 'authtype':
+        $orderbysql = "u.auth $orderasc";
+    break;
+    case 'secret':
+        $orderbysql = "u.id $orderasc";
+    break;
+    case 'lastname':
+    default:
+        $orderby = 'lastname';
+        $orderbysql = "u.lastname $orderasc, u.firstname $orderasc";
+}
+
 switch($cohort) {
     case '___all':
-        $entries = $DB->get_records_sql('SELECT u.* FROM {local_eduvidual_orgid_userid} AS ou, {user} AS u WHERE u.deleted=0 AND ou.userid=u.id AND ou.orgid=? ORDER BY u.lastname ASC, u.firstname ASC', array($orgid));
+        $entries = $DB->get_records_sql('SELECT u.* FROM {local_eduvidual_orgid_userid} AS ou, {user} AS u WHERE u.deleted=0 AND ou.userid=u.id AND ou.orgid=? ORDER BY ' . $orderbysql, array($orgid));
     break;
     case '___allparents':
-        $entries = $DB->get_records_sql('SELECT u.* FROM {local_eduvidual_orgid_userid} AS ou, {user} AS u WHERE u.deleted=0 AND ou.userid=u.id AND ou.orgid=? AND ou.role=? ORDER BY u.lastname ASC, u.firstname ASC', array($orgid, 'Parent'));
+        $entries = $DB->get_records_sql('SELECT u.* FROM {local_eduvidual_orgid_userid} AS ou, {user} AS u WHERE u.deleted=0 AND ou.userid=u.id AND ou.orgid=? AND ou.role=? ORDER BY ' . $orderbysql, array($orgid, 'Parent'));
     break;
     case '___allstudents':
-        $entries = $DB->get_records_sql('SELECT u.* FROM {local_eduvidual_orgid_userid} AS ou, {user} AS u WHERE u.deleted=0 AND ou.userid=u.id AND ou.orgid=? AND ou.role=? ORDER BY u.lastname ASC, u.firstname ASC', array($orgid, 'Student'));
+        $entries = $DB->get_records_sql('SELECT u.* FROM {local_eduvidual_orgid_userid} AS ou, {user} AS u WHERE u.deleted=0 AND ou.userid=u.id AND ou.orgid=? AND ou.role=? ORDER BY ' . $orderbysql, array($orgid, 'Student'));
     break;
     case '___allteachers':
-        $entries = $DB->get_records_sql('SELECT u.* FROM {local_eduvidual_orgid_userid} AS ou, {user} AS u WHERE u.deleted=0 AND ou.userid=u.id AND ou.orgid=? AND ou.role=? ORDER BY u.lastname ASC, u.firstname ASC', array($orgid, 'Teacher'));
+        $entries = $DB->get_records_sql('SELECT u.* FROM {local_eduvidual_orgid_userid} AS ou, {user} AS u WHERE u.deleted=0 AND ou.userid=u.id AND ou.orgid=? AND ou.role=? ORDER BY ' . $orderbysql, array($orgid, 'Teacher'));
     break;
     case '___allmanagers':
-        $entries = $DB->get_records_sql('SELECT u.* FROM {local_eduvidual_orgid_userid} AS ou, {user} AS u WHERE u.deleted=0 AND ou.userid=u.id AND ou.orgid=? AND ou.role=? ORDER BY u.lastname ASC, u.firstname ASC', array($orgid, 'Manager'));
+        $entries = $DB->get_records_sql('SELECT u.* FROM {local_eduvidual_orgid_userid} AS ou, {user} AS u WHERE u.deleted=0 AND ou.userid=u.id AND ou.orgid=? AND ou.role=? ORDER BY ' . $orderbysql, array($orgid, 'Manager'));
     break;
     default:
-        $entries = $DB->get_records_sql('SELECT u.* FROM {cohort_members} AS cm, {user} AS u WHERE u.deleted=0 AND cm.userid=u.id AND cm.cohortid=? ORDER BY u.lastname ASC, u.firstname ASC', array($cohort));
+        $entries = $DB->get_records_sql('SELECT u.* FROM {cohort_members} AS cm, {user} AS u WHERE u.deleted=0 AND cm.userid=u.id AND cm.cohortid=? ORDER BY ' . $orderbysql, array($cohort));
 }
 
 $dummydomain = \local_eduvidual\locallib::get_dummydomain();
+
+$formats = array(
+    (object) array('format' => 'cards', 'name' => get_string('manage:user_bunches:format:cards', 'local_eduvidual')),
+    (object) array('format' => 'list', 'name' => get_string('manage:user_bunches:format:list', 'local_eduvidual')),
+);
+foreach ($formats as &$f) {
+    $f->selected = ($format == $f->format);
+}
 
 $users = array();
 $userids = array();
@@ -152,12 +162,17 @@ foreach($entries AS $user) {
     $userids[] = $user->id;
 }
 
-echo $OUTPUT->render_from_template('local_eduvidual/manage_bunch', array(
-    //'dataformatselector' => $OUTPUT->download_dataformat_selector(get_string('userbulkdownload', 'admin'), $CFG->wwwroot . '/local/eduvidual/pages/sub/manage_usersdownload.php', 'dataformat', array('orgid' => $orgid, 'userids' => implode(',', $userids))),
+echo $OUTPUT->render_from_template('local_eduvidual/manage_userlists', array(
+    'cohorts' => $cohorts,
     'exportuserids' => implode(',', $userids),
     'format_cards' => ($format == 'cards'),
     'format_list' => ($format == 'list'),
+    'formats' => $formats,
+    'orderby_' . $orderby => 1,
+    'orderasc' => ($orderasc == 'ASC') ? 1 : 0,
     'orgid' => $orgid,
+    'pageurl' => $PAGE->url->__toString(),
+    'switchasc' => ($orderasc == 'ASC') ? 'desc' : 'asc',
     'users' => $users,
     'wwwroot' => $CFG->wwwroot,
 ));
