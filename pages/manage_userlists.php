@@ -139,6 +139,7 @@ foreach($entries AS $user) {
 	}
     $user->role = $role->role;
     $user->userpicture = $OUTPUT->user_picture($user, array('size' => 200));
+    $user->userpicturesmall = $OUTPUT->user_picture($user, array('size' => 50));
     $user->secret_encoded = rawurlencode($user->id . '#' . $user->profile_field_secret);
 	$user->displayusername = $user->username;
 
