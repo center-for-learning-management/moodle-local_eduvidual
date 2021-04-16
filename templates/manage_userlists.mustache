@@ -17,17 +17,17 @@
 
 
 <div class="local_eduvidual manage_bunch">
-    <div class="hide-on-print" style="text-align: right;">
+    <div class="hide-on-print" style="text-align: right; margin-bottom: 10px;">
         <div style="display: inline;">
             <a href="#" onclick="window.print();" class="btn btn-primary">
-                {{#pix}} /t/print, core {{/pix}}
+                <i class="fa fa-print"></i>
                 {{#str}} print, local_eduvidual {{/str}}
             </a>
         </div>
         <div style="display: inline;">
             <a href="#" class="btn btn-primary"
                  onclick="require(['local_eduvidual/manager'], function(M) { M.exportUserPopup('{{orgid}}', '{{exportuserids}}'); }); return false;">
-                {{#pix}} /i/export, core {{/pix}}
+                <i class="fa fa-download"></i>
                 {{#str}} export, local_eduvidual {{/str}}
             </a>
         </div>
@@ -35,7 +35,7 @@
 
     <form action="" method="get">
         <input type="hidden" name="orgid" value="{{orgid}}" />
-        <div class="hide-on-print fitem row">
+        <div class="hide-on-print fitem row" style="margin-bottom: 20px;">
     		<input type="hidden" name="orgid" value="{{orgid}}" />
             <div class="col-md-3">
                 <i class="fa fa-filter"></i>
