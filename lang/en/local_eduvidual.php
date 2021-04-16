@@ -460,6 +460,9 @@ $string['manage:subcats:subcat3'] = 'Third layer';
 $string['manage:subcats:subcat4'] = 'Fourth layer';
 $string['manage:user_bunches:format:cards'] = 'Cards';
 $string['manage:user_bunches:format:list'] = 'List';
+$string['manage:userlist'] = 'List of Users';
+$string['manage:userlist:orgid'] = 'Users of {$a->orgid}';
+$string['manage:userlist:name'] = 'Users of {$a->name}';
 
 $string['manage:users:description'] = 'To change the role of a certain user just select the user from the search box and choose the role. You can also <a href="{$a->wwwroot}/local/eduvidual/pages/manage_userlists.php?orgid={$a->orgid}&cohort=___all" target="_blank">print / export all users of your organization</a>.';
 $string['manage:users:entersecrets'] = 'Enter secret(s)';

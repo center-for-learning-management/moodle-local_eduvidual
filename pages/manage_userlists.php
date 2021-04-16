@@ -48,8 +48,8 @@ if (!empty($cohort)) {
 
 $PAGE->set_pagelayout('standard');
 $PAGE->set_url(new \moodle_url('/local/eduvidual/pages/manage_userlists.php', array('orgid' => $orgid, 'cohort' => $cohort, 'format' => $format)));
-$PAGE->set_title(!empty($cohorto->name) ? $cohorto->name : get_string('Accesscards', 'local_eduvidual'));
-$PAGE->set_heading(!empty($cohorto->name) ? $cohorto->name : get_string('Accesscards', 'local_eduvidual'));
+$PAGE->set_title(!empty($cohorto->name) ? $cohorto->name : get_string('manage:userlist', 'local_eduvidual', $org));
+$PAGE->set_heading(!empty($cohorto->name) ? $cohorto->name : get_string('manage:userlist', 'local_eduvidual', $org));
 //$PAGE->set_cacheable(false);
 $PAGE->requires->css('/local/eduvidual/style/manage_bunch.css');
 
@@ -66,7 +66,7 @@ if (!in_array(\local_eduvidual\locallib::get_orgrole($orgid), $allow) && !is_sit
 
 
 $PAGE->navbar->add(get_string('Management', 'local_eduvidual'), new moodle_url('/local/eduvidual/pages/manage.php', array('orgid' => $orgid)));
-$PAGE->navbar->add(get_string('Accesscards', 'local_eduvidual'), $PAGE->url);
+$PAGE->navbar->add(get_string('manage:userlist', 'local_eduvidual', $org), $PAGE->url);
 echo $OUTPUT->header();
 
 ?>

@@ -455,7 +455,9 @@ $string['manage:subcats:subcat3'] = 'Dritte Ebene';
 $string['manage:subcats:subcat4'] = 'Vierte Ebene';
 $string['manage:user_bunches:format:cards'] = 'Zugangskarten';
 $string['manage:user_bunches:format:list'] = 'Liste';
-
+$string['manage:userlist'] = 'Nutzerliste';
+$string['manage:userlist:orgid'] = 'Nutzer/innen von {$a->orgid}';
+$string['manage:userlist:name'] = 'Nutzer/innen von {$a->name}';
 $string['manage:users:description'] = 'Um die Rolle einzelner Nutzer/innen zu ändern wählen Sie diesen bitte aus dem Suchfeld aus und wählen Sie die Rolle. Sie können außerdem <a href="{$a->wwwroot}/local/eduvidual/pages/manage_userlists.php?orgid={$a->orgid}&cohort=___all" target="_blank">alle Nutzer/innen Ihrer Organisation drucken / exportieren</a>.';
 $string['manage:users:entersecrets'] = 'Geben Sie den/die Code/s ein';
 $string['manage:users:printcards'] = 'Zugangskarten drucken';
