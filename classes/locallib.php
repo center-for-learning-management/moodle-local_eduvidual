@@ -404,7 +404,7 @@ class locallib {
      */
     public static function get_tempdir() {
         global $CFG;
-        $dir = $CFG->tempdir . '/eduvidiual-coursefiles';
+        $dir = $CFG->tempdir . '/eduvidual-coursefiles';
         if (!is_dir($dir)) {
             mkdir($dir);
         }
