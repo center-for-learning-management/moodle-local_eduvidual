@@ -382,15 +382,15 @@ class local_eduvidual_lib_import_compiler_user extends local_eduvidual_lib_impor
             $sql = "SELECT id
                         FROM {user}
                         WHERE
-                            username LIKE ? OR
-                            username LIKE ? OR
-                            email LIKE ? OR
-                            email LIKE ?";
+                            username LIKE ? ESCAPE '^' OR
+                            username LIKE ? ESCAPE '^' OR
+                            email LIKE ? ESCAPE '^' OR
+                            email LIKE ? ESCAPE '^'";
             $params = array(
-                str_replace('_', '[_]', $obj->username),
-                str_replace('_', '[_]', $obj->email),
-                str_replace('_', '[_]', $obj->username),
-                str_replace('_', '[_]', $obj->email)
+                str_replace('_', '^_', $obj->username),
+                str_replace('_', '^_', $obj->email),
+                str_replace('_', '^_', $obj->username),
+                str_replace('_', '^_', $obj->email)
             );
             $chk = $DB->get_records_sql($sql, $params);
             $ids = array_keys($chk);
