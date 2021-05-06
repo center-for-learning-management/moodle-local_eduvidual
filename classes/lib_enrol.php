@@ -422,15 +422,12 @@ class lib_enrol {
         $enrolinstances = enrol_get_instances($courseid, false);
         foreach ($enrolinstances as $courseenrolinstance) {
             if ($courseenrolinstance->enrol == "manual") {
-                /*
-                 * We should think about that - shall we really activate not regarding what the user wants?
                 if ($courseenrolinstance->status == 1) {
                     // It is inactive - we have to activate it!
                     $data = (object)array('status' => 0);
                     $enrol->update_instance($courseenrolinstance, $data);
                     $courseenrolinstance->status = $data->status;
                 }
-                */
                 return $courseenrolinstance;
             }
         }
