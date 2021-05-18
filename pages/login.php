@@ -33,12 +33,19 @@ $PAGE->set_heading(get_string('login'));
 
 $idp = rawurlencode("http://digitaleschuleprod.onmicrosoft.com/B2C_1A_signin_saml");
 
+$isproductionsite = ($CFG->wwwroot == 'https://www.eduvidual.at');
+
 ?>
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <?php if (!$isproductionsite) { ?>
+        <meta name="robots" content="noindex" />
+    <?php } ?>
+
     <title>Moodle Startseite: Hier können Sie sich anmelden</title>
     <link rel="stylesheet" href="<?php echo $CFG->wwwroot; ?>/local/eduvidual/style/login.css">
     <!-- BOOTSTRAP -->
@@ -56,11 +63,19 @@ $idp = rawurlencode("http://digitaleschuleprod.onmicrosoft.com/B2C_1A_signin_sam
 <body>
     <div id="page-login-index">
     <div id="page" class="container ">
-
         <header class="container justify-content-center">
             <img src="<?php echo $CFG->wwwroot; ?>/local/eduvidual/pix/icon.svg" alt="eduvidual Logo">
             <h1>eduvidual - <?php echo get_string('your_learning_environment', 'local_eduvidual'); ?></h1>
         </header>
+
+        <?php if (!$isproductionsite) { ?>
+            <div class="alert alert-danger">
+                <strong>Achtung, Test- und Entwicklungsserver!</strong><br /><br />
+                Das hier ist ein Test- und Entwicklungsserver für die Lernplattform eduvidual.at!
+                Bitte melden Sie sich hier nur an, wenn Sie wissen, was Sie tun. Die eigentliche
+                eduvidual.at-Lernplattform finden Sie unter <a href="https://www.eduvidual.at">www.eduvidual.at</a>!
+            </div>
+        <?php } ?>
 
         <main class="page-wrapper justify-content-center">
             <div class="login_buttons">
