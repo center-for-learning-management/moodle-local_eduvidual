@@ -42,6 +42,7 @@ if (optional_param('datavalidated', 0, PARAM_INT) == 1) {
     $users = $helper->get_rowobjects();
     $nextusers = array();
     $exportuserids = array();
+    $local_auth_methods = [ 'manual', 'email'];
     ?>
     <p class="alert alert-info"><?php echo get_string('manage:createuserspreadsheet:import:downloadfile', 'local_eduvidual'); ?></p>
     <form action="<?php echo $CFG->wwwroot; ?>/local/eduvidual/pages/sub/manage_usersdownload.php" method="post" enctype="multipart/form-data" class="no-spinner">
@@ -94,7 +95,7 @@ if (optional_param('datavalidated', 0, PARAM_INT) == 1) {
                                 AND id<>?";
                 $params = array($user->username, $u->id);
                 $otheru = $DB->get_record_sql($sql, $params);
-                if (empty($otheru->id)) {
+                if (in_array($u->auth, $local_auth_methods) && empty($otheru->id)) {
                     // Ok, we can update the username too.
                     $u->username = $user->username;
                 }
