@@ -45,12 +45,14 @@
                 {{#str}} manage:createuseranonymous, local_eduvidual {{/str}}
             </a>
         </li>
+        {{!
         <li class="nav-item">
             <a href="#"
-                onclick="var a = this; var inp = $('#local_eduvidual_manage_addparent_studentfilter'); require(['local_eduvidual/main', 'local_eduvidual/manager'], function(M, MG) { MG.addParentFilter('student', inp); M.toggle('{{uniqid}}', a, $(a).attr('data-toggle'));} ); return false;" data-toggle="managementors" class="nav-link">
-                {{#str}} manage:addparent, local_eduvidual {{/str}}
+                onclick="var a = this; var inp = $('#local_eduvidual_manage_addparent_studentfilter'); require(['local_eduvidual/main', 'local_eduvidual/manager'], function(M, MG) { MG.addParentFilter('student', inp); M.toggle('{{uniqid} }', a, $(a).attr('data-toggle'));} ); return false;" data-toggle="managementors" class="nav-link">
+                {{#str} } manage:addparent, local_eduvidual {{/str} }
             </a>
         </li>
+        }}
         <li class="nav-item">
             <a href="#" onclick="var a = this; require(['local_eduvidual/main'], function(M) { M.toggle('{{uniqid}}', a, $(a).attr('data-toggle'));} ); return false;" data-toggle="accesscodes" class="nav-link">
                 {{#str}} manage:accesscodes, local_eduvidual {{/str}}
