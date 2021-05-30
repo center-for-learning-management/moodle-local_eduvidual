@@ -40,10 +40,26 @@ function local_eduvidual_after_config() {
 
     $PAGE->add_body_class('theme-' . $CFG->theme);
     // Check for particular scripts, whose output has to be protected.
-    $scripts = array('/enrol/manual/manage.php','/question/category.php', '/question/edit.php', '/user/selector/search.php');
+    $scripts = array(
+        '/enrol/manual/manage.php', '/question/category.php', '/question/edit.php',
+        '/question/export.php', '/user/selector/search.php'
+    );
     $script = str_replace($CFG->dirroot, '', $_SERVER["SCRIPT_FILENAME"]);
     if (in_array($script, $scripts)) {
         \local_eduvidual\lib_wshelper::buffer();
+    }
+
+    // Protect core question bank from being exported.
+    if (!is_siteadmin() && strpos($_SERVER["SCRIPT_FILENAME"], '/question/export.php') > 0) {
+        $category = optional_param('category', 0, PARAM_RAW);
+        if (!empty($category)) {
+            $category = explode(',', $category);
+            $ctx = \context_system::instance();
+            if (count($category) > 1 && $category[1] == $ctx->id) {
+                $_POST['category'] = '';
+                $_GET['category'] = '';
+            }
+        }
     }
 
     if (strpos($_SERVER["SCRIPT_FILENAME"], '/mod/bigbluebuttonbn/view.php') > 0

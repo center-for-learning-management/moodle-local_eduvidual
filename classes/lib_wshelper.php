@@ -247,6 +247,40 @@ class lib_wshelper {
 
         echo $buffer;
     }
+    private static function buffer_question_export($buffer) {
+        if(is_siteadmin()) {
+            echo $buffer;
+            return;
+        }
+        $strstart = '<optgroup label="' . get_string('coresystem') . '">';
+        $strend = '</optgroup>';
+        // optgroup endtag should be removed..
+        $strendlen = strlen($strend);
+
+        $posstart = strrpos($buffer, $strstart);
+
+        $before = substr($buffer, 0, $posstart);
+        $rest = substr($buffer, $posstart);
+
+        $stripto = strpos($rest, $strend);
+        if (empty($stripto)) {
+            // In Moodle 3.9 the optgroup element is not closed!
+            $strend = '</select>';
+            // Select ifself should be kept.
+            $strendlen = 0;
+            $stripto = strpos($rest, $strend);
+
+            if (empty($stripto)) {
+                // We would produce an invalid page. Only echo buffer.
+                echo $buffer;
+                return;
+            }
+        }
+        $after = substr($rest, $stripto + $strendlen);
+        $buffer = $before . $after;
+
+        echo $buffer;
+    }
     private static function buffer_user_selector_search($buffer) {
         //die($buffer);
         /**
