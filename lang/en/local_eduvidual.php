@@ -209,6 +209,24 @@ $string['cron:phplist:title'] = 'eduvidual phpList Sync';
 $string['cron:title'] = 'eduvidual Cron';
 $string['cron:trashbin:title'] = 'eduvidual Trashbin';
 
+$string['dataprivacyorgerror:contacts'] = 'Contacts';
+$string['dataprivacyorgerror:description'] = '
+    <p>
+        According to privacy regulation you have the right to request removal
+        of your private data. Nevertheless, organizations within this learning
+        platform may have legitimate interest in retaining your data.
+    </p>
+    <p>
+        Therefore, removal of your data is only possible, if you are not enrolled
+        in any organization within this learning platform. Please find below a list
+        of your organizational enrolments that prevent the deletion of your data.
+        The contact persons of each organization can remove your enrolment status.
+    </p>
+';
+$string['dataprivacyorgerror:orgid'] = 'Organization-ID';
+$string['dataprivacyorgerror:orgname'] = 'Name';
+$string['dataprivacyorgerror:pagetitle'] = 'Dataremoval impossible';
+
 $string['defaultroles:title'] = 'Default Roles';
 $string['defaultroles:course:title'] = 'Default Roles (Courses)';
 $string['defaultroles:course:description'] = 'Define the default roles to be assigned within courses. These will be used for membership management in courses by this plugin!';
