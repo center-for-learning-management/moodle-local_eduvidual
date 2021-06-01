@@ -103,6 +103,12 @@ function xmldb_local_eduvidual_upgrade($oldversion) {
         }
         upgrade_plugin_savepoint(true, 2021032400, 'local', 'eduvidual');
     }
+    if ($oldversion < 2021060100) {
+        $sql = "UPDATE {user}
+                    SET idnumber = id";
+        $DB->execute($sql);
+        upgrade_plugin_savepoint(true, 2021060100, 'local', 'eduvidual');
+    }
 
     return true;
 }

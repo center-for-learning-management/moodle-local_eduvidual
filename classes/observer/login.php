@@ -39,6 +39,11 @@ class login {
         \local_eduvidual\locallib::get_user_secret($user->id);
         //error_log(json_encode($user, JSON_NUMERIC_CHECK));
 
+        if ($user->id != $user->idnumber) {
+            $user->idnumber = $user->id;
+            $DB->set_field('user', 'idnumber', $user->idnumber, array('id' => $user->id));
+        }
+
         // We only check for roles managed by profile for mnet accounts
         if ($user->auth == 'mnet') {
             $org;
