@@ -210,7 +210,7 @@ $string['dataprivacyorgerror:description'] = '
     <p>
         Gemäß der geltenden Datenschutzbestimmungen haben Sie ein Recht auf
         Löschung Ihrer persönlichen Daten. Allerdings besteht die Möglichkeit,
-        dass Schulen dieser Lernplattform ein gesetztlich vorgesehenes Interesse
+        dass Schulen dieser Lernplattform ein gesetzlich vorgesehenes Interesse
         an der Behaltung Ihrer Daten haben können.
     </p>
     <p>
