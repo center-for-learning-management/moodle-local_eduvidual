@@ -370,10 +370,29 @@ if (!is_siteadmin()) {
             }
         break;
         case 'questioncategories':
-            $questioncategories = optional_param_array('questioncategories', NULL, PARAM_INT);
+            $qc = optional_param_array('questioncategories', NULL, PARAM_INT);
+            $sc = optional_param_array('supportcourses', NULL, PARAM_INT);
             // Set to 0 if you require at least one!
-            if (count($questioncategories) > -1) {
-                set_config('questioncategories', implode(",", $questioncategories), 'local_eduvidual');
+            $setrole = get_config('local_eduvidual', 'defaultrolestudent');
+            if (count($qc) > -1) {
+                set_config('questioncategories', implode(",", $qc), 'local_eduvidual');
+                for ($a = 0; $a < count($qc); $a++) {
+                    $osc = get_config('local_eduvidual', 'questioncategory_' . $qc[$a] . '_supportcourse');
+                    $nsc = $sc[$a];
+                    if (!empty($nsc) && $nsc != $osc) {
+                        $ctx = \context_course::instance($nsc, IGNORE_MISSING);
+                        if (!empty($ctx)) {
+                            set_config('questioncategory_' . $qc[$a] . '_supportcourse', $nsc, 'local_eduvidual');
+                            $sql = "SELECT userid FROM {local_eduvidual_userqcats} WHERE categoryid = :categoryid";
+                            $userids = array_keys($DB->get_records_sql($sql, array('categoryid' => $qc[$a])));
+                            \local_eduvidual\lib_enrol::course_manual_enrolments([$nsc], $userids, $setrole);
+                            $reply['enrolled_to_' . $nsc] = count($userids);
+                        }
+                    }
+                    if (empty($nsc)) {
+                        set_config('questioncategory_' . $qc[$a] . '_supportcourse', '', 'local_eduvidual');
+                    }
+                }
                 $reply['status'] = 'ok';
             } else {
                 $reply['error'] = 'config_not_set';

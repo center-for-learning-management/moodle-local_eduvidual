@@ -17,14 +17,31 @@
 
 <h4>{{#str}} admin:questioncategories:title, local_eduvidual {{/str}}</h4>
 <p>{{#str}} admin:questioncategories:description, local_eduvidual {{/str}}</p>
-<ul>
+<table class="generaltable">
+    <tr>
+        <td>
+            <i class="fa fa-check"></i>
+        </td>
+        <td>
+            {{#str}} category {{/str}}
+        </td>
+        <td>
+            {{#str}} supportcourse, local_edusupport {{/str}}
+        </td>
+    </tr>
 {{#questioncategories}}
-    <li>
-        <label>
-            <input type="checkbox" name="questioncategories[]" value="{{catid}}"{{checked}}
-                   onclick="var inp = this; require(['local_eduvidual/admin'], function(ADMIN) { ADMIN.questioncategories(inp); });">
+    <tr class="questioncategory-{{uniqid}}-{{catid}}">
+        <td>
+            <input type="checkbox" class="questioncategories-{{uniqid}}" value="{{catid}}"{{checked}}
+                onclick="var inp = this; require(['local_eduvidual/admin'], function(ADMIN) { ADMIN.questioncategories('{{uniqid}}', {{catid}}); });">
+        </td>
+        <td>
             {{name}}
-        </label>
-    </li>
+        </td>
+        <td>
+            <input type="text" class="supportcourses-{{uniqid}}-{{catid}}" value="{{supportcourse}}"
+                   onclick="require(['local_eduvidual/admin'], function(ADMIN) { ADMIN.questioncategories('{{uniqid}}', {{catid}}); });">
+        </td>
+    </tr>
 {{/questioncategories}}
-</ul>
+</table>

@@ -74,10 +74,23 @@ switch ($act) {
             $reply['acts'] = array();
             $hascats_ = $DB->get_records('local_eduvidual_userqcats', array('userid' => $USER->id));
             $hascats = array();
+            $setrole = get_config('local_eduvidual', 'defaultrolestudent');
             foreach($hascats_ AS $hascat) {
                 if (!in_array($hascat->categoryid, $questioncategories)) {
                     $reply['acts'][] = 'Remove ' . $hascat->categoryid;
                     $DB->delete_records('local_eduvidual_userqcats', array('userid' => $USER->id, 'categoryid' => $hascat->categoryid));
+                    $supportcourseid = get_config('local_eduvidual', 'questioncategory_' . $hascat->categoryid . '_supportcourse');
+                    if (!empty($supportcourseid)) {
+                        $context = \context_course::instance($supportcourseid, IGNORE_MISSING);
+                        if (!empty($context->id)) {
+                            role_unassign($setrole, $USER->id, $context->id);
+                            $roles = get_user_roles($context, $USER->id, false);
+                            if (count($roles) == 0) {
+                                \local_eduvidual\lib_enrol::course_manual_enrolments([$supportcourseid], [$USER->id], -1);
+                            }
+
+                        }
+                    }
                 } else {
                     $hascats[] = $hascat->categoryid;
                 }
@@ -92,6 +105,10 @@ switch ($act) {
                     $entry->categoryid = $cat;
                     $reply['acts'][] = 'Insert ' . $cat;
                     $DB->insert_record('local_eduvidual_userqcats', $entry);
+                    $supportcourseid = get_config('local_eduvidual', 'questioncategory_' . $cat . '_supportcourse');
+                    if (!empty($supportcourseid)) {
+                        \local_eduvidual\lib_enrol::course_manual_enrolments([$supportcourseid], [$USER->id], $setrole);
+                    }
                 }
             }
             $reply['status'] = 'ok';

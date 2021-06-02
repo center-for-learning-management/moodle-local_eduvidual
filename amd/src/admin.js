@@ -659,14 +659,18 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'loc
                 });
             });
         },
-        questioncategories: function(sender) {
-            if (this.debug > 0) console.log('ADMIN.questioncategories()');
+        questioncategories: function(uniqid, catid) {
+            if (this.debug > 0) console.log('ADMIN.questioncategories(uniqid, catid)', uniqid, catid);
+            var sender = $('.questioncategory-' + uniqid + '-' + catid);
             var questioncategories = new Array();
-            $.each($("input[name='questioncategories[]']:checked"), function() {
-                questioncategories.push($(this).val());
+            var supportcourses = new Array();
+            $.each($('.questioncategories-' + uniqid + ':checked'), function() {
+                var catid = $(this).val();
+                questioncategories.push(catid);
+                supportcourses.push($('.supportcourses-' + uniqid + '-' + catid).val());
             });
             require(['local_eduvidual/main'], function(MAIN) {
-                MAIN.connect({ module: 'admin', act: 'questioncategories', questioncategories: questioncategories }, { signalItem: $(sender).parent() });
+                MAIN.connect({ module: 'admin', act: 'questioncategories', questioncategories: questioncategories, supportcourses: supportcourses }, { signalItem: $(sender) });
             });
         },
         registrationcc: function() {

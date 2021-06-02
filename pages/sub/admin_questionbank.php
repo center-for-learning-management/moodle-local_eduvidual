@@ -33,10 +33,12 @@ $top = $DB->get_record('question_categories', array('contextid' => 1, 'parent' =
 $result = $DB->get_records_sql('SELECT id,name FROM {question_categories} WHERE contextid=? AND parent=? ORDER BY name ASC', array(1, $top->id));
 
 foreach($result AS $cat) {
+    $supportcourse = get_config('local_eduvidual', 'questioncategory_' . $cat->id . '_supportcourse');
 	$params->questioncategories[] = array(
         'checked' => (in_array($cat->id, $questioncategories))?' checked':'',
         'catid' => $cat->id,
-        'name' => $cat->name
+        'name' => $cat->name,
+        'supportcourse' => !empty($supportcourse) ? $supportcourse : '',
     );
 }
 
