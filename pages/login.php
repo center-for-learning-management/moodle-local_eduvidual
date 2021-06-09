@@ -80,6 +80,16 @@ $isproductionsite = ($CFG->wwwroot == 'https://www.eduvidual.at');
         <main class="page-wrapper justify-content-center">
             <div class="login_buttons">
                 <div class="row justify-content-md-center">
+                    <div class="col-lg-12 col-sm-12">
+                        <a href="<?php echo $CFG->wwwroot; ?>/auth/shibboleth_link/login.php?idp=<?php echo $idp; ?>"
+                            title="Portal Digitale Schule (PODS)" id="eduvidual-btn-sso-pods" data-ajax="false">
+                            <button class="btn btn-block" type="button" name="portal">
+                                <img src="<?php echo $CFG->wwwroot; ?>/local/eduvidual/pix/logo_pods-32x32.png" width="20" alt="PODS">&nbsp;Portal Digitale Schule
+                            </button>
+                        </a>
+                    </div>
+                </div>
+                <div class="row justify-content-md-center">
                     <div class="col-lg-6 col-sm-12">
                         <a href="<?php echo $CFG->wwwroot; ?>/local/eduvidual/pages/redirects/login_oauth.php?issuer=Microsoft" title="Microsoft" id="eduvidual-btn-sso-microsoft" data-ajax="false">
                             <button class="btn btn-block" type="button" name="microsoft">
@@ -91,25 +101,6 @@ $isproductionsite = ($CFG->wwwroot == 'https://www.eduvidual.at');
                         <a href="<?php echo $CFG->wwwroot; ?>/local/eduvidual/pages/redirects/login_oauth.php?issuer=Google" title="Google" id="eduvidual-btn-sso-google" data-ajax="false">
                             <button class="btn btn-block" type="button" name="google">
                                 <img src="<?php echo $CFG->wwwroot; ?>/local/eduvidual/pix/logo_google.svg" width="20" alt="Google">&nbsp;Google
-                            </button>
-                        </a>
-                    </div>
-                </div>
-
-                <div class="row justify-content-md-center">
-                    <div class="col-lg-6 col-sm-12">
-                        <a href="<?php echo $CFG->wwwroot; ?>/local/eduvidual/pages/redirects/login_mnet.php" title="<?php echo get_string('login:network_btn', 'local_eduvidual'); ?>" id="eduvidual-btn-sso-eduverbund" data-ajax="false"><button
-                            class="btn btn-block" name="edu_verbund">
-                            <img src="<?php echo $CFG->wwwroot; ?>/pix/i/mnethost.svg" width="20" alt="<?php echo get_string('login:network_btn', 'local_eduvidual'); ?>">&nbsp;<?php echo get_string('login:network_btn', 'local_eduvidual'); ?>
-                            </button>
-                        </a>
-                    </div>
-
-                    <div class="col-lg-6 col-sm-12">
-                        <a href="<?php echo $CFG->wwwroot; ?>/auth/shibboleth_link/login.php?idp=<?php echo $idp; ?>"
-                            title="Portal Digitale Schule (PODS)" id="eduvidual-btn-sso-pods" data-ajax="false">
-                            <button class="btn btn-block" type="button" name="portal">
-                                <img src="<?php echo $CFG->wwwroot; ?>/local/eduvidual/pix/logo_pods-32x32.png" width="20" alt="PODS">&nbsp;Portal Digitale Schule
                             </button>
                         </a>
                     </div>
