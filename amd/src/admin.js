@@ -5,24 +5,7 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'loc
         cache_orgs: {}, // for caching search results of manageorgs_search
         refresh_identifier: 0,
         varcache: undefined,
-        /**
-        * Sets the course-ids where managers should by automatically enrolled
-        * IDs of Courses delimited by a ','
-        **/
-        allmanagerscourses: function() {
-            if (this.debug > 0) console.log('ADMIN.allmanagerscourses()');
-            require(['local_eduvidual/main'], function(MAIN) {
-                MAIN.watchValue({
-                    target: '#local_eduvidual_admin_allmanagerscourses',
-                    run: function() {
-                        var o = this;
-                        require(['local_eduvidual/main'], function(MAIN) {
-                            MAIN.connect({ module: 'admin', act: 'allmanagerscourses', allmanagerscourses: $(o.target).val() }, { signalItem: $(o.target) });
-                        });
-                    }
-                });
-            });
-        },
+
         /**
         * Sets the blockfooter of the eduvidual block
         **/
@@ -788,6 +771,23 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'loc
             var settostate = ($(sender).prop('checked')) ? 'block' : 'none';
             //console.log(' => Set visibility of .' + uniqid + '-type to ' + settostate + ' as checked is ' + $(sender).prop('checked'));
             el.css('display', settostate);
+        },
+        /**
+        * Sets the supportcourseurl
+        **/
+        supportcourseurl: function() {
+            if (this.debug > 0) console.log('ADMIN.supportcourseurl()');
+            require(['local_eduvidual/main'], function(MAIN) {
+                MAIN.watchValue({
+                    target: '#local_eduvidual_admin_supportcourseurl',
+                    run: function() {
+                        var o = this;
+                        require(['local_eduvidual/main'], function(MAIN) {
+                            MAIN.connect({ module: 'admin', act: 'supportcourseurl', supportcourseurl: $(o.target).val() }, { signalItem: $(o.target) });
+                        });
+                    }
+                });
+            });
         },
         /**
         * Sets the Category of the trashbin

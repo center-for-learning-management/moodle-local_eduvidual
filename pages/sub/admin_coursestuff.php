@@ -47,7 +47,6 @@ foreach($keys AS $key) {
 echo $OUTPUT->render_from_template(
     'local_eduvidual/admin_coursestuff',
     (object) array(
-        'allmanagerscourses' => get_config('local_eduvidual', 'allmanagerscourses'),
         'coursebasementempty' => get_config('local_eduvidual', 'coursebasementempty'),
         'coursebasementrestore' => get_config('local_eduvidual', 'coursebasementrestore'),
         'coursebasementtemplate' => get_config('local_eduvidual', 'coursebasementtemplate'),
@@ -57,7 +56,7 @@ echo $OUTPUT->render_from_template(
         'protectedorgs' => get_config('local_eduvidual', 'protectedorgs'),
         'registrationcc' => get_config('local_eduvidual', 'registrationcc'),
         'registrationsupport' => get_config('local_eduvidual', 'registrationsupport'),
+        'supportcourseurl' => get_config('local_eduvidual', 'supportcourseurl'),
         'trashcategory' => get_config('local_eduvidual', 'trashcategory'),
-
     )
 );

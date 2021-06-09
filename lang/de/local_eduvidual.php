@@ -172,9 +172,6 @@ $string['admin:supportcourse:missingsetup'] = 'Vorlage für Supportkurse wurde n
 $string['admin:supportcourses'] = 'Supportkurse';
 $string['admin:termsofuse:title'] = 'Nutzungsbedingungen';
 
-$string['allmanagerscourses:title'] = 'Kurse für Manager/innen';
-$string['allmanagerscourses:description'] = 'Sie können alle Manager/innen automatisch in bestimmte Kurse einschreiben lassen (bspw. Dokumentationskurs, Supportkurs, ...). Bitte trennen Sie mehrere Kurs-IDs mit einem ","!';
-
 $string['app:back_to_app'] = 'Zurück zur App';
 $string['app:redirect_to_courses'] = 'Weiterleitung zur Kursübersicht!';
 $string['app:login_successfull'] = 'Login erfolgreich!';
@@ -327,7 +324,7 @@ $string['mailregister:text'] = '<a href="{$a->wwwroot}/user/profile.php?id={$a->
 $string['mailregister:subject'] = 'Registrierung';
 $string['mailregister:2:gotocategory'] = 'Der Bereich für Ihre Organisation befindet sich unter <b><a href="{$a->categoryurl}" target="_blank">{$a->orgname}</a></b>.';
 $string['mailregister:2:header'] = 'Registrierung abgeschlossen';
-$string['mailregister:2:text'] = 'Die Registrierung Ihrer Organisation {$a->orgid} ist abgeschlossen. Mehr Informationen zur Verwaltung Ihres Schul-Bereichs finden Sie im Kurs für <a href="{$a->managerscourseurl}">eduvidual-Manager/innen</a>!';
+$string['mailregister:2:text'] = 'Die Registrierung Ihrer Organisation {$a->orgid} ist abgeschlossen. Mehr Informationen zur Verwaltung Ihres Schul-Bereichs finden Sie im <a href="{$a->supportcourseurl}">Supportkurs</a>!';
 $string['mailregister:2:footer'] = 'Mit freundlichen Grüßen';
 $string['mailregister:2:footer:signature'] = '<img src="https://www.eduvidual.at/pluginfile.php/1/local_eduvidual/globalfiles/0/_sys/register/signature.png" width="200" alt="" /><br />Robert Schrenk';
 $string['mailregister:2:subject'] = 'Registrierung abgeschlossen';
@@ -566,6 +563,8 @@ $string['role:Teacher'] = 'Lehrer/in';
 
 $string['start_with_at'] = 'Starte mit einem  "@"-Zeichen';
 $string['supportarea'] = 'Supportbereich';
+$string['supportcourse:title'] = 'Supportkurs';
+$string['supportcourse:description'] = 'Sie können hier einen Supportkurs angeben, auf den in der Registrierungsmail verlinkt wird.';
 
 $string['teacher:addfromcatalogue'] = 'Ressourcenkatalog';
 $string['teacher:course:enrol'] = 'Nutzer/innen aufnehmen';

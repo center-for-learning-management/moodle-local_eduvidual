@@ -91,7 +91,7 @@ if (!is_siteadmin()) {
         set_config('coursebasementrestore', $courserestore, 'local_eduvidual');
         set_config('coursebasementtemplate', $coursetemplate, 'local_eduvidual');
         set_config('orgcoursebasement', $basement, 'local_eduvidual');
-        set_config('allmanagerscourses', $allmanagerscourses, 'local_eduvidual')
+        set_config('supportcourseurl', $supportcourseurl, 'local_eduvidual')
         */
 
         // Create some orgs

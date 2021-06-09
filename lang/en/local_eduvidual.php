@@ -172,9 +172,6 @@ $string['admin:supportcourse:missingsetup'] = 'Support course template not set. 
 $string['admin:supportcourses'] = 'Supportcourses';
 $string['admin:termsofuse:title'] = 'Terms of use';
 
-$string['allmanagerscourses:title'] = 'All-Managers-Course';
-$string['allmanagerscourses:description'] = 'You can enrol all managers of newly created organizations to certain courses (e.g. documentation, news forum). Please specify the courseids delimited by "," or leave it empty if you do not want to use this feature!';
-
 $string['app:back_to_app'] = 'Back to App';
 $string['app:redirect_to_courses'] = 'Redirect to courses!';
 $string['app:login_successfull'] = 'Login successfull!';
@@ -332,7 +329,7 @@ $string['mailregister:text'] = '<a href="{$a->wwwroot}/user/profile.php?id={$a->
 $string['mailregister:subject'] = 'Registration';
 $string['mailregister:2:gotocategory'] = 'The area of your organisation resides at <b><a href="{$a->categoryurl}" target="_blank">{$a->orgname}</a></b>.';
 $string['mailregister:2:header'] = 'Registration completed';
-$string['mailregister:2:text'] = 'Registration of a new organisation with orgid {$a->orgid} has been completed.  Please find more information about the management of your schools-area in our course for <a href="{$a->managerscourseurl}">eduvidual-managers</a>!';
+$string['mailregister:2:text'] = 'Registration of a new organisation with orgid {$a->orgid} has been completed.  Please find more information about the management of your schools-area in our <a href="{$a->supportcourseurl}">Supportcourse</a>!';
 $string['mailregister:2:footer'] = 'Kind regards';
 $string['mailregister:2:footer:signature'] = '<img src="https://www.eduvidual.at/pluginfile.php/1/local_eduvidual/globalfiles/0/_sys/register/signature.png" width="200" alt="" /><br />Robert Schrenk';
 $string['mailregister:2:subject'] = 'Registration completed';
@@ -573,6 +570,8 @@ $string['role:Teacher'] = 'Teacher';
 
 $string['start_with_at'] = 'Start with an  "@"-sign';
 $string['supportarea'] = 'Supportarea';
+$string['supportcourse:title'] = 'Supportcourse';
+$string['supportcourse:description'] = 'You can specify a support course here that is linked to within the registration email.';
 
 $string['task:coursetemplates:title'] = 'Creates a backup when a template course has been modified.';
 

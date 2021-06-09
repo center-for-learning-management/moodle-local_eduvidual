@@ -189,7 +189,7 @@ if (isloggedin() && !isguestuser()) {
                             'local_eduvidual/register_mail_completed',
                             (object) array(
                                 'categoryurl' => $CFG->wwwroot . '/course/index.php?categoryid=' . $org->categoryid,
-                                'managerscourseurl' => $CFG->wwwroot . '/course/view.php?id=398',
+                                'supportcourseurl' => get_config('local_eduvidual', 'supportcourseurl'),
                                 'orgid' => $org->orgid,
                                 'orgname' => $org->name,
                                 'subject' => get_string('mailregister:2:header', 'local_eduvidual'),

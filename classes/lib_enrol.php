@@ -217,15 +217,6 @@ class lib_enrol {
             }
         }
 
-        // Check for managers courses.
-        if ($role == 'Manager' || (!empty($current->role) && $current->role == 'Manager')) {
-            // We are now manager of have been manager before.
-            $managerroles = array_keys($DB->get_records_sql('SELECT id FROM {local_eduvidual_orgid_userid} WHERE userid=? AND role=?', array($userid, 'Manager')));
-            $setrole = (count($managerroles) > 0) ? get_config('local_eduvidual', 'defaultrolestudent') : -1;
-            $allmanagerscourses = explode(',', get_config('local_eduvidual', 'allmanagerscourses'));
-            self::course_manual_enrolments($allmanagerscourses, array($userid), $setrole);
-        }
-
         // Check for global roles.
         $globalroles = array(
             'manager' => get_config('local_eduvidual', 'defaultglobalrolemanager'),

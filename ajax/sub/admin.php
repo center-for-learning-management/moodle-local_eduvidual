@@ -28,12 +28,6 @@ if (!is_siteadmin()) {
 } else {
     $act = optional_param('act', '', PARAM_TEXT);
     switch ($act) {
-        case 'allmanagerscourses':
-            $allmanagerscourses = optional_param('allmanagerscourses', '', PARAM_TEXT);
-            if (set_config('allmanagerscourses', $allmanagerscourses, 'local_eduvidual')) {
-                $reply['status'] = 'ok';
-            }
-        break;
         case 'blockfooter':
             $blockfooter = optional_param('blockfooter', '', PARAM_TEXT);
             if (set_config('blockfooter', $blockfooter, 'local_eduvidual')) {
@@ -413,6 +407,12 @@ if (!is_siteadmin()) {
         case 'registrationsupport':
             $registrationsupport = optional_param('registrationsupport', '', PARAM_TEXT);
             if (set_config('registrationsupport', $registrationsupport, 'local_eduvidual')) {
+                $reply['status'] = 'ok';
+            }
+        break;
+        case 'supportcourseurl':
+            $supportcourseurl = optional_param('supportcourseurl', '', PARAM_TEXT);
+            if (set_config('supportcourseurl', $supportcourseurl, 'local_eduvidual')) {
                 $reply['status'] = 'ok';
             }
         break;
