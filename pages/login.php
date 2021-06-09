@@ -116,7 +116,6 @@ $isproductionsite = ($CFG->wwwroot == 'https://www.eduvidual.at');
                         <?php echo get_string('login:direct', 'local_eduvidual') ?>
                     </p>
                 </div>
-
             </div>
 <?php
 
@@ -203,6 +202,29 @@ if ($errorcode > 0) {
                             </button>
                         </a>
                     </form>
+                </div>
+            </div>
+            <div class="logos">
+                <hr />
+                <div class="row justify-content-md-center">
+                    <div class="col-lg-4 col-sm-4" style="text-align: center;">
+                        <a href="https://www.bmbwf.gv.at" target="_blank" data-ajax="false"
+                            title="Bundesministerium für Bildung, Wissenschaft und Forschung">
+                            <img src="<?php echo $CFG->wwwroot; ?>/local/eduvidual/pix/logo_bmbwf.png" height="40" alt="BMBWF">
+                        </a>
+                    </div>
+                    <div class="col-lg-4 col-sm-4" style="text-align: center;">
+                        <a href="https://www.ph-ooe.at" target="_blank" data-ajax="false"
+                            title="Pädagogische Hochschule Oberösterreich">
+                            <img src="<?php echo $CFG->wwwroot; ?>/local/eduvidual/pix/logo_phooe.png" height="40" alt="BMBWF">
+                        </a>
+                    </div>
+                    <div class="col-lg-4 col-sm-4" style="text-align: center;">
+                        <a href="https://www.lernmanagement.at" target="_blank" data-ajax="false"
+                            title="Zentrum für Lernmanagement">
+                            <img src="<?php echo $CFG->wwwroot; ?>/local/eduvidual/pix/logo_zlm.png" height="40" alt="BMBWF">
+                        </a>
+                    </div>
                 </div>
             </div>
         </main>
