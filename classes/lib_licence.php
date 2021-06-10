@@ -26,6 +26,12 @@ namespace local_eduvidual;
 defined('MOODLE_INTERNAL') || die;
 
 class lib_licence {
+    /**
+     * Add a licence.
+     * @param orgid
+     * @param comment
+     * @param timeexpires
+     */
     public static function add_licence($orgid, $comment, $timeexpires) {
         if (!is_siteadmin()) return;
 
@@ -39,37 +45,47 @@ class lib_licence {
         ];
 
         $lic->id = $DB->insert_record('local_eduvidual_org_lic', $lic);
+        self::refresh_licence($orgid);
         return $lic;
     }
+    /**
+     * Check if a licence is required and valid for the current context.
+     */
     public static function check_licence() {
-        global $CONTEXT, $DB;
+        global $CONTEXT;
 
-        if (self::system_status()) {
+        if (!is_siteadmin() && self::system_status()) {
             $org = \local_eduvidual\locallib::get_org_by_context($CONTEXT);
             if (!empty($org->orgid)) {
                 $licence = \local_eduvidual\locallib::cache('application', "licence_{$org->orgid}");
                 if (empty($licence)) {
-                    $sql = "SELECT MAX(timeexpires) AS maxtimeexpires
-                                FROM {local_eduvidual_org_lic} ol
-                                WHERE timerevoked IS NULL
-                                    AND orgid = :orgid";
-                    $dbparams = [ 'orgid' => $org->orgid ];
-                    $licence = $DB->get_record_sql($sql, $dbparams);
-                    if (!empty($licence->maxtimeexpires) && $licence->maxtimeexpires > 0) {
-                        $licence = \local_eduvidual\locallib::cache('application', "licence_{$org->orgid}", $licence->maxtimeexpires);
-                    } else {
-                        $licence = \local_eduvidual\locallib::cache('application', "licence_{$org->orgid}", -1);
-                    }
+                    $licence = self::refresh_licence($org->orgid);
                 }
                 if (empty($licence) || $licence == -1) {
                     redirect(new \moodle_url('/local/eduvidual/pages/nolicence.php'));
                 }
             }
-
         }
-
     }
-
+    /**
+     * Determine longest licence from database and set to application cache.
+     * @param orgid
+     */
+    public static function refresh_licence($orgid) {
+        global $DB;
+        $sql = "SELECT MAX(timeexpires) AS maxtimeexpires
+                    FROM {local_eduvidual_org_lic} ol
+                    WHERE timerevoked IS NULL
+                        AND orgid = :orgid";
+        $dbparams = [ 'orgid' => $orgid ];
+        $licence = $DB->get_record_sql($sql, $dbparams);
+        if (!empty($licence->maxtimeexpires) && $licence->maxtimeexpires > 0) {
+            $licence = \local_eduvidual\locallib::cache('application', "licence_{$orgid}", $licence->maxtimeexpires);
+        } else {
+            $licence = \local_eduvidual\locallib::cache('application', "licence_{$orgid}", -1);
+        }
+        return $licence;
+    }
     /**
      * Enables or disables whole system.
      * @param trigger 1 to enable, -1 to disable.
