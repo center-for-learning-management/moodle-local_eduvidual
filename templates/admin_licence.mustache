@@ -51,6 +51,7 @@
             <td>#</td>
             <td>{{#str}} admin:licence:orgids, local_eduvidual {{/str}}</td>
             <td>{{#str}} admin:licence:expiry, local_eduvidual {{/str}}</td>
+            <td>{{#str}} admin:licence:comment, local_eduvidual {{/str}}</td>
             <td>{{#str}} user {{/str}}</td>
             <td>{{#str}} admin:licence:revoke, local_eduvidual {{/str}}</td>
         </tr>
@@ -59,6 +60,7 @@
                 <td>{{id}}</td>
                 <td>{{orgid}}</td>
                 <td>{{#userdate}} {{timeexpires}}, %d. %B %Y, %H:%M {{/userdate}} </td>
+                <td>{{comment}}</td>
                 <td>{{{createdby}}}</td>
                 <td>
                     {{#timerevoked}}
