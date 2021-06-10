@@ -16,20 +16,20 @@
 
 /**
  * @package    local_eduvidual
- * @copyright  2018 Digital Education Society (http://www.dibig.at),
- *             2020 and ongoing Center for Learning Management (http://www.lernmanagement.at)
- * @author     Robert Schrenk
+ * @copyright  2018 Digital Education Society (http://www.dibig.at)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die;
+require_once('../../../config.php');
+require_login();
 
-$plugin->version  = 2021061002;
-$plugin->requires = 2019111803;  // Requires Moodle 3.8.3.
-$plugin->component = 'local_eduvidual';
-$plugin->release = '2.2 (Build: 2021061002)';
-$plugin->maturity = MATURITY_STABLE;
+$PAGE->set_context(\context_system::instance());
+$PAGE->set_pagelayout('standard');
+$PAGE->set_url('/local/eduvidual/pages/nolicence.php', array());
+$PAGE->set_title(get_string('admin:licence:missing', 'local_eduvidual'));
+$PAGE->set_heading(get_string('admin:licence:missing', 'local_eduvidual'));
+$PAGE->navbar->add(get_string('admin:licence:missing', 'local_eduvidual'), $PAGE->url);
 
-$plugin->dependencies = [
-    'local_edusupport' => 2021060200,
-];
+echo $OUTPUT->header();
+echo $OUTPUT->render_from_template('local_eduvidual/licence_missing', [ 'sitename' => $SITE->fullname ]);
+echo $OUTPUT->footer();

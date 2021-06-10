@@ -109,6 +109,34 @@ function xmldb_local_eduvidual_upgrade($oldversion) {
         $DB->execute($sql);
         upgrade_plugin_savepoint(true, 2021060100, 'local', 'eduvidual');
     }
+    if ($oldversion < 2021061000) {
+        $table = new xmldb_table('local_eduvidual_org_lic');
+        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+        $table->add_field('orgid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('comment', XMLDB_TYPE_CHAR, '250', null, null, null, null);
+        $table->add_field('createdby', XMLDB_TYPE_INTEGER, '20', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('timecreated', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('timeexpires', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
+        $table->add_index('idx_orgid', XMLDB_INDEX_NOTUNIQUE, ['orgid']);
+        if (!$dbman->table_exists($table)) {
+            $dbman->create_table($table);
+        }
+        upgrade_plugin_savepoint(true, 2021061000, 'local', 'eduvidual');
+    }
+    if ($oldversion < 2021061002) {
+        $table = new xmldb_table('local_eduvidual_org_lic');
+        $field = new xmldb_field('revokedby', XMLDB_TYPE_INTEGER, '10', null, null, null, null, 'createdby');
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+        $field = new xmldb_field('timerevoked', XMLDB_TYPE_INTEGER, '10', null, null, null, null, 'timeexpires');
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+        upgrade_plugin_savepoint(true, 2021061002, 'local', 'eduvidual');
+    }
+
 
     return true;
 }

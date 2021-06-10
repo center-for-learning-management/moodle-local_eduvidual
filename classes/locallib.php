@@ -146,6 +146,7 @@ class locallib {
                 $actions['coursestuff'] = 'admin:coursestuff:title';
                 $actions['defaultroles'] = 'defaultroles:title';
                 $actions['questionbank'] = 'admin:questioncategories:title';
+                $actions['licence'] = 'admin:licence:title';
                 $actions['map'] = 'admin:map';
                 //$actions['modulecats'] = 'admin:modulecats:title';
                 $actions['orgs'] = 'admin:orgs:title';

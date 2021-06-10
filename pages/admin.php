@@ -23,6 +23,10 @@
 require_once('../../../config.php');
 require_login();
 
+if (!is_siteadmin()) {
+    throw new \moodle_exception(get_string('access_denied', 'local_eduvidual'));
+}
+
 $act = optional_param('act', '', PARAM_TEXT);
 if (empty($act)) {
     $act = 'backgrounds';
@@ -37,15 +41,15 @@ $PAGE->set_heading(get_string('Administration', 'local_eduvidual'));
 $PAGE->requires->css('/local/eduvidual/style/leaflet.css');
 $PAGE->requires->css('/local/eduvidual/style/admin.css');
 
-echo $OUTPUT->header();
-
-if (!is_siteadmin()) {
-	?>
-		<p class="alert alert-danger"><?php echo get_string('access_denied', 'local_eduvidual'); ?></p>
-	<?php
-	echo $OUTPUT->footer();
-	die();
+$adminurl = new \moodle_url('/local/eduvidual/pages/admin.php');
+$PAGE->navbar->add(get_string('Administration', 'local_eduvidual'), $adminurl);
+if (!empty($act)) {
+    $PAGE->navbar->add(get_string("admin:$act:title", 'local_eduvidual'), $PAGE->url);
+    $PAGE->set_title(get_string("admin:$act:title", 'local_eduvidual'));
+    $PAGE->set_heading(get_string("admin:$act:title", 'local_eduvidual'));
 }
+
+echo $OUTPUT->header();
 
 echo "<div class=\"grid-eq-2\">\n";
 $actions = \local_eduvidual\locallib::get_actions('admin');

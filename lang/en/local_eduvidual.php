@@ -89,6 +89,28 @@ $string['admin:formmodificator:roleids'] = 'Role-IDs';
 $string['admin:formmodificator:types'] = 'Types';
 $string['admin:globalfiles:title'] = 'Global Files';
 $string['admin:globalfiles:description'] = 'Upload global files here. The path is /pluginfile.php/1/local_eduvidual/globalfiles/0/{directories}/{filename}';
+$string['admin:licence:active'] = 'Enable or disable licence system';
+$string['admin:licence:add'] = 'Add licences';
+$string['admin:licence:added'] = 'Added {$a->added} licences';
+$string['admin:licence:comment'] = 'Comment';
+$string['admin:licence:expiry'] = 'Expiry date';
+$string['admin:licence:failed'] = 'Failed adding {$a->failed} licences';
+$string['admin:licence:missing'] = 'Missing valid licence';
+$string['admin:licence:missing:text'] = '
+    <p>
+        Unfortunatley no valid licence was found for your organization for working at {$a->sitename}.
+    </p>
+    <p>
+        Please contact the site support to receive a licence or further help.
+    </p>
+';
+$string['admin:licence:orgids'] = 'Org-IDs';
+$string['admin:licence:orgids_help'] = 'Org-IDs line by line!';
+$string['admin:licence:revoke'] = 'Revoke';
+$string['admin:licence:revoked'] = 'Licence was revoked';
+$string['admin:licence:title'] = 'Licences';
+$string['admin:licencesystem:disabled'] = 'Licencesystem was disabled';
+$string['admin:licencesystem:enabled'] = 'Licencesystem was enabled';
 $string['admin:ltiresourcekey:title'] = 'Default LTI Resource Key';
 $string['admin:ltiresourcekey:description'] = 'When manageing LTI Resources through this tool you should ensure, that you are using the same resource key for the same platforms. You can specify the default value here.';
 $string['admin:map'] = 'Interactive Org-Map';
