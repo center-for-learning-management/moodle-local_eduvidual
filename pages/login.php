@@ -207,22 +207,26 @@ if ($errorcode > 0) {
             <div class="logos">
                 <hr />
                 <div class="row justify-content-md-center">
-                    <div class="col-lg-4 col-sm-4" style="text-align: center;">
+                    <div class="col-lg-4 col-sm-4" style="text-align: right;">
                         <a href="https://www.bmbwf.gv.at" target="_blank" data-ajax="false"
                             title="Bundesministerium für Bildung, Wissenschaft und Forschung">
-                            <img src="<?php echo $CFG->wwwroot; ?>/local/eduvidual/pix/logo_bmbwf.png" height="40" alt="BMBWF">
+                            <img src="<?php echo $CFG->wwwroot; ?>/local/eduvidual/pix/logo_bmbwf.png" height="40" alt="Bundesministerium für Bildung, Wissenschaft und Forschung">
                         </a>
                     </div>
-                    <div class="col-lg-4 col-sm-4" style="text-align: center;">
+                    <div class="col-lg-2 col-sm-2" style="text-align: center;">
                         <a href="https://www.ph-ooe.at" target="_blank" data-ajax="false"
                             title="Pädagogische Hochschule Oberösterreich">
-                            <img src="<?php echo $CFG->wwwroot; ?>/local/eduvidual/pix/logo_phooe.png" height="40" alt="BMBWF">
+                            <img src="<?php echo $CFG->wwwroot; ?>/local/eduvidual/pix/logo_phooe.png"
+                                style="filter: drop-shadow(0px 0px 1px rgba(0,0,0,0.5));" height="40"
+                                alt="Pädagogische Hochschule Oberösterreich">
                         </a>
                     </div>
-                    <div class="col-lg-4 col-sm-4" style="text-align: center;">
+                    <div class="col-lg-4 col-sm-4" style="text-align: left;">
                         <a href="https://www.lernmanagement.at" target="_blank" data-ajax="false"
                             title="Zentrum für Lernmanagement">
-                            <img src="<?php echo $CFG->wwwroot; ?>/local/eduvidual/pix/logo_zlm.png" height="40" alt="BMBWF">
+                            <img src="<?php echo $CFG->wwwroot; ?>/local/eduvidual/pix/logo_zlm.png"
+                                style="filter: drop-shadow(0px 0px 1px rgba(0,0,0,0.7));" height="40"
+                                alt="Zentrum für Lernmanagement">
                         </a>
                     </div>
                 </div>
