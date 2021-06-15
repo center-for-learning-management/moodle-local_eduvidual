@@ -204,7 +204,7 @@ if ($errorcode > 0) {
                     </form>
                 </div>
             </div>
-            <div class="logos">
+            <div class="logos" style="margin-bottom: 15px;">
                 <hr />
                 <div class="row justify-content-md-center">
                     <div class="col-lg-4 col-sm-4" style="text-align: right;">
