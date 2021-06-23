@@ -120,6 +120,11 @@ class lib_wshelper {
         global $DB, $USER;
 
         $managed_qcats = explode(",", get_config('local_eduvidual', 'questioncategories'));
+        $orgs = \local_eduvidual\locallib::get_organisations(null, false);
+        $orgids = [];
+        foreach ($orgs as $org) {
+            $orgids[] = $org->orgid;
+        }
 
         $strstart = '<section id="region-main"';
         $strend = '</section>';
@@ -157,17 +162,19 @@ class lib_wshelper {
                             $params = array();
 
                             $url = parse_url($a->getAttribute('href'));
+                            $label = $a->nodeValue;
                             if (!empty($url['query'])) {
                                 parse_str($url['query'], $params);
                                 if (!empty($params['edit'])) {
                                     $catid = intval($params['edit']);
-                                    if (!in_array($catid, $managed_qcats)) {
-                                        $remove = false;
-                                    } else {
+                                    $remove = true;
+                                    if (in_array($catid, $managed_qcats)) {
                                         $chk = $DB->get_record('local_eduvidual_userqcats', array('userid' => $USER->id, 'categoryid' => $catid));
                                         if (empty($chk->id)) {
                                             $removeList[] = $li;
                                         }
+                                    } elseif(in_array($label, $orgids)) {
+                                        $remove = false;
                                     }
                                     $break = true;
                                 }
@@ -194,12 +201,16 @@ class lib_wshelper {
         global $DB, $USER;
 
         $managed_qcats = explode(",", get_config('local_eduvidual', 'questioncategories'));
+        $orgs = \local_eduvidual\locallib::get_organisations(null, false);
+        $orgids = [];
+        foreach ($orgs as $org) {
+            $orgids[] = $org->orgid;
+        }
 
         $strstart = '<optgroup label="' . get_string('coresystem') . '">';
         $strend = '</optgroup>';
         $posstart = strpos($buffer, $strstart);
         $posend = strpos($buffer, $strend, $posstart);
-
 
         $parts = array(
             substr($buffer, 0, $posstart),
@@ -224,11 +235,12 @@ class lib_wshelper {
                     $value = explode(',', $options->item($a)->getAttribute('value'));
                     if (!empty($value[0])) {
                         $catid = $value[0];
-                        if (!in_array($catid, $managed_qcats)) {
-                            $remove = false;
-                        } else {
+                        $remove = true;
+                        if (in_array($catid, $managed_qcats)) {
                             $chk = $DB->get_record('local_eduvidual_userqcats', array('userid' => $USER->id, 'categoryid' => $catid));
                             $remove = empty($chk->id);
+                        } elseif (in_array($label2, $orgids)) {
+                            $remove = false;
                         }
                     }
                 }
@@ -562,6 +574,12 @@ class lib_wshelper {
         global $DB, $USER;
         if (!empty($params[0]) && $params[0] == 'mod_quiz' && !empty($params[1]) && $params[1] == 'quiz_question_bank') {
             $managed_qcats = explode(",", get_config('local_eduvidual', 'questioncategories'));
+            $orgs = \local_eduvidual\locallib::get_organisations(null, false);
+            $orgids = [];
+            foreach ($orgs as $org) {
+                $orgids[] = $org->orgid;
+            }
+
             $utf8converted = mb_convert_encoding($result['html'], 'HTML-ENTITIES', "UTF-8");
             $doc = \DOMDocument::loadHTML($utf8converted, LIBXML_NOWARNING | LIBXML_NOERROR);
 
@@ -577,11 +595,12 @@ class lib_wshelper {
                     $value = explode(',', $options->item($a)->getAttribute('value'));
                     if (!empty($value[0])) {
                         $catid = $value[0];
-                        if (!in_array($catid, $managed_qcats)) {
-                            $remove = false;
-                        } else {
+                        $remove = true;
+                        if (in_array($catid, $managed_qcats)) {
                             $chk = $DB->get_record('local_eduvidual_userqcats', array('userid' => $USER->id, 'categoryid' => $catid));
                             $remove = empty($chk->id);
+                        } elseif(in_array($label2, $orgids)) {
+                            $remove = false;
                         }
                     }
                 }
