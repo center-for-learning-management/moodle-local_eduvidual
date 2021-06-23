@@ -45,6 +45,25 @@ if (optional_param('datavalidated', 0, PARAM_INT) == 1) {
     $local_auth_methods = [ 'manual', 'email'];
     ?>
     <p class="alert alert-info"><?php echo get_string('manage:createuserspreadsheet:import:downloadfile', 'local_eduvidual'); ?></p>
+    <div class="fitem row">
+        <div class="col-md-4">
+            <a href="<?php echo $CFG->wwwroot; ?>/local/eduvidual/pages/manage.php?orgid=<?php echo $org->orgid; ?>" class="btn btn-primary">
+                <?php echo get_string('back'); ?>
+            </a>
+        </div>
+        <div class="col-md-4">
+            <a href="#" onclick="require(['local_eduvidual/manager'], function(M) { M.exportUserPopup('<?php echo $org->orgid; ?>', '<?php echo implode(',', $exportuserids); ?>'); }); return false;" class="btn btn-primary btn-block">
+                <img src="<?php echo $CFG->wwwroot; ?>/pix/i/export.svg" alt="export" />
+                <?php echo get_string('export', 'local_eduvidual'); ?>
+            </a>
+        </div>
+        <div class="col-md-4">
+            <a href="<?php echo $CFG->wwwroot . '/local/eduvidual/pages/manage_userlists.php?orgid=' . $org->orgid; ?>" target="_blank" class="btn btn-secondary btn-block">
+                <img src="<?php echo $CFG->wwwroot; ?>/pix/t/print.svg" alt="print" />
+                <?php echo get_string('manage:users:printcards', 'local_eduvidual'); ?>
+            </a>
+        </div>
+    </div>
     <form action="<?php echo $CFG->wwwroot; ?>/local/eduvidual/pages/sub/manage_usersdownload.php" method="post" enctype="multipart/form-data" class="no-spinner">
         <input type="hidden" name="orgid" value="<?php echo $org->orgid; ?>" />
         <input type="hidden" name="act" value="users" />
@@ -67,7 +86,7 @@ if (optional_param('datavalidated', 0, PARAM_INT) == 1) {
         $user = $users[$a];
         ?>
         <tr<?php if(strtolower($user->role) == 'remove') { echo " style=\"text-decoration: line-through;\""; } ?>>
-            <td align="center"><img class="icon" src="/pix/i/<?php echo ((isset($user->payload->processed) && $user->payload->processed)?'completion-auto-pass':'completion-auto-fail'); ?>.svg" /></td>
+            <td align="center"><img class="icon" src="/pix/i/<?php echo (!empty($user->payload->processed)?'completion-auto-pass':'completion-auto-fail'); ?>.svg" /></td>
             <td><?php echo @$user->firstname; ?></td>
             <td><?php echo @$user->lastname; ?></td>
             <td><?php echo @$user->email; ?></td>
@@ -174,7 +193,7 @@ if (optional_param('datavalidated', 0, PARAM_INT) == 1) {
                 <td>
         <?php
         if(empty($user->secret)) {
-            $user->secret = \local_eduvidual\locallib::get_user_secret($u->id);
+            $user->secret = \local_eduvidual\locallib::get_user_secret($user->id);
         }
         echo $user->secret;
         ?>
@@ -190,19 +209,6 @@ if (optional_param('datavalidated', 0, PARAM_INT) == 1) {
     $helper->set_rowobjects($users);
     ?>
         </table>
-        <div class="grid-eq-2">
-            <a href="#" onclick="require(['local_eduvidual/manager'], function(M) { M.exportUserPopup('<?php echo $org->orgid; ?>', '<?php echo implode(',', $exportuserids); ?>'); }); return false;" class="btn btn-primary btn-block">
-                <img src="<?php echo $CFG->wwwroot; ?>/pix/i/export.svg" alt="export" />
-                <?php echo get_string('export', 'local_eduvidual'); ?>
-            </a>
-            <a href="<?php echo $CFG->wwwroot . '/local/eduvidual/pages/manage_userlists.php?orgid=' . $org->orgid; ?>" target="_blank" class="btn btn-secondary btn-block">
-                <img src="<?php echo $CFG->wwwroot; ?>/pix/t/print.svg" alt="print" />
-                <?php echo get_string('manage:users:printcards', 'local_eduvidual'); ?>
-            </a>
-        </div>
-        <a href="<?php echo $CFG->wwwroot; ?>/local/eduvidual/pages/manage.php?orgid=<?php echo $org->orgid; ?>" class="btn btn-primary">
-            <?php echo get_string('back'); ?>
-        </a>
         <?php echo $helper->print_hidden_form(); ?>
     </form>
     <?php
@@ -228,7 +234,7 @@ if (optional_param('datavalidated', 0, PARAM_INT) == 1) {
         foreach($objs AS $obj) {
             ?>
         <tr>
-            <td align="center"><img class="icon" src="/pix/i/<?php echo ((isset($obj->payload->processed) && $obj->payload->processed)?'completion-auto-pass':'completion-auto-fail'); ?>.svg" /></td>
+            <td align="center"><img class="icon" src="/pix/i/<?php echo (!empty($obj->payload->processed)?'completion-auto-pass':'completion-auto-fail'); ?>.svg" /></td>
             <td><?php echo @$obj->firstname; ?></td>
             <td><?php echo @$obj->lastname; ?></td>
             <td><?php echo @$obj->email; ?></td>

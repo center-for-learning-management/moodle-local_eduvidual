@@ -300,14 +300,13 @@ class local_eduvidual_lib_import_compiler_user extends local_eduvidual_lib_impor
             $obj->username = sprintf($usernameformat, $usernumber++);
             $obj->email = $obj->username . $dummydomain;
         } else {
-            $obj->email = strtolower($obj->email);
+            $obj->email = trim(strtolower($obj->email));
             global $CFG;
 
             if (empty($obj->username) || !is_siteadmin()) {
                 $obj->username = str_replace($dummydomain, '', $obj->email);
             }
         }
-        $obj->email = trim(str_replace("+", "_", $obj->email));
         $obj->firstname = trim($obj->firstname);
         $obj->lastname = trim($obj->lastname);
         $obj->role = trim(ucfirst(strtolower($obj->role)));
@@ -318,6 +317,7 @@ class local_eduvidual_lib_import_compiler_user extends local_eduvidual_lib_impor
             unset($obj->bunch);
         }
 
+        $obj->email = filter_var($obj->email, FILTER_SANITIZE_EMAIL);
         if (!filter_var($obj->email, FILTER_VALIDATE_EMAIL)) {
             $payload->processed = false;
             $payload->action = get_string('import:invalid_email', 'local_eduvidual');
@@ -352,9 +352,9 @@ class local_eduvidual_lib_import_compiler_user extends local_eduvidual_lib_impor
                 }
             }
         }
-        if ($obj->id > 0) {
+        if ($obj->id > 0 && $payload->processed) {
             $payload->action = get_string('update');
-        } else {
+        } elseif ($payload->processed) {
             $payload->action = get_string('create');
         }
 
