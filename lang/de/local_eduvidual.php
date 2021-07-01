@@ -224,6 +224,25 @@ $string['courses:noaccess'] = 'Leider sind Sie in diesem Kurs nicht eingeschrieb
 $string['cron:title'] = 'eduvidual Cron';
 $string['cron:trashbin:title'] = 'eduvidual Papierkorb';
 
+$string['dataprivacyorgerror:contacts'] = 'Ansprechpersonen';
+$string['dataprivacyorgerror:description'] = '
+    <p>
+        Gemäß der geltenden Datenschutzbestimmungen haben Sie ein Recht auf
+        Löschung Ihrer persönlichen Daten. Allerdings besteht die Möglichkeit,
+        dass Schulen dieser Lernplattform ein gesetzlich vorgesehenes Interesse
+        an der Behaltung Ihrer Daten haben können.
+    </p>
+    <p>
+        Aus diesem Grund kann ein Datenlöschantrag nur eingebracht werden, wenn
+        Sie an keiner Schule eingeschrieben sind. Sie finden in der unteren Tabelle
+        eine Aufstellung Ihrer Schuleinschreibungen und die jeweiligen Ansprechpersonen.
+        Diese Ansprechpersonen können Ihre Einschreibung an der Schule beenden.
+    </p>
+';
+$string['dataprivacyorgerror:orgid'] = 'Schulkennzahl';
+$string['dataprivacyorgerror:orgname'] = 'Schulname';
+$string['dataprivacyorgerror:pagetitle'] = 'Datenlöschung nicht möglich';
+
 $string['defaultroles:title'] = 'Rollen';
 $string['defaultroles:course:title'] = 'Rollen (für Kurse)';
 $string['defaultroles:course:description'] = 'Definieren Sie hier jene Rollen, die in Kursen durch dieses Plugin vergeben werden!';

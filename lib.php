@@ -49,6 +49,18 @@ function local_eduvidual_after_config() {
         \local_eduvidual\lib_wshelper::buffer();
     }
 
+    // data privacy request for deletion only allowed when not member in any org.
+    if (strpos($_SERVER["SCRIPT_FILENAME"], '/admin/tool/dataprivacy/createdatarequest.php') > 0) {
+        $type = optional_param('type', 0, PARAM_INT);
+        if ($type == 2) {
+            $orgs = \local_eduvidual\locallib::get_organisations('', false);
+            if (count($orgs) > 0) {
+                $url = new \moodle_url('/local/eduvidual/pages/redirects/dataprivacyorgerror.php', array());
+                redirect($url);
+            }
+        }
+    }
+
     // Protect core question bank from being exported.
     if (!is_siteadmin() && strpos($_SERVER["SCRIPT_FILENAME"], '/question/export.php') > 0) {
         $category = optional_param('category', 0, PARAM_RAW);
