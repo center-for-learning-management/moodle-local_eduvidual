@@ -1004,70 +1004,70 @@ a.dropdown-toggle:focus,
     -webkit-box-shadow: none;
     box-shadow: none;
   }
-  #nav-drawer[aria-hidden="false"] {
+  .drawer-open-left #nav-drawer {
     width: 250px;
     background-color: #f7f7f7;
     z-index: 9999;
   }
-  #nav-drawer[aria-hidden="false"] body.drawer-open-left,
-  #nav-drawer[aria-hidden="false"] #page {
+  .drawer-open-left #nav-drawer body.drawer-open-left,
+  .drawer-open-left #nav-drawer #page {
     margin-left: 270px;
   }
-  #nav-drawer[aria-hidden="false"] body.drawer-ease #page {
+  .drawer-open-left #nav-drawer body.drawer-ease #page {
     margin-left: 50px;
     margin-right: 10px;
     width: calc(100% - 50px) !important;
   }
-  #nav-drawer[aria-hidden="false"] .media {
+  .drawer-open-left #nav-drawer .media {
     display: -webkit-inline-box;
     text-align: left;
     padding-left: 10px;
     font-size: 1em;
     width: 200px;
   }
-  #nav-drawer[aria-hidden="false"] .list-group .list-group-item {
+  .drawer-open-left #nav-drawer .list-group .list-group-item {
     background-color: #DEDEDE;
     border: none;
     margin: 0px;
     padding: 0.6rem 0rem;
   }
-  #nav-drawer[aria-hidden="false"] .list-group .list-group-item a:link,
-  #nav-drawer[aria-hidden="false"] .list-group .list-group-item a:visited,
-  #nav-drawer[aria-hidden="false"] .list-group .list-group-item a:hover,
-  #nav-drawer[aria-hidden="false"] .list-group .list-group-item a:active {
+  .drawer-open-left #nav-drawer .list-group .list-group-item a:link,
+  .drawer-open-left #nav-drawer .list-group .list-group-item a:visited,
+  .drawer-open-left #nav-drawer .list-group .list-group-item a:hover,
+  .drawer-open-left #nav-drawer .list-group .list-group-item a:active {
     color: #fff;
     border: none;
     text-decoration: none;
   }
-  #nav-drawer[aria-hidden="false"] .list-group .list-group-item .media-left {
+  .drawer-open-left #nav-drawer .list-group .list-group-item .media-left {
     display: block;
   }
-  #nav-drawer[aria-hidden="false"] .list-group .list-group-item:hover {
+  .drawer-open-left #nav-drawer .list-group .list-group-item:hover {
     color: #535353;
   }
-  #nav-drawer[aria-hidden="false"] .list-group .list-group-item-action {
+  .drawer-open-left #nav-drawer .list-group .list-group-item-action {
     background-color: #fff;
   }
-  #nav-drawer[aria-hidden="false"] .list-group .list-group-item-action:hover,
-  #nav-drawer[aria-hidden="false"] .list-group .list-group-item:hover {
+  .drawer-open-left #nav-drawer .list-group .list-group-item-action:hover,
+  .drawer-open-left #nav-drawer .list-group .list-group-item:hover {
     background: #f8f9fa;
   }
-  #nav-drawer[aria-hidden="false"] .list-group .active_tree_node {
+  .drawer-open-left #nav-drawer .list-group .active_tree_node {
     background-color: #10507f;
     color: #fff;
   }
-  #nav-drawer[aria-hidden="false"] .list-group .active_tree_node a:link,
-  #nav-drawer[aria-hidden="false"] .list-group .active_tree_node a:visited,
-  #nav-drawer[aria-hidden="false"] .list-group .active_tree_node a:hover,
-  #nav-drawer[aria-hidden="false"] .list-group .active_tree_node a:active {
+  .drawer-open-left #nav-drawer .list-group .active_tree_node a:link,
+  .drawer-open-left #nav-drawer .list-group .active_tree_node a:visited,
+  .drawer-open-left #nav-drawer .list-group .active_tree_node a:hover,
+  .drawer-open-left #nav-drawer .list-group .active_tree_node a:active {
     color: #fff;
     border: none;
     text-decoration: none;
   }
-  #nav-drawer[aria-hidden="false"] .list-group .media-left .icon {
+  .drawer-open-left #nav-drawer .list-group .media-left .icon {
     display: inline;
   }
-  #nav-drawer[aria-hidden="false"][role="presention"] {
+  .drawer-open-left #nav-drawer[role="presention"] {
     right: calc(100% - 120px);
   }
   #page-footer {
@@ -1178,4 +1178,20 @@ a:not([class]):focus {
 }
 .expandsummaryicon i {
   color: #10507f;
+}
+@media only screen and (min-width: 768px) and (max-width: 1199px) {
+  .assignfeedback_editpdf_widget .pageheader {
+    height: 104px;
+  }
+  .assignfeedback_editpdf_widget .drawingregion {
+    top: 104px;
+  }
+}
+@media only screen and (max-width: 767px) {
+  .assignfeedback_editpdf_widget .pageheader {
+    height: 154px;
+  }
+  .assignfeedback_editpdf_widget .drawingregion {
+    top: 154px;
+  }
 }
