@@ -30,6 +30,7 @@
 	}
 
 }
+
 .NavigationsTabsLevel1(){
 	.rahmen();
 	margin-right: 5px;
@@ -755,10 +756,13 @@ nav{
 }
 //schmales Menü
 @media @desktop{
-	#nav-drawer{
+    //JT: 2021-07-18: #242 
+    #nav-drawer{
+	//#nav-drawer[aria-expanded="true"]{
 /*		.list-group-item.active:hover .icon{
 			color:@eduvidfontdark;
 		}*/
+        
 		width:40px;
 		padding:0rem;
 		background-color: @hintergrundfarbe;
@@ -971,12 +975,17 @@ a.dropdown-toggle:focus,
     		margin-left: 80px;
 		}
 	}
-	#nav-drawer[aria-hidden="true"] .list-group-item{
+    
+	// JT: 2021-07-18: # 242 
+    #nav-drawer[aria-hidden="true"] .list-group-item{
+    //#nav-drawer[aria-expanded="false"] .list-group-item{
 		display:none;
 	}
 	// Ausgeklappt:
-	#nav-drawer[aria-hidden="false"] {
-		
+    
+	// JT: 2021-07-18: #242 
+    #nav-drawer[aria-hidden="false"] {
+    //#nav-drawer[aria-expanded="true"]{		
 		width:80px;
 		body.drawer-open-left{
 			margin-left: 0px !important;
@@ -1056,15 +1065,19 @@ a.dropdown-toggle:focus,
 		margin-left: 0px;
 	}
 	//Seiteninhalt nach links verschieben, wenn der Nav-Drawer offen ist
-	body.drawer-open-left #page {
-		margin-left: 250px;
-		width: calc(~"100% - 250px") !important;
-	}
-	//Fußnote nach links versciueben, wenn der Nav-Drawer offen ist
-	body.drawer-open-left .footnote {
-		padding-left: 275px !important;
-	}
-	#nav-drawer[aria-hidden="true"] .list-group-item{
+
+    body.drawer-open-left #page {
+        margin-left: 250px;
+        width: calc(~"100% - 250px") !important;
+    }
+    //Fußnote nach links versciueben, wenn der Nav-Drawer offen ist
+    body.drawer-open-left .footnote {
+        padding-left: 275px !important;
+    }
+        
+	//JT: 2021-07-18: #242 
+    #nav-drawer[aria-hidden="true"] .list-group-item{
+    //#nav-drawer[aria-expanded="false"] .list-group-item{
 		display:block;
 	}
 	#nav-drawer{
@@ -1079,8 +1092,9 @@ a.dropdown-toggle:focus,
 			box-shadow: none;
 		}
 	}
-	
-	#nav-drawer[aria-hidden="false"] {
+	//JT: 2021-07-18: #242
+    //#nav-drawer[aria-hidden="false"]{
+    .drawer-open-left #nav-drawer{
 		width:250px;
 		background-color: @hintergrundfarbe;
 		z-index: 9999;
@@ -1276,5 +1290,26 @@ a:not([class]):focus{
 .expandsummaryicon{
 	i{
 		color:@eduvidblau;
+	}
+}
+
+//JT 2021-05-18: #131
+@media @tablet {
+	.assignfeedback_editpdf_widget .pageheader {
+		height: 104px;
+	}
+
+.assignfeedback_editpdf_widget .drawingregion {
+		top: 104px;
+	}
+}
+
+@media @mobile {
+	.assignfeedback_editpdf_widget .pageheader {
+		height: 154px;
+	}
+
+	.assignfeedback_editpdf_widget .drawingregion {
+		top: 154px;
 	}
 }
