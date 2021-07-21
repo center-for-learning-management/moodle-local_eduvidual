@@ -38,12 +38,11 @@ class local_eduvidual_trashbin extends \core\task\scheduled_task {
         // Empty trashbin
         $trashcategory = get_config('local_eduvidual', 'trashcategory');
         if ($trashcategory > 0) {
-            require_once($CFG->dirroot . '/lib/coursecatlib.php');
             $categories = $DB->get_records('course_categories', array('parent' => $trashcategory));
             foreach($categories AS $category) {
                 echo "Removing category $category->id\n";
                 try {
-                    $cat = \coursecat::get($category->id);
+                    $cat = \core_course_category::instance($category->id);
                     $cat->delete_full();
                 } catch(\Exception $e) {
                      echo "Exception " . $e->getMessage();
@@ -54,9 +53,9 @@ class local_eduvidual_trashbin extends \core\task\scheduled_task {
             foreach($courses AS $course) {
                 echo "Removing course $course->id\n";
                 try {
-                     \delete_course($course);
+                    \delete_course($course);
                 } catch(\Exception $e) {
-                     echo "Exception " . $e->getMessage();
+                    echo "Exception " . $e->getMessage();
                 }
             }
             \rebuild_course_cache();
