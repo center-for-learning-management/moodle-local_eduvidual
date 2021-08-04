@@ -53,26 +53,4 @@ class local_eduvidual_external_user extends external_api {
             )
         );
     }
-    public static function orgmenu_parameters() {
-        return new external_function_parameters(array(
-            'userid' => new external_value(PARAM_INT, 'userid'),
-        ));
-    }
-    public static function orgmenu($userid) {
-        global $CFG, $DB, $OUTPUT, $PAGE, $USER;
-        $params = self::validate_parameters(self::orgmenu_parameters(), array('userid' => $userid));
-
-        if ($params['userid'] != $USER->id) return "";
-
-        $PAGE->set_context(\context_system::instance());
-        $orgmenus = \local_eduvidual\lib_helper::orgmenus();
-        if (count($orgmenus) == 0) {
-            return "";
-        }
-
-        return $OUTPUT->render_from_template('local_eduvidual/orgmenu', array('menuright' => 1, 'orgmenus' => $orgmenus));
-    }
-    public static function orgmenu_returns() {
-        return new external_value(PARAM_RAW, 'Returns the orgmenu as html.');
-    }
 }

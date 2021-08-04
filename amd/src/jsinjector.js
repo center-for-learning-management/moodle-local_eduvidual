@@ -121,31 +121,11 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'loc
         },
         /**
          * Inject org specific menu.
+         * @param orgmenu the rendered menu.
          */
-        orgMenu: function(userid) {
-            console.log('local_eduvidual/jsinjector:orgMenu(userid)', userid);
-            if (typeof userid == 'undefined' || userid == 0) return;
-            var foruserid = sessionStorage.getItem('local_eduvidual_foruserid');
-            var menu = sessionStorage.getItem('local_eduvidual_orgmenu');
-
-            if (userid != foruserid) {
-                menu = false;
-            }
-
-            if (typeof menu === 'undefined' || !menu) {
-                AJAX.call([{
-                    methodname: 'local_eduvidual_user_orgmenu',
-                    args: { userid: userid },
-                    done: function(menu) {
-                        sessionStorage.setItem('local_eduvidual_foruserid', userid);
-                        sessionStorage.setItem('local_eduvidual_orgmenu', menu);
-                        $(menu).insertBefore($('#page-wrapper>.navbar div.usermenu').closest('li'));
-                    },
-                    fail: NOTIFICATION.exception
-                }]);
-            } else {
-                $(menu).insertBefore($('#page-wrapper>.navbar div.usermenu').closest('li'));
-            }
+        orgMenu: function(orgmenu) {
+            if (this.debug) console.log('local_eduvidual/jsinjector:orgMenu(orgmenu)');
+            $(orgmenu).insertBefore($('#page-wrapper>.navbar div.usermenu').closest('li'));
         },
         /**
          * We do not want the username field on the signup-page.

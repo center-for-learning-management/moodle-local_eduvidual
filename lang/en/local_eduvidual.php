@@ -472,6 +472,7 @@ $string['manage:mnet:send'] = 'Store';
 $string['manage:mnet:selectnone'] = 'none';
 $string['manage:mnet:selectorg'] = 'Select organization first!';
 $string['manage:mnet:filearealabel'] = 'Logo';
+$string['manage:orgmenu:cachewarning'] = 'Attention: the menu is stored in the users session cache. Any changes will only be updated upon a logout and login of the users.';
 $string['manage:orgmenu:title'] = 'Organisation Menu';
 $string['manage:orgmenu:description'] = 'Any menu items added here will appear in the sites main menu bar. Please name the links line by line in the following format:<br /><br />Label|URL|Target|Required Role(s)<br /><br />Example: OurHomepage|http://www.ourhomepage.org|_blank|Teacher+Student<br /><br />Valid targets: <i>leave empty</i> or _blank<br />Valid roles: <i>leave empty</i>, Manager, Teacher, Student, Parent';
 $string['manage:profile:invalidmail'] = 'Invalid e-Mail given!';

@@ -186,8 +186,10 @@ function local_eduvidual_before_standard_html_head() {
     $PAGE->requires->js_call_amd("local_eduvidual/jsinjector", "run", array($data));
 
 
-    // No Org-Menu for the moment!
-    $PAGE->requires->js_call_amd("local_eduvidual/jsinjector", "orgMenu", array($USER->id));
+    $orgmenu = \local_eduvidual\lib_helper::orgmenus_rendered();
+    if (!empty($orgmenu)) {
+        $PAGE->requires->js_call_amd("local_eduvidual/jsinjector", "orgMenu", array($orgmenu));
+    }
 
     if (strpos($_SERVER["SCRIPT_FILENAME"], '/course/delete.php') > 0) {
         $PAGE->requires->js_call_amd("local_eduvidual/jsinjector", "modifyRedirectUrl", array('coursedelete'));

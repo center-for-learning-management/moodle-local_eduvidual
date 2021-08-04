@@ -468,6 +468,7 @@ $string['manage:mnet:send'] = 'speichern';
 $string['manage:mnet:selectnone'] = 'Keine';
 $string['manage:mnet:selectorg'] = 'Zuerst Schule wählen!';
 $string['manage:mnet:filearealabel'] = 'Logo';
+$string['manage:orgmenu:cachewarning'] = 'Achtung: Dieses Menü wird im Sessioncache der Nutzer/innen gespeichert. Etwaige Änderungen werden erst nach einem Logout und Login sichtbar!';
 $string['manage:orgmenu:title'] = 'Schulspezifisches Menü';
 $string['manage:orgmenu:description'] = 'Alle hier angegebenen Menüeinträge werden dem Hauptmenü hinzugefügt. Bitte geben Sie die Einträge zeilenweise nach dem folgenden Format an:<br /><br />Titel|URL|Ziel|Benötigte Rolle(n)<br /><br />Beispiel: UnsereHomepage|http://www.ourhomepage.org|_blank|Teacher+Student<br /><br />Gültige Ziele: <i>leer</i> oder _blank<br />Gültige Rollen: <i>leer</i>, Manager, Teacher, Student, Parent';
 $string['manage:profile:invalidmail'] = 'Ungültige e-Mail angegeben!';

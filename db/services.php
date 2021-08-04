@@ -74,12 +74,4 @@ $functions = array(
         'type'        => 'read',
         'ajax'        => 1,
     ),
-    'local_eduvidual_user_orgmenu' => array(
-        'classname'   => 'local_eduvidual_external_user',
-        'methodname'  => 'orgmenu',
-        'classpath'   => 'local/eduvidual/externallib/user.php',
-        'description' => 'Get orgspecific menu as html',
-        'type'        => 'read',
-        'ajax'        => 1,
-    ),
 );

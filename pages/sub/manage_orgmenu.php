@@ -25,6 +25,7 @@ defined('MOODLE_INTERNAL') || die;
 ?>
 <h5><?php echo get_string('manage:orgmenu:title', 'local_eduvidual'); ?></h5>
 <p class="alert alert-info"><?php echo get_string('manage:orgmenu:description', 'local_eduvidual'); ?></p>
+<p class="alert alert-danger"><?php echo get_string('manage:orgmenu:cachewarning', 'local_eduvidual'); ?></p>
 <?php
 require_once($CFG->dirroot . "/local/eduvidual/classes/manage_orgmenu_form.php");
 
