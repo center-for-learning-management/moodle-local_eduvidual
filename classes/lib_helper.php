@@ -417,12 +417,17 @@ class lib_helper {
         }
 
         $orgmenus = self::orgmenus();
-        global $OUTPUT;
-        $orgmenu = $OUTPUT->render_from_template('local_eduvidual/orgmenu', array('menuright' => 1, 'orgmenus' => $orgmenus));
-        if (!empty($orgmenu)) {
-            $cache->set('orgmenu', $orgmenu);
+        if (count($orgmenus) > 0) {
+            global $OUTPUT;
+            $orgmenu = $OUTPUT->render_from_template('local_eduvidual/orgmenu', array('menuright' => 1, 'orgmenus' => $orgmenus));
+            if (!empty($orgmenu)) {
+                $cache->set('orgmenu', $orgmenu);
+            }
+            return $orgmenu;
+        } else {
+            $cache->set('orgmenu', ' ');
+            return ' ';
         }
-        return $orgmenu;
     }
 
     /**
