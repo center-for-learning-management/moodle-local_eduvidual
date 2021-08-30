@@ -124,6 +124,7 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'loc
          * @param orgmenu the rendered menu.
          */
         orgMenu: function(orgmenu) {
+            // OBSOLETE SINCE 2021083000
             if (this.debug) console.log('local_eduvidual/jsinjector:orgMenu(orgmenu)');
             $(orgmenu).insertBefore($('#page-wrapper>.navbar div.usermenu').closest('li'));
         },
