@@ -53,7 +53,7 @@ function local_eduvidual_after_config() {
     if (strpos($_SERVER["SCRIPT_FILENAME"], '/admin/tool/dataprivacy/createdatarequest.php') > 0) {
         $type = optional_param('type', 0, PARAM_INT);
         if ($type == 2) {
-            $orgs = \local_eduvidual\locallib::get_organisations('', false);
+            $orgs = \local_eduvidual\locallib::get_organisations('*', false);
             if (count($orgs) > 0) {
                 $url = new \moodle_url('/local/eduvidual/pages/redirects/dataprivacyorgerror.php', array());
                 redirect($url);
