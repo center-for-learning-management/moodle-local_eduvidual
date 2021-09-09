@@ -170,10 +170,10 @@ function local_eduvidual_before_standard_html_head() {
         redirect($CFG->wwwroot . '/user/index.php?id=' . optional_param('id', 0, PARAM_INT));
     }
     if (strpos($_SERVER["SCRIPT_FILENAME"], '/login/signup.php') > 0) {
-        $PAGE->requires->js_call_amd("local_eduvidual/jsinjector", "signupPage", array());
+        echo $OUTPUT->render_from_template('local_eduvidual/inject', [ 'signupPage' => 1]);
     }
     if (strpos($_SERVER["SCRIPT_FILENAME"], '/course/edit.php') > 0) {
-        $PAGE->requires->js_call_amd("local_eduvidual/jsinjector", "courseEditPage", array($USER->id, is_siteadmin()));
+        echo $OUTPUT->render_from_template('local_eduvidual/inject', [ 'courseEditPage' => 1, 'userid' => $USER->id, 'issiteadmin' => is_siteadmin()]);
     }
 
     $data = array(

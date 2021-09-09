@@ -26,18 +26,6 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'loc
             console.log('local_eduvidual/jsinjector:clearSessionStorage()');
             window.sessionStorage.clear();
         },
-        /**
-         * We do not want to see the course shortname field.
-         */
-        courseEditPage: function(userid, is_siteadmin) {
-            if (!is_siteadmin) {
-                $('#fitem_id_shortname').css('display', 'none');
-            }
-            if ($('#fitem_id_shortname #id_shortname').val() == '') {
-                var d = new Date();
-                $('#fitem_id_shortname #id_shortname').val(userid + '-' + Date.now());
-            }
-        },
         dashboardCourseLoaded: function() {
             console.log('local_eduvidual/jsinjector:dashboardCourseLoaded()');
             var JSI = this;
@@ -127,17 +115,6 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'loc
             // OBSOLETE SINCE 2021083000
             if (this.debug) console.log('local_eduvidual/jsinjector:orgMenu(orgmenu)');
             $(orgmenu).insertBefore($('#page-wrapper>.navbar div.usermenu').closest('li'));
-        },
-        /**
-         * We do not want the username field on the signup-page.
-         */
-        signupPage: function() {
-            STR.get_strings([{ key: 'email', component: 'core' }]).then(function (s) {
-                $('#fitem_id_username label[for="id_username"]').html(s[0]);
-                $('#fitem_id_username #id_username').attr('onkeyup', "document.getElementById('id_email').value = document.getElementById('id_username').value;");
-                $('#fitem_id_email').css('display', 'none');
-                $('form[action*="/login/signup.php"]').attr("onsubmit", "document.getElementById('id_email').value = document.getElementById('id_username').value;");
-            });
         },
     };
 });
