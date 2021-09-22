@@ -128,12 +128,8 @@ class lib_wshelper {
         global $DB, $USER;
 
         $managed_qcats = explode(",", get_config('local_eduvidual', 'questioncategories'));
-        $orgs = \local_eduvidual\locallib::get_organisations(null, false);
-        $orgids = [];
-        foreach ($orgs as $org) {
-            $orgids[] = $org->orgid;
-        }
-
+        $user_qcats = array_keys($DB->get_records('local_eduvidual_userqcats', array('userid' => $USER->id)));
+        $orgids = array_keys(\local_eduvidual\locallib::get_organisations('Teacher', false));
         $strstart = '<section id="region-main"';
         $strend = '</section>';
         $posstart = strpos($buffer, $strstart);
@@ -153,8 +149,7 @@ class lib_wshelper {
             $divs = $doc->getElementsByTagName('div');
             foreach ($divs as $div) {
                 $classnames = explode(' ', $div->getAttribute('class'));
-                if (!in_array('questioncategories', $classnames) && in_array('contextlevel10', $classnames)) continue;
-
+                if (!in_array('questioncategories', $classnames) || !in_array('contextlevel10', $classnames)) continue;
                 $uls = $div->childNodes;
                 foreach ($uls as $ul) {
                     if ($ul->nodeName != 'ul') continue;
@@ -165,31 +160,31 @@ class lib_wshelper {
                         if ($li->nodeName != 'li') continue;
                         $break = false;
                         $as = $li->childNodes;
+                        $label = "";
                         foreach ($as AS $a) {
                             if ($a->nodeName != 'a') continue;
                             $params = array();
 
                             $url = parse_url($a->getAttribute('href'));
-                            $label = $a->nodeValue;
+                            if (!empty($a->nodeValue)) {
+                                $label = $a->nodeValue;
+                            }
                             if (!empty($url['query'])) {
                                 parse_str($url['query'], $params);
                                 if (!empty($params['edit'])) {
                                     $catid = intval($params['edit']);
                                     $remove = true;
-                                    if (in_array($catid, $managed_qcats)) {
-                                        $chk = $DB->get_record('local_eduvidual_userqcats', array('userid' => $USER->id, 'categoryid' => $catid));
-                                        if (empty($chk->id)) {
-                                            $removeList[] = $li;
-                                        }
-                                    } elseif(in_array($label, $orgids)) {
-                                        $remove = false;
+                                    $qcat = $DB->get_record('question_categories', [ 'id' => $catid ]);
+
+                                    if (!in_array($qcat->name, $orgids) && !in_array($catid, $managed_qcats) && !in_array($catid, $user_qcats)) {
+                                        $removeList[] = $li;
                                     }
+
                                     $break = true;
                                 }
                             }
                             if ($break) break;
                         }
-                        if ($break) break;
                     }
                 }
             }
@@ -524,11 +519,7 @@ class lib_wshelper {
         global $DB, $USER;
         if (!empty($params[0]) && $params[0] == 'mod_quiz' && !empty($params[1]) && $params[1] == 'quiz_question_bank') {
             $managed_qcats = explode(",", get_config('local_eduvidual', 'questioncategories'));
-            $orgs = \local_eduvidual\locallib::get_organisations(null, false);
-            $orgids = [];
-            foreach ($orgs as $org) {
-                $orgids[] = $org->orgid;
-            }
+            $orgids = array_keys(\local_eduvidual\locallib::get_organisations('Teacher', false));
 
             $utf8converted = mb_convert_encoding($result['html'], 'HTML-ENTITIES', "UTF-8");
             $doc = \DOMDocument::loadHTML($utf8converted, LIBXML_NOWARNING | LIBXML_NOERROR);
@@ -607,11 +598,7 @@ class lib_wshelper {
         global $DB, $USER;
 
         $managed_qcats = explode(",", get_config('local_eduvidual', 'questioncategories'));
-        $orgs = \local_eduvidual\locallib::get_organisations(null, false);
-        $orgids = [];
-        foreach ($orgs as $org) {
-            $orgids[] = $org->orgid;
-        }
+        $orgids = array_keys(\local_eduvidual\locallib::get_organisations('Teacher', false));
 
         $strstart = '<optgroup label="' . get_string('coresystem') . '">';
         $strend = '</optgroup>';
