@@ -128,7 +128,7 @@ class lib_wshelper {
         global $DB, $USER;
 
         $managed_qcats = explode(",", get_config('local_eduvidual', 'questioncategories'));
-        $user_qcats = array_keys($DB->get_records('local_eduvidual_userqcats', array('userid' => $USER->id)));
+        $user_qcats = array_keys($DB->get_records('local_eduvidual_userqcats', array('userid' => $USER->id), '', 'categoryid'));
         $orgids = array_keys(\local_eduvidual\locallib::get_organisations('Teacher', false));
         $strstart = '<section id="region-main"';
         $strend = '</section>';
@@ -173,13 +173,16 @@ class lib_wshelper {
                                 parse_str($url['query'], $params);
                                 if (!empty($params['edit'])) {
                                     $catid = intval($params['edit']);
-                                    $remove = true;
                                     $qcat = $DB->get_record('question_categories', [ 'id' => $catid ]);
-
-                                    if (!in_array($qcat->name, $orgids) && !in_array($catid, $managed_qcats) && !in_array($catid, $user_qcats)) {
-                                        $removeList[] = $li;
+                                    if (!in_array($catid, $managed_qcats) && in_array($qcat->name, $orgids)) {
+                                        break;
                                     }
 
+                                    if (in_array($catid, $user_qcats)) {
+                                        break;
+                                    }
+
+                                    $removeList[] = $li;
                                     $break = true;
                                 }
                             }
@@ -519,6 +522,7 @@ class lib_wshelper {
         global $DB, $USER;
         if (!empty($params[0]) && $params[0] == 'mod_quiz' && !empty($params[1]) && $params[1] == 'quiz_question_bank') {
             $managed_qcats = explode(",", get_config('local_eduvidual', 'questioncategories'));
+            $user_qcats = array_keys($DB->get_records('local_eduvidual_userqcats', array('userid' => $USER->id), '', 'categoryid'));
             $orgids = array_keys(\local_eduvidual\locallib::get_organisations('Teacher', false));
 
             $utf8converted = mb_convert_encoding($result['html'], 'HTML-ENTITIES', "UTF-8");
@@ -537,9 +541,8 @@ class lib_wshelper {
                     if (!empty($value[0])) {
                         $catid = $value[0];
                         $remove = true;
-                        if (in_array($catid, $managed_qcats)) {
-                            $chk = $DB->get_record('local_eduvidual_userqcats', array('userid' => $USER->id, 'categoryid' => $catid));
-                            $remove = empty($chk->id);
+                        if (in_array($catid, $managed_qcats) && in_array($catid, $user_qcats)) {
+                            $remove = false;
                         } elseif(in_array($label2, $orgids)) {
                             $remove = false;
                         }
@@ -598,6 +601,7 @@ class lib_wshelper {
         global $DB, $USER;
 
         $managed_qcats = explode(",", get_config('local_eduvidual', 'questioncategories'));
+        $user_qcats = array_keys($DB->get_records('local_eduvidual_userqcats', array('userid' => $USER->id), '', 'categoryid'));
         $orgids = array_keys(\local_eduvidual\locallib::get_organisations('Teacher', false));
 
         $strstart = '<optgroup label="' . get_string('coresystem') . '">';
@@ -629,9 +633,8 @@ class lib_wshelper {
                     if (!empty($value[0])) {
                         $catid = $value[0];
                         $remove = true;
-                        if (in_array($catid, $managed_qcats)) {
-                            $chk = $DB->get_record('local_eduvidual_userqcats', array('userid' => $USER->id, 'categoryid' => $catid));
-                            $remove = empty($chk->id);
+                        if (in_array($catid, $managed_qcats) && in_array($catid, $user_qcats)) {
+                            $remove = false;
                         } elseif (in_array($label2, $orgids)) {
                             $remove = false;
                         }
