@@ -458,6 +458,7 @@ $string['manage:createuserspreadsheet:import:description:id'] = 'User-ID. When c
 $string['manage:createuserspreadsheet:import:description:lastname'] = 'The lastname. If no lastname is given eduvidual will use a random name.';
 $string['manage:createuserspreadsheet:import:description:role'] = 'The role of this user (either "Manager", "Teacher", "Student" or "Parent"). This does not affect current enrolments in courses.';
 $string['manage:createuserspreadsheet:import:downloadfile'] = 'Users have been updated. Please download the provided Excel-Sheet containing these users. You can use it afterwards if you want to update the data of this import.';
+$string['manage:createuserspreadsheet:import:filetypeerror'] = 'Sorry, the used filetype ({$a->filetype}) of this spreadsheet is unsupported. Please upload an XLSX-file!';
 $string['manage:createuserspreadsheet:templateurl'] = 'URL template spreadsheet';
 $string['manage:createuserspreadsheet:templateurl:description'] = 'Enter the URL to the template spreadsheet that should be used for creating users using a spreadsheet.';
 $string['manage:data'] = 'Data';

@@ -215,6 +215,12 @@ if (optional_param('datavalidated', 0, PARAM_INT) == 1) {
     </form>
     <?php
 } elseif (isset($_FILES['local_eduvidual_manage_usersimport'])) {
+    $filetype = strtolower(substr($_FILES['local_eduvidual_manage_usersimport']['name'], strpos($_FILES['local_eduvidual_manage_usersimport']['name'], '.')));
+    if ($filetype != '.xlsx') {
+        $url = new \moodle_url('/local/eduvidual/pages/manage.php', [ 'orgid' => $orgid, 'act' => 'users']);
+        throw new \moodle_exception('manage:createuserspreadsheet:import:filetypeerror', 'local_eduvidual', $url, [ 'filetype' => $filetype] );
+    }
+
     $helper->load_file($_FILES['local_eduvidual_manage_usersimport']['tmp_name']);
     $objs = $helper->get_rowobjects();
     $fields = $helper->get_fields();

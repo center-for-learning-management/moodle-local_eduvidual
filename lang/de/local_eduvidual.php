@@ -454,6 +454,7 @@ $string['manage:createuserspreadsheet:import:description:id'] = 'Die Nutzer-ID. 
 $string['manage:createuserspreadsheet:import:description:lastname'] = 'Der Nachname. Falls keiner angegeben wird, wird automatisch ein Pseudonym gewählt.';
 $string['manage:createuserspreadsheet:import:description:role'] = 'Die Rolle. Entweder "Manager", "Teacher", "Student" oder "Parent"). Aktuelle Enschreibungen werden dadurch nicht verändert.';
 $string['manage:createuserspreadsheet:import:downloadfile'] = 'Nutzer/innen wurden aktualisiert. Bitte laden Sie die folgende Datei herunter, die die Nutzer/innen mit Nutzer-IDs enthält. Mit dieser Tabelle können Sie geänderte Nutzerdaten sehr einfach wieder einspielen.';
+$string['manage:createuserspreadsheet:import:filetypeerror'] = 'Sorry, der Dateityp ({$a->filetype}) dieses Tabellendokuments wird nicht unterstützt. Bitte laden Sie eine XLSX-Datei hoch!';
 $string['manage:createuserspreadsheet:templateurl'] = 'URL zur Excelvorlage';
 $string['manage:createuserspreadsheet:templateurl:description'] = 'Geben Sie hier die URL zur Excelvorlage ein, die bei der Erstellung von Nutzer/innen verwendet werden kann.';
 $string['manage:data'] = 'Daten';

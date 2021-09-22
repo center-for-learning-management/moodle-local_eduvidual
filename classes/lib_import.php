@@ -24,27 +24,10 @@
 
 defined('MOODLE_INTERNAL') || die;
 
-// use \Box\Spout\Common\Type;
-
-if (file_exists("$CFG->libdir/phpspreadsheet/vendor/autoload.php")) {
-    require_once("$CFG->libdir/phpspreadsheet/vendor/autoload.php");
-    local_eduvidual_lib_import::$variant = 'phpspreadsheet';
-    /**
-     * ATTENTION, by default we got an error that Reader\Xls could not be loaded.
-     * We had to change the reader for type "Xls" to Reader\Xlsx in IOFactory.php
-     **/
-} else {
-    // Fall back to PHPExcel, that was used prior to Moodle 3.8
-    // This is obsolete soon.
-    require_once("$CFG->libdir/phpexcel/PHPExcel.php");
-    local_eduvidual_lib_import::$variant = 'phpexcel';
-}
-
 class local_eduvidual_lib_import {
     var $fields = array();
     var $rowobjects = array();
     var $compiler;
-    public static $variant = "";
     /**
      * Set the valid fields we use for import
     **/
@@ -75,87 +58,48 @@ class local_eduvidual_lib_import {
         $colids = array();
         $this->rowobjects = array();
 
-        switch(local_eduvidual_lib_import::$variant) {
-            case 'phpexcel':
-                $spreadsheet = PHPExcel_IOFactory::load($filepath);
-                $sheet = $spreadsheet->getSheet(0);
+        //$spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::createReaderForFile($filepath);
+        //$spreadsheet->setReadDataOnly(true);
+        //$spreadsheet->load($filepath);
+        $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($filepath);
+        $sheet = $spreadsheet->getSheet(0);
 
-                // Get fields from first row and let maxcols grow.
-                $row = 1; $maxcols = 0;
-                while (!empty($value = $sheet->getCellByColumnAndRow($maxcols, $row, false)->getCalculatedValue())) {
-                    $colids[$maxcols] = strtolower($value);
-                    $maxcols++;
+        // Get fields from first row.
+        // ATTENTION: In phpspreadsheet the first cell is 1:1
+        $stop = false;
+        $maxcols = 1;
+        while (!$stop) {
+            $value = $sheet->getCellByColumnAndRow($maxcols, 1, false);
+            if (!empty($value)) {
+                $colids[$maxcols] = strtolower($value);
+                $maxcols++;
+            } else {
+                $stop = true;
+            }
+        }
+
+        $row = 2;
+        $stop = false;
+
+        while(empty($stop)) {
+            // Create object from row-data.
+            $foundany = false;
+            $obj = new stdClass();
+            for($col = 1; $col < $maxcols; $col++) {
+                if (!empty($colids[$col])) {
+                    // Concat with empty string to force string conversion.
+                    $obj->{$colids[$col]} = "" . $sheet->getCellByColumnAndRow($col, $row, false);
+                    if (!empty($obj->{$colids[$col]})) $foundany = true;
                 }
-
+            }
+            if (!empty($obj->role)) {
+                $this->rowobjects[] = $this->compile($obj);
+            }
+            if ($foundany) {
                 $row++;
-                $stop = false;
-
-                while(!$stop) {
-                    // Create object from row-data.
-                    $foundany = false;
-                    $obj = new stdClass();
-                    for($col = 0; $col < $maxcols; $col++) {
-                        $cell = $sheet->getCellByColumnAndRow($col, $row, false);
-                        if (!empty($cell)) {
-                            $obj->{$colids[$col]} = $cell->getCalculatedValue();
-                            if (!empty($obj->{$colids[$col]})) $foundany = true;
-                        }
-                    }
-                    if (!empty($obj->role)) {
-                        $obj = $this->compile($obj);
-                        $this->rowobjects[] = $obj;
-                    }
-                    if (!$foundany) {
-                        $stop = true;
-                    }
-                    $row++;
-                }
-            break;
-            default:
-                // The default is phpspreadsheet.
-                //$spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::createReaderForFile($filepath);
-                //$spreadsheet->setReadDataOnly(true);
-                //$spreadsheet->load($filepath);
-                $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($filepath);
-                $sheet = $spreadsheet->getSheet(0);
-
-                // Get fields from first row.
-                // ATTENTION: In phpspreadsheet the first cell is 1:1
-                $stop = false;
-                $maxcols = 1;
-                while (!$stop) {
-                    $value = $sheet->getCellByColumnAndRow($maxcols, 1, false);
-                    if (!empty($value)) {
-                        $colids[$maxcols] = strtolower($value);
-                        $maxcols++;
-                    } else {
-                        $stop = true;
-                    }
-                }
-
-                $row = 2;
-                $stop = false;
-
-                while(empty($stop)) {
-                    // Create object from row-data.
-                    $foundany = false;
-                    $obj = new stdClass();
-                    for($col = 1; $col < $maxcols; $col++) {
-                        if (!empty($colids[$col])) {
-                            // Concat with empty string to force string conversion.
-                            $obj->{$colids[$col]} = "" . $sheet->getCellByColumnAndRow($col, $row, false);
-                            if (!empty($obj->{$colids[$col]})) $foundany = true;
-                        }
-                    }
-                    if (!empty($obj->role)) {
-                        $this->rowobjects[] = $this->compile($obj);
-                    }
-                    if ($foundany) {
-                        $row++;
-                    } else {
-                        $stop = true;
-                    }
-                }
+            } else {
+                $stop = true;
+            }
         }
     }
     /**
