@@ -46,24 +46,21 @@ if (optional_param('datavalidated', 0, PARAM_INT) == 1) {
     ?>
     <p class="alert alert-info"><?php echo get_string('manage:createuserspreadsheet:import:downloadfile', 'local_eduvidual'); ?></p>
     <div class="fitem row">
-        <div class="col-md-4">
-            <a href="<?php echo $CFG->wwwroot; ?>/local/eduvidual/pages/manage.php?orgid=<?php echo $org->orgid; ?>" class="btn btn-primary">
-                <?php echo get_string('back'); ?>
-            </a>
-        </div>
-        <div class="col-md-4">
-            <a href="#" onclick="require(['local_eduvidual/manager'], function(M) { M.exportUserPopup('<?php echo $org->orgid; ?>', '<?php echo implode(',', $exportuserids); ?>'); }); return false;" class="btn btn-primary btn-block">
+        <div class="col-md-6">
+            <a href="#" class="btn btn-secondary btn-block"
+               onclick="require(['jquery'], function($) { $('#btn_local_eduvidual_export_imported_users').click(); }); return false;">
                 <img src="<?php echo $CFG->wwwroot; ?>/pix/i/export.svg" alt="export" />
                 <?php echo get_string('export', 'local_eduvidual'); ?>
             </a>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-6">
             <a href="<?php echo $CFG->wwwroot . '/local/eduvidual/pages/manage_userlists.php?orgid=' . $org->orgid; ?>" target="_blank" class="btn btn-secondary btn-block">
                 <img src="<?php echo $CFG->wwwroot; ?>/pix/t/print.svg" alt="print" />
                 <?php echo get_string('manage:users:printcards', 'local_eduvidual'); ?>
             </a>
         </div>
     </div>
+
     <form action="<?php echo $CFG->wwwroot; ?>/local/eduvidual/pages/sub/manage_usersdownload.php" method="post" enctype="multipart/form-data" class="no-spinner">
         <input type="hidden" name="orgid" value="<?php echo $org->orgid; ?>" />
         <input type="hidden" name="act" value="users" />
@@ -213,6 +210,21 @@ if (optional_param('datavalidated', 0, PARAM_INT) == 1) {
         </table>
         <?php echo $helper->print_hidden_form(); ?>
     </form>
+    <div class="fitem row">
+        <div class="col-md-6">
+            <a href="#" class="btn btn-secondary btn-block" id="btn_local_eduvidual_export_imported_users"
+               onclick="require(['local_eduvidual/manager'], function(M) { M.exportUserPopup('<?php echo $org->orgid; ?>', '<?php echo implode(',', $exportuserids); ?>'); }); return false;">
+                <img src="<?php echo $CFG->wwwroot; ?>/pix/i/export.svg" alt="export" />
+                <?php echo get_string('export', 'local_eduvidual'); ?>
+            </a>
+        </div>
+        <div class="col-md-6">
+            <a href="<?php echo $CFG->wwwroot . '/local/eduvidual/pages/manage_userlists.php?orgid=' . $org->orgid; ?>" target="_blank" class="btn btn-secondary btn-block">
+                <img src="<?php echo $CFG->wwwroot; ?>/pix/t/print.svg" alt="print" />
+                <?php echo get_string('manage:users:printcards', 'local_eduvidual'); ?>
+            </a>
+        </div>
+    </div>
     <?php
 } elseif (isset($_FILES['local_eduvidual_manage_usersimport'])) {
     $filetype = strtolower(substr($_FILES['local_eduvidual_manage_usersimport']['name'], strpos($_FILES['local_eduvidual_manage_usersimport']['name'], '.')));
