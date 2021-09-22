@@ -41,7 +41,8 @@ function local_eduvidual_after_config() {
     $PAGE->add_body_class('theme-' . $CFG->theme);
     // Check for particular scripts, whose output has to be protected.
     $scripts = array(
-        '/enrol/manual/manage.php', '/question/category.php', '/question/edit.php',
+        '/enrol/manual/manage.php', '/mod/jazzquiz/edit.php', '/mod/activequiz/edit.php',
+        '/question/category.php', '/question/edit.php',
         '/question/export.php', '/user/selector/search.php'
     );
     $script = str_replace($CFG->dirroot, '', $_SERVER["SCRIPT_FILENAME"]);

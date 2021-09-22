@@ -116,6 +116,14 @@ class lib_wshelper {
 
         echo $dom->saveHTML();
     }
+    private static function buffer_mod_activequiz_edit($buffer) {
+        $buffer = self::question_filter_select($buffer);
+        echo $buffer;
+    }
+    private static function buffer_mod_jazzquiz_edit($buffer) {
+        $buffer = self::question_filter_select($buffer);
+        echo $buffer;
+    }
     private static function buffer_question_category($buffer) {
         global $DB, $USER;
 
@@ -198,65 +206,7 @@ class lib_wshelper {
         self::buffer_question_edit($buffer);
     }
     private static function buffer_question_edit($buffer) {
-        global $DB, $USER;
-
-        $managed_qcats = explode(",", get_config('local_eduvidual', 'questioncategories'));
-        $orgs = \local_eduvidual\locallib::get_organisations(null, false);
-        $orgids = [];
-        foreach ($orgs as $org) {
-            $orgids[] = $org->orgid;
-        }
-
-        $strstart = '<optgroup label="' . get_string('coresystem') . '">';
-        $strend = '</optgroup>';
-        $posstart = strpos($buffer, $strstart);
-        $posend = strpos($buffer, $strend, $posstart);
-
-        $parts = array(
-            substr($buffer, 0, $posstart),
-            substr($buffer, $posstart, $posend-$posstart+strlen($strend)),
-            substr($buffer, $posend+strlen($strend))
-        );
-
-        if (!empty($parts[0]) && !empty($parts[1]) && !empty($parts[2])) {
-            $parts[1] = mb_convert_encoding($parts[1], 'HTML-ENTITIES', "UTF-8");
-            $doc = new \DOMDocument();
-            $doc->loadHTML($parts[1], LIBXML_NOWARNING | LIBXML_NOERROR);
-
-            $options = $doc->getElementsByTagName('option');
-
-            $remove = false;
-            $removeList = array();
-            for ($a = 0; $a < $options->length; $a++) {
-                $label = $options->item($a)->nodeValue;
-                $label2 = ltrim($label, " \t\n\r\0\x0B\xC2\xA0");
-                $depth = (strlen($label) - strlen($label2))/6;
-                if ($depth == 1) { // This is a core category.
-                    $value = explode(',', $options->item($a)->getAttribute('value'));
-                    if (!empty($value[0])) {
-                        $catid = $value[0];
-                        $remove = true;
-                        if (in_array($catid, $managed_qcats)) {
-                            $chk = $DB->get_record('local_eduvidual_userqcats', array('userid' => $USER->id, 'categoryid' => $catid));
-                            $remove = empty($chk->id);
-                        } elseif (in_array($label2, $orgids)) {
-                            $remove = false;
-                        }
-                    }
-                }
-                if ($remove) {
-                    $removeList[] = $options->item($a);
-                }
-            }
-            // Now remove the nodes.
-            foreach($removeList AS $option) {
-                $option->parentNode->removeChild($option);
-            }
-
-            $parts[1] = $doc->saveHTML();
-            $buffer = implode($parts);
-        }
-
+        $buffer = self::question_filter_select($buffer);
         echo $buffer;
     }
     private static function buffer_question_export($buffer) {
@@ -648,5 +598,70 @@ class lib_wshelper {
     private static function override_tool_lp_search_users($result, $params) {
         if (self::$debug) error_log(print_r($result, 1));
         return $result;
+    }
+
+    /**
+     * Assistive function for buffer_mod_jazzquiz_edit and buffer_question_edit
+     */
+    private static function question_filter_select($buffer) {
+        global $DB, $USER;
+
+        $managed_qcats = explode(",", get_config('local_eduvidual', 'questioncategories'));
+        $orgs = \local_eduvidual\locallib::get_organisations(null, false);
+        $orgids = [];
+        foreach ($orgs as $org) {
+            $orgids[] = $org->orgid;
+        }
+
+        $strstart = '<optgroup label="' . get_string('coresystem') . '">';
+        $strend = '</optgroup>';
+        $posstart = strpos($buffer, $strstart);
+        $posend = strpos($buffer, $strend, $posstart);
+
+        $parts = array(
+            substr($buffer, 0, $posstart),
+            substr($buffer, $posstart, $posend-$posstart+strlen($strend)),
+            substr($buffer, $posend+strlen($strend))
+        );
+
+        if (!empty($parts[0]) && !empty($parts[1]) && !empty($parts[2])) {
+            $parts[1] = mb_convert_encoding($parts[1], 'HTML-ENTITIES', "UTF-8");
+            $doc = new \DOMDocument();
+            $doc->loadHTML($parts[1], LIBXML_NOWARNING | LIBXML_NOERROR);
+
+            $options = $doc->getElementsByTagName('option');
+
+            $remove = false;
+            $removeList = array();
+            for ($a = 0; $a < $options->length; $a++) {
+                $label = $options->item($a)->nodeValue;
+                $label2 = ltrim($label, " \t\n\r\0\x0B\xC2\xA0");
+                $depth = (strlen($label) - strlen($label2))/6;
+                if ($depth == 1) { // This is a core category.
+                    $value = explode(',', $options->item($a)->getAttribute('value'));
+                    if (!empty($value[0])) {
+                        $catid = $value[0];
+                        $remove = true;
+                        if (in_array($catid, $managed_qcats)) {
+                            $chk = $DB->get_record('local_eduvidual_userqcats', array('userid' => $USER->id, 'categoryid' => $catid));
+                            $remove = empty($chk->id);
+                        } elseif (in_array($label2, $orgids)) {
+                            $remove = false;
+                        }
+                    }
+                }
+                if ($remove) {
+                    $removeList[] = $options->item($a);
+                }
+            }
+            // Now remove the nodes.
+            foreach($removeList AS $option) {
+                $option->parentNode->removeChild($option);
+            }
+
+            $parts[1] = $doc->saveHTML();
+            $buffer = implode($parts);
+        }
+        return $buffer;
     }
 }
