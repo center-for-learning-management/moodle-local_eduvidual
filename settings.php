@@ -92,4 +92,12 @@ if ($hassiteconfig) {
             PARAM_TEXT
         )
     );
+    $settings->add(
+        new admin_setting_configcheckbox(
+            'local_eduvidual/emailmustbeusername',
+            get_string('settings:emailmustbeusername', 'local_eduvidual'),
+            get_string('settings:emailmustbeusername:description', 'local_eduvidual'),
+            1
+        )
+    );
 }

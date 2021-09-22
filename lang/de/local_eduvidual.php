@@ -604,6 +604,9 @@ $string['role:Remove'] = 'Von Schule entfernen';
 $string['role:Student'] = 'Schüler/in';
 $string['role:Teacher'] = 'Lehrer/in';
 
+$string['settings:emailmustbeusername'] = 'Nutzername = E-Mailadresse';
+$string['settings:emailmustbeusername:description'] = 'Wenn diese Option aktiviert ist, wird local_eduvidual bei Änderung der E-Mailadresse einer Person den Nutzernamen auf denselben Wert ändern. Hinweis: dies funktioniert nur, wenn zusätzlich <i>extendedusernamechars</i> aktiviert wurde!';
+
 $string['start_with_at'] = 'Starte mit einem  "@"-Zeichen';
 $string['supportarea'] = 'Supportbereich';
 $string['supportcourse:title'] = 'Supportkurs';

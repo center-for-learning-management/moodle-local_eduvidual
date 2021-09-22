@@ -610,6 +610,9 @@ $string['role:Remove'] = 'Unenrol from organization';
 $string['role:Student'] = 'Student';
 $string['role:Teacher'] = 'Teacher';
 
+$string['settings:emailmustbeusername'] = 'Map E-Mail to Username';
+$string['settings:emailmustbeusername:description'] = 'If this enabled local_eduvidual will ensure, that the username corresponds to the E-Mailaddress. Attention: This only works, if <i>extendedusernamechars</i> is enabled too!';
+
 $string['start_with_at'] = 'Start with an  "@"-sign';
 $string['supportarea'] = 'Supportarea';
 $string['supportcourse:title'] = 'Supportcourse';
