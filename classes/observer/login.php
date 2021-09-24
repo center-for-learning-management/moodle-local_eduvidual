@@ -39,8 +39,8 @@ class login {
         \local_eduvidual\locallib::get_user_secret($user->id);
         //error_log(json_encode($user, JSON_NUMERIC_CHECK));
 
-        if ($user->id != $user->idnumber) {
-            $user->idnumber = $user->id;
+        if ($user->id != intval($user->idnumber)) {
+            $user->idnumber = str_pad($user->id, 7, 0, STR_PAD_LEFT);
             $DB->set_field('user', 'idnumber', $user->idnumber, array('id' => $user->id));
         }
 
