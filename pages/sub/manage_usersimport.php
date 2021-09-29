@@ -24,6 +24,8 @@
 
 defined('MOODLE_INTERNAL') || die;
 
+ini_set('max_execution_time', 0);
+
 if (\local_eduvidual\locallib::get_orgrole($org->orgid) != "Manager" && !is_siteadmin()) {
     ?>
     <p class="alert alert-warning"><?php echo get_string('js:missing_permission', 'local_eduvidual'); ?></p>
