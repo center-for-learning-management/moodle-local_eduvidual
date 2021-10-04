@@ -113,7 +113,6 @@ $string['admin:licencesystem:disabled'] = 'Licencesystem was disabled';
 $string['admin:licencesystem:enabled'] = 'Licencesystem was enabled';
 $string['admin:ltiresourcekey:title'] = 'Default LTI Resource Key';
 $string['admin:ltiresourcekey:description'] = 'When manageing LTI Resources through this tool you should ensure, that you are using the same resource key for the same platforms. You can specify the default value here.';
-$string['admin:map'] = 'Interactive Org-Map';
 $string['admin:map:both'] = 'eduvidual + LPF';
 $string['admin:map:count_invisibles'] = 'Count invisible markers';
 $string['admin:map:eduv'] = 'eduvidual only';
@@ -125,6 +124,7 @@ $string['admin:map:google:apikey:description'] = '<a href="https://cloud.google.
 $string['admin:map:mapquest:apikey'] = 'MapQuest API Key';
 $string['admin:map:mapquest:apikey:description'] = '<a href="https://www.mapquest.com" target="_blank">MapQuest</a> is used to search for GPS coordinates of organizations. If you want to use this feature please register (at least a free plan) and insert the API Key here.';
 $string['admin:map:nominatim:directly'] = 'If you do not want to use MapQuest, you can also use Nominatim-Service directly, which has some certain limitations according the amount and speed of requests.';
+$string['admin:map:title'] = 'Interactive Org-Map';
 $string['admin:module:filearealabel'] = '';
 $string['admin:module:files:send'] = 'Store module';
 $string['admin:module:generaldata'] = 'General Data';

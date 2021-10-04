@@ -113,7 +113,6 @@ $string['admin:licencesystem:disabled'] = 'Lizenzsystem wurde deaktiviert';
 $string['admin:licencesystem:enabled'] = 'Lizenzsystem wurde aktiviert';
 $string['admin:ltiresourcekey:title'] = 'Standard LTI Resource Key';
 $string['admin:ltiresourcekey:description'] = 'Falls Sie LTI Ressourcen mit eduvidual verwalten, stellen Sie sicher, dass Sie überall denselben LTI Resource Key setzen. Sie können den Standardwert hier setzen.';
-$string['admin:map'] = 'Interaktive Schulkarte';
 $string['admin:map:both'] = 'eduvidual + lernplattform';
 $string['admin:map:count_invisibles'] = 'Unsichtbare Punkte zählen';
 $string['admin:map:eduv'] = 'Nur eduvidual.at';
@@ -125,6 +124,7 @@ $string['admin:map:google:apikey:description'] = '<a href="https://cloud.google.
 $string['admin:map:mapquest:apikey'] = 'MapQuest API Key';
 $string['admin:map:mapquest:apikey:description'] = '<a href="https://www.mapquest.com" target="_blank">MapQuest</a> wird genutzt, um GPS Koordinaten von Schulen zu erfragen. Wenn Sie dieses Feature verwenden möchten, müssen Sie sich registrieren und den API Key hier eingeben.';
 $string['admin:map:nominatim:directly'] = 'Wenn Sie MapQuest nicht verwenden möchten, können Sie den Nominatim-Service auch direkt abfragen. Hierbei kommt es aber zu einer Limitierung bei der Menge und Geschwindigkeit von Abfragen.';
+$string['admin:map:title'] = 'Interaktive Schulkarte';
 $string['admin:module:filearealabel'] = '';
 $string['admin:module:files:send'] = 'Modul speichern';
 $string['admin:module:generaldata'] = 'Allgemein Daten';
