@@ -113,18 +113,20 @@ class local_eduvidual_external_manager extends external_api {
             $mform = new local_eduvidual_manage_user_form();
             $errors = $mform->validation($params, null);
             if (count($errors) == 0) {
-                $user = $DB->get_record('user', array('id' => $params['userid']));
-                $user->firstname = $params['firstname'];
-                $user->lastname = $params['lastname'];
-                $user->email = $params['email'];
-                $user->username = str_replace($dummydomain, '', $user->email);
+                $DB->set_field('user', 'firstname', $params['firstname'], [ 'id' => $params['userid']]);
+                $DB->set_field('user', 'lastname', $params['lastname'], [ 'id' => $params['userid']]);
+                $DB->set_field('user', 'email', $params['email'], [ 'id' => $params['userid']]);
 
-                $otheru = $DB->get_record('user', array('username' => $user->email));
+                $sql = "SELECT id
+                            FROM {user}
+                            WHERE username LIKE ?
+                                OR email LIKE ?";
+                $params = [ $user->email, $user->email ];
+                $otheru = $DB->get_record_sql($sql, $params);
                 if (empty($otheru->id)) {
-                    $user->username = $user->email;
+                    $DB->set_field('user', 'username', $params['email'], [ 'id' => $params['userid']]);
                 }
 
-                $DB->update_record('user', $user);
                 $reply->message = '';
                 $reply->subject = get_string('store:success', 'local_eduvidual');
                 $reply->success = 1;
