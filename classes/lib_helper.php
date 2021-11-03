@@ -392,7 +392,7 @@ class lib_helper {
                     if (empty($entry[0])) continue;
                     $o = array();
                     foreach ($fields AS $k => $field) {
-                        $o[$field] = (!empty($entry[$k])) ? $entry[$k] : '';
+                        $o[$field] = (!empty($entry[$k])) ? trim($entry[$k]) : '';
                     }
                     if (empty($o['roles']) || strpos($o['roles'], $membership->role) > -1) {
                         $orgmenu['entries'][] = $o;
