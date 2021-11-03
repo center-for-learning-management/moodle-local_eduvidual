@@ -24,6 +24,8 @@
 
 defined('MOODLE_INTERNAL') || die;
 
+require_once("{$CFG->libdir}/phpspreadsheet/vendor/autoload.php");
+
 class local_eduvidual_lib_import {
     var $fields = array();
     var $rowobjects = array();
