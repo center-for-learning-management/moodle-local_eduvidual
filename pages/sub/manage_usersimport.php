@@ -122,10 +122,10 @@ if (optional_param('datavalidated', 0, PARAM_INT) == 1) {
                 if (!empty($user->password)) {
                     update_internal_user_password($u, $user->password, false);
                 }
-                if (!empty($user->forcechangepassword) && $user->forcechangepassword == "1") {
+                if (!empty($user->forcechangepassword) && intval($user->forcechangepassword) == 1) {
                     set_user_preference('auth_forcepasswordchange', true, $u->id);
                 }
-                if (!empty($user->forcechangepassword) && $user->forcechangepassword == "-1") {
+                if (!empty($user->forcechangepassword) && intval($user->forcechangepassword) == -1) {
                     set_user_preference('auth_forcepasswordchange', false, $u->id);
                 }
             } else {
@@ -150,10 +150,10 @@ if (optional_param('datavalidated', 0, PARAM_INT) == 1) {
                     $user->password = $user->secret;
                 }
                 update_internal_user_password($u, $user->password, false);
-                if (!empty($user->forcechangepassword) && $user->forcechangepassword == "1") {
+                if (!empty($user->forcechangepassword) && intval($user->forcechangepassword) == 1) {
                     set_user_preference('auth_forcepasswordchange', true, $u->id);
                 }
-                if (!empty($user->forcechangepassword) && $user->forcechangepassword == "-1") {
+                if (!empty($user->forcechangepassword) && intval($user->forcechangepassword) == -1) {
                     set_user_preference('auth_forcepasswordchange', false, $u->id);
                 }
 
