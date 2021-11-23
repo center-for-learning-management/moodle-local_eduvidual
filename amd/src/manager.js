@@ -364,6 +364,21 @@ define(['jquery', 'core/ajax', 'core/modal_events', 'core/modal_factory', 'core/
         /**
          * Reset the password of users.
          */
+        setpwforcechange: function(){
+            var orgid = $('#local_eduvidual_manage_adduser').attr('data-orgid');
+            var role = $('#local_eduvidual_manage_setuserrole_role').val();
+            var secrets = [];
+            $('#local_eduvidual_manage_setuserrole_user option:selected:not([value=""])').each(function(){
+                secrets.push($(this).val());
+            });
+            if (secrets.length == 0) return;
+            require(['local_eduvidual/main'], function(MAIN) {
+                MAIN.connect({ module: 'manage', act: 'setpwforcechange', orgid: orgid, secrets: secrets }, { signalItem: $('#local_eduvidual_manage_setuserforcechange') });
+            });
+        },
+        /**
+         * Reset the password of users.
+         */
         setpwreset: function(){
             var orgid = $('#local_eduvidual_manage_adduser').attr('data-orgid');
             var role = $('#local_eduvidual_manage_setuserrole_role').val();

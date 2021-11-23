@@ -466,6 +466,40 @@ switch ($act) {
         }
         $reply['status'] = 'ok';
     break;
+    case 'setpwforcechange':
+        if (!isset($secrets)) {
+            $secrets = optional_param_array('secrets', NULL, PARAM_TEXT);
+        }
+        $resetfor = array("manual", "email");
+        $reply['org'] = $org;
+        $reply['updated'] = array();
+        $reply['failed'] = array();
+
+        foreach ($secrets AS $secret_) {
+            $secret = explode('#', $secret_);
+            $chkuser = $DB->get_record('user', array('id' => $secret[0]));
+            if (isset($chkuser) && $chkuser->id == $secret[0]) {
+                $dbsecret = \local_eduvidual\locallib::get_user_secret($secret[0]);
+    			if ($dbsecret == $secret[1]) {
+                    // Secret is ok, check account type.
+                    if (in_array($chkuser->auth, $resetfor)) {
+                        set_user_preference('auth_forcepasswordchange', true, $chkuser->id);
+                        $reply['updated'][] = fullname($chkuser) . ' => <strong>' . $secret[1] . '</strong>';
+                    } else {
+                        $reply['failed'][] = $secret_ . ': ' . $chkuser->auth;
+                    }
+    			} else {
+                    $reply['failed'][] = $secret_ . ': wrong secret';
+    			}
+            } else {
+                $reply['failed'][] = $secret_ . ': no such user';
+            }
+        }
+
+        if (count($reply['failed']) == 0) {
+            $reply['status'] = 'ok';
+        }
+    break;
     case 'setpwreset':
         if (!isset($secrets)) {
             $secrets = optional_param_array('secrets', NULL, PARAM_TEXT);

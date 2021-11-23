@@ -87,12 +87,24 @@
             		<option value="Teacher">{{#str}} role:Teacher, local_eduvidual {{/str}}</option>
             		<option value="Manager">{{#str}} role:Manager, local_eduvidual {{/str}}</option>
             	</select>
-            	<input type="button" value="{{#str}} manage:users:setrole, local_eduvidual {{/str}}" class="btn btn-primary btn-block"
-                    onclick="require(['local_eduvidual/manager'], function(MANAGER) { MANAGER.setuserrole(); });" />
+                <a href="#" class="btn btn-primary btn-block"
+                    onclick="require(['local_eduvidual/manager'], function(MANAGER) { MANAGER.setuserrole(); }); return false;">
+                    <i class="fa fa-users"></i>
+                    {{#str}} manage:users:setrole, local_eduvidual {{/str}}
+                </a>
                 <hr />
-                <input type="button" value="{{#str}} manage:users:setpwreset, local_eduvidual {{/str}}" class="btn btn-primary btn-block"
-                    onclick="require(['local_eduvidual/manager'], function(MANAGER) { MANAGER.setpwreset(); });" />
                 <p><small>{{#str}} manage:users:setpwreset:description, local_eduvidual {{/str}}</small></p>
+                <a href="#" class="btn btn-primary btn-block"
+                    onclick="require(['local_eduvidual/manager'], function(MANAGER) { MANAGER.setpwforcechange(); }); return false;">
+                    <i class="fa fa-key"></i>
+                    {{#str}} manage:users:setpwforcechange, local_eduvidual {{/str}}
+                </a>
+                <a href="#" class="btn btn-primary btn-block"
+                    onclick="require(['local_eduvidual/manager'], function(MANAGER) { MANAGER.setpwreset(); }); return false;">
+                    <i class="fa fa-undo"></i>
+                    {{#str}} manage:users:setpwreset, local_eduvidual {{/str}}
+                </a>
+
             </fieldset>
         </div>
     </div>

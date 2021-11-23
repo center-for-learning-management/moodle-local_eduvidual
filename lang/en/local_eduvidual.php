@@ -505,6 +505,7 @@ $string['manage:userlist:name'] = 'Users of {$a->name}';
 $string['manage:users:description'] = 'To change the role of a certain user just select the user from the search box and choose the role. You can also <a href="{$a->wwwroot}/local/eduvidual/pages/manage_userlists.php?orgid={$a->orgid}&cohort=___all" target="_blank">print / export all users of your organization</a>.';
 $string['manage:users:entersecrets'] = 'Enter Accesscard-ID(s)';
 $string['manage:users:printcards'] = 'Print accesscards';
+$string['manage:users:setpwforcechange'] = 'Force change of password';
 $string['manage:users:setpwreset'] = 'Reset password';
 $string['manage:users:setpwreset:description'] = 'Resetting passwords will only work for manually created accounts and will <strong>NOT</strong> work for Microsoft-, MNET- or other accounts. This function will reset the password on the Accesscard-ID (red text on the accesscard).';
 $string['manage:users:setpwreset:failed'] = 'Failed';

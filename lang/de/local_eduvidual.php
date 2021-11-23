@@ -500,6 +500,7 @@ $string['manage:userlist:name'] = 'Nutzer/innen von {$a->name}';
 $string['manage:users:description'] = 'Um die Rolle einzelner Nutzer/innen zu ändern wählen Sie diesen bitte aus dem Suchfeld aus und wählen Sie die Rolle. Sie können außerdem <a href="{$a->wwwroot}/local/eduvidual/pages/manage_userlists.php?orgid={$a->orgid}&cohort=___all" target="_blank">alle Nutzer/innen Ihrer Organisation drucken / exportieren</a>.';
 $string['manage:users:entersecrets'] = 'Geben Sie die Zugangskarten-ID/s ein';
 $string['manage:users:printcards'] = 'Zugangskarten drucken';
+$string['manage:users:setpwforcechange'] = 'Kennwortänderung erzwingen';
 $string['manage:users:setpwreset'] = 'Passwort zurücksetzen';
 $string['manage:users:setpwreset:description'] = 'Passwörter zurücksetzen funktioniert nur mit manuell erstellten Konten. Bei Microsoft-, MNet- oder anderen Konten hat die Funktion keinen Effekt. Diese Funktion setzt das Passwort auf den Code der Zugangskarte (rot geschrieben) der jeweiligen Nutzer/innen.';
 $string['manage:users:setpwreset:failed'] = 'Fehler';
