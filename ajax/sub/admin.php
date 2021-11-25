@@ -134,13 +134,8 @@ if (!is_siteadmin()) {
                     $DB->update_record('local_eduvidual_org', $org);
                     $reply['status'] = 'ok';
                 } else {
-                    $params['subcats1'] = get_string('createcourse:subcat1:defaults', 'local_eduvidual');
-                    $params['subcats2'] = '';
-                    $params['subcats3'] = '';
-                    $params['customcss'] = '';
-
-                    $id = $DB->insert_record('local_eduvidual_org', $params, true);
-                    if ($id > 0) {
+                    $org = \local_eduvidual\lib_register::create_org((object) $params);
+                    if ($org->id > 0) {
                         $reply['status'] = 'ok';
                     }
                 }

@@ -27,6 +27,28 @@ defined('MOODLE_INTERNAL') || die;
 
 class lib_register {
     /**
+     * Create new organisation based on data.
+     * @param orgdata object containing required information.
+     * @return object $org
+     */
+    public static function create_org($orgdata) {
+        global $DB;
+        $fields = [ 'orgid', 'name', 'mail', 'phone', 'street', 'zip', 'city', 'country' ];
+        for ($a = 0; $a < count($fields); $a++) {
+            if (empty($orgdata->{$fields[$a]})) {
+                throw new \moodle_exception('missing required data', 'local_eduvidual');
+            }
+        }
+
+        $orgdata->subcats1 = get_string('createcourse:subcat1:defaults', 'local_eduvidual');
+        $orgdata->subcats2 = '';
+        $orgdata->subcats3 = '';
+        $orgdata->customcss = '';
+
+        $orgdata->id = $DB->insert_record('local_eduvidual_org', $orgdata);
+        return $orgdata;
+    }
+    /**
      * Create a category for the org if none exists or it was deleted.
      * @param org as object.
      */
