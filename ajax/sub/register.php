@@ -122,66 +122,14 @@ if (isloggedin() && !isguestuser()) {
                 $org = $DB->get_record('local_eduvidual_org', array('orgid' => $orgid, 'authtan' => $authtan));
 
                 if (isset($org->orgid) && $org->orgid == $orgid) {
-                    $org->name = $name;
-                    $DB->set_field('local_eduvidual_org', 'name', $name, array('orgid' => $org->orgid));
-
-                    //require_once($CFG->dirroot . '/lib/coursecatlib.php');
-                    require_once($CFG->dirroot . '/course/externallib.php');
-
-                    if (empty($org->categoryid)) {
-                        // Create a course category for this org
-                        $data = new \stdClass();
-                        $data->name = $org->name;
-                        $data->description = $org->name;
-                        $data->idnumber = $org->orgid;
-                        $category = \core_course_category::create($data);
-                        $org->categoryid = $category->id;
-                        $DB->set_field('local_eduvidual_org', 'categoryid', $org->categoryid, array('orgid' => $org->orgid));
-                    }
+                    \local_eduvidual\lib_register::set_orgname($org, $name);
+                    \local_eduvidual\lib_register::create_orgcategory($org);
+                    \local_eduvidual\lib_register::create_orgcourses($org);
 
                     $reply["name"] = $org->name;
                     $reply["categoryid"] = $org->categoryid;
-
-                    if (empty($org->courseid)) {
-                        // Create an org-course for this org
-                        $orgcoursebasement = get_config('local_eduvidual', 'orgcoursebasement');
-                        $course = \local_eduvidual\lib_helper::duplicate_course($orgcoursebasement, 'Digitaler Schulhof (' . $org->orgid . ')', $org->orgid, $org->categoryid, 1);
-                        $org->courseid = $course->id;
-                        $DB->set_field('local_eduvidual_org', 'courseid', $org->courseid, array('orgid' => $org->orgid));
-                        $course->summary = '<p>Digitaler Schulhof der Schule ' . $org->name . '</p>';
-                        $DB->set_field('course', 'summary', $course->summary, array('id' => $course->id));
-                    }
-                    if (empty($org->supportcourseid) && file_exists($CFG->dirroot . '/local/edusupport/version.php')) {
-                        // Create a support course for this org.
-                        $template = get_config('local_eduvidual', 'supportcourse_template');
-                        if (!empty($template)) {
-                            // Duplicate our template.
-                            $supportcourse = \local_eduvidual\lib_helper::duplicate_course($template, 'Helpdesk (' . $org->name . ')', 'helpdesk_' . $org->orgid, $org->categoryid, 1);
-                            if (!empty($supportcourse->id)) {
-                                $DB->set_field('local_eduvidual_org', 'supportcourseid', $supportcourse->id, array('orgid' => $org->orgid));
-                                // Remove news forum in that course.
-                                $sql = "SELECT * FROM {forum} WHERE type='news')";
-                                $newsforums = $DB->get_records('forum', array('type' => 'news', 'course' => $supportcourse->id));
-                                foreach ($newsforums as $newsforum) {
-                                    $cm = \get_coursemodule_from_instance('forum', $newsforum->id);
-                                    if (!empty($cm->id)) {
-                                        \course_delete_module($cm->id);
-                                    }
-                                }
-                                $sql = "SELECT * FROM {forum} WHERE course=? AND type='general'";
-                                $forums = $DB->get_records_sql($sql, array($supportcourse->id));
-                                foreach ($forums as $forum) {
-                                    \local_edusupport\lib::supportforum_enable($forum->id);
-                                    if ($org->orgid > 500000 && $org->orgid < 600000) {
-                                        // School from Salzburg
-                                        \local_edusupport\lib::supportforum_setdedicatedsupporter($forum->id, 2098);
-                                    }
-                                }
-                            }
-
-                        }
-                    }
-
+                    $reply["ccourseid"] = $org->courseid;
+                    $reply["supportcourseid"] = $org->supportcourseid;
                     $reply['roleset'] = \local_eduvidual\lib_enrol::role_set($USER->id, $org, 'Manager');
 
                     if (!empty($org->courseid)) {
