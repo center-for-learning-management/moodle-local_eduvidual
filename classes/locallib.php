@@ -290,7 +290,7 @@ class locallib {
      * @param role Specify another role that is used as filter (eg. Teacher), asterisk for any
      * @param allforadmin returns all organisations for website admin, default: true.
     **/
-    public static function get_organisations($role="", $allforadmin=true){
+    public static function get_organisations($role="*", $allforadmin=true){
         global $DB, $USER;
         if ($allforadmin && is_siteadmin()) {
         	return $DB->get_records_sql('SELECT * FROM {local_eduvidual_org} WHERE authenticated>0 ORDER BY orgid ASC', array());

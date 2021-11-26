@@ -21,107 +21,128 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+ini_set('max_execution_time', 0);
+
 require_once('../../../config.php');
 require_login();
 
 require_once($CFG->libdir . '/adminlib.php');
 
+$mail = optional_param('mail', '', PARAM_EMAIL);
+$code = optional_param('code', '', PARAM_TEXT);
 
-$PAGE->set_context(context_system::instance());
-$PAGE->set_pagelayout('mydashboard');
+$ctx = \context_user::instance($USER->id);
+$PAGE->set_context($ctx);
+//$PAGE->set_pagelayout('mydashboard');
 $PAGE->set_url('/local/eduvidual/pages/user_merge.php', array());
 $PAGE->set_title(get_string('user:merge_accounts', 'local_eduvidual'));
 $PAGE->set_heading(get_string('user:merge_accounts', 'local_eduvidual'));
 //$PAGE->set_cacheable(false);
 
+//$PAGE->navbar->add(get_string('user:merge_accounts', 'local_eduvidual'), $PAGE->url);
+
 echo $OUTPUT->header();
 
-$users = $DB->get_records('user', array('email' => $USER->email, 'suspended' => 0));
-$keep = optional_param('user_keep', 0, PARAM_INT);
-if ($keep > 0) {
-    $user_to_keep = $DB->get_record('user', array('id' => $keep));
-    echo $OUTPUT->render_from_template(
-        'local_eduvidual/user_merge_keep',
-        $user_to_keep
-    );
+if (!empty($mail) && empty($code)) {
+    $users = array_values($DB->get_records('user', [ 'email' => $mail, 'suspended' => 0 ]));
+    if (count($users) == 0) {
+        $params = [
+            'content' => get_string('user:merge_accounts:mailnotfound', 'local_eduvidual'),
+            'type' => 'danger',
+        ];
+        echo $OUTPUT->render_from_template('local_eduvidual/alert', $params);
+        $mail = '';
+    } elseif (count($users) > 1) {
+        $params = [
+            'content' => get_string('user:merge_accounts:mailmultiplefound', 'local_eduvidual'),
+            'type' => 'danger',
+        ];
+        echo $OUTPUT->render_from_template('local_eduvidual/alert', $params);
+        $mail = '';
+    } else {
+        $cache = \cache::make('local_eduvidual', 'session');
+        $sendcode = uniqid(rand());
+        $cache->set('user_merge_code', $sendcode);
+        $cache->set('user_merge_mail', $mail);
+        $cache->set('user_merge_user', $users[0]->id);
+        $url = new \moodle_url('/local/eduvidual/pages/user_merge.php', [ 'mail' => $mail, 'code' => $sendcode]);
 
-    require_once($CFG->dirroot . '/admin/tool/mergeusers/lib/autoload.php');
-    //may abort execution if database not supported, for security
-    $mut = new MergeUserTool();
-    // Search tool for searching for users and verifying them
-    $mus = new MergeUserSearch();
+        $params = [
+            'code' => $sendcode,
+            'fullname' => \fullname($USER),
+            'url' => $url->__toString(),
+        ];
+        $messagehtml = get_string('user:merge_accounts:mailtext', 'local_eduvidual', $params);
+        $messagetext = html_to_text($messagehtml);
 
-    foreach ($users AS $user) {
-        // Just to make sure we only touch users with matching mailaddresses
-        if ($user->email != $USER->email) continue;
-        // Continue when this is the user we want to keep
-        if ($user->id == $keep) continue;
-        echo $OUTPUT->render_from_template(
-            'local_eduvidual/user_merge_merge',
-            $user
-        );
-        list($fromuser, $oumessage) = $mus->verify_user($user->id, 'id');
-        list($touser, $numessage) = $mus->verify_user($user_to_keep->id, 'id');
-        if ($fromuser === NULL || $touser === NULL) {
-            echo $OUTPUT->render_from_template(
-                'local_eduvidual/alert',
-                (object) array('content' => $oumessage . '<br />' . $numessage, 'type' => 'warning')
-            );
-        } else {
-            // Merge the users
-            $log = array();
-            $success = true;
-            list($success, $log, $logid) = $mut->merge($touser->id, $fromuser->id);
-            $fromusero = $DB->get_record('user', array('id' => $fromuser->id));
-            $fromusero->email .= '.' . time();
-            $fromusero->deleted = 1;
-            $DB->update_record('user', $fromusero);
-        }
-    }
-    if ($USER->id != $user_to_keep->id && $USER->email == $user_to_keep->email) {
-        // Login as new user
-        complete_user_login($user_to_keep);
-        redirect($CFG->wwwroot . '/my');
+        $subject = get_string('user:merge_accounts:mailsubject' , 'local_eduvidual');
+
+        $fromuser = \core_user::get_support_user();
+
+        email_to_user($USER, $fromuser, $subject, $messagetext, $messagehtml, "", true);
     }
 }
 
-$params = (object) array(
-    'dashboard' => $CFG->wwwroot . '/my',
-    'users' => array()
-);
-$users = $DB->get_records('user', array('email' => $USER->email, 'suspended' => 0));
-if (count(array_keys($users)) > 1) {
-    foreach($users AS $user) {
-        switch($user->auth) {
-            case 'manual': case 'email': $user->loginhint = 'Direct Login'; break;
-            case 'lti': $user->loginhint = 'From External System via LTI'; break;
-            case 'mnet':
-                $user->loginhint = 'Via ';
-                $mnet = $DB->get_record('mnet_host', array('id' => $user->mnethostid));
-                $user->loginhint .= $mnet->name . ' (' . $mnet->wwwroot . ')';
-            break;
-            case 'oauth2':
-                $user->loginhint = 'Via ';
-                $issuer = $DB->get_records_sql('SELECT oi.id,oi.name FROM {oauth2_issuer} oi,{auth_oauth2_linked_login} oll WHERE oi.id=oll.issuerid AND oll.userid=?', array($user->id));
-                foreach($issuer AS $o) {
-                    $user->loginhint .= $o->name;
-                }
-            break;
+if (!empty($mail) && !empty($code)) {
+    $cache = \cache::make('local_eduvidual', 'session');
+    $sessioncode = $cache->get('user_merge_code');
+    $sessionmail = $cache->get('user_merge_mail');
+    $sessionuser = $cache->get('user_merge_user');
+
+    if ($sessioncode != $code || $sessionmail != $mail) {
+        $params = [
+            'content' => get_string('user:merge_accounts:invalidcodeormail', 'local_eduvidual'),
+            'type' => 'danger',
+        ];
+        echo $OUTPUT->render_from_template('local_eduvidual/alert', $params);
+    } else {
+        $params = [
+            'content' => get_string('user:merge_accounts:mergestarted', 'local_eduvidual'),
+            'type' => 'info',
+        ];
+        echo $OUTPUT->render_from_template('local_eduvidual/alert', $params);
+        flush();
+
+        $oldroles = \local_eduvidual\locallib::get_user_memberships($sessionuser);
+        foreach ($oldroles as $oldrole) {
+            \local_eduvidual\lib_enrol::role_set($USER->id, $oldrole->orgid, $oldrole->role);
         }
-        $params->users[] = $user;
+
+        require_once($CFG->dirroot . '/admin/tool/mergeusers/lib/autoload.php');
+        //may abort execution if database not supported, for security
+        $mut = new MergeUserTool();
+        // Search tool for searching for users and verifying them
+        $mus = new MergeUserSearch();
+        $mus->verify_user($sessionuser, 'id');
+        $mus->verify_user($USER->id, 'id');
+
+        ob_start();
+        $mut->merge($USER->id, $sessionuser);
+        $debug = ob_get_contents();
+        ob_end_clean();
+
+        $params = [
+            'content' => get_string('user:merge_accounts:mergefinished', 'local_eduvidual'),
+            'type' => 'success',
+        ];
+        echo $OUTPUT->render_from_template('local_eduvidual/alert', $params);
+
+        $cache->delete('user_merge_code');
+        $cache->delete('user_merge_mail');
+        $cache->delete('user_merge_user');
+
+        $mail = '';
+        $code = '';
     }
 
-
-    echo $OUTPUT->render_from_template(
-        'local_eduvidual/user_merge',
-        $params
-    );
-} else {
-    echo $OUTPUT->render_from_template(
-        'local_eduvidual/user_merge_ok',
-        $params
-    );
 }
 
+$params = [
+    'code' => $code,
+    'mail' => $mail,
+    'user' => $USER,
+];
+
+echo $OUTPUT->render_from_template('local_eduvidual/user_merge_form', $params);
 
 echo $OUTPUT->footer();

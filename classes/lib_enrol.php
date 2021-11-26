@@ -127,7 +127,8 @@ class lib_enrol {
                 // We are currently Manager but should be degraded. Ensure, we are not the last manager of this org!
                 $allmanagers = $DB->get_records('local_eduvidual_orgid_userid', array('orgid' => $org->orgid, 'role' => 'Manager'));
                 if (count($allmanagers) == 1) {
-                    return;
+                    $reply['error_last_manager'] = 1;
+                    return $reply;
                 }
             }
 
@@ -213,7 +214,6 @@ class lib_enrol {
                     }
                     $reply['status'] = 'ok';
                 }
-
             }
         }
 

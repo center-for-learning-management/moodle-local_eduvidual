@@ -325,10 +325,7 @@ function local_eduvidual_extend_navigation_user_settings($nav, $user, $context, 
             $node->add(get_string('preferences:questioncategories', 'local_eduvidual'), new moodle_url('/local/eduvidual/pages/preferences.php', array('act' => 'qcats', 'userid' => $user->id)));
         }
 
-        $users = $DB->get_records('user', array('email' => $user->email, 'suspended' => 0));
-        if (count($users) > 0) {
-            $node->add(get_string('user:merge_accounts', 'local_eduvidual'), new moodle_url('/local/eduvidual/pages/user_merge.php', array('userid' => $user->id)));
-        }
+        $node->add(get_string('user:merge_accounts', 'local_eduvidual'), new moodle_url('/local/eduvidual/pages/user_merge.php'));
     }
 
 }
