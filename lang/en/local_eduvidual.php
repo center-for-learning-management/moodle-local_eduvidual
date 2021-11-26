@@ -652,7 +652,7 @@ $string['user:merge_accounts:ok:description'] = 'Everything fine - there is only
 $string['user:merge_accounts:mailmultiplefound'] = 'Multiple user accounts with this address were found, please contact the <a href="mailto:support@lernmanagement.at">eduvidual.at-Support</a>.';
 $string['user:merge_accounts:mailnotfound'] = 'No user account with this address was found';
 $string['user:merge_accounts:mailsubject'] = 'Merging eduvidual-Accounts';
-$string['user:merge_accounts:mailtext'] = 'Dear {$a->fullname},<br /><br />you requested to merge your user accounts. Please use the code "<strong>{$a->code}</strong>" to proceed with the merge, or click the following link.<br /><br /><a href="{$a->url}" target="_blank">{$a->url}</a><br /><br />Kind regards,<br /><br />Your team of eduvidual.at"';
+$string['user:merge_accounts:mailtext'] = 'Dear {$a->fullname},<br /><br />you requested to merge your user accounts. Please use the code "<strong>{$a->code}</strong>" to proceed with the merge, or click the following link.<br /><br /><a href="{$a->url}" target="_blank">{$a->url}</a><br /><br />Kind regards,<br /><br />Your team of eduvidual.at';
 $string['user:merge_accounts:merge'] = 'Merge now';
 $string['user:merge_accounts:mergefinished'] = 'Finished merging user accounts.';
 $string['user:merge_accounts:mergestarted'] = 'Starte merging user accounts, please be patient if the process takes some time.';

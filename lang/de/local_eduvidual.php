@@ -644,7 +644,7 @@ $string['user:merge_accounts:invalidcodeormail'] = 'Ungültigen Code oder E-Mail
 $string['user:merge_accounts:mailmultiplefound'] = 'Mehrere Nutzerkonten mit dieser E-Mailadresse wurden gefunden. Bitte wenden Sie sich an den <a href="mailto:support@lernmanagement.at">eduvidual.at-Support</a>.';
 $string['user:merge_accounts:mailnotfound'] = 'Kein Nutzerkonto mit dieser E-Mailadresse gefunden!';
 $string['user:merge_accounts:mailsubject'] = 'eduvidual-Nutzerkonten zusammenlegen';
-$string['user:merge_accounts:mailtext'] = 'Liebe/r {$a->fullname},<br /><br />Sie möchten Ihre Nutzerkonten zusammenlegen. Bitte verwenden Sie den Code "<strong>{$a->code}</strong>", um mit der Zusammenlegung fortzufahren, oder öffnen Sie den folgenden Link:<br /><br /><a href="{$a->url}" target="_blank">{$a->url}</a><br /><br />Mit freundlichen Grüßen,<br /><br />Ihr Team von eduvidual.at"';
+$string['user:merge_accounts:mailtext'] = 'Liebe/r {$a->fullname},<br /><br />Sie möchten Ihre Nutzerkonten zusammenlegen. Bitte verwenden Sie den Code "<strong>{$a->code}</strong>", um mit der Zusammenlegung fortzufahren, oder öffnen Sie den folgenden Link:<br /><br /><a href="{$a->url}" target="_blank">{$a->url}</a><br /><br />Mit freundlichen Grüßen<br /><br />Ihr Team von eduvidual.at';
 $string['user:merge_accounts:merge'] = 'Konten zusammenlegen';
 $string['user:merge_accounts:mergefinished'] = 'Zusammenlegung der Nutzerkonten abgeschlossen.';
 $string['user:merge_accounts:mergestarted'] = 'Zusammenlegung der Nutzerkonten gestartet, wir bitten um Geduld, bis der Vorgang abgeschlossen ist.';
