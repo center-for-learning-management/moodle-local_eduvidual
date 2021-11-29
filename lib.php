@@ -229,6 +229,16 @@ function local_eduvidual_before_standard_html_head() {
 
     $RET[] = implode("\n", $inject_styles);
 
+    // Favicon & Apple Touch Icons
+    $RET[] = '<link rel="icon" href="' . $CFG->wwwroot . '/local/eduvidual/pix/favicons/favicon.ico" type="image/x-icon">';
+    $RET[] = '<link rel="apple-touch-icon" href="' . $CFG->wwwroot . '/local/eduvidual/pix/favicons/apple-touch-icon.png">';
+    $sizes = [ '57x57', '72x72', '76x76', '114x114', '120x120', '144x144', '152x152', '180x180' ];
+    foreach ($sizes as $size) {
+        $RET[] = '<link rel="apple-touch-icon" sizes="' . $size . '" href="' . $CFG->wwwroot . '/local/eduvidual/pix/favicons/apple-touch-icon-57x57.png">';
+    }
+
+
+
     return implode("\n", $RET);
 }
 
