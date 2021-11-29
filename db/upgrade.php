@@ -136,6 +136,17 @@ function xmldb_local_eduvidual_upgrade($oldversion) {
         }
         upgrade_plugin_savepoint(true, 2021061002, 'local', 'eduvidual');
     }
+    if ($oldversion < 2021112900) {
+        global $CFG;
+        $sql = "UPDATE {local_eduvidual_org}
+                    SET banner = REPLACE(banner, '$CFG->wwwroot', '')";
+        $DB->execute($sql);
+        $sql = "UPDATE {user_preferences}
+                    SET value = REPLACE(value, '$CFG->wwwroot', '')
+                    WHERE name LIKE 'local_eduvidual_background%'";
+        $DB->execute($sql);
+        upgrade_plugin_savepoint(true, 2021112900, 'local', 'eduvidual');
+    }
 
 
     return true;

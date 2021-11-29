@@ -39,7 +39,7 @@ if ($data = $form->get_data()) {
     );
     $files = \local_eduvidual\locallib::list_area_files('orgbanner', $org->orgid, $context);
     if (count($files) > 0) {
-        $org->banner = $files[0]->url;
+        $org->banner = str_replace($CFG->wwwroot, '', $files[0]->url);
     } else {
         $org->banner = '';
     }

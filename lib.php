@@ -139,6 +139,8 @@ function local_eduvidual_after_require_login() {
 function local_eduvidual_before_standard_html_head() {
     global $CFG, $CONTEXT, $COURSE, $DB, $OUTPUT, $PAGE, $USER;
 
+    $RET = [];
+
     \local_eduvidual\lib_licence::check_licence();
 
     // Protect question banks on course level.
@@ -164,6 +166,15 @@ function local_eduvidual_before_standard_html_head() {
     // General boost-modifications.
     $PAGE->requires->css('/local/eduvidual/style/theme_boost.css');
     $PAGE->requires->css('/local/eduvidual/style/theme_39.css');
+    // The default banner needs to be injected via Internal Stylesheet to
+    // assure the correct absolute path to the image.
+    $RET[] = implode("\n", [
+        '<style>',
+        '    body.theme-boost #page-header .card, body.theme-boost_campus #page-header .card {',
+        '        background-image: url("' . $CFG->wwwroot . '/local/eduvidual/pix/banner-curve.jpg");',
+        '    }',
+        '</style>',
+    ]);
 
     $org = \local_eduvidual\locallib::get_org_by_context();
 
@@ -187,7 +198,7 @@ function local_eduvidual_before_standard_html_head() {
     $PAGE->requires->js_call_amd("local_eduvidual/jsinjector", "run", array($data));
 
 
-    echo \local_eduvidual\lib_helper::orgmenus_rendered();
+    $RET[] = \local_eduvidual\lib_helper::orgmenus_rendered();
 
     if (strpos($_SERVER["SCRIPT_FILENAME"], '/course/delete.php') > 0) {
         $PAGE->requires->js_call_amd("local_eduvidual/jsinjector", "modifyRedirectUrl", array('coursedelete'));
@@ -197,10 +208,10 @@ function local_eduvidual_before_standard_html_head() {
     $inject_styles = array("<style type=\"text/css\" id=\"local_eduvidual_style_userextra\">");
     $background = get_user_preferences('local_eduvidual_background');
     if (!isguestuser($USER) && !empty($background)) {
-        $inject_styles[] = "body { background: url(" . $background . ") no-repeat center center fixed; background-size: cover !important; }";
+        $inject_styles[] = "body { background: url(" . $CFG->wwwroot . $background . ") no-repeat center center fixed; background-size: cover !important; }";
     }
     if (!empty($extra->background)) {
-        $inject_styles[] = "body { background-image: url(" . $extra->background . "); background-position: center; background-size: cover; }";
+        $inject_styles[] = "body { background-image: url(" . $CFG->wwwroot . $extra->background . "); background-position: center; background-size: cover; }";
     }
     $inject_styles[] = "</style>";
 
@@ -209,14 +220,16 @@ function local_eduvidual_before_standard_html_head() {
         $inject_styles[] = $org->customcss;
     }
     if (!empty($org->banner)) {
-        $inject_styles[] = "body #page-header .card { background-image: url(" . $org->banner . ") !important; }";
+        $inject_styles[] = "body #page-header .card { background-image: url(" . $CFG->wwwroot . $org->banner . ") !important; }";
     }
     $inject_styles[] = "</style>";
 
     // Disabled, needs performance tests.
     // \local_eduvidual\lib_helper::fix_navbar();
 
-    return implode("\n", $inject_styles);
+    $RET[] = implode("\n", $inject_styles);
+
+    return implode("\n", $RET);
 }
 
 
