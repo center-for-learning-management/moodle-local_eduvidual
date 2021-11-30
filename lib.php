@@ -33,8 +33,6 @@ function local_eduvidual_after_config() {
     if ((!isloggedin() || isguestuser($USER)) && $_SERVER["SCRIPT_FILENAME"] == $CFG->dirroot . '/index.php') {
         if (!isloggedin()) {
             redirect($CFG->wwwroot . '/login');
-        } else {
-            redirect($CFG->wwwroot . '/my');
         }
     }
 
