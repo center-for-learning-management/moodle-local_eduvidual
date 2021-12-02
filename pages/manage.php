@@ -20,6 +20,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+define('READ_ONLY_SESSION', true);
+
 require_once('../../../config.php');
 require_login();
 
