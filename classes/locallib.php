@@ -554,8 +554,8 @@ class locallib {
                 $ismanager = self::cache('session', "ismanager");
             }
             if (empty($ismanager)) {
-                $chk = $DB->get_record('local_eduvidual_orgid_userid', array('role' => 'Manager', 'userid' => $USER->id));
-                $ismanager = self::cache('session', "ismanager-$USER->id", !empty($chk->orgid));
+                $chk = $DB->get_records('local_eduvidual_orgid_userid', array('role' => 'Manager', 'userid' => $USER->id));
+                $ismanager = self::cache('session', "ismanager-$USER->id", count($chk) > 0);
             }
             return $ismanager;
         } else {
