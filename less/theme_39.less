@@ -1,3 +1,4 @@
+// out: ../style/theme_39.css, sourcemap: false, compress: true
 /* LESS Document */
 @mobile:	~"only screen and (max-width: 767px)";
 @tablet:	~"only screen and (min-width: 768px) and (max-width: 1199px)";
@@ -57,7 +58,7 @@
 		.nav-link{
 			&.active{
 				text-decoration: underline;
-				text-underline-position: under;	
+				text-underline-position: under;
 			}
 			color:#fff;
 			//JT 2021-04-09: #69
@@ -68,7 +69,7 @@
 				color:#fff;
 					&.tab_initial{
 						color:@eduvidblau;
-				}		
+				}
 			}
 		}
 	}
@@ -79,7 +80,7 @@
 }
 
 
-body{	
+body{
 	background-color:@hintergrundfarbe;
 }
 
@@ -94,7 +95,7 @@ body{
 //Seiteninhalt oben (Breadcrumbs usw.)
 #page-header{
 	padding:0px !important;
-	.dropdown{ 
+	.dropdown{
 		& .icon{
 			color:#fff;
 		}
@@ -129,7 +130,7 @@ body{
 	//Diskussion und Foren
 	#search, .p-0{
 		top:10px;
-		
+
 	}
 	//Breadcrumbs im Dashboard
 	.p-2{
@@ -140,8 +141,8 @@ body{
 	}
 
 }
-.editing .course-content ul.topics li.section.main:last-child, 
-.editing .course-content ul.weeks li.section.main:last-child, 
+.editing .course-content ul.topics li.section.main:last-child,
+.editing .course-content ul.weeks li.section.main:last-child,
 .editing .course-content ul.periods li.section.main:last-child {
 //	border-bottom: 1px solid @eduvidblau;
 	border-bottom: none;
@@ -304,7 +305,7 @@ body{
 				}
 				.nav-link{
 					.tab_content  {
-						& marker{				
+						& marker{
 							.rahmen();
 							background-color: @eduvidblau;
 							color:#fff;
@@ -448,7 +449,7 @@ body{
 				color:@eduvidfontdark !important;
 			}
 		}
-		
+
 		// Tabelle für Beurteilung
 		.user-grade{
 			color: @eduvidfontdark;
@@ -465,13 +466,9 @@ body{
 				border-bottom:thin solid #000;
 			}
 			.levelodd{
-				background-color: @eduvidgrau;
 				border-bottom: thin solid #000;
-				&.column-leader{
-					display:none;
-				}
 			}
-			
+
 		}
 		.gradereport-grader-table{
 			color:@eduvidfontdark;
@@ -536,7 +533,7 @@ body{
 		.breadcrumb{
 			.breadcrumb-item{
 				.ahreffaerben(#000);
-				
+
 			}
 		}
 
@@ -571,7 +568,7 @@ nav{
 		}
 	}
 	.mr-3{
-		margin-right: 0px !important; 
+		margin-right: 0px !important;
 	}
 	.dropdown{
 		background-color: #fff;
@@ -619,9 +616,9 @@ nav{
 		#region-main-box [role='main']{
 			.nav-tabs{
 				.nav-link.active {
-					.sectionname {	
+					.sectionname {
 						color: #fff !important;
-					} 	
+					}
 				}
 			}
 		}
@@ -711,7 +708,7 @@ nav{
 				.list-group-item-action{
 					background-color: #fff;
 					border-bottom: 1px solid @eduvidgrau;
-					border-top: 1px solid @eduvidgrau;	
+					border-top: 1px solid @eduvidgrau;
 					& .media-body{
 						background: -webkit-linear-gradient(left, #000 90%, #fff);
 						-webkit-background-clip: text;
@@ -725,7 +722,7 @@ nav{
 					& .media-body{
 						background: -webkit-linear-gradient(left, #fff 90%, @eduvidblau);
 						-webkit-background-clip: text;
-						-webkit-text-fill-color: transparent;				
+						-webkit-text-fill-color: transparent;
 					}
 				}
 				.media-body{
@@ -756,13 +753,13 @@ nav{
 }
 //schmales Menü
 @media @desktop{
-    //JT: 2021-07-18: #242 
+    //JT: 2021-07-18: #242
     #nav-drawer{
 	//#nav-drawer[aria-expanded="true"]{
 /*		.list-group-item.active:hover .icon{
 			color:@eduvidfontdark;
 		}*/
-        
+
 		width:40px;
 		padding:0rem;
 		background-color: @hintergrundfarbe;
@@ -794,7 +791,7 @@ nav{
 					background-color: @eduvidgrau;
 					overflow: hidden;
 					.ahreffaerben(#fff);
-					border:none; 
+					border:none;
 					&.active:hover{
 						.icon{
 							color:@eduvidfontdark;
@@ -815,7 +812,7 @@ nav{
 					/*border-bottom: 1px solid @eduvidgrau;
 					border-top:1px solid @eduvidgrau;*/
 					&:hover{
-						
+
 						overflow: visible;
 						background-color: @menumouseover;
 						width:220px;
@@ -823,9 +820,9 @@ nav{
 							display:block;
 							text-align:left;
 							padding-left:10px;
-							
+
 						}
-						.media-body{						
+						.media-body{
 							position: relative;
 							padding-left:0.5rem;
 							padding-top:0.5rem;
@@ -849,7 +846,7 @@ nav{
 								color:@eduvidfontdark !important;
 							}
 						}
-						
+
 					}*/
 				}
 				.active_tree_node{
@@ -950,20 +947,20 @@ nav{
 	margin-bottom:5px;
 	&:focus{
 		-webkit-box-shadow:2px 2px @eduvidblau;
-		box-shadow:2px 2px @eduvidblau; 
+		box-shadow:2px 2px @eduvidblau;
 
 	}
 }
 
 .align-items-center,
 .dropbox:focus,
-a.dropdown-item:focus, 	
+a.dropdown-item:focus,
 a.dropdown-toggle:focus,
 .usermenu:focus-within
 {
 	outline:none;
 	-webkit-box-shadow:none;
-	box-shadow:none; 	
+	box-shadow:none;
 }
 
 //Eingeklappt: entspricht dem, wenn das Menü ganz angezeigt wird.
@@ -975,17 +972,17 @@ a.dropdown-toggle:focus,
     		margin-left: 80px;
 		}
 	}
-    
-	// JT: 2021-07-18: # 242 
+
+	// JT: 2021-07-18: # 242
     #nav-drawer[aria-hidden="true"] .list-group-item{
     //#nav-drawer[aria-expanded="false"] .list-group-item{
 		display:none;
 	}
 	// Ausgeklappt:
-    
-	// JT: 2021-07-18: #242 
+
+	// JT: 2021-07-18: #242
     #nav-drawer[aria-hidden="false"] {
-    //#nav-drawer[aria-expanded="true"]{		
+    //#nav-drawer[aria-expanded="true"]{
 		width:80px;
 		body.drawer-open-left{
 			margin-left: 0px !important;
@@ -1004,14 +1001,14 @@ a.dropdown-toggle:focus,
 			.list-group-item-action{
 				background-color: #fff;
 				border-bottom: 1px solid @eduvidgrau;
-				border-top: 1px solid @eduvidgrau;	
+				border-top: 1px solid @eduvidgrau;
 				& .media-body{
 					background: -webkit-linear-gradient(left, #000 90%, #fff);
 					-webkit-background-clip: text;
 					-webkit-text-fill-color: transparent;
 				}
 			}
-			
+
 			.active_tree_node{
 				background-color:@eduvidblau;
 				.ahreffaerben(#fff);
@@ -1019,7 +1016,7 @@ a.dropdown-toggle:focus,
 				& .media-body{
 					background: -webkit-linear-gradient(left, #fff 90%, @eduvidblau);
 					-webkit-background-clip: text;
-					-webkit-text-fill-color: transparent;				
+					-webkit-text-fill-color: transparent;
 				}
 			}
 			.media-body{
@@ -1031,7 +1028,7 @@ a.dropdown-toggle:focus,
 				content: "";
 
 			}
-		}		
+		}
 	}
 	#page-footer {
 		.container-fluid{
@@ -1060,7 +1057,7 @@ a.dropdown-toggle:focus,
 	body:not(.drawer-open-left) .footnote{
 		padding-left: 75px !important;
 	}
-	
+
 	body.drawer-open-left {
 		margin-left: 0px;
 	}
@@ -1074,8 +1071,8 @@ a.dropdown-toggle:focus,
     body.drawer-open-left .footnote {
         padding-left: 275px !important;
     }
-        
-	//JT: 2021-07-18: #242 
+
+	//JT: 2021-07-18: #242
     #nav-drawer[aria-hidden="true"] .list-group-item{
     //#nav-drawer[aria-expanded="false"] .list-group-item{
 		display:block;
@@ -1130,7 +1127,7 @@ a.dropdown-toggle:focus,
 					color:@eduvidfontdark;
 				}
 				.media-block{
-					
+
 				}
 			}
 			.list-group-item-action{
@@ -1157,7 +1154,7 @@ a.dropdown-toggle:focus,
 				}
 			}
 			.media-body{
-				
+
 			}
 		}
 		&[role="presention"]{
@@ -1255,7 +1252,7 @@ a:not([class]):focus{
 .card.border-0.bg-transparent{
 	border:1px solid rgba(0,0,0,.125) !important;
 }
-// 
+//
 // JT: 2021-04-09: #148
 .path-grade-report-grader{
 	.gradeparent {
@@ -1280,7 +1277,7 @@ a:not([class]):focus{
 		.action-icon{
 			.icon.fa.fa-plus.fa-fw{
 				color:@eduvidblau !important;
-				
+
 			}
 		}
 	}
