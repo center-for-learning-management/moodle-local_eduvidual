@@ -57,6 +57,7 @@ switch($act) {
 	case 'style': $title = get_string('manage:style', 'local_eduvidual'); break;
 	case 'subcats': $title = get_string('manage:subcats:title', 'local_eduvidual'); break;
 	case 'users': $title = get_string('manage:users', 'local_eduvidual'); break;
+    case 'webuntis': $title = get_string('manage:webuntis', 'local_eduvidual'); break;
 	default: $title = get_string('Management', 'local_eduvidual');
 }
 

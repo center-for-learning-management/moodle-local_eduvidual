@@ -54,6 +54,7 @@ class lib_wshelper {
         call_user_func('self::' . $func, $buffer);
     }
     public static function buffer_navbar() {
+        if (\local_eduvidual\locallib::is_4()) return;
         global $OUTPUT;
         $buffer = ob_get_clean();
         $strstart = '<ol class="breadcrumb"';

@@ -163,6 +163,9 @@ class locallib {
                 $actions['style'] = 'manage:style';
                 $actions['subcats'] = 'manage:subcats:title';
                 $actions['users'] = 'manage:users';
+                if (get_config('local_webuntis', 'version') >= 2021121500) {
+                    $actions['webuntis'] = 'manage:webuntis';
+                }
                 if (is_siteadmin()) {
                     $actions['stats'] = 'manage:stats';
                 }
@@ -478,6 +481,13 @@ class locallib {
             }
         }
         return $dbsecret->data;
+    }
+
+    /**
+     */
+    public static function is_4() {
+        global $CFG;
+        return ($CFG->version >= 2021110600);
     }
     /**
      * Determines if a user is in the same org like another user

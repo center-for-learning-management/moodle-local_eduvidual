@@ -513,6 +513,7 @@ $string['manage:users'] = 'Nutzer/innen';
 $string['manage:categories'] = 'Kategorien';
 $string['manage:style'] = 'Stil';
 
+$string['manage:webuntis'] = 'WebUntis';
 $string['manage:welcome'] = 'Willkommen in der Verwaltungsansicht Ihrer Organisation. Bitte wählen Sie eine der folgenden Funktionen:';
 
 $string['minimum_x_chars'] = 'Mehr als {$a} Buchstaben erforderlich!';

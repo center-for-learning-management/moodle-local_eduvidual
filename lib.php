@@ -158,12 +158,15 @@ function local_eduvidual_before_standard_html_head() {
     $PAGE->requires->js('/local/eduvidual/js/ajax_observer.js');
 
     // Main styles for eduvidual.
-    $PAGE->requires->css('/local/eduvidual/style/main.css');
-    $PAGE->requires->css('/local/eduvidual/style/spinner.css');
-    //$PAGE->requires->css('/local/eduvidual/style/ui.css');
-    // General boost-modifications.
-    $PAGE->requires->css('/local/eduvidual/style/theme_boost.css');
-    $PAGE->requires->css('/local/eduvidual/style/theme_39.css');
+    if (!\local_eduvidual\locallib::is_4()) {
+        $PAGE->requires->css('/local/eduvidual/style/main.css');
+        $PAGE->requires->css('/local/eduvidual/style/spinner.css');
+        //$PAGE->requires->css('/local/eduvidual/style/ui.css');
+        // General boost-modifications.
+        $PAGE->requires->css('/local/eduvidual/style/theme_boost.css');
+        $PAGE->requires->css('/local/eduvidual/style/theme_39.css');
+    }
+
     // The default banner needs to be injected via Internal Stylesheet to
     // assure the correct absolute path to the image.
     $RET[] = implode("\n", [
