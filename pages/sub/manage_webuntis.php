@@ -161,7 +161,7 @@ switch ($action) {
                 $u = \core_user::get_user($mu->m_id);
                 $mu->m_profileimage = $OUTPUT->user_picture($u, array('size' => 30));
                 $mu->m_role = \local_eduvidual\locallib::get_orgrole($params->orgid, $mu->m_id);
-                $mu->role_differ = (str_replace('Administrator', 'Manager', $mu->w_role) != $mu->m_role);
+                $mu->role_differ = $mu->w_role != 'Administrator' && ($mu->w_role != $mu->m_role);
             }
             $params->mappedusers[] = $mu;
         }
