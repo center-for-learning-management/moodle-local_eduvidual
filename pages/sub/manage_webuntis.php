@@ -38,9 +38,7 @@ if (empty($ORGMAP->orgid) || $ORGMAP->orgid != $orgid) {
 }
 
 \local_webuntis\tenant::load($ORGMAP->tenant_id, false);
-$USERMAP = \local_webuntis\usermap::from_database();
-// @todo must be made possible in future versions!
-//$USERMAP->sync();
+$USERMAP->sync();
 
 $params = (object)[
     'sitename' => $CFG->shortname,
