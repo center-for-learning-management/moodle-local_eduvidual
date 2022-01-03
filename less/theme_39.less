@@ -147,6 +147,22 @@ body{
 //	border-bottom: 1px solid @eduvidblau;
 	border-bottom: none;
 }
+
+// Ugly fix for #400 which was caused by ugly fix for #136
+#page-course-view-onetopic {
+    #region-main {
+        .course-content {
+            ul.nav-tabs {
+                li:last-child {
+                    .fa-fw{
+                        color:@eduvidblau !important;
+                    }
+                }
+            }
+        }
+    }
+}
+
 //Hauptinhalt der Seite
 #page-content{
 	.ahreffaerben(@eduvidfontdark);
@@ -175,7 +191,7 @@ body{
 		.icon{
 			&.fa{
 				&.fa-plus{
-					&.fa-fw{
+					&.fa-fw {
 						color:#fff;
 						padding-top:10px;
 					}
