@@ -306,7 +306,7 @@ class local_eduvidual_lib_import_compiler_user extends local_eduvidual_lib_impor
 
         if (!empty($obj->id)) {
             $ismember = $DB->get_record('local_eduvidual_orgid_userid', array('orgid' => $org->orgid, 'userid' => $obj->id));
-            if ($ismember->userid != $obj->id) {
+            if (!empty($ismember->userid) && $ismember->userid != $obj->id) {
                 $payload->processed = false;
                 $payload->action = get_string('import:invalid_org', 'local_eduvidual');
             }
@@ -323,29 +323,33 @@ class local_eduvidual_lib_import_compiler_user extends local_eduvidual_lib_impor
                 }
             }
 
-        } else {
-            // Test if username or email already taken.
-            $sql = "SELECT id
-                        FROM {user}
-                        WHERE
+        }
+
+        // Test if username or email already taken.
+        $sql = "SELECT id
+                    FROM {user}
+                    WHERE
+                        (
                             username LIKE ? ESCAPE '^' OR
                             username LIKE ? ESCAPE '^' OR
                             email LIKE ? ESCAPE '^' OR
-                            email LIKE ? ESCAPE '^'";
-            $params = array(
-                str_replace('_', '^_', $obj->username),
-                str_replace('_', '^_', $obj->email),
-                str_replace('_', '^_', $obj->username),
-                str_replace('_', '^_', $obj->email)
-            );
-            $chk = $DB->get_records_sql($sql, $params);
-            $ids = array_keys($chk);
-            if (count($ids) > 0) {
-                $payload->processed = false;
-                $payload->action = get_string('import:invalid_username_or_email', 'local_eduvidual');
-            }
+                            email LIKE ? ESCAPE '^'
+                        )";
+        $params = array(
+            str_replace('_', '^_', $obj->username),
+            str_replace('_', '^_', $obj->email),
+            str_replace('_', '^_', $obj->username),
+            str_replace('_', '^_', $obj->email)
+        );
+        if (!empty($obj->id)) {
+            $sql .= " AND id <> ?";
+            $params[] = $obj->id;
         }
-
+        $ids = array_keys($DB->get_records_sql($sql, $params));
+        if (count($ids) > 0) {
+            $payload->processed = false;
+            $payload->action = get_string('import:invalid_username_or_email', 'local_eduvidual');
+        }
         // Set default language to german.
         $obj->lang = 'de';
 
