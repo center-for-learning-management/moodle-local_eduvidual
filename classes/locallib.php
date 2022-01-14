@@ -484,10 +484,14 @@ class locallib {
     }
 
     /**
+     * Determine if this is Moodle 4.
+     * @param getbuildnumber if true returns the build number, else returns boolean.
+     * @return boolean in case of getbuildnumber = false, int in case of getbuildnumber = true.
      */
-    public static function is_4() {
+    public static function is_4($getbuildnumber = false) {
         global $CFG;
-        return ($CFG->version >= 2021110600);
+        if ($getbuildnumber) return $CFG->version;
+        else return ($CFG->version >= 2021110600);
     }
     /**
      * Determines if a user is in the same org like another user
