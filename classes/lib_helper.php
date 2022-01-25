@@ -241,7 +241,7 @@ class lib_helper {
             $rc->execute_plan();
             $rc->destroy();
         } catch (\Exception $e) {
-            if ($rc) {
+            if (!empty($rc)) {
                 \core\notification::error('Restore failed with status: ' . $rc->get_status());
             }
             throw $e;
