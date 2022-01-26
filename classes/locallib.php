@@ -678,9 +678,13 @@ class locallib {
             }
         } else {
             // We have data for this user. Set header and return.
-            header($xorgcl . ': ' . $_COOKIE[$xorgcl]);
-            header($xorgid . ': ' . $_COOKIE[$xorgid]);
-            return $_COOKIE[$xorgcl];
+            if (!empty($_COOKIE[$xorgid])) {
+                header($xorgid . ': ' . $_COOKIE[$xorgid]);
+            }
+            if (!empty($_COOKIE[$xorgcl])) {
+                header($xorgcl . ': ' . $_COOKIE[$xorgcl]);
+                return $_COOKIE[$xorgcl];
+            }
         }
     }
 }
