@@ -108,24 +108,31 @@ switch ($orderby) {
 
 switch($cohort) {
     case '___all':
-        $entries = $DB->get_records_sql('SELECT u.* FROM {local_eduvidual_orgid_userid} AS ou, {user} AS u WHERE u.deleted=0 AND ou.userid=u.id AND ou.orgid=? ORDER BY ' . $orderbysql, array($orgid));
+        $userids = array_keys($DB->get_records('local_eduvidual_orgid_userid', [ 'orgid' => $orgid ], '', 'userid'));
     break;
     case '___allparents':
-        $entries = $DB->get_records_sql('SELECT u.* FROM {local_eduvidual_orgid_userid} AS ou, {user} AS u WHERE u.deleted=0 AND ou.userid=u.id AND ou.orgid=? AND ou.role=? ORDER BY ' . $orderbysql, array($orgid, 'Parent'));
+        $userids = array_keys($DB->get_records('local_eduvidual_orgid_userid', [ 'orgid' => $orgid, 'role' => 'Parent' ], '', 'userid'));
     break;
     case '___allstudents':
-        $entries = $DB->get_records_sql('SELECT u.* FROM {local_eduvidual_orgid_userid} AS ou, {user} AS u WHERE u.deleted=0 AND ou.userid=u.id AND ou.orgid=? AND ou.role=? ORDER BY ' . $orderbysql, array($orgid, 'Student'));
+        $userids = array_keys($DB->get_records('local_eduvidual_orgid_userid', [ 'orgid' => $orgid, 'role' => 'Student' ], '', 'userid'));
     break;
     case '___allteachers':
-        $entries = $DB->get_records_sql('SELECT u.* FROM {local_eduvidual_orgid_userid} AS ou, {user} AS u WHERE u.deleted=0 AND ou.userid=u.id AND ou.orgid=? AND ou.role=? ORDER BY ' . $orderbysql, array($orgid, 'Teacher'));
+        $userids = array_keys($DB->get_records('local_eduvidual_orgid_userid', [ 'orgid' => $orgid, 'role' => 'Teacher' ], '', 'userid'));
     break;
     case '___allmanagers':
-        $entries = $DB->get_records_sql('SELECT u.* FROM {local_eduvidual_orgid_userid} AS ou, {user} AS u WHERE u.deleted=0 AND ou.userid=u.id AND ou.orgid=? AND ou.role=? ORDER BY ' . $orderbysql, array($orgid, 'Manager'));
+        $userids = array_keys($DB->get_records('local_eduvidual_orgid_userid', [ 'orgid' => $orgid, 'role' => 'Manager' ], '', 'userid'));
     break;
     default:
-        $entries = $DB->get_records_sql('SELECT u.* FROM {cohort_members} AS cm, {user} AS u WHERE u.deleted=0 AND cm.userid=u.id AND cm.cohortid=? ORDER BY ' . $orderbysql, array($cohort));
+        $userids = array_keys($DB->get_records('cohort_members', [ 'cohortid' => $cohort ], '', 'userid'));
 }
 
+list($insql, $inparams) = $DB->get_in_or_equal($userids);
+$sql = "SELECT *
+            FROM {user} u
+            WHERE id $insql
+                AND deleted=0
+            ORDER BY $orderbysql";
+$entries = $DB->get_records_sql($sql, $inparams);
 $dummydomain = \local_eduvidual\locallib::get_dummydomain();
 
 $formats = array(
