@@ -1,8 +1,10 @@
 define(['jquery', 'core/ajax', 'core/modal_events', 'core/modal_factory', 'core/notification', 'core/str', 'core/url', 'local_eduvidual/main', 'local_eduvidual/user', 'local_eduvidual/widgets'], function($, AJAX, ModalEvents, ModalFactory, NOTIFICATION, STR, URL, MAIN, USER, WIDGETS) {
     return {
         addParentFilterRequest: 0,
-        debug: 0,
 		customcsscache: '',
+        debug: 1,
+        sync_queue_create: [],
+
         addParentFilter: function(type, inp) {
             console.log('local_eduvidual/main:addParentFilter(type, inp)', type, inp);
             this.addParentFilterRequest++
@@ -193,6 +195,75 @@ define(['jquery', 'core/ajax', 'core/modal_events', 'core/modal_factory', 'core/
             require(['local_eduvidual/main'], function(MAIN) {
                 MAIN.connect({ module: 'manage', act: 'accesscode_create', orgid: orgid, code: code, role: role, maturity: maturity }, { signalItem: $('#local_eduvidual_manage_accesscode_btn') });
             });
+        },
+        /**
+         * Create user accounts.
+         * @param uniqid of the controls.
+         * @param item only execute particular item, if empty, execute all.
+         */
+        createUsers: function(uniqid, item) {
+            if (this.debug > 0) console.log('local_eduvidual/manager::createUsers(uniqid, item)', uniqid, item);
+            var MAIN = this;
+            if (typeof(item) === 'undefined') {
+                $('.import-btn-' + uniqid).addClass('disabled');
+                var orgid = $('.' + uniqid).attr('data-orgid');
+                $('.' + uniqid + ' tr.user').each(function() {
+                    var tr = this;
+                    var obj = {
+                        'orgid': orgid,
+                        'tr': this,
+                    };
+
+                    [ 'firstname', 'lastname', 'email', 'role', 'cohorts_add',
+                      'cohorts_remove', 'password', 'forcechangepassword'
+                    ].forEach(function(key) {
+                        obj[key] = $(tr).find('.' + key).html();
+                    });
+                    MAIN.sync_queue_create.push({ 'uniqid': uniqid, 'item': obj });
+                });
+                if (MAIN.sync_queue_create.length > 0) {
+                    var queueitem = MAIN.sync_queue_create.shift();
+                    MAIN.createUsers(queueitem.uniqid, queueitem.item);
+                }
+            } else {
+                var tr = item.tr;
+                delete(item.tr);
+                $(tr).css('filter', 'blur(2px)');
+                console.debug(item);
+
+                AJAX.call([{
+                    methodname: 'local_eduvidual_manager_create_users',
+                    args: item,
+                    done: function(result) {
+                        $(tr).css('filter', 'unset');
+                        if (MAIN.debug > 0) {
+                            console.log('=> Result for ' + uniqid, result);
+                        }
+                        if (result.status == 1) {
+                            //$(tr).css('background-color', 'rgba(0,255,0,0.1)');
+                            $(tr).find('.process-indicator').attr('src', '/pix/i/completion-auto-pass.svg');
+                        }
+                        if (result.status == 0) {
+                            //$(tr).css('background-color', '');
+                            $(tr).find('.process-indicator').attr('src', '/pix/i/completion-auto-y.svg');
+                        }
+                        if (result.status == -1) {
+                            $(tr).css('background-color', 'rgba(255,0,0,0.1)');
+                            $(tr).find('.process-indicator').attr('src', '/pix/i/completion-auto-fail.svg');
+                        }
+                        if (result.message.length > 0) {
+                            $(tr).find('.action').html(result.message);
+                        }
+                        if (MAIN.sync_queue_create.length > 0) {
+                            var queueitem = MAIN.sync_queue_create.shift();
+                            MAIN.createUsers(queueitem.uniqid, queueitem.item);
+                        } else {
+                            $('.import-btn-' + uniqid).removeClass('disabled');
+                        }
+                    },
+                    fail: Notification.exception
+                }]);
+            }
         },
         customcss: function() {
             var orgid = $('#local_eduvidual_manage_customcss').attr('data-orgid');
