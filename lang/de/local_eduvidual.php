@@ -169,6 +169,7 @@ $string['admin:phplist:description'] = 'Hier können Sie die Synchronisation mit
 $string['admin:phplist:sync'] = 'Komplette Synchronisation durchführen!';
 $string['admin:protectedorgs:title'] = 'Intime Organisationen';
 $string['admin:protectedorgs:description'] = 'Nutzer/innen intimer Organisationen werden trotz gemeinsamer Mitgliedschaft nicht gegenseitig aufgelistet!';
+$string['admin:questionbank:title'] = 'Verfügbare Fragenkategorien';
 $string['admin:questioncategories:title'] = 'Kernsystem-Fragenkategorien';
 $string['admin:questioncategories:description'] = 'Wählen Sie jene Kernsystem-Fragenkategorien aus, die von Benutzer/innen gesondert ausgewählt werden müssen. Kategorien, die Sie hier NICHT angeben, werden IMMER gezeigt. Kategorien, die hier angegeben werden, können von den Nutzer/innen selbstständig ein- und ausgeblendet werden!';
 $string['admin:registrationcc:title'] = 'BCC-Info bei Registrierung';

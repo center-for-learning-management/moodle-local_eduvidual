@@ -169,6 +169,7 @@ $string['admin:phplist:description'] = 'You can configure here how the sync to p
 $string['admin:phplist:sync'] = 'Perform a full sync now';
 $string['admin:protectedorgs:title'] = 'Protected Organizations';
 $string['admin:protectedorgs:description'] = 'Users from these Organizations are hidden to others!';
+$string['admin:questionbank:title'] = 'Available question categories';
 $string['admin:questioncategories:title'] = 'Core Question Categories';
 $string['admin:questioncategories:description'] = 'Please select the core question categories that can be selected by users. Categories that are not selected here will always appear. Categories that are selected here have to be selected by users to be listed!';
 $string['admin:registrationcc:title'] = 'BCC-Info on Registration';
