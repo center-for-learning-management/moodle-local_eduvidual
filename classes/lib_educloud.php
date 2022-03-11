@@ -186,11 +186,12 @@ class lib_educloud {
         $url = str_replace("https://", "https://$cfg->apiuser:$cfg->apipass@", $url);
         $url = str_replace("http://", "http://$cfg->apiuser:$cfg->apipass@", $url);
 
+        $headers['Accept'] = 'application/json';
+
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Accept: application/json'));
         curl_setopt($ch, CURLOPT_USERAGENT, "Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)");
 
         if (!empty($get) && count($get) > 0) {
@@ -199,43 +200,55 @@ class lib_educloud {
                 $fields[] = urlencode($key) . '=' . urlencode($value);
             }
             $fields = implode('&', $fields);
+            $get = $fields;
 
             curl_setopt($ch, CURLOPT_URL, $url . '?' . $fields);
         }
         if (!empty($post) && count($post) > 0) {
+            /*
             $fields = array();
             foreach ($post as $key => $value) {
                 $fields[] = urlencode($key) . '=' . urlencode($value);
             }
             $fields = implode('&', $fields);
-
-            curl_setopt($ch, CURLOPT_POST, true);
             curl_setopt($ch, CURLOPT_POSTFIELDS, $fields);
+            */
+            $post = http_build_query($post);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
+            curl_setopt($ch, CURLOPT_POST, 1);
         }
         if (!empty($headers) && count($headers) > 0) {
             $strheaders = array();
             foreach ($headers as $key => $value) {
                 $strheaders[] = "$key: $value";
             }
+            $headers = $strheaders;
             curl_setopt($ch, CURLOPT_HTTPHEADER, $strheaders);
         }
         if (!empty($basicauth)) {
             curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
             curl_setopt($ch, CURLOPT_USERPWD, $basicauth);
         }
-
         if ($debug) {
+            ob_start();
+            $out = fopen('php://output', 'w');
+            echo "<pre>Get:<br />" . print_r($get, 1) . "</pre>";
+            echo "<pre>Post:<br />" . print_r($post, 1) . "</pre>";
+            echo "<pre>Headers:<br />" . print_r($headers, 1) . "</pre>";
             // enable debugging of curl request.
             curl_setopt($ch, CURLOPT_VERBOSE, true);
+            curl_setopt($ch, CURLOPT_STDERR, $out);
         }
-
         $output = curl_exec($ch);
         if ($debug) {
+            fclose($out);
+            $debug = ob_get_clean();
+            echo "<pre>Debug:<br />$debug</pre>";
             $info = curl_getinfo($ch);
             $error = curl_error($ch);
-            print_r($info);
-            print_r($error);
-            print_r($output);
+            echo "<pre>Info:<br />" . print_r($info, 1) . "</pre>";
+            echo "<pre>Error:<br />" . print_r($error, 1) . "</pre>";
+            echo "<pre>Output:<br />" . print_r($output, 1) . "</pre>";
         }
         curl_close($ch);
         return $output;
@@ -310,7 +323,8 @@ class lib_educloud {
         return (object) [
             'phone' => $user->phone1,
             'groups' => [],
-            'primaryGroup' => "cn=Domain Users,cn=groups,dc=mydomain,dc=intranet",
+            // @todo do we need to set this? should be configurable by site administration
+            //'primaryGroup' => "cn=Domain Users,cn=groups,dc=mydomain,dc=intranet",
             'uidNumber' => $user->id,
             'disabled' => false,
             'unlock' => true,
