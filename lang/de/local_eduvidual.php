@@ -459,6 +459,7 @@ $string['manage:createuserspreadsheet:import:filetypeerror'] = 'Sorry, der Datei
 $string['manage:createuserspreadsheet:templateurl'] = 'URL zur Excelvorlage';
 $string['manage:createuserspreadsheet:templateurl:description'] = 'Geben Sie hier die URL zur Excelvorlage ein, die bei der Erstellung von Nutzer/innen verwendet werden kann.';
 $string['manage:data'] = 'Daten';
+$string['manage:educloud'] = 'eduCloud Austria';
 $string['manage:enrolmeasteacher'] = 'Schreibe mich mit Trainer-Rechten ein!';
 $string['manage:maildomain'] = 'Maildomain';
 $string['manage:maildomain:description'] = 'Wenn dieser Wert gesetzt wird, werden Nutzer/innen mit einer solchen Mailadresse automatisch dieser Organisation zugeordnet!';

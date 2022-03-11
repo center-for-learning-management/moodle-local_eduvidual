@@ -147,7 +147,17 @@ function xmldb_local_eduvidual_upgrade($oldversion) {
         $DB->execute($sql);
         upgrade_plugin_savepoint(true, 2021112900, 'local', 'eduvidual');
     }
-
-
+    if ($oldversion < 2022031100) {
+        $table = new xmldb_table('local_eduvidual_educloud');
+        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+        $table->add_field('orgid', XMLDB_TYPE_INTEGER, '20', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('enabled', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('byuserid', XMLDB_TYPE_INTEGER, '20', null, XMLDB_NOTNULL, null, null);
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
+        if (!$dbman->table_exists($table)) {
+            $dbman->create_table($table);
+        }
+        upgrade_plugin_savepoint(true, 2022031100, 'local', 'eduvidual');
+    }
     return true;
 }
