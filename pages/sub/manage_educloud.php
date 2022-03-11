@@ -23,7 +23,7 @@
 defined('MOODLE_INTERNAL') || die;
 
 //print_r(\local_eduvidual\lib_educloud::api_get_user('schrenk', 'lastname'));
-\local_eduvidual\lib_educloud::api_create_user($USER->id);
+//\local_eduvidual\lib_educloud::api_create_user($USER->id);
 
 $url = $PAGE->url;
 $url->param('toggle', '1');
@@ -70,6 +70,7 @@ $params = [
     'canactivate' => is_siteadmin() ? 1 : 0,
     'isactive' => !empty($record->id) ? 1 : 0,
     'toggleurl' => $url->__toString(),
+    'wwwroot' => $CFG->wwwroot,
 ];
 
 echo $OUTPUT->render_from_template('local_eduvidual/manage_educloud', $params);
