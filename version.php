@@ -24,7 +24,7 @@
 
 defined('MOODLE_INTERNAL') || die;
 
-$plugin->version  = 2022031100;
+$plugin->version  = 2022031400;
 $plugin->requires = 2019111803;  // Requires Moodle 3.8.3.
 $plugin->component = 'local_eduvidual';
 $plugin->release = '2.7';

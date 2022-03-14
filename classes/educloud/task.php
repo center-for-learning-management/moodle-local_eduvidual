@@ -25,11 +25,11 @@
  * Creates a backup when a template course has been modified.
 */
 
-namespace local_eduvidual\task;
+namespace local_eduvidual\educloud;
 
 defined('MOODLE_INTERNAL') || die;
 
-class educloud extends \core\task\adhoc_task {
+class task extends \core\task\adhoc_task {
     /**
      * Executes a synchronisation action to univention portal.
      */
@@ -43,23 +43,28 @@ class educloud extends \core\task\adhoc_task {
         if (empty($user->id)) {
             throw new \moodle_exception('educloud:exception:userwaserased', 'local_eduvidual', '', ['userid' => $userid]);
         }
-        $mapped_identifier = \get_user_preferences('educloud_identifier', '', $userid);
+        $mapped_identifier = \local_eduvidual\educloud\user::ucs_identifier($user->id);
         if (!empty($mapped_identifier)) {
-            $mapped_user = \local_eduvidual\lib_educloud::api_get_user($mapped_identifier);
+            $mapped_user = \local_eduvidual\educloud\user::get($mapped_identifier);
             if (!empty($user->deleted)) {
-                // @todo remove user account from univention.
                 mtrace("remove #$user->id from univention");
+                \local_eduvidual\educloud\user::delete($user);
             } else {
-                mtrace("update #$user->id to univention");
-                // @todo update user
-                // @todo synchronize groups
+                $educloudorgs = \local_eduvidual\educloud\user::get_orgs($user->id);
+                if (empty($educloudorgs) || count($educloudorgs) == 0) {
+                    mtrace("remove #$user->id from univention");
+                    \local_eduvidual\educloud\user::delete($user);
+                } else {
+                    mtrace("sync #$user->id orgs to univention");
+                    \local_eduvidual\educloud\user::sync($user);
+                }
             }
         } else {
             mtrace("create #$user->id in univention");
-            // @todo create user
-            // @todo synchronize groups
+            \local_eduvidual\educloud\user::create($user);
+            \local_eduvidual\educloud\user::sync($user);
         }
-        // @todo remove next line to mark ad hoc tasks as finished.
+        // @todo remove next lines to mark ad hoc tasks as finished.
         throw new \moodle_exception('We throw this exception to keep the ad hoc tasks');
     }
 }

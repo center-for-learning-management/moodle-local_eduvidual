@@ -27,6 +27,9 @@ $definitions = array(
     'application' => array(
         'mode' => cache_store::MODE_APPLICATION,
     ),
+    'request' => array(
+        'mode' => cache_store::MODE_REQUEST,
+    ),
     'session' => array(
         'mode' => cache_store::MODE_SESSION,
     )

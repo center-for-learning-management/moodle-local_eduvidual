@@ -22,8 +22,8 @@
 
 defined('MOODLE_INTERNAL') || die;
 
-//print_r(\local_eduvidual\lib_educloud::api_get_user('schrenk', 'lastname'));
-//\local_eduvidual\lib_educloud::api_create_user($USER->id);
+//print_r(\local_eduvidual\educloud\user::get_user($USER->id));
+\local_eduvidual\educloud\user::create($USER->id);
 
 $url = $PAGE->url;
 $url->param('toggle', '1');
@@ -53,13 +53,13 @@ if (!empty($toggle)) {
         throw new \moodle_exception('educloud:exception:onlyadmins', 'local_eduvidual');
     }
     if (empty($record->id)) {
-        $record = \local_eduvidual\lib_educloud::org_enable($org->orgid);
+        $record = \local_eduvidual\educloud\lib::org_enable($org->orgid);
         $url = $PAGE->url;
         $url->remove_params(['toggle']);
         $url->param('showmsg', !empty($record->id) ? 1 : -1);
         redirect($url);
     } else {
-        $record = \local_eduvidual\lib_educloud::org_disable($org->orgid);
+        $record = \local_eduvidual\educloud\lib::org_disable($org->orgid);
         $url->remove_params(['toggle']);
         $url->param('showmsg', empty($record->id) ? 1 : -1);
         redirect($url);

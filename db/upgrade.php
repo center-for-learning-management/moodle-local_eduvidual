@@ -159,5 +159,13 @@ function xmldb_local_eduvidual_upgrade($oldversion) {
         }
         upgrade_plugin_savepoint(true, 2022031100, 'local', 'eduvidual');
     }
+    if ($oldversion < 2022031400) {
+        $table = new xmldb_table('local_eduvidual_educloud');
+        $field = new xmldb_field('ucsurl', XMLDB_TYPE_CHAR, '255', null, null, null, null, 'byuserid');
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+        upgrade_plugin_savepoint(true, 2022031400, 'local', 'eduvidual');
+    }
     return true;
 }

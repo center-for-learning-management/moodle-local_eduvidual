@@ -101,5 +101,5 @@ if ($hassiteconfig) {
         )
     );
 
-    \local_eduvidual\lib_educloud::admin_settings_page($settings);
+    \local_eduvidual\educloud\settings::admin_settings_page($settings);
 }

@@ -277,6 +277,7 @@ $string['educloud:exception:invalidapiresponse'] = 'Invalid response from Univen
 $string['educloud:exception:multipleobjectsforidentifier'] = 'Multiple User-Objects have been found for educloud-identifier <strong>{$a->identifier}</strong>';
 $string['educloud:exception:nouseridgiven'] = 'No User-ID was given';
 $string['educloud:exception:onlyadmins'] = 'Sorry, only site-administrators are permitted for this action!';
+$string['educloud:exception:userdeletefailed'] = 'User #{$a->userid} could not be removed from univention!';
 $string['educloud:exception:userwaserased'] = 'User #{$a->userid} was erased and no data persists  - check manually if it was removed from univention!';
 $string['educloud:settings'] = 'eduCloud Settings';
 $string['educloud:settings:description'] = 'Specify the endpoints for creating / updating user accounts.';

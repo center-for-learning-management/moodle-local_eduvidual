@@ -26,8 +26,9 @@ namespace local_eduvidual;
 defined('MOODLE_INTERNAL') || die;
 
 class locallib {
-    protected static $cache_application;
-    protected static $cache_session;
+    private static $cache_application;
+    private static $cache_request;
+    private static $cache_session;
 
     /**
      * Method used as getter and setter for caches.
@@ -37,7 +38,7 @@ class locallib {
      * @param delete (optional) delete this key.
      */
     public static function cache($type, $key = '', $value = '', $delete = 0) {
-        if (!in_array($type, array('application', 'session'))) return;
+        if (!in_array($type, array('application', 'request', 'session'))) return;
         $cache = self::${'cache_' . $type};
         if (empty($cache)) {
             $cache = \cache::make('local_eduvidual', $type);
