@@ -51,7 +51,7 @@ class settings {
                 'local_eduvidual/educloud_apipath',
                 get_string('educloud:settings:apipath', 'local_eduvidual'),
                 '',
-                'https://<urlofunivention>',
+                'https://my.cloud.com',
                 PARAM_URL
             )
         );
