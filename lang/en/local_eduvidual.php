@@ -277,14 +277,16 @@ $string['educloud:exception:invalidapiresponse'] = 'Invalid response from Univen
 $string['educloud:exception:multipleobjectsforidentifier'] = 'Multiple User-Objects have been found for educloud-identifier <strong>{$a->identifier}</strong>';
 $string['educloud:exception:nouseridgiven'] = 'No User-ID was given';
 $string['educloud:exception:onlyadmins'] = 'Sorry, only site-administrators are permitted for this action!';
+$string['educloud:exception:usercreatefailed'] = 'User #{$a->userid} could not be created in univention!';
 $string['educloud:exception:userdeletefailed'] = 'User #{$a->userid} could not be removed from univention!';
+$string['educloud:exception:userupdatefailed'] = 'User #{$a->userid} could not be updated in univention!';
 $string['educloud:exception:userwaserased'] = 'User #{$a->userid} was erased and no data persists  - check manually if it was removed from univention!';
 $string['educloud:settings'] = 'eduCloud Settings';
 $string['educloud:settings:description'] = 'Specify the endpoints for creating / updating user accounts.';
-$string['educloud:settings:apildap'] = 'DN where all users are placed';
 $string['educloud:settings:apipath'] = 'Endpoint-URL';
 $string['educloud:settings:apipass'] = 'Password';
 $string['educloud:settings:apiuser'] = 'Username';
+$string['educloud:settings:sourceid'] = 'Source-ID';
 $string['educloud:toggle:failed'] = 'Toggling educloud status failed';
 $string['educloud:toggle:success'] = 'Successfully toggled educloud status';
 

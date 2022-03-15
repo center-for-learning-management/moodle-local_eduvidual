@@ -57,21 +57,27 @@ class user {
         $_properties = json_encode($properties);
 
         $response = \local_eduvidual\educloud\lib::curl(
-            "/ucsschool/kelvin/k1/users",
+            "/ucsschool/kelvin/v1/users/",
             [],
             $_properties,
             [
                 'Accept' => 'application/json',
                 'Authorization' => \local_eduvidual\educloud\lib::token(),
                 'Content-Type' => 'application/json',
-                'Content-Length' => strlen($_properties)
             ],
-            '',
-            true
+            'POST',
+            false
         );
+        $response = json_decode($response);
 
-        // @todo
-        \set_user_preference('educloud_identifier', $properties->email, $userid);
+        if (!empty($response->name)) {
+            mtrace("Create successful");
+            self::ucs_identifier($userid, $response->name);
+        } else {
+            mtrace("Create failed, output of curl was " . print_r($response, 1));
+            mtrace("Properties of user were: " . $_properties);
+            throw new \moodle_exception('educloud:exception:userupdatefailed', 'local_eduvidual', '', [ 'userid' => $userid ]);
+        }
     }
     /**
      * Deletes a particular user.
@@ -83,10 +89,15 @@ class user {
         } else {
             $user = $userorid;
         }
-        // @todo not finished
-        $ucsidentifier = self::ucs_identifier($user->id);
-        $response = \local_eduvidual\educloud\lib::curl(
-            "/ucsschool/kelvin/k1/users/$ucsidentifier",
+        $pref_ucsidentifier = self::ucs_identifier($user->id);
+        if (empty($pref_ucsidentifier)) {
+            $ucsidentifier = $user->username;
+        } else {
+            $ucsidentifier = $pref_ucsidentifier;
+        }
+        mtrace("UCS-Identifier $ucsidentifier");
+        $response = json_decode(\local_eduvidual\educloud\lib::curl(
+            "/ucsschool/kelvin/v1/users/$ucsidentifier",
             [],
             [],
             [
@@ -94,12 +105,14 @@ class user {
                 'Authorization' => \local_eduvidual\educloud\lib::token(),
             ],
             'DELETE',
-            true
-        );
-        if (empty($response)) {
-            self::ucs_identifier($user->id, '', true);
-        } else {
+            false
+        ));
+        self::ucs_identifier($user->id, '', true);
+        if (!empty($response) && substr($response->detail, 0, 9) != 'No object') {
+            mtrace("Delete failed, output of curl was " . print_r($response, 1));
             throw new \moodle_exception('educloud:exception:userdeletefailed', 'local_eduvidual', '', [ 'userid' => $user->id ]);
+        } else {
+            mtrace("Deleted or user did not exist!");
         }
     }
     /**
@@ -107,10 +120,15 @@ class user {
      * @param userid the Moodle userid.
      */
     public static function get($userid) {
-        $ucsidentifier = self::ucs_identifier($userid);
-        // @todo only search in our container!!!
+        $pref_ucsidentifier = self::ucs_identifier($userid);
+        if (empty($pref_ucsidentifier)) {
+            $user = \core_user::get_user($userid);
+            $ucsidentifier = $user->username;
+        } else {
+            $ucsidentifier = $pref_ucsidentifier;
+        }
         $response = \local_eduvidual\educloud\lib::curl(
-            "/ucsschool/kelvin/k1/users/$ucsidentifier",
+            "/ucsschool/kelvin/v1/users/$ucsidentifier",
             [],
             [],
             [
@@ -120,27 +138,29 @@ class user {
         );
         $response = json_decode($response);
         if (!empty($response->email)) {
+            if (empty($pref_ucsidentifier)) {
+                // We found a user link that was unkown. Store it.
+                self::ucs_identifier($user->username);
+            }
             return $response;
+        } else {
+            return (object) [];
         }
-        print_r($response);
-        throw new \moodle_exception(
-            'educloud:exception:invalidapiresponse',
-            'local_eduvidual',
-            '',
-            [ 'identifier' => $univentionidentifier ]
-        );
     }
     /**
-     * Syncs the user groups.
-     * @param userorid userid or user object.
+     * Get all orgs for a user, that use educloud.
+     * @param userid of that user.
+     * @return indexed array.
      */
-    public static function sync($userorid) {
-        if (!is_object($userorid)) {
-            $user = \core_user::get_user($userorid);
-        } else {
-            $user = $userorid;
-        }
-        // @todo not finished
+    public static function get_orgs($userid) {
+        global $DB;
+        $sql = "SELECT ee.orgid,ee.ucsurl,ee.ucsname,ou.role
+                    FROM {local_eduvidual_educloud} ee,
+                         {local_eduvidual_orgid_userid} ou
+                    WHERE ee.orgid = ou.orgid
+                        AND ee.enabled > 0
+                        AND ou.userid = ?";
+        return $DB->get_records_sql($sql, [ $userid ]);
     }
     /**
      * Create a recordid based on wwwroot and user-id.
@@ -149,7 +169,8 @@ class user {
      */
     private static function record_id($userid) {
         global $CFG;
-        return md5($CFG->wwwroot) . '_' . $userid;
+        $cfg = \local_eduvidual\educloud\lib::api_config();
+        return "{$cfg->sourceid}_{$userid}";
     }
     /**
      * Get or set the ucs identifier of a userid.
@@ -159,11 +180,11 @@ class user {
      */
     public static function ucs_identifier($userid, $setto = '', $delete = false) {
         if ($delete) {
-            \unset_user_preferences('educloud_identifier', $userid);
+            \unset_user_preference('educloud_identifier', $userid);
         } else if (!empty($setto)) {
-            \set_user_preferences('educloud_identifier', $user->email, $userid);
+            \set_user_preference('educloud_identifier', $setto, $userid);
         } else {
-            $mapped_identifier = \get_user_preferences('educloud_identifier', '', $userid);
+            $mapped_identifier = \get_user_preferences('educloud_identifier', $userid);
         }
     }
     /**
@@ -173,6 +194,7 @@ class user {
      */
     public static function ucs_properties($userorid) {
         global $CFG, $DB;
+        $cfg = \local_eduvidual\educloud\lib::api_config();
         if (!is_object($userorid)) {
             $user = \core_user::get_user($userorid);
         } else {
@@ -181,11 +203,7 @@ class user {
 
         $ucs_roles = self::ucs_roles();
 
-        $sql = "SELECT ee.orgid,ee.*,ou.role
-                    FROM {local_eduvidual_educloud} ee, {local_eduvidual_orgid_userid} ou
-                    WHERE ee.orgid = ou.orgid
-                        AND ou.userid = ?";
-        $orgs = $DB->get_records_sql($sql, [ $user->id ]);
+        $orgs = self::get_orgs($user->id);
 
         $roles = [];
         $schools = [];
@@ -204,7 +222,7 @@ class user {
                     $roles[] = $roleurl;
                 }
 
-                $ucsschool_roles[$org->ucsurl] = $roleurl;
+                $ucsschool_roles[] = "$tmp:school:{$org->ucsname}";
             }
         }
 
@@ -219,8 +237,8 @@ class user {
             "record_uid"        => self::record_id($user->id),
             "roles"             => $roles,
             //"school_classes"  => {},
-            "source_uid"        => md5($CFG->wwwroot),
-            //"ucsschool_roles"   => $ucsschool_roles,
+            "source_uid"        => $cfg->sourceid,
+            "ucsschool_roles"   => $ucsschool_roles,
             //"password"        => "", // Not set.
         ];
         return $properties;
@@ -229,33 +247,21 @@ class user {
     /**
      * Get available roles of the UCS System.
      * Required roles are student and teacher.
+     * @return array with all roles.
      */
     public static function ucs_roles() {
-        // ATTENTION, loading the roles did not work!
-        // Therefore for the moment, a hardcoded array is returned.
-        $cfg = \local_eduvidual\educloud\lib::api_config();
-        return [
-            'staff'   => "$cfg->apipath/ucsschool/kelvin/v1/roles/staff",
-            'student' => "$cfg->apipath/ucsschool/kelvin/v1/roles/student",
-            'teacher' => "$cfg->apipath/ucsschool/kelvin/v1/roles/teacher",
-        ];
-
-        /*
-        $roles = json_decode(\local_eduvidual\locallib::cache('application', 'educloud_roles'));
+        $roles = (array) json_decode(\local_eduvidual\locallib::cache('application', 'educloud_roles'));
         if (empty($roles)) {
             $response = \local_eduvidual\educloud\lib::curl(
-                '/ucsschool/kelvin/v1/roles',
+                '/ucsschool/kelvin/v1/roles/',
                 [],
                 [],
                 [
                     'Accept' => 'application/json',
                     'Authorization' => \local_eduvidual\educloud\lib::token(),
                 ],
-                '',
-                true
             );
-            print_r($response);
-            die();
+
             $response = json_decode($response);
             $roles = [];
             if (!empty($response) && count($response) > 0) {
@@ -266,6 +272,46 @@ class user {
             }
         }
         return $roles;
-        */
+    }
+    /**
+     * Update a user in univention portal and store univentionidentifier.
+     * @param userorid User object or userid.
+     */
+    public static function update($userorid) {
+        if (!is_object($userorid)) {
+            $user = \core_user::get_user($userorid);
+        } else {
+            $user = $userorid;
+        }
+        $ucsidentifier = self::ucs_identifier($user->id);
+        if (empty($ucsidentifier)) {
+            $ucsidentifier = $user->username;
+        }
+        mtrace("UCS-Identifier $ucsidentifier");
+
+        $properties = self::ucs_properties($user);
+        $_properties = json_encode($properties);
+
+        $response = \local_eduvidual\educloud\lib::curl(
+            "/ucsschool/kelvin/v1/users/$ucsidentifier",
+            [],
+            $_properties,
+            [
+                'Accept' => 'application/json',
+                'Authorization' => \local_eduvidual\educloud\lib::token(),
+                'Content-Type' => 'application/json',
+            ],
+            'PATCH',
+            false
+        );
+        $response = json_decode($response);
+
+        if (!empty($response->name)) {
+            mtrace("Update successful");
+            self::ucs_identifier($user->id, $response->name);
+        } else {
+            mtrace("Update failed, output of curl was " . print_r($response, 1));
+            throw new \moodle_exception('educloud:exception:userupdatefailed', 'local_eduvidual', '', [ 'userid' => $user->id ]);
+        }
     }
 }

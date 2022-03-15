@@ -33,13 +33,13 @@ class lib {
      */
     public static function api_config($noexception = false) {
         $cfg = (object) [
-            'apildap' => \get_config('local_eduvidual', 'educloud_apildap'),
             'apipass' => \get_config('local_eduvidual', 'educloud_apipass'),
             'apipath' => \get_config('local_eduvidual', 'educloud_apipath'),
             'apiuser' => \get_config('local_eduvidual', 'educloud_apiuser'),
+            'sourceid' => \get_config('local_eduvidual', 'educloud_sourceid'),
         ];
 
-        if (!$noexception && empty($cfg->apildap) || empty($cfg->apipass) || empty($cfg->apipath) || empty($cfg->apiuser)) {
+        if (!$noexception && empty($cfg->apipass) || empty($cfg->apipath) || empty($cfg->apiuser)) {
             throw new \moodle_exception('educloud:exception:incompletesitesettings', 'local_eduvidual');
         }
         return $cfg;
@@ -55,8 +55,10 @@ class lib {
      */
     public static function curl($module, $get = [], $post = [], $headers = [], $customrequest = "", $debug = false) {
         $cfg = self::api_config();
+        if ($module[0] == '/') {
+            $module = substr($module, 1);
+        }
         $url = "$cfg->apipath/$module";
-
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -100,6 +102,7 @@ class lib {
             curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $customrequest);
         }
         if ($debug) {
+            echo "<p>CURL: $url</p>";
             echo "<details><summary>Get:</summary><pre>" . print_r($get, 1) . "</pre></details>";
             echo "<details><summary>Post:</summary><pre>" . print_r($post, 1) . "</pre></details>";
             echo "<details><summary>Headers:</summary><pre>" . print_r($headers, 1) . "</pre></details>";
@@ -145,6 +148,7 @@ class lib {
             );
             $token = json_decode($token);
             if (!empty($token->access_token)) {
+                $token->token_type = ucfirst($token->token_type);
                 $apiauth = "$token->token_type $token->access_token";
                 \local_eduvidual\locallib::cache(
                     'session',

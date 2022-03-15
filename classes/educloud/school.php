@@ -48,25 +48,13 @@ class school {
                 'Content-Type' => 'application/json',
             ],
             '',
-            true
+            false
         ));
         if (!empty($created->url)) {
             $DB->set_field('local_eduvidual_educloud', 'ucsurl', $created->url, [ 'orgid' => $org->orgid ]);
+            $DB->set_field('local_eduvidual_educloud', 'ucsname', $created->name, [ 'orgid' => $org->orgid ]);
             return $created->url;
         }
-    }
-    /**
-     * Get a list of orgs of a user, that use educloud.
-     * @param userid.
-     * @return array of orgs based on table local_eduvidual_educloud.
-     */
-    public static function get_orgs($userid) {
-        global $DB;
-        $sql = "SELECT ee.orgid,ee.* FROM {local_eduvidual_orgid_userid} ou, {local_eduvidual_educloud} ee
-                    WHERE ou.orgid=ee.orgid
-                        AND ou.userid=?";
-        $educloudorgs = $DB->get_records_sql($sql, [ 'userid' => $userid ]);
-        return array_values($educloudorgs);
     }
     /**
      * Disables the feature for a particular org.
@@ -80,8 +68,9 @@ class school {
             self::sync($orgid);
             $record = $DB->get_record('local_eduvidual_educloud', [ 'orgid' => $orgid]);
             if (!empty($record->id)) {
-                $record = (object) [];
-                $DB->delete_records('local_eduvidual_educloud', [ 'orgid' => $orgid ]);
+                $record->enabled = 0;
+                $record->byuserid = 0;
+                $DB->update_record('local_eduvidual_educloud', $record);
             }
             $transaction->allow_commit();
             return $record;
@@ -108,6 +97,10 @@ class school {
                     'byuserid' => $USER->id,
                 ];
                 $record->id = $DB->insert_record('local_eduvidual_educloud', $record);
+            } else {
+                $record->enabled = time();
+                $record->byuserid = $USER->id;
+                $DB->update_record('local_eduvidual_educloud', $record);
             }
             $transaction->allow_commit();
             return $record;

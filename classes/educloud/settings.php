@@ -74,11 +74,15 @@ class settings {
                 PARAM_TEXT
             )
         );
+        global $CFG;
+        if (empty(\get_config('local_eduvidual', 'educloud_sourceid'))) {
+            \set_config('educloud_sourceid', md5($CFG->wwwroot), 'local_eduvidual');
+        }
         $settings->add(
             new \admin_setting_configtext(
-                'local_eduvidual/educloud_apildap',
-                get_string('educloud:settings:apildap', 'local_eduvidual'),
-                '',
+                'local_eduvidual/educloud_sourceid',
+                get_string('educloud:settings:sourceid', 'local_eduvidual'),
+                md5($CFG->wwwroot),
                 'cn=users,dc=educloud-austria,dc=at',
                 PARAM_TEXT
             )
