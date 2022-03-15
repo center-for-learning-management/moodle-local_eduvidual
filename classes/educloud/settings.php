@@ -76,15 +76,17 @@ class settings {
         );
         global $CFG;
         if (empty(\get_config('local_eduvidual', 'educloud_sourceid'))) {
-            \set_config('educloud_sourceid', md5($CFG->wwwroot), 'local_eduvidual');
+            \set_config('educloud_sourceid', substr(md5($CFG->wwwroot), 0, 5), 'local_eduvidual');
         }
         $settings->add(
-            new \admin_setting_configtext(
+            new \admin_setting_configtext_with_maxlength(
                 'local_eduvidual/educloud_sourceid',
                 get_string('educloud:settings:sourceid', 'local_eduvidual'),
-                md5($CFG->wwwroot),
-                'cn=users,dc=educloud-austria,dc=at',
-                PARAM_TEXT
+                '',
+                substr(md5($CFG->wwwroot), 0, 5),
+                PARAM_ALPHANUM,
+                5,
+                5
             )
         );
     }

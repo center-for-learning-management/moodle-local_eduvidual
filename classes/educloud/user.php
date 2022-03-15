@@ -89,12 +89,7 @@ class user {
         } else {
             $user = $userorid;
         }
-        $pref_ucsidentifier = self::ucs_identifier($user->id);
-        if (empty($pref_ucsidentifier)) {
-            $ucsidentifier = $user->username;
-        } else {
-            $ucsidentifier = $pref_ucsidentifier;
-        }
+        $ucsidentifier = self::ucs_identifier($user->id);
         mtrace("UCS-Identifier $ucsidentifier");
         $response = json_decode(\local_eduvidual\educloud\lib::curl(
             "/ucsschool/kelvin/v1/users/$ucsidentifier",
@@ -120,13 +115,7 @@ class user {
      * @param userid the Moodle userid.
      */
     public static function get($userid) {
-        $pref_ucsidentifier = self::ucs_identifier($userid);
-        if (empty($pref_ucsidentifier)) {
-            $user = \core_user::get_user($userid);
-            $ucsidentifier = $user->username;
-        } else {
-            $ucsidentifier = $pref_ucsidentifier;
-        }
+        $ucsidentifier = self::ucs_identifier($userid);
         $response = \local_eduvidual\educloud\lib::curl(
             "/ucsschool/kelvin/v1/users/$ucsidentifier",
             [],
@@ -137,11 +126,9 @@ class user {
             ]
         );
         $response = json_decode($response);
-        if (!empty($response->email)) {
-            if (empty($pref_ucsidentifier)) {
-                // We found a user link that was unkown. Store it.
-                self::ucs_identifier($user->username);
-            }
+        if (!empty($response->name)) {
+            // We found a user link that was unkown. Store it.
+            self::ucs_identifier($userid, $response->name);
             return $response;
         } else {
             return (object) [];
@@ -163,14 +150,13 @@ class user {
         return $DB->get_records_sql($sql, [ $userid ]);
     }
     /**
-     * Create a recordid based on wwwroot and user-id.
+     * Get the record_uid for univention (=username).
      * @param userid.
      * @return String with identifier.
      */
-    private static function record_id($userid) {
-        global $CFG;
-        $cfg = \local_eduvidual\educloud\lib::api_config();
-        return "{$cfg->sourceid}_{$userid}";
+    private static function record_uid($userid) {
+        $user = \core_user::get_user($userid);
+        return $user->username;
     }
     /**
      * Get or set the ucs identifier of a userid.
@@ -185,6 +171,12 @@ class user {
             \set_user_preference('educloud_identifier', $setto, $userid);
         } else {
             $mapped_identifier = \get_user_preferences('educloud_identifier', $userid);
+            if (empty($mapped_identifier)) {
+                $cfg = \local_eduvidual\educloud\lib::api_config();
+                return "{$cfg->sourceid}_$userid";
+            } else {
+                return $mapped_identifier;
+            }
         }
     }
     /**
@@ -227,14 +219,14 @@ class user {
         }
 
         $properties = (object) [
-            "name"              => $user->username,
+            "name"              => self::ucs_identifier($user->id),
             "schools"           => $schools,
             "firstname"         => $user->firstname,
             "lastname"          => $user->lastname,
             "disabled"          => false,
             "email"             => $user->email,
             "expiration_date"   => "2099-12-31",
-            "record_uid"        => self::record_id($user->id),
+            "record_uid"        => self::record_uid($user->id),
             "roles"             => $roles,
             //"school_classes"  => {},
             "source_uid"        => $cfg->sourceid,
@@ -284,9 +276,6 @@ class user {
             $user = $userorid;
         }
         $ucsidentifier = self::ucs_identifier($user->id);
-        if (empty($ucsidentifier)) {
-            $ucsidentifier = $user->username;
-        }
         mtrace("UCS-Identifier $ucsidentifier");
 
         $properties = self::ucs_properties($user);
