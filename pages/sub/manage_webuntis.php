@@ -28,9 +28,10 @@ $orgmaps = array_values($DB->get_records('local_webuntis_orgmap', [ 'connected' 
 
 if (count($orgmaps) > 1) {
     // @todo implement selector for tenant.
-
-} else {
+} else if (count($orgmaps) > 0) {
     $ORGMAP = $orgmaps[0];
+} else {
+    $ORGMAP = (object) [];
 }
 
 if (empty($ORGMAP->orgid) || $ORGMAP->orgid != $orgid) {
