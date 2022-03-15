@@ -27,7 +27,11 @@ $action = optional_param('action', 'usermap', PARAM_TEXT); // tab the will be sh
 $orgmaps = array_values($DB->get_records('local_webuntis_orgmap', [ 'connected' => 1, 'orgid' => $orgid ]));
 
 if (count($orgmaps) > 1) {
-    // @todo implement selector for tenant.
+    foreach ($orgmaps as $orgmap) {
+        if ($orgmap->orgid == $orgid) {
+            $ORGMAP = $orgmap;
+        }
+    }
 } else if (count($orgmaps) > 0) {
     $ORGMAP = $orgmaps[0];
 } else {
@@ -137,7 +141,6 @@ switch ($action) {
             "webuntis.email w_email",
             "webuntis.firstname w_firstname",
             "webuntis.lastname w_lastname",
-            "webuntis.username w_username",
             "webuntis.remoteuserrole w_role",
             "moodle.id m_id",
             "moodle.email m_email",
