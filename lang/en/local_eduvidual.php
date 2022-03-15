@@ -287,6 +287,7 @@ $string['educloud:settings:apipath'] = 'Endpoint-URL';
 $string['educloud:settings:apipass'] = 'Password';
 $string['educloud:settings:apiuser'] = 'Username';
 $string['educloud:settings:sourceid'] = 'Source-ID';
+$string['educloud:settings:sourceid:desc'] = 'Use this attribute to distinguish different Moodle-Systems. This attribute will be the "source-id" in Univention.';
 $string['educloud:toggle:failed'] = 'Toggling educloud status failed';
 $string['educloud:toggle:success'] = 'Successfully toggled educloud status';
 

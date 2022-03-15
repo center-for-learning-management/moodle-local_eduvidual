@@ -82,7 +82,7 @@ class settings {
             new \admin_setting_configtext_with_maxlength(
                 'local_eduvidual/educloud_sourceid',
                 get_string('educloud:settings:sourceid', 'local_eduvidual'),
-                '',
+                get_string('educloud:settings:sourceid:desc', 'local_eduvidual'),
                 substr(md5($CFG->wwwroot), 0, 5),
                 PARAM_ALPHANUM,
                 5,
