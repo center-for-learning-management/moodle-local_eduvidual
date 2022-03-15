@@ -100,4 +100,6 @@ if ($hassiteconfig) {
             1
         )
     );
+
+    \local_eduvidual\educloud\settings::admin_settings_page($settings);
 }
