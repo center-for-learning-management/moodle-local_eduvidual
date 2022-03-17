@@ -257,6 +257,7 @@ class local_eduvidual_lib_import_compiler_user extends local_eduvidual_lib_impor
         $obj->lastname = trim($obj->lastname);
         $obj->role = trim(ucfirst(strtolower($obj->role)));
         $obj->username = trim(str_replace($dummydomain, '', $obj->username));
+
         if (empty($obj->cohorts_add) && !empty($obj->bunch)) {
             // Translate the old name to its new name.
             $obj->cohorts_add = $obj->bunch;
@@ -274,6 +275,9 @@ class local_eduvidual_lib_import_compiler_user extends local_eduvidual_lib_impor
             $payload->processed = false;
             $payload->action = get_string('import:invalid_role', 'local_eduvidual');
         }
+
+        $obj->username = strtolower($obj->username);
+        $obj->email = strtolower($obj->email);
 
         // Check if email is already taken and set userid accordingly.
         $sql = "SELECT id
