@@ -71,13 +71,12 @@
                     <label for="eduvidual_registration_name">{{#str}} registration:name, local_eduvidual {{/str}}</label>
                 </div>
                 <div class="col-md-6">
-                    <input type="text" id="eduvidual_registration_name" value="" maxlength="30" style="width: 100%;"
-                        placeholder="{{#str}} registration:name, local_eduvidual {{/str}}"
-                        onkeypress="if(this.value.length > 30) { this.value = this.value.substring(0, 30); return false; }"/>
+                    <input type="text" id="eduvidual_registration_name" value=""  style="width: 100%;"
+                        placeholder="{{#str}} registration:name, local_eduvidual {{/str}}" />
                 </div>
             </div>
             <a href="#" class="btn btn-primary"
-                onclick="require(['local_eduvidual/register'], function(REGISTER) { REGISTER.validate(); });">
+                onclick="require(['local_eduvidual/register'], function(REGISTER) { REGISTER.validate({{maxlength}}); });">
                 <i class="fa fa-check"></i>
                 {{#str}} registration:validate, local_eduvidual {{/str}}
             </a>

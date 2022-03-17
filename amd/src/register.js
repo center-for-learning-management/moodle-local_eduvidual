@@ -1,4 +1,6 @@
-define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'local_eduvidual/main'], function($, AJAX, NOTIFICATION, STR, URL, MAIN) {
+define(
+    ['jquery', 'core/ajax', 'core/modal_factory', 'core/notification', 'core/str', 'core/url', 'local_eduvidual/main'],
+    function($, Ajax, ModalFactory, Notification, Str, Url, MAIN) {
     return {
         check: function() {
             var orgid = $('#eduvidual_registration_orgid').val();
@@ -12,13 +14,24 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'loc
                 MAIN.connect({ module: 'register', stage: 1, orgid: orgid });
             });
         },
-        validate: function() {
+        validate: function(maxlength) {
             var orgid = $('#eduvidual_registration_orgid').val();
             var token = $('#eduvidual_registration_token').val();
             var name = $('#eduvidual_registration_name').val();
-            require(['local_eduvidual/main'], function(MAIN) {
-                MAIN.connect({ module: 'register', stage: 2, orgid: orgid, token: token, name: name });
-            });
+
+            if (name.length > maxlength) {
+                Str.get_strings([
+                    {'key': 'registration:name:lengthexceeded:title', 'component': 'local_eduvidual'},
+                    {'key': 'registration:name:lengthexceeded:text', 'component': 'local_eduvidual', param: { 'chars' : maxlength } },
+                    {'key': 'ok', 'component': 'core' }
+                ]).done(function(s) {
+                    Notification.alert(s[0], s[1], s[2]);
+                }).fail(Notification.exception);
+            } else {
+                require(['local_eduvidual/main'], function(MAIN) {
+                    MAIN.connect({ module: 'register', stage: 2, orgid: orgid, token: token, name: name });
+                });
+            }
         },
         result: function(o) {
             if (o.result && o.result.status && o.result.status == 'ok') {
@@ -34,13 +47,13 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'loc
                     $('#eduvidual_registration_mail').html(o.result.mail);
                 }
                 if (o.data.stage == 1) {
-                    STR.get_strings([
+                    Str.get_strings([
                         {'key' : 'mailregister:confirmation', component: 'local_eduvidual' },
                         {'key' : 'mailregister:confirmation:mailsent', component: 'local_eduvidual' },
                         {'key' : 'ok', component: 'core' }
                     ]).done(function(s) {
-                        NOTIFICATION.alert(s[0], s[1], s[2]);
-                    }).fail(NOTIFICATION.exception);
+                        Notification.alert(s[0], s[1], s[2]);
+                    }).fail(Notification.exception);
                 }
                 if (o.data.stage == 2) {
                     // Show success message
@@ -52,9 +65,9 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'loc
             } else {
                 // @todo localization
                 if (o.result.error && o.result.error != '') {
-                    NOTIFICATION.alert('Error', o.result.error, 'ok');
+                    Notification.alert('Error', o.result.error, 'ok');
                 } else if(o.result.status != 'silent') {
-                    NOTIFICATION.alert('Error', 'Action failed!', 'ok');
+                    Notification.alert('Error', 'Action failed!', 'ok');
                 }
             }
         },
