@@ -32,12 +32,9 @@
                     <td>{{label}}</td>
                     <td width="100" align="right" class="{{uniqid}}-rate" {{^show_rate}} style="display: none;" {{/show_rate}}>{{#str}} admin:stats:rate, local_eduvidual {{/str}}</td>
                     <td width="100" align="right" class="{{uniqid}}-all" {{^show_all}} style="display: none;" {{/show_all}}>{{#str}} admin:stats:all, local_eduvidual {{/str}}</td>
-                    <td width="100" align="right" class="{{uniqid}}-lpf_and_eduv" {{^show_lpf_and_eduv}} style="display: none;" {{/show_lpf_and_eduv}}>{{#str}} admin:stats:lpf_and_eduv, local_eduvidual {{/str}}</td>
                     <!-- <td width="100" align="right" class="{{uniqid}}-registered" {{^show_registered}} style="display: none;" {{/show_registered}}>{{#str}} admin:stats:registered, local_eduvidual {{/str}}</td> -->
                     <td width="100" align="right" class="{{uniqid}}-neweduv" {{^show_neweduv}} style="display: none;" {{/show_neweduv}}>{{#str}} admin:stats:neweduv, local_eduvidual {{/str}}</td>
                     <!-- <td width="100" align="right" class="{{uniqid}}-lpfeduv" {{^show_lpfeduv}} style="display: none;" {{/show_lpfeduv}}>{{#str}} admin:stats:lpfeduv, local_eduvidual {{/str}}</td> -->
-                    <td width="100" align="right" class="{{uniqid}}-lpf" {{^show_lpf}} style="display: none;" {{/show_lpf}}>{{#str}} admin:stats:lpf, local_eduvidual {{/str}}</td>
-                    <td width="100" align="right" class="{{uniqid}}-migrated" {{^show_migrated}} style="display: none;" {{/show_migrated}}>{{#str}} admin:stats:migrated, local_eduvidual {{/str}}</td>
                 </tr>
             </thead>
             <tfoot>
@@ -45,12 +42,9 @@
                     <td>&nbsp;</td>
                     <td align="right" class="{{uniqid}}-rate" {{^show_rate}} style="display: none;" {{/show_rate}}>&nbsp;</td>
                     <td align="right" class="{{uniqid}}-all" {{^show_all}} style="display: none;" {{/show_all}}>{{sum_all}}</td>
-                    <td align="right" class="{{uniqid}}-lpf_and_eduv" {{^show_lpf_and_eduv}} style="display: none;" {{/show_lpf_and_eduv}}>{{sum_lpf_and_eduv}}</td>
                     <!-- <td align="right" class="{{uniqid}}-registered" {{^show_registered}} style="display: none;" {{/show_registered}}>{{sum_reg}}</td> -->
                     <td align="right" class="{{uniqid}}-neweduv" {{^show_neweduv}} style="display: none;" {{/show_neweduv}}>{{sum_neweduv}}</td>
                     <!-- <td align="right" class="{{uniqid}}-lpfeduv" {{^show_lpfeduv}} style="display: none;" {{/show_lpfeduv}}>{{sum_lpfeduv}}</td> -->
-                    <td align="right" class="{{uniqid}}-lpf" {{^show_lpf}} style="display: none;" {{/show_lpf}}>{{sum_lpf}}</td>
-                    <td align="right" class="{{uniqid}}-migrated" {{^show_migrated}} style="display: none;" {{/show_migrated}}>&nbsp;</td>
                 </tr>
             </tfoot>
             <tbody>
@@ -59,11 +53,9 @@
                     <td>{{name}}</td>
                     <td align="right" class="{{uniqid}}-rate" {{^show_rate}} style="display: none;" {{/show_rate}}>{{rate}}</td>
                     <td align="right" class="{{uniqid}}-all" {{^show_all}} style="display: none;" {{/show_all}}>{{cntall}}</td>
-                    <td align="right" class="{{uniqid}}-lpf_and_eduv" {{^show_lpf_and_eduv}} style="display: none;" {{/show_lpf_and_eduv}}>{{cntlpf_and_eduv}}</td>
                     <!-- <td align="right" class="{{uniqid}}-registered" {{^show_registered}} style="display: none;" {{/show_registered}}>{{cntreg}}</td> -->
                     <td align="right" class="{{uniqid}}-neweduv" {{^show_neweduv}} style="display: none;" {{/show_neweduv}}>{{cntneweduv}}</td>
                     <!-- <td align="right" class="{{uniqid}}-lpfeduv" {{^show_lpfeduv}} style="display: none;" {{/show_lpfeduv}}>{{cntlpfeduv}}</td> -->
-                    <td align="right" class="{{uniqid}}-lpf" {{^show_lpf}} style="display: none;" {{/show_lpf}}>{{cntlpf}}</td>
                     <td align="right" class="{{uniqid}}-migrated" {{^show_migrated}} style="display: none;" {{/show_migrated}}>{{ratemig}}</td>
                 </tr>
                 {{/states}}
@@ -80,11 +72,6 @@
             <input type="hidden" id="{{uniqid}}-hidden-all" name="show_all" value="{{#show_all}}1{{/show_all}}0" />
             <input id="{{uniqid}}-all" name="show_all" {{#show_all}} checked="checked" {{/show_all}} type="checkbox" data-type="all" onclick="document.getElementById('{{uniqid}}-hidden-all').value = this.checked ? '1' : '0'; var c = this; require(['local_eduvidual/admin'], function(ADMIN) { ADMIN.statsSwitchColumn('{{uniqid}}', c); });" />
             <label for="{{uniqid}}-all">{{#str}} admin:stats:all, local_eduvidual {{/str}}</label>
-        </li>
-        <li>
-            <input type="hidden" id="{{uniqid}}-hidden-lpf_and_eduv" name="show_lpf_and_eduv" value="{{#show_lpf_and_eduv}}1{{/show_lpf_and_eduv}}0" />
-            <input id="{{uniqid}}-lpf_and_eduv" {{#show_lpf_and_eduv}} checked="checked" {{/show_lpf_and_eduv}}  type="checkbox" data-type="lpf_and_eduv" onclick="document.getElementById('{{uniqid}}-hidden-lpf_and_eduv').value = this.checked ? '1' : '0'; var c = this; require(['local_eduvidual/admin'], function(ADMIN) { ADMIN.statsSwitchColumn('{{uniqid}}', c); });" />
-            <label for="{{uniqid}}-lpf_and_eduv">{{#str}} admin:stats:lpf_and_eduv, local_eduvidual {{/str}}</label>
         </li>
         <!--
         <li>
@@ -105,16 +92,6 @@
             <label for="{{uniqid}}-lpfeduv">{{#str}} admin:stats:lpfeduv, local_eduvidual {{/str}}</label>
         </li>
         -->
-        <li>
-            <input type="hidden" id="{{uniqid}}-hidden-lpf" name="show_lpf" value="{{#show_lpf}}1{{/show_lpf}}0" />
-            <input id="{{uniqid}}-lpf" {{#show_lpf}} checked="checked" {{/show_lpf}}  type="checkbox" data-type="lpf" onclick="document.getElementById('{{uniqid}}-hidden-lpf').value = this.checked ? '1' : '0'; var c = this; require(['local_eduvidual/admin'], function(ADMIN) { ADMIN.statsSwitchColumn('{{uniqid}}', c); });" />
-            <label for="{{uniqid}}-lpf">{{#str}} admin:stats:lpf, local_eduvidual {{/str}}</label>
-        </li>
-        <li>
-            <input type="hidden" id="{{uniqid}}-hidden-migrated" name="show_migrated" value="{{#show_migrated}}1{{/show_migrated}}0" />
-            <input id="{{uniqid}}-migrated" {{#show_migrated}} checked="checked" {{/show_migrated}}  type="checkbox" data-type="migrated" onclick="document.getElementById('{{uniqid}}-hidden-migrated').value = this.checked ? '1' : '0'; var c = this; require(['local_eduvidual/admin'], function(ADMIN) { ADMIN.statsSwitchColumn('{{uniqid}}', c); });" />
-            <label for="{{uniqid}}-migrated">{{#str}} admin:stats:migrated, local_eduvidual {{/str}}</label>
-        </li>
     </ul>
     </form>
 </div>

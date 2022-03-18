@@ -44,12 +44,6 @@ if ($updatedb == 0) {
                     ),
                     array(
                         "checked" => true,
-                        "key" => "lpf",
-                        "label" => get_string("admin:map:lpf", "local_eduvidual"),
-                        "icon" => $OUTPUT->image_icon('google-maps-pin-blue', 'pin', 'local_eduvidual'),
-                    ),
-                    array(
-                        "checked" => true,
                         "key" => "none",
                         "label" => get_string("admin:map:none", "local_eduvidual"),
                         "icon" => $OUTPUT->image_icon('google-maps-pin-lightgray', 'pin', 'local_eduvidual'),
@@ -171,145 +165,118 @@ if ($updatedb == 0) {
     $mapquestkey = get_config('local_eduvidual', 'mapquest_apikey');
     $googlekey = get_config('local_eduvidual', 'google_apikey');
 
-    /*
-    if ($usemapquest && empty($mapquestkey)) {
-        echo $OUTPUT->render_from_template('local_eduvidual/alert', array(
-            'content' => get_string('admin:map:mapquest:apikey:description', 'local_eduvidual'),
-            'type' => 'warning',
-            'url' => '/admin/settings.php?section=blocksettingeduvidual',
-        ));
-        echo $OUTPUT->render_from_template('local_eduvidual/alert', array(
-            'content' => get_string('admin:map:nominatim:directly', 'local_eduvidual'),
-            'type' => 'warning',
-            'url' => '/local/eduvidual/pages/admin.php?act=map&updatedb=1&limit=' . $limit,
-        ));
-    } elseif ($usegoogle && empty($googlekey)) {
-        echo $OUTPUT->render_from_template('local_eduvidual/alert', array(
-            'content' => get_string('admin:map:google:apikey:description', 'local_eduvidual'),
-            'type' => 'warning',
-            'url' => '/admin/settings.php?section=blocksettingeduvidual',
-        ));
-        echo $OUTPUT->render_from_template('local_eduvidual/alert', array(
-            'content' => get_string('admin:map:nominatim:directly', 'local_eduvidual'),
-            'type' => 'warning',
-            'url' => '/local/eduvidual/pages/admin.php?act=map&updatedb=1&limit=' . $limit,
-        ));
-    } else {
-    */
-        if (optional_param('resetfailed', 0, PARAM_INT) == 1) {
-            $DB->execute("UPDATE {local_eduvidual_org_gps} SET failed=0", array());
-        }
-        // Only update orgs that have not been updated in the last week!
-        $since = time() - 60*60*24*7;
-        $limit = optional_param('limit', 500, PARAM_INT);
-        $sql = "SELECT o.orgid,o.street,o.zip,o.city,o.district,o.country
-                    FROM {local_eduvidual_org} o, {local_eduvidual_org_gps} og
-                    WHERE o.orgid=og.orgid
-                        AND o.orgid LIKE ?
-                        AND og.modified < ?
-                        AND og.failed < ?
-                    LIMIT 0," . $limit;
-        $orgs = $DB->get_records_sql($sql, array('______', $since, $since));
-        echo "<li>Going through " . count(array_keys($orgs)) . " orgs</li>";
-        flush();
-        $services = array();
-        if (!empty($googlekey)) $services[] = 'google';
-        if (!empty($mapquestkey)) $services[] = 'mapquest';
-        $services[] = 'nominatim';
-        foreach ($orgs AS $orgid => $org) {
-            foreach ($services AS $srvnr => $service) {
-                switch ($service) {
-                    case 'nominatim':
-                        $searchurl = "https://nominatim.openstreetmap.org/search?";
-                        $searchurl .= "&street=" . urlencode($org->street);
-                        $searchurl .= "&city=" . urlencode($org->city);
-                        $searchurl .= "&state=" . urlencode($org->district);
-                        $searchurl .= "&country=" . urlencode($org->country);
-                        $searchurl .= "&postalcode=" . urlencode($org->zip);
-                        $searchurl .= "&addressdetails=0";
-                        $searchurl .= "&namedetails=0";
-                        $searchurl .= "&format=json";
-                        $searchurl .= "&limit=1";
-                        $data = do_curl($searchurl);
-                        $data = substr($data, 1, strlen($data) - 2);
-                        $data = json_decode($data);
+    if (optional_param('resetfailed', 0, PARAM_INT) == 1) {
+        $DB->execute("UPDATE {local_eduvidual_org_gps} SET failed=0", array());
+    }
+    // Only update orgs that have not been updated in the last week!
+    $since = time() - 60*60*24*7;
+    $limit = optional_param('limit', 500, PARAM_INT);
+    $sql = "SELECT o.orgid,o.street,o.zip,o.city,o.district,o.country
+                FROM {local_eduvidual_org} o, {local_eduvidual_org_gps} og
+                WHERE o.orgid=og.orgid
+                    AND o.orgid LIKE ?
+                    AND og.modified < ?
+                    AND og.failed < ?
+                LIMIT 0," . $limit;
+    $orgs = $DB->get_records_sql($sql, array('______', $since, $since));
+    echo "<li>Going through " . count(array_keys($orgs)) . " orgs</li>";
+    flush();
+    $services = array();
+    if (!empty($googlekey)) $services[] = 'google';
+    if (!empty($mapquestkey)) $services[] = 'mapquest';
+    $services[] = 'nominatim';
+    foreach ($orgs AS $orgid => $org) {
+        foreach ($services AS $srvnr => $service) {
+            switch ($service) {
+                case 'nominatim':
+                    $searchurl = "https://nominatim.openstreetmap.org/search?";
+                    $searchurl .= "&street=" . urlencode($org->street);
+                    $searchurl .= "&city=" . urlencode($org->city);
+                    $searchurl .= "&state=" . urlencode($org->district);
+                    $searchurl .= "&country=" . urlencode($org->country);
+                    $searchurl .= "&postalcode=" . urlencode($org->zip);
+                    $searchurl .= "&addressdetails=0";
+                    $searchurl .= "&namedetails=0";
+                    $searchurl .= "&format=json";
+                    $searchurl .= "&limit=1";
+                    $data = do_curl($searchurl);
+                    $data = substr($data, 1, strlen($data) - 2);
+                    $data = json_decode($data);
 
-                    break;
-                    case 'mapquest':
-                        $searchurl = "http://open.mapquestapi.com/nominatim/v1/search.php?";
-                        $searchurl .= "&key=" . $mapquestkey;
-                        $searchurl .= "&format=json";
-                        $searchurl .= "&addressdetails=0";
-                        $searchurl .= "&limit=1";
-                        $searchurl .= "&q=" . urlencode($org->street . ", " . $org->zip . " " . $org->city . ", " . $org->country);
-                        $data = do_curl($searchurl);
-                        $data = substr($data, 1, strlen($data) - 2);
-                        $data = json_decode($data);
-                    break;
-                    case 'google':
-                        $searchurl = "https://maps.googleapis.com/maps/api/place/findplacefromtext/json?";
-                        $searchurl .= "&key=" . $googlekey . "&inputtype=textquery";
-                        $searchurl .= "&input=" . urlencode($org->street . ", " . $org->zip . " " . $org->city . ", " . $org->country);
-                        $searchurl .= "&fields=geometry";
-                        $data = do_curl($searchurl);
-                        $data = json_decode($data);
-                        if (!empty($data->candidates[0]->geometry->location)) {
-                            $data = $data->candidates[0]->geometry->location;
-                            $data->lon = $data->lng;
-                        }
-                    break;
+                break;
+                case 'mapquest':
+                    $searchurl = "http://open.mapquestapi.com/nominatim/v1/search.php?";
+                    $searchurl .= "&key=" . $mapquestkey;
+                    $searchurl .= "&format=json";
+                    $searchurl .= "&addressdetails=0";
+                    $searchurl .= "&limit=1";
+                    $searchurl .= "&q=" . urlencode($org->street . ", " . $org->zip . " " . $org->city . ", " . $org->country);
+                    $data = do_curl($searchurl);
+                    $data = substr($data, 1, strlen($data) - 2);
+                    $data = json_decode($data);
+                break;
+                case 'google':
+                    $searchurl = "https://maps.googleapis.com/maps/api/place/findplacefromtext/json?";
+                    $searchurl .= "&key=" . $googlekey . "&inputtype=textquery";
+                    $searchurl .= "&input=" . urlencode($org->street . ", " . $org->zip . " " . $org->city . ", " . $org->country);
+                    $searchurl .= "&fields=geometry";
+                    $data = do_curl($searchurl);
+                    $data = json_decode($data);
+                    if (!empty($data->candidates[0]->geometry->location)) {
+                        $data = $data->candidates[0]->geometry->location;
+                        $data->lon = $data->lng;
+                    }
+                break;
+            }
+            echo "<li>Retrieved data from " . $service . " for <a href=\"" . $searchurl . "\" target=\"_blank\">" . $orgid . "</a></li>\n";
+
+            $testorg = $DB->get_record('local_eduvidual_org_gps', array('orgid' => $orgid));
+            if (!empty($data->lat) && !empty($data->lon)) {
+                echo "<li>Retrieved from " . $service . " for " . $orgid . " lon " . $data->lon . " lat " . $data->lat . "</li>";
+                if (!empty($testorg->id)) {
+                    $testorg->lat = $data->lat;
+                    $testorg->lon = $data->lon;
+                    $testorg->modified = time();
+                    $DB->update_record('local_eduvidual_org_gps', $testorg);
+                    echo "<li>Updated " . $orgid . "</li>";
+                } else {
+                    $testorg = (object) array(
+                        'orgid' => $orgid,
+                        'lat' => $data->lat,
+                        'lon' => $data->lon,
+                        'modified' => time(),
+                        'failed' => 0,
+                    );
+                    $DB->insert_record('local_eduvidual_org_gps', $testorg);
+                    echo "<li>Inserted " . $orgid . "</li>";
                 }
-                echo "<li>Retrieved data from " . $service . " for <a href=\"" . $searchurl . "\" target=\"_blank\">" . $orgid . "</a></li>\n";
-
-                $testorg = $DB->get_record('local_eduvidual_org_gps', array('orgid' => $orgid));
-                if (!empty($data->lat) && !empty($data->lon)) {
-                    echo "<li>Retrieved from " . $service . " for " . $orgid . " lon " . $data->lon . " lat " . $data->lat . "</li>";
+                // Escape foreach
+                break;
+            } else {
+                echo "<li>Failed for " . $orgid . " using " . $service . "</li>";
+                if ($srvnr == count($services)){
+                    echo "<li>This was the last service. Flag as failed.</li>";
                     if (!empty($testorg->id)) {
-                        $testorg->lat = $data->lat;
-                        $testorg->lon = $data->lon;
-                        $testorg->modified = time();
+                        $testorg->failed = time();
                         $DB->update_record('local_eduvidual_org_gps', $testorg);
-                        echo "<li>Updated " . $orgid . "</li>";
                     } else {
                         $testorg = (object) array(
                             'orgid' => $orgid,
-                            'lat' => $data->lat,
-                            'lon' => $data->lon,
-                            'modified' => time(),
-                            'failed' => 0,
+                            'lat' => 0,
+                            'lon' => 0,
+                            'modified' => 0,
+                            'failed' => time(),
                         );
                         $DB->insert_record('local_eduvidual_org_gps', $testorg);
-                        echo "<li>Inserted " . $orgid . "</li>";
                     }
-                    // Escape foreach
-                    break;
-                } else {
-                    echo "<li>Failed for " . $orgid . " using " . $service . "</li>";
-                    if ($srvnr == count($services)){
-                        echo "<li>This was the last service. Flag as failed.</li>";
-                        if (!empty($testorg->id)) {
-                            $testorg->failed = time();
-                            $DB->update_record('local_eduvidual_org_gps', $testorg);
-                        } else {
-                            $testorg = (object) array(
-                                'orgid' => $orgid,
-                                'lat' => 0,
-                                'lon' => 0,
-                                'modified' => 0,
-                                'failed' => time(),
-                            );
-                            $DB->insert_record('local_eduvidual_org_gps', $testorg);
-                        }
-                    }
-                }
-                flush();
-                if ($service == 'nominatim') {
-                    sleep(1);
                 }
             }
+            flush();
+            if ($service == 'nominatim') {
+                sleep(1);
+            }
         }
-    //}
-
+    }
 }
 
 function do_curl($searchurl) {

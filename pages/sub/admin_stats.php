@@ -60,10 +60,9 @@ for ($z = 0; $z < 2; $z++) {
         'restrictions' => $ROWS[($z == 0) ? 1 : 0],
         'rows' => $ROWS[$z],
         'sum_all' => 0,
-        'sum_lpf' => 0,
         'sum_lpfeduv' => 0,
         'sum_neweduv' => 0,
-        'sum_registered' => 0,
+        'sum_reg' => 0,
     );
     $restriction = optional_param('restriction_' . $z, -1, PARAM_INT);
     if ($restriction > -1) {
@@ -151,52 +150,37 @@ for ($z = 0; $z < 2; $z++) {
             $lpfeduv = $DB->get_records_sql($sql, array());
         break;
     }
+
     foreach ($STATS[$z]['rows'] AS $a => $row) {
         if (empty($row['label'])) continue;
         if (!empty($all[$a]->cnt)) {
-            $rate = round((intval($registered[$a]->cnt) + intval($lpf[$a]->cnt) - intval($lpfeduv[$a]->cnt)) / intval($all[$a]->cnt) * 100, 1) . '%';
+            $rate = round((intval(@$registered[$a]->cnt) - intval(@$lpfeduv[$a]->cnt)) / intval(@$all[$a]->cnt) * 100, 1) . '%';
         } else {
             $rate = 'n/a';
         }
-        if (!empty($lpf[$a]->cnt) && !empty($lpfeduv[$a]->cnt)) {
-            $ratemig = round($lpfeduv[$a]->cnt / $lpf[$a]->cnt * 100, 1) . '%';
-        } else {
-            $ratemig = 'n/a';
-        }
-        $neweduv = number_format($registered[$a]->cnt, 0, ",", ".");
-        $lpf_and_eduv = $lpf[$a]->cnt + $registered[$a]->cnt - $lpfeduv[$a]->cnt;
+        $neweduv = number_format(@$registered[$a]->cnt, 0, ",", ".");
 
         $STATS[$z]['states'][] = array(
-            'cntall' => !empty($all[$a]->cnt) ? number_format($all[$a]->cnt, 0, ",", ".") : '-',
-            'cntlpf' => !empty($lpf[$a]->cnt) ? number_format($lpf[$a]->cnt, 0, ",", ".") : '-',
-            'cntlpf_and_eduv' => number_format($lpf_and_eduv, 0, ",", "."),
-            'cntlpfeduv' => !empty($lpf_and_eduv) ? number_format($lpf_and_eduv, 0, ",", ".") : '-',
+            'cntall' => !empty(@$all[$a]->cnt) ? number_format(@$all[$a]->cnt, 0, ",", ".") : '-',
+            'cntlpfeduv' => !empty(@$lpf_and_eduv) ? number_format($lpf_and_eduv, 0, ",", ".") : '-',
             'cntneweduv' => $neweduv,
-            'cntreg' => !empty($registered[$a]->cnt) ? number_format($registered[$a]->cnt, 0, ",", ".") : '-',
+            'cntreg' => !empty(@$registered[$a]->cnt) ? number_format(@$registered[$a]->cnt, 0, ",", ".") : '-',
             'name' => $row['label'],
             'rate' => $rate,
-            'ratemig' => $ratemig,
         );
-        $STATS[$z]['sum_all'] += $all[$a]->cnt;
-        $STATS[$z]['sum_lpf'] += $lpf[$a]->cnt;
-        $STATS[$z]['sum_lpf_and_eduv'] += $lpf_and_eduv;
-        $STATS[$z]['sum_lpfeduv'] += $lpfeduv[$a]->cnt;
+        $STATS[$z]['sum_all'] += @$all[$a]->cnt;
+        $STATS[$z]['sum_lpfeduv'] += @$lpfeduv[$a]->cnt;
         $STATS[$z]['sum_neweduv'] += $neweduv;
-        $STATS[$z]['sum_reg'] += $registered[$a]->cnt;
+        $STATS[$z]['sum_reg'] += @$registered[$a]->cnt;
     }
     $STATS[$z]['sum_all'] = number_format($STATS[$z]['sum_all'], 0, ",", ".");
-    $STATS[$z]['sum_lpf'] = number_format($STATS[$z]['sum_lpf'], 0, ",", ".");
-    $STATS[$z]['sum_lpf_and_eduv'] = number_format($STATS[$z]['sum_lpf_and_eduv'], 0, ",", ".");
     $STATS[$z]['sum_lpfeduv'] = number_format($STATS[$z]['sum_lpfeduv'], 0, ",", ".");
     $STATS[$z]['sum_neweduv'] = number_format($STATS[$z]['sum_neweduv'], 0, ",", ".");
     $STATS[$z]['sum_reg'] = number_format($STATS[$z]['sum_reg'], 0, ",", ".");
 }
 $o = array(
     'show_all' => optional_param('show_all', true, PARAM_BOOL),
-    'show_lpf' => optional_param('show_lpf', true, PARAM_BOOL),
-    'show_lpf_and_eduv' => optional_param('show_lpf_and_eduv', true, PARAM_BOOL),
     'show_lpfeduv' => optional_param('show_lpfeduv', true, PARAM_BOOL),
-    'show_migrated' => optional_param('show_migrated', true, PARAM_BOOL),
     'show_neweduv' => optional_param('show_neweduv', true, PARAM_BOOL),
     'show_rate' => optional_param('show_rate', true, PARAM_BOOL),
     'show_registered' => optional_param('show_registered', true, PARAM_BOOL),

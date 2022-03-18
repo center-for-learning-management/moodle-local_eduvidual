@@ -57,10 +57,6 @@
             {{#pix}} google-maps-pin-orange, local_eduvidual {{/pix}}
             {{#str}} admin:map:both, local_eduvidual {{/str}}
         </div>
-        <div style="display: inline-block;">
-            {{#pix}} google-maps-pin-blue, local_eduvidual {{/pix}}
-            {{#str}} admin:map:lpf, local_eduvidual {{/str}}
-        </div>
         <div style="display: inline-block;" id="{{uniqid}}-legend-none">
             {{#pix}} google-maps-pin-lightgray, local_eduvidual {{/pix}}
             {{#str}} admin:map:none, local_eduvidual {{/str}}
@@ -98,16 +94,6 @@
             </table>
             {{/filters}}
         </div>
-        <!--
-        <div>
-            <a href="#" onclick="var a = this; var h = a.offsetHeight; require(['jquery'], function($) { $(a).toggleClass('minified'); $('#{{uniqid}}-legend').css('height', $(a).hasClass('minified') ? h + 'px' : 'unset'); } ); return false;" style="float: right;">
-                {{#pix}} t/switch_whole, core, show info {{/pix}}
-            </a>
-            <a href="#" onclick="require(['local_eduvidual/admin'], function(ADMIN) { ADMIN.org_gps_refresh('{{uniqid}}'); }); return false;" style="float: right;">
-                {{#pix}} i/reload, core, reload {{/pix}}
-            </a>
-        </div>
-        -->
     </div>
 </div>
 
