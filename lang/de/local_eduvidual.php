@@ -516,6 +516,7 @@ $string['manage:style'] = 'Stil';
 
 $string['manage:webuntis'] = 'WebUntis';
 $string['manage:welcome'] = 'Willkommen in der Verwaltungsansicht Ihrer Organisation. Bitte wählen Sie eine der folgenden Funktionen:';
+$string['manage:webuntis:orgnotconnected'] = 'Leider ist diese Organisation nicht mit einer WebUntis-Instanz verknüpft. Das muss zuerst innerhalb von WebUntis durch eine/n WebUntis-Administrator/in aktiviert werden!';
 
 $string['minimum_x_chars'] = 'Mehr als {$a} Buchstaben erforderlich!';
 

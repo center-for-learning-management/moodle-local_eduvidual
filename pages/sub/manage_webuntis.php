@@ -37,7 +37,12 @@ if (count($orgmaps) > 1) {
     $orgmap = (object) [];
 }
 if (empty($orgmap->orgid) || $orgmap->orgid != $orgid) {
-    throw new \moodle_exception('missing_permission', 'local_webuntis');
+    $alert = (object) [
+        'type' => 'warning',
+        'content' => get_string('manage:webuntis:orgnotconnected', 'local_eduvidual'),
+    ];
+    echo $OUTPUT->render_from_template('local_eduvidual/alert', $alert);
+    return;
 }
 
 \local_webuntis\tenant::load($orgmap->tenant_id, false);
