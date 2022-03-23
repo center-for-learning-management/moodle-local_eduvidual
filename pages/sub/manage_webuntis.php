@@ -25,24 +25,22 @@ defined('MOODLE_INTERNAL') || die;
 $action = optional_param('action', 'usermap', PARAM_TEXT); // tab the will be shown initially.
 
 $orgmaps = array_values($DB->get_records('local_webuntis_orgmap', [ 'connected' => 1, 'orgid' => $orgid ]));
-
 if (count($orgmaps) > 1) {
-    foreach ($orgmaps as $orgmap) {
+    foreach ($orgmaps as $_orgmap) {
         if ($orgmap->orgid == $orgid) {
-            $ORGMAP = $orgmap;
+            $orgmap = $_orgmap;
         }
     }
 } else if (count($orgmaps) > 0) {
-    $ORGMAP = $orgmaps[0];
+    $orgmap = $orgmaps[0];
 } else {
-    $ORGMAP = (object) [];
+    $orgmap = (object) [];
 }
-
-if (empty($ORGMAP->orgid) || $ORGMAP->orgid != $orgid) {
+if (empty($orgmap->orgid) || $orgmap->orgid != $orgid) {
     throw new \moodle_exception('missing_permission', 'local_webuntis');
 }
 
-\local_webuntis\tenant::load($ORGMAP->tenant_id, false);
+\local_webuntis\tenant::load($orgmap->tenant_id, false);
 $USERMAP->sync();
 
 $params = (object)[
@@ -83,6 +81,7 @@ $actions = [
             'relativepath' => "/local/eduvidual/pages/manage.php?act=webuntis&orgid=$orgid&action=roles",
         ]
 ];
+
 echo $OUTPUT->render_from_template('local_webuntis/navbar', [ 'actions' => $actions ]);
 
 switch ($action) {
@@ -171,5 +170,19 @@ switch ($action) {
         echo $OUTPUT->render_from_template('local_webuntis/usersync_roles', $params);
     break;
     default:
+        $toggle = optional_param('autoenrol', 0, PARAM_INT);
+        if (!empty($toggle)) {
+            $setto = ($toggle == 1) ? 1 : 0;
+            $orgmap->autoenrol = $setto;
+            $DB->set_field('local_webuntis_orgmap', 'autoenrol', $setto, [ 'id' => $orgmap->id ]);
+        }
+        $triggerurl = $PAGE->url;
+        $triggerurl->param('autoenrol', empty($orgmap->autoenrol) ? 1 : -1);
+        $autoenrolparams = [
+            'autoenrol' => $orgmap->autoenrol,
+            'triggerurl' => $triggerurl->__toString(),
+        ];
+        echo $OUTPUT->render_from_template('local_eduvidual/manage_webuntis_autoenrol', $autoenrolparams);
+
         echo $OUTPUT->render_from_template('local_webuntis/landingusermaps', $params);
 }
