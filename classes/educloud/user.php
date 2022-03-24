@@ -224,13 +224,15 @@ class user {
             "firstname"         => $user->firstname,
             "lastname"          => $user->lastname,
             "disabled"          => false,
-            "email"             => $user->email,
             "expiration_date"   => "2099-12-31",
             "record_uid"        => self::record_uid($user->id),
             "roles"             => $roles,
             //"school_classes"  => {},
             "source_uid"        => $cfg->sourceid,
             "ucsschool_roles"   => $ucsschool_roles,
+            "udm_properties"    => (object) [
+                "e-mail" => [$user->email],
+            ],
             //"password"        => "", // Not set.
         ];
         return $properties;
