@@ -21,6 +21,16 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+// livetime of cache in seconds -> 7 days
+$exp = 60*60*24*7;
+$exp_gmt = gmdate("D, d M Y H:i:s", time() + $exp) ." GMT";
+$mod_gmt = gmdate("D, d M Y H:i:s", getlastmod()) ." GMT";
+header("Expires: " . $exp_gmt);
+header("Last-Modified: " . $mod_gmt);
+header("Cache-Control: public, max-age=" . $exp);
+// For MS Internet Explorer
+header("Cache-Control: pre-check=" . $exp, FALSE);
+
 $color = explode('x', $_GET['color']);
 
 // If the color code is incorrect, we use black.
