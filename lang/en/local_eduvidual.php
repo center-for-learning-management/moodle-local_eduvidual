@@ -574,6 +574,7 @@ $string['preferences:questioncategories'] = 'Core Question Categories';
 $string['preferences:questioncategories:description'] = 'You will only see questions from the core question bank when you activate the main category!';
 $string['preferences:request:moolevel'] = '<strong>Initial question for teachers</strong><br /><br />Please estimate your knowledge about moodle. Using this information we will optimize the user interface for you. The more you know about moodle the more activities you will see. Please select the most appropriate from the options below!<br /><br />Your choice will be stored immediately. <strong>Afterwards</strong> you can proceed to your Dashboard by clicking the "ok"-Button.';
 $string['preferences:selectbg:title'] = 'Select a background';
+$string['preferences:selectbg:description'] = 'You can either select your desired background color or an image that we provided for you!';
 $string['preferences:usemode:appmode'] = 'App Mode';
 $string['preferences:usemode:description'] = 'You can switch the user interface to appear as app with simplified complexity, or in desktop mode!';
 $string['preferences:usemode:desktopmode'] = 'Desktop Mode';

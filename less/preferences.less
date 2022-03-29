@@ -1,20 +1,22 @@
 // out: ../style/preferences.css, sourcemap: false, compress: true
 #local_eduvidual_preferences_background>span {
+    float: left;
     display: inline-block;
     width: 50px;
     height: 50px;
     margin: 0px 2px 2px 0px;
-}
-#local_eduvidual_preferences_background>span>a {
-    display: inline-block;
-    width: calc(100% - 4px);
-    height: calc(100% - 4px);
-    margin: 2px;
-    background-size: cover;
-}
-#local_eduvidual_preferences_background>*.active {
-    border: 2px solid darkgreen;
-}
-#local_eduvidual_preferences_background>*:not(.active) {
-    border: 2px solid transparent;
+
+    &>a, &>input {
+        display: inline-block;
+        width: 43px;
+        height: 43px;
+        margin: 2px;
+        background-size: cover;
+    }
+    &>*.active {
+        border: 2px solid darkgreen;
+    }
+    &>*:not(.active) {
+        border: 2px solid lightgray;
+    }
 }

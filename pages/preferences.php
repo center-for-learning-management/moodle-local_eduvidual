@@ -40,35 +40,51 @@ $PAGE->set_heading(get_string('Preferences', 'local_eduvidual'));
 //$PAGE->set_cacheable(false);
 $PAGE->requires->css('/local/eduvidual/style/preferences.css');
 
+if (isguestuser($USER)) {
+    throw new \moodle_exception('guestuser:nopermission', 'local_eduvidual');
+}
+
 echo $OUTPUT->header();
 
 if ($embed || $act == 'backgrounds') {
+    $params = (object) [
+        'wwwroot'       => $CFG->wwwroot,
+    ];
+
+    $colorimage = "local/eduvidual/pix/bg_pixel.php?color=";
     $background = get_user_preferences('local_eduvidual_background');
+    if (!empty($background)) {
+        if (strpos($background, $colorimage) > -1) {
+            $color = explode('x', str_replace($colorimage, '', $background));
+            if (count($color) == 3) {
+                $params->coloractive = sprintf("#%02x%02x%02x", $color[0], $color[1], $color[2]);
+            } else {
+                // The color code is invalid!
+                unset_user_preference('local_eduvidual_background');
+                $params->noneactive = 1;
+            }
+        }
+    } else {
+        $params->noneactive = 1;
+    }
 
     $fs = get_file_storage();
     $files = $fs->get_area_files($context->id, 'local_eduvidual', 'backgrounds', 0);
-    $bgdivs = array();
+    $params->options = [];
 
-    $bgdivs[] = "<span" . (empty($background)?" class=\"active\"":""). "><a style=\"background-image: none;background-color: gray;\" onclick=\"var a = this; require(['local_eduvidual/preferences'], function(PREFERENCES) { PREFERENCES.setBackground(a); });\" href=\"#\">&nbsp;</a></span>";
     foreach ($files as $file) {
         if (str_replace('.', '', $file->get_filename()) != ""){
-            $url = moodle_url::make_pluginfile_url($file->get_contextid(), $file->get_component(), $file->get_filearea(), $file->get_itemid(), $file->get_filepath(), $file->get_filename());
-            $bgdivs[] = "<span" . ((!empty($background) && $url == $background)?" class=\"active\"":""). "><a style=\"background-image: url(" . $url . ");\" onclick=\"var a = this; require(['local_eduvidual/preferences'], function(PREFERENCES) { PREFERENCES.setBackground(a); });\" href=\"#\">&nbsp;</a></span>";
+            $url = moodle_url::make_pluginfile_url(
+                $file->get_contextid(), $file->get_component(), $file->get_filearea(),
+                $file->get_itemid(), $file->get_filepath(), $file->get_filename()
+            )->__toString();
+            $params->options[] = [
+                'active' => (!empty($background) && strpos($url, $background) > -1) ? 1 : 0,
+                'url' => $url,
+            ];
         }
     }
-
-    if (count($bgdivs) > 0) {
-        ?>
-        <div class="card">
-            <h3><?php echo get_string('preferences:selectbg:title', 'local_eduvidual'); ?></h3>
-            <div id="local_eduvidual_preferences_background">
-            <?php
-                echo implode("\n", $bgdivs);
-            ?>
-            </div>
-        </div>
-        <?php
-    } // count bgdivs > 0
+    echo $OUTPUT->render_from_template('local_eduvidual/preferences_background', $params);
 }
 
 if (has_capability('moodle/question:viewall', $context)) {

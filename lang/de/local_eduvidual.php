@@ -550,6 +550,7 @@ $string['preferences:questioncategories'] = 'Kernsystem-Fragenkategorien';
 $string['preferences:questioncategories:description'] = 'Sie werden nur Fragen des zentralen Fragenpools aus jenen Kategorien sehen, die Sie hier gewählt haben!';
 $string['preferences:request:moolevel'] = '<strong>Einstiegsfrage für Lehrer/innen</strong><br /><br />Bitte schätzen Sie Ihre Moodle-Kenntnisse ein. Auf Basis dieser Einschätzung versuchen wir die Moodle-Oberfläche für Sie zu optimieren. Je höher Sie Ihre Kenntnisse einschätzen, desto mehr Funktionen von Moodle werden Sie sehen. Bitte wählen Sie aus den "Moodle Erfahrungslevels" das für Sie Passendste aus! <br /><br />Ihre Auswahl wird sofort gespeichert. <strong>Nachdem Sie Ihre Auswahl getroffen haben</strong> kommen Sie mit einem Klick auf den "ok"-Button direkt zu Ihrem Dashboard.';
 $string['preferences:selectbg:title'] = 'Hintergrund wählen';
+$string['preferences:selectbg:description'] = 'Sie können entweder eine Hintergrundfarbe oder ein von uns bereitgestelltes Hintergrundbild wählen!';
 $string['preferences:usemode:appmode'] = 'App Modus';
 $string['preferences:usemode:desktopmode'] = 'Desktop Modus';
 $string['preferences:usemode:switchmode'] = 'Wechsle zu';
