@@ -30,7 +30,8 @@
             </a>
         </span>
         <span {{#coloractive}} class="active"{{/coloractive}}>
-            <input type="color" style="width: 100%; height: 100%; margin: -1px auto;"
+            <input type="color" value="{{coloractive}}"
+                style="width: 100%; height: 100%; margin: -1px auto;"
                 onchange="var a = this; require(['local_eduvidual/preferences'], function(P) { P.setBackground(a); });" />
         </span>
 
