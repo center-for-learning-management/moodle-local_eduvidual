@@ -144,6 +144,7 @@ class locallib {
             case 'admin':
                 $actions['backgrounds'] = 'admin:backgrounds:title';
                 //$actions['blockfooter'] = 'admin:blockfooter:title';
+                $actions['coursedelete'] = 'admin:coursedelete:title';
                 $actions['coursestuff'] = 'admin:coursestuff:title';
                 $actions['defaultroles'] = 'defaultroles:title';
                 $actions['questionbank'] = 'admin:questioncategories:title';
@@ -638,7 +639,7 @@ class locallib {
         }
         $parts = parse_url($PAGE->url);
         $url = $parts['scheme'] . '://' . $parts['host'] . $parts['path'];
-        echo "\t<select onchange=\"var sel = this; require(['local_eduvidual/main'], function(MAIN) { MAIN.navigate('" . $url . "?orgid=" . $orgid . "&act=' + sel.value); });\">\n";
+        echo "\t<select class=\"custom-select\" onchange=\"var sel = this; require(['local_eduvidual/main'], function(MAIN) { MAIN.navigate('" . $url . "?orgid=" . $orgid . "&act=' + sel.value); });\">\n";
         $keys = array_keys($actions);
         foreach($keys AS $key) {
             echo "\t\t<option value=\"" . $key . "\"" . (($key == $act)?' selected':'') . ">" . get_string($actions[$key], 'local_eduvidual') . "</option>\n";

@@ -40,6 +40,20 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'loc
             });
         },
         /**
+         * Helper for next- and previous-button in coursedeletelog.
+         * @param act 'next' or 'previous'
+         * @param uniqid the uniqid of the parent div.
+         */
+        coursedeleteform: function(act, uniqid) {
+            var size = Math.round($('#' + uniqid + ' select[name=size]').val());
+            var from = Math.round($('#' + uniqid + ' input[name=from]').val());
+            var to = (act == 'next') ? from + size : from - size;
+            if (to < 0) to = 0;
+
+            $('#' + uniqid + ' input[name=from]').val(to);
+            $('#' + uniqid + ' form').submit();
+        },
+        /**
         * Sets the default role of teachers, students and parents
         * @param type 'teacher', 'student' or 'parent'
         * @param role roleid to set

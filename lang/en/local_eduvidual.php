@@ -77,6 +77,7 @@ $string['admin:coursebasements:courserestore'] = 'Template for restore course';
 $string['admin:coursebasements:coursetemplate'] = 'Template for template course';
 $string['admin:coursebasements:title'] = 'Course basement categories';
 $string['admin:coursebasements:description'] = 'Please enter template course ids here, that are used for the named purpose:';
+$string['admin:coursedelete:title'] = 'Course Delete Log';
 $string['admin:coursestuff:title'] = 'Course Stuff';
 $string['admin:dropzone:description'] = 'Set a path to a filesystem-repository. Users will get capability to use it for 24 hours when they upload something.';
 $string['admin:dropzone:notset'] = 'No directory for Dropzone set!';

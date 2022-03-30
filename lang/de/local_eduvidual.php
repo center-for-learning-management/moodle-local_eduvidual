@@ -77,6 +77,7 @@ $string['admin:coursebasements:courserestore'] = 'Vorlage für Wiederherstellung
 $string['admin:coursebasements:coursetemplate'] = 'Vorlage für Vorlagenkurs';
 $string['admin:coursebasements:title'] = 'Kategorien mit Kursvorlagen';
 $string['admin:coursebasements:description'] = 'Bitte benennen Sie hier Vorlagekurse für die jeweilige Option:';
+$string['admin:coursedelete:title'] = 'Kurslöschlog';
 $string['admin:coursestuff:title'] = 'Kurseinstellungen';
 $string['admin:dropzone:description'] = 'Setzen Sie das Verzeichnis zu einem Dateisystem-Repository. Wenn Nutzer/innen etwas hochladen, wird Ihnen der Zugriff aufs Repository für 24 h gewährt.';
 $string['admin:dropzone:notset'] = 'Kein Verzeichnis für die Dropzone gesetzt!';

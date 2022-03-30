@@ -1,0 +1,90 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+
+<div class="local_eduvidual admin_coursestuff" id="{{uniqid}}">
+    <h4>{{#str}} admin:coursedelete:title, local_eduvidual {{/str}}</h4>
+    <form method="GET" action="">
+        <input type="hidden" name="act" value="coursedelete" />
+        <input type="hidden" name="from" value="{{from}}" />
+        <div class="form-item row">
+            <div class="col-sm-3" style="text-align: right;">
+                <a href="#" onclick="require(['local_eduvidual/admin'], function(A) { A.coursedeleteform('previous', '{{uniqid}}'); }); return false;">
+                    <i class="fa fa-arrow-left"></i>
+                    {{#str}} previous {{/str}}
+                </a>
+            </div>
+            <div class="col-sm-6">
+                <select name="size" onchange="form.submit();"
+                    class="custom-select" style="width: 100%;">
+                {{#sizes}}
+                    <option {{#selected}} selected {{/selected}}
+                        value="{{size}}">
+                        {{size}} {{#str}} entries {{/str}}
+                    </option>
+                {{/sizes}}
+                </select>
+            </div>
+            <div class="col-sm-3">
+                <a href="#" onclick="require(['local_eduvidual/admin'], function(A) { A.coursedeleteform('next', '{{uniqid}}'); }); return false;">
+                    <i class="fa fa-arrow-right"></i>
+                    {{#str}} next {{/str}}
+                </a>
+            </div>
+        </div>
+    </form>
+
+    <table class="generaltable">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>{{#str}} course {{/str}}</th>
+                <th>{{#str}} name {{/str}}</th>
+                <th>{{#str}} time {{/str}}</th>
+                <th>{{#str}} user {{/str}}</th>
+            </tr>
+        </thead>
+        <tbody>
+        {{#entries}}
+            <tr>
+                <td>{{id}}</td>
+                <td>
+                    <a href="{{wwwroot}}/course/view.php?id={{courseid}}">
+                        {{courseid}}
+                    </a>
+                </td>
+                <td>
+                    <a href="{{wwwroot}}/course/view.php?id={{courseid}}">
+                        {{fullname}}<br />
+                        <small>{{shortname}}</small>
+                    </a>
+                </td>
+                <td>
+                    {{#userdate}}
+                        {{timedeleted}},
+                        %d.%m.%Y, %H:%M:%S
+                    {{/userdate}}
+                </td>
+                <td>
+                    <a href="{{wwwroot}}/user/profile.php?id={{userid}}">
+                        {{userfullname}}
+                    </a>
+                </td>
+            </tr>
+        {{/entries}}
+        </tbody>
+    </table>
+</div>

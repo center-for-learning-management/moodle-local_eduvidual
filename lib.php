@@ -494,3 +494,22 @@ function local_eduvidual_pluginfile($course, $cm, $context, $filearea, $args, $f
     // From Moodle 2.3, use send_stored_file instead.
     send_stored_file($file, 86400, 0, $forcedownload, $options);
 }
+
+/**
+ * Track deletion requests.
+ * @param course the course that will be deleted.
+ */
+function local_eduvidual_pre_course_delete($course) {
+    global $DB, $USER;
+
+    $entry = (object) [
+        'courseid'    => $course->id,
+        'categoryid'  => $course->category,
+        'fullname'    => $course->fullname,
+        'shortname'   => $course->shortname,
+        'userid'      => $USER->id,
+        'timedeleted' => time(),
+    ];
+
+    $DB->insert_record('local_eduvidual_coursedelete', $entry);
+}
