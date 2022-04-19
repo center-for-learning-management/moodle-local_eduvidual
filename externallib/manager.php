@@ -73,6 +73,7 @@ class local_eduvidual_external_manager extends external_api {
             $ret->status = -1;
             $ret->message = $obj->payload->action;
         } else {
+            require_once("$CFG->dirroot/user/lib.php");
             $action = 'update'; // only used to indicate suitable return message.
             if (empty($obj->id)) {
                 $action = 'create';
@@ -89,14 +90,15 @@ class local_eduvidual_external_manager extends external_api {
                     'calendartype'  => 'gregorian',
                 ];
                 try {
-                    $user->id = user_create_user($user, false, false);
+                    $user->id = \user_create_user($user, false, false);
                     $user->idnumber = $user->id;
+                    // @todo attention, possible read-after-write gap!
                     $DB->set_field('user', 'idnumber', $user->idnumber, array('id' => $user->id));
                     $user->secret = \local_eduvidual\locallib::get_user_secret($user->id);
                     if (empty($obj->password)) {
                         $obj->password = $obj->secret;
                     }
-                    update_internal_user_password($user, $obj->password, false);
+                    \update_internal_user_password($user, $obj->password, false);
                     \local_eduvidual\lib_enrol::choose_background($user->id);
                     \core\event\user_created::create_from_userid($user->id)->trigger();
                 } catch(Exception $e) {
@@ -106,27 +108,17 @@ class local_eduvidual_external_manager extends external_api {
                         $obj->id = $user->id;
                     }
                 }
+            } else {
+                $user = \core_user::get_user($obj->id);
             }
-            // From here on we need to have a userid!
-            $user = \core_user::get_user($obj->id);
 
             if (empty($user->id)) {
                 $ret->status = -1;
                 $ret->message = 'no user object';
             } else {
-                // Update user data.
-                /*
-                $user = (object) [
-                    'id'        => $user->id,
-                    'firstname' => $obj->firstname,
-                    'lastname'  => $obj->lastname,
-                    'email'     => $obj->email,
-                ];
-                */
                 $user->firstname = $obj->firstname;
                 $user->lastname = $obj->lastname;
                 $user->email = $obj->email;
-
                 $local_auth_methods = [ 'manual', 'email'];
                 if (in_array($user->auth, $local_auth_methods)) {
                     // For these methods we also update the username.
@@ -141,38 +133,40 @@ class local_eduvidual_external_manager extends external_api {
                         $user->username = $obj->username;
                     }
                 }
-                require_once("$CFG->dirroot/user/lib.php");
-                \user_update_user($user, false);
-
-                // Set password and forcechangepassword.
-                if (!empty($obj->password)) {
-                    \update_internal_user_password($user, $obj->password, false);
-                }
-                if (!empty($obj->forcechangepassword) && intval($obj->forcechangepassword) == 1) {
-                    \set_user_preference('auth_forcepasswordchange', true, $user->id);
-                }
-                if (!empty($obj->forcechangepassword) && intval($obj->forcechangepassword) == -1) {
-                    \set_user_preference('auth_forcepasswordchange', false, $user->id);
-                }
-
-                // Set role.
-                if (strtolower($obj->role) != 'remove') {
-                    if (!empty($obj->cohorts_add)) {
-                        \local_eduvidual\lib_enrol::cohorts_add($user->id, $org, $obj->cohorts_add);
+                $uservalidation = \core_user::validate($user);
+                if ($uservalidation !== true) {
+                    $ret->status = -1;
+                    $ret->message = 'invalid user data';
+                } else {
+                    $DB->update_record('user', $user);
+                    // Set password and forcechangepassword.
+                    if (!empty($obj->password)) {
+                        \update_internal_user_password($user, $obj->password, false);
                     }
-                    if (!empty($obj->cohorts_remove)) {
-                        \local_eduvidual\lib_enrol::cohorts_remove($user->id, $org, $obj->cohorts_remove);
+                    if (!empty($obj->forcechangepassword) && intval($obj->forcechangepassword) == 1) {
+                        \set_user_preference('auth_forcepasswordchange', true, $user->id);
                     }
-                }
-
-                // Set status message.
-                $ret->status = 1;
-                if (strtolower($user->role) == 'remove') {
-                    $ret->message = get_string('import:removed', 'local_eduvidual', array('id' => $user->id));
-                } else if ($action == 'update') {
-                    $ret->message = get_string('import:updated', 'local_eduvidual', array('id' => $user->id));
-                } else if ($action == 'create') {
-                    $ret->message = get_string('import:created', 'local_eduvidual', array('id' => $user->id));
+                    if (!empty($obj->forcechangepassword) && intval($obj->forcechangepassword) == -1) {
+                        \set_user_preference('auth_forcepasswordchange', false, $user->id);
+                    }
+                    // Set role.
+                    if (strtolower($obj->role) != 'remove') {
+                        if (!empty($obj->cohorts_add)) {
+                            \local_eduvidual\lib_enrol::cohorts_add($user->id, $org, $obj->cohorts_add);
+                        }
+                        if (!empty($obj->cohorts_remove)) {
+                            \local_eduvidual\lib_enrol::cohorts_remove($user->id, $org, $obj->cohorts_remove);
+                        }
+                    }
+                    // Set status message.
+                    $ret->status = 1;
+                    if (strtolower($user->role) == 'remove') {
+                        $ret->message = get_string('import:removed', 'local_eduvidual', array('id' => $user->id));
+                    } else if ($action == 'update') {
+                        $ret->message = get_string('import:updated', 'local_eduvidual', array('id' => $user->id));
+                    } else if ($action == 'create') {
+                        $ret->message = get_string('import:created', 'local_eduvidual', array('id' => $user->id));
+                    }
                 }
             }
         }
