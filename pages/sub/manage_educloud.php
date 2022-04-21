@@ -67,7 +67,7 @@ if (!empty($toggle)) {
 
 $params = [
     'canactivate' => is_siteadmin() ? 1 : 0,
-    'isactive' => !empty($record->id) ? 1 : 0,
+    'isactive' => !empty($record->enabled) ? 1 : 0,
     'toggleurl' => $url->__toString(),
     'wwwroot' => $CFG->wwwroot,
 ];
