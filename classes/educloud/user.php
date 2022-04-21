@@ -169,11 +169,12 @@ class user {
             \unset_user_preference('educloud_identifier', $userid);
         } else if (!empty($setto)) {
             \set_user_preference('educloud_identifier', $setto, $userid);
+            return $setto;
         } else {
             $mapped_identifier = \get_user_preferences('educloud_identifier', $userid);
             if (empty($mapped_identifier)) {
                 $cfg = \local_eduvidual\educloud\lib::api_config();
-                return "{$cfg->sourceid}_$userid";
+                return self::ucs_identifier($userid, "{$cfg->sourceid}_$userid");
             } else {
                 return $mapped_identifier;
             }
