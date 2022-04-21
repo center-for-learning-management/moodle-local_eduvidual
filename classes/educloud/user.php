@@ -53,6 +53,8 @@ class user {
      * @param userid int.
      */
     public static function create($userid) {
+        $ucsidentifier = self::ucs_identifier($user->id);
+        mtrace("UCS-Identifier $ucsidentifier");
         $properties = self::ucs_properties($userid);
         $_properties = json_encode($properties);
 
@@ -72,7 +74,6 @@ class user {
 
         if (!empty($response->name)) {
             mtrace("Create successful");
-            self::ucs_identifier($userid, $response->name);
         } else {
             mtrace("Create failed, output of curl was " . print_r($response, 1));
             mtrace("Properties of user were: " . $_properties);
@@ -89,6 +90,7 @@ class user {
         } else {
             $user = $userorid;
         }
+        $ucsidentifier = self::ucs_identifier($user->id);
         mtrace("UCS-Identifier $ucsidentifier");
         $response = json_decode(\local_eduvidual\educloud\lib::curl(
             "/ucsschool/kelvin/v1/users/$ucsidentifier",
