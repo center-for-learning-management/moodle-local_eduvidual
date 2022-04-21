@@ -89,7 +89,6 @@ class user {
         } else {
             $user = $userorid;
         }
-        $ucsidentifier = self::ucs_identifier($user->id);
         mtrace("UCS-Identifier $ucsidentifier");
         $response = json_decode(\local_eduvidual\educloud\lib::curl(
             "/ucsschool/kelvin/v1/users/$ucsidentifier",
@@ -127,8 +126,6 @@ class user {
         );
         $response = json_decode($response);
         if (!empty($response->name)) {
-            // We found a user link that was unkown. Store it.
-            self::ucs_identifier($userid, $response->name);
             return $response;
         } else {
             return (object) [];
@@ -300,7 +297,6 @@ class user {
 
         if (!empty($response->name)) {
             mtrace("Update successful");
-            self::ucs_identifier($user->id, $response->name);
         } else {
             mtrace("Update failed, output of curl was " . print_r($response, 1));
             throw new \moodle_exception('educloud:exception:userupdatefailed', 'local_eduvidual', '', [ 'userid' => $user->id ]);
