@@ -50,12 +50,17 @@ class user {
     }
     /**
      * Create a user in univention portal and store univentionidentifier.
-     * @param userid int.
+     * @param userorid userid or user object.
      */
-    public static function create($userid) {
+    public static function create($userorid) {
+        if (!is_object($userorid)) {
+            $user = \core_user::get_user($userorid);
+        } else {
+            $user = $userorid;
+        }
         $ucsidentifier = self::ucs_identifier($user->id);
         mtrace("UCS-Identifier $ucsidentifier");
-        $properties = self::ucs_properties($userid);
+        $properties = self::ucs_properties($user);
         $_properties = json_encode($properties);
 
         $response = \local_eduvidual\educloud\lib::curl(
@@ -77,7 +82,7 @@ class user {
         } else {
             mtrace("Create failed, output of curl was " . print_r($response, 1));
             mtrace("Properties of user were: " . $_properties);
-            throw new \moodle_exception('educloud:exception:userupdatefailed', 'local_eduvidual', '', [ 'userid' => $userid ]);
+            throw new \moodle_exception('educloud:exception:userupdatefailed', 'local_eduvidual', '', [ 'userid' => $user->id ]);
         }
     }
     /**
@@ -170,10 +175,12 @@ class user {
             \set_user_preference('educloud_identifier', $setto, $userid);
             return $setto;
         } else {
-            $mapped_identifier = \get_user_preferences('educloud_identifier', $userid);
+            $mapped_identifier = \get_user_preferences('educloud_identifier', '', $userid);
             if (empty($mapped_identifier)) {
                 $cfg = \local_eduvidual\educloud\lib::api_config();
-                return self::ucs_identifier($userid, "{$cfg->sourceid}_$userid");
+                $ucsidentifier = "{$cfg->sourceid}_{$userid}";
+                \set_user_preference('educloud_identifier', $ucsidentifier, $userid);
+                return $ucsidentifier;
             } else {
                 return $mapped_identifier;
             }
