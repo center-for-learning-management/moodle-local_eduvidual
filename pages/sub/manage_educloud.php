@@ -51,7 +51,7 @@ if (!empty($toggle)) {
     if (!is_siteadmin()) {
         throw new \moodle_exception('educloud:exception:onlyadmins', 'local_eduvidual');
     }
-    if (empty($record->id)) {
+    if (empty($record->enabled)) {
         $record = \local_eduvidual\educloud\school::enable($org->orgid);
         $url = $PAGE->url;
         $url->remove_params(['toggle']);
