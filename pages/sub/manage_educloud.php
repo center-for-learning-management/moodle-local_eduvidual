@@ -55,12 +55,12 @@ if (!empty($toggle)) {
         $record = \local_eduvidual\educloud\school::enable($org->orgid);
         $url = $PAGE->url;
         $url->remove_params(['toggle']);
-        $url->param('showmsg', !empty($record->id) ? 1 : -1);
+        $url->param('showmsg', !empty($record->enabled) ? 1 : -1);
         redirect($url);
     } else {
         $record = \local_eduvidual\educloud\school::disable($org->orgid);
         $url->remove_params(['toggle']);
-        $url->param('showmsg', empty($record->id) ? 1 : -1);
+        $url->param('showmsg', empty($record->enabled) ? 1 : -1);
         redirect($url);
     }
 }
