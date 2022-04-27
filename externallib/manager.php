@@ -149,15 +149,14 @@ class local_eduvidual_external_manager extends external_api {
                     if (!empty($obj->forcechangepassword) && intval($obj->forcechangepassword) == -1) {
                         \set_user_preference('auth_forcepasswordchange', false, $user->id);
                     }
-                    // Set role.
-                    if (strtolower($obj->role) != 'remove') {
-                        if (!empty($obj->cohorts_add)) {
-                            \local_eduvidual\lib_enrol::cohorts_add($user->id, $org, $obj->cohorts_add);
-                        }
-                        if (!empty($obj->cohorts_remove)) {
-                            \local_eduvidual\lib_enrol::cohorts_remove($user->id, $org, $obj->cohorts_remove);
-                        }
+                    if (!empty($obj->cohorts_add)) {
+                        \local_eduvidual\lib_enrol::cohorts_add($user->id, $org, $obj->cohorts_add);
                     }
+                    if (!empty($obj->cohorts_remove)) {
+                        \local_eduvidual\lib_enrol::cohorts_remove($user->id, $org, $obj->cohorts_remove);
+                    }
+                    // Set role.
+                    \local_eduvidual\lib_enrol::role_set($user->id, $org, $obj->role);
                     // Set status message.
                     $ret->status = 1;
                     if (strtolower($user->role) == 'remove') {
