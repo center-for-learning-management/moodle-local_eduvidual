@@ -154,7 +154,7 @@ for ($z = 0; $z < 2; $z++) {
     foreach ($STATS[$z]['rows'] AS $a => $row) {
         if (empty($row['label'])) continue;
         if (!empty($all[$a]->cnt)) {
-            $rate = round((intval(@$registered[$a]->cnt) - intval(@$lpfeduv[$a]->cnt)) / intval(@$all[$a]->cnt) * 100, 1) . '%';
+            $rate = round(intval(@$registered[$a]->cnt) / intval(@$all[$a]->cnt) * 100, 1) . '%';
         } else {
             $rate = 'n/a';
         }
