@@ -340,7 +340,6 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'loc
             var counts = {
                 'both': 0,
                 'eduv': 0,
-                'lpf': 0,
                 'none': 0,
             };
 
@@ -400,12 +399,6 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'loc
                     orgs[i].classes += ' eduv';
                     orgs[i].layer = 3;
                     orgs[i].url = URL.relativeUrl('/local/eduvidual/pages/myorgs.php?orgid=' + orgs[i].orgid);
-                } else if(orgs[i].authenticated < timeref && orgs[i].lpf != null){
-                    col = 'blue';
-                    counts.lpf++;
-                    orgs[i].classes += ' lpf';
-                    orgs[i].layer = 1;
-                    orgs[i].url = 'https://www3.lernplattform.schule.at/' + orgs[i].lpf;
                 } else if(includenonegroup == 1) {
                     col = 'lightgray';
                     counts.none++;
