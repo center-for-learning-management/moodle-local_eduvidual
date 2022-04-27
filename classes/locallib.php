@@ -198,7 +198,7 @@ class locallib {
      * Returns the dummydomain for creating user accounts without email.
      * @param pattern (String) to be prepended before wwwroot, by default 'doesnotexist'
      */
-    public static function get_dummydomain($pattern = "doesnotexist.") {
+    public static function get_dummydomain($pattern = "a.") {
         global $CFG;
         return '@' . $pattern . str_replace(array('https://', 'http://', 'www.'), '', $CFG->wwwroot);
     }
