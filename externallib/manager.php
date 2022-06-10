@@ -96,7 +96,7 @@ class local_eduvidual_external_manager extends external_api {
                     $DB->set_field('user', 'idnumber', $user->idnumber, array('id' => $user->id));
                     $user->secret = \local_eduvidual\locallib::get_user_secret($user->id);
                     if (empty($obj->password)) {
-                        $obj->password = $obj->secret;
+                        $obj->password = $user->secret;
                     }
                     \update_internal_user_password($user, $obj->password, false);
                     \local_eduvidual\lib_enrol::choose_background($user->id);
