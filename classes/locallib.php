@@ -299,7 +299,7 @@ class locallib {
     public static function get_organisations($role="*", $allforadmin=true){
         global $DB, $USER;
         if ($allforadmin && is_siteadmin()) {
-        	return $DB->get_records_sql('SELECT * FROM {local_eduvidual_org} WHERE authenticated>0 ORDER BY orgid ASC', array());
+            return $DB->get_records_sql('SELECT * FROM {local_eduvidual_org} WHERE authenticated>0 ORDER BY orgid ASC', array());
         } elseif ($role == '*') {
             return $DB->get_records_sql('SELECT o.orgid,o.* FROM {local_eduvidual_org} AS o,{local_eduvidual_orgid_userid} AS ou WHERE o.orgid=ou.orgid AND ou.userid=? GROUP BY o.orgid ORDER BY o.orgid ASC', array($USER->id));
         } else {

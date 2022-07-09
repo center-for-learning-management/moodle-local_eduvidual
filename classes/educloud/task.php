@@ -34,6 +34,7 @@ class task extends \core\task\adhoc_task {
      * Executes a synchronisation action to univention portal.
      */
     public function execute() {
+        global $DB;
         $data = $this->get_custom_data();
         if (empty($data->userid)) {
             throw new \moodle_exception('educloud:exception:nouseridgiven', 'local_eduvidual');
@@ -58,6 +59,30 @@ class task extends \core\task\adhoc_task {
             // Any user in Univention must be removed.
             mtrace("remove #$user->id from univention");
             \local_eduvidual\educloud\user::delete($user);
+        }
+        $userorgs = \local_eduvidual\locallib::get_organisations('*', false);
+        $educloudroles = explode(',', \get_config('local_eduvidual', 'educloud_orgroles'));
+        mtrace("check if user #$user->id has educloud-roles assigned correctly");
+        foreach ($userorgs as $userorg) {
+            $context = \context_coursecat::instance($userorg->categoryid);
+            if (empty($context->id)) {
+                mtrace(" ==> aborting, this organization has an invalid context");
+                continue;
+            }
+            $useseducloud = $DB->get_record('local_eduvidual_educloud', [ 'orgid' => $userorg->orgid]);
+            if (empty($useseducloud->enabled)) {
+                mtrace(" ==> org $userorg->orgid does not use educloud.");
+                foreach ($educloudroles as $roleid) {
+                    mtrace(" |   unassign $roleid from $userid in $context->id");
+                    \role_unassign($roleid, $userid, $context->id);
+                }
+            } else {
+                mtrace(" ==> org $userorg->orgid uses educloud.");
+                foreach ($educloudroles as $roleid) {
+                    mtrace(" |   assign $roleid to $userid in $context->id");
+                    \role_assign($roleid, $userid, $context->id);
+                }
+            }
         }
     }
 }

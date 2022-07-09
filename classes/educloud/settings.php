@@ -89,5 +89,26 @@ class settings {
                 5
             )
         );
+
+        global $DB;
+        $sql = "SELECT r.id,r.shortname,r.name FROM {role} AS r, {role_context_levels} AS rcl
+                  WHERE r.id=rcl.roleid
+                    AND rcl.contextlevel = ?
+                  ORDER BY name ASC";
+        $potentialroles_ = $DB->get_records_sql($sql, array(CONTEXT_COURSECAT));
+        $potentialroles = [];
+        foreach ($potentialroles_ AS $potentialrole) {
+            $potentialroles[$potentialrole->id] = !empty($potentialrole->name) ? $potentialrole->name : $potentialrole->shortname;
+        }
+        $settings->add(
+            new \admin_setting_configmultiselect(
+                'local_eduvidual/educloud_orgroles',
+                get_string('educloud:settings:orgroles', 'local_eduvidual'),
+                get_string('educloud:settings:orgroles:desc', 'local_eduvidual'),
+                [],
+                $potentialroles
+            )
+        );
+
     }
 }
