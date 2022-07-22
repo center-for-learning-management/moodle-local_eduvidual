@@ -31,7 +31,13 @@ $PAGE->set_url('/local/eduvidual/pages/login.php', array());
 $PAGE->set_title(get_string('login'));
 $PAGE->set_heading(get_string('login'));
 
-$idp = rawurlencode("http://digitaleschuleprod.onmicrosoft.com/B2C_1A_signin_saml");
+$idps = explode("\n", get_config('auth_shibboleth', 'organization_selection'));
+if (count($idps) > 0) {
+    $idpX = explode(",", $idps[0]);
+    $idp = rawurlencode(trim($idpX[0]));
+} else {
+    $idp = rawurlencode("http://digitaleschuleprod.onmicrosoft.com/B2C_1A_signin_saml");
+}
 
 $isproductionsite = ($CFG->wwwroot == 'https://www.eduvidual.at');
 
