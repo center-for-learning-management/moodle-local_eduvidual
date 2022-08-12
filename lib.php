@@ -164,7 +164,11 @@ function local_eduvidual_before_standard_html_head() {
         //$PAGE->requires->css('/local/eduvidual/style/ui.css');
         // General boost-modifications.
         $PAGE->requires->css('/local/eduvidual/style/theme_boost.css');
-        $PAGE->requires->css('/local/eduvidual/style/theme_39.css');
+
+	    // Wenn das neue edumaker theme (August 2022) aktiv ist, sollen die Anpassungen für theme boost_campus im theme_39.css nicht geladen werden
+		if ($CFG->theme != 'edumaker') {
+			$PAGE->requires->css('/local/eduvidual/style/theme_39.css');
+		}
     }
 
     // The default banner needs to be injected via Internal Stylesheet to
