@@ -63,6 +63,31 @@ class lib {
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_USERAGENT, "Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)");
+        
+        $proxyhost = get_config('proxyhost');
+        $proxyport = get_config('proxyport');
+        $proxytype = get_config('proxytype');
+        $proxyuser = get_config('proxyuser');
+        $proxypassword = get_config('proxypassword');
+
+        if (!empty($proxyhost)) {
+            curl_setopt($ch, CURLOPT_PROXY, $proxyhost);
+        }
+        if (!empty($proxyport)) {
+            curl_setopt($ch, CURLOPT_PROXYPORT, $proxyport);
+        }
+        if ($proxytype == "HTTP") {
+            curl_setopt($ch, CURLOPT_PROXYTYPE, CURLPROXY_HTTP);
+        }
+        if ($proxytype == "SOCKS5") {
+            curl_setopt($ch, CURLOPT_PROXYTYPE, CURLPROXY_SOCKS5);
+        }
+        if (!empty($proxyuser)) {
+            if (!empty($proxypassword)) {
+                $proxyuser .= ':' . $proxypassword;
+            }
+            curl_setopt($ch, CURLOPT_PROXYUSERPWD, $proxyuser);
+        }
 
         if (!empty($get) && count($get) > 0) {
             $fields = array();
