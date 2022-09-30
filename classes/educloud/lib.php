@@ -63,12 +63,12 @@ class lib {
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_USERAGENT, "Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)");
-        
-        $proxyhost = get_config('proxyhost');
-        $proxyport = get_config('proxyport');
-        $proxytype = get_config('proxytype');
-        $proxyuser = get_config('proxyuser');
-        $proxypassword = get_config('proxypassword');
+
+        $proxyhost = get_config('core', 'proxyhost');
+        $proxyport = get_config('core', 'proxyport');
+        $proxytype = get_config('core', 'proxytype');
+        $proxyuser = get_config('core', 'proxyuser');
+        $proxypassword = get_config('core', 'proxypassword');
 
         if (!empty($proxyhost)) {
             curl_setopt($ch, CURLOPT_PROXY, $proxyhost);
