@@ -29,11 +29,11 @@ function local_eduvidual_after_config() {
 
     \local_eduvidual\locallib::set_xorg_data();
 
-    // Fore redirect to login from frontpage.
-    if ((!isloggedin() || isguestuser($USER)) && $_SERVER["SCRIPT_FILENAME"] == $CFG->dirroot . '/index.php') {
-        if (!isloggedin()) {
-            redirect($CFG->wwwroot . '/login');
-        }
+    if ($CFG->autologinguests && $CFG->theme == 'edumaker') {
+        // keine Weiterleitung zu login bei neuem theme, gäste werden automatisch eingeloggt
+    } elseif (!isloggedin() && $_SERVER["SCRIPT_FILENAME"] == $CFG->dirroot . '/index.php') {
+        // Fore redirect to login from frontpage.
+        redirect($CFG->wwwroot . '/login');
     }
 
     $PAGE->add_body_class('theme-' . $CFG->theme);
