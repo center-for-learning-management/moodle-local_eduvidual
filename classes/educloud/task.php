@@ -37,12 +37,14 @@ class task extends \core\task\adhoc_task {
         global $DB;
         $data = $this->get_custom_data();
         if (empty($data->userid)) {
-            throw new \moodle_exception('educloud:exception:nouseridgiven', 'local_eduvidual');
+            mtrace(get_string('educloud:exception:nouseridgiven', 'local_eduvidual'));
+            return;
         }
         $userid = $data->userid;
         $user = \core_user::get_user($userid);
-        if (empty($user->id)) {
-            throw new \moodle_exception('educloud:exception:userwaserased', 'local_eduvidual', '', ['userid' => $userid]);
+        if (empty($user->id) || !empty($user->deleted)) {
+            mtrace(get_string('educloud:exception:userwaserased', 'local_eduvidual', ['userid' => $userid]));
+            return;
         }
         $educloudorgs = \local_eduvidual\educloud\user::get_orgs($user->id);
         if (count($educloudorgs) > 0) {

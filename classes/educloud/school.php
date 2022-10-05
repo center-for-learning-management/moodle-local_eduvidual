@@ -35,6 +35,26 @@ class school {
         global $DB;
         $org = \local_eduvidual\locallib::get_org('orgid', $orgid);
 
+        // Check if this organisation already exists.
+        $exists = json_decode(\local_eduvidual\educloud\lib::curl(
+            '/ucsschool/kelvin/v1/schools/' . $org->orgid,
+            [],
+            [],
+            [
+                'Accept' => 'application/json',
+                'Authorization' => \local_eduvidual\educloud\lib::token(),
+                'Content-Type' => 'application/json',
+            ],
+            'GET',
+            false
+        ));
+        if (!empty($exists->url)) {
+            $DB->set_field('local_eduvidual_educloud', 'ucsurl', $exists->url, [ 'orgid' => $org->orgid ]);
+            $DB->set_field('local_eduvidual_educloud', 'ucsname', $exists->name, [ 'orgid' => $org->orgid ]);
+            return $exists->url;
+        }
+
+        // Does not exist, create it.
         $created = json_decode(\local_eduvidual\educloud\lib::curl(
             '/ucsschool/kelvin/v1/schools/',
             [],
@@ -47,7 +67,7 @@ class school {
                 'Authorization' => \local_eduvidual\educloud\lib::token(),
                 'Content-Type' => 'application/json',
             ],
-            '',
+            'POST',
             false
         ));
         if (!empty($created->url)) {

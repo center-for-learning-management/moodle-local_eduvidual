@@ -58,6 +58,10 @@ class user {
         } else {
             $user = $userorid;
         }
+        if (!empty($user->deleted)) {
+            mtrace(get_string('educloud:exception:userwaserased', 'local_eduvidual', ['userid' => $user->id]));
+            return;
+        }
         $ucsidentifier = self::ucs_identifier($user->id);
         mtrace("UCS-Identifier $ucsidentifier");
         $properties = self::ucs_properties($user);
@@ -129,7 +133,8 @@ class user {
             [
                 'Accept' => 'application/json',
                 'Authorization' => \local_eduvidual\educloud\lib::token(),
-            ]
+            ],
+            'GET'
         );
         $response = json_decode($response);
         if (!empty($response->name)) {
@@ -261,6 +266,7 @@ class user {
                     'Accept' => 'application/json',
                     'Authorization' => \local_eduvidual\educloud\lib::token(),
                 ],
+                'GET'
             );
 
             $response = json_decode($response);
