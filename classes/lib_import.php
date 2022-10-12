@@ -216,7 +216,7 @@ class local_eduvidual_lib_import_compiler_user extends local_eduvidual_lib_impor
         global $CFG, $DB, $org;
         $payload = new stdClass();
         $payload->processed = true;
-        if (!isset($obj->id)) {
+        if (empty($obj->id)) {
             $obj->id = 0;
         }
         if (empty($obj->firstname)) {

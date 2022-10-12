@@ -211,6 +211,7 @@ define(['jquery', 'core/ajax', 'core/modal_events', 'core/modal_factory', 'core/
                     var tr = this;
                     var obj = {
                         'orgid': orgid,
+                        'id': $(tr).attr('data-userid'),
                         'tr': this,
                     };
 

@@ -30,6 +30,7 @@ class local_eduvidual_external_manager extends external_api {
     public static function create_users_parameters() {
         return new external_function_parameters(array(
             'orgid' => new external_value(PARAM_INT, 'orgid'),
+            'id' => new external_value(PARAM_INT, 'userid (if already exists)'),
             'firstname' => new external_value(PARAM_TEXT, 'firstname'),
             'lastname' => new external_value(PARAM_TEXT, 'lastname'),
             'email' => new external_value(PARAM_TEXT, 'email'),
@@ -40,10 +41,10 @@ class local_eduvidual_external_manager extends external_api {
             'forcechangepassword' => new external_value(PARAM_TEXT, 'forcechangepassword'),
         ));
     }
-    public static function create_users($orgid, $firstname, $lastname, $email, $role, $cohorts_add, $cohorts_remove, $password, $forcechangepassword) {
+    public static function create_users($orgid, $id, $firstname, $lastname, $email, $role, $cohorts_add, $cohorts_remove, $password, $forcechangepassword) {
         global $CFG, $DB, $org;
         $params = self::validate_parameters(self::create_users_parameters(), [
-            'orgid' => $orgid,
+            'orgid' => $orgid, 'id' => $id,
             'firstname' => $firstname, 'lastname' => $lastname, 'email' => $email,
             'role' => $role, 'cohorts_add' => $cohorts_add, 'cohorts_remove' => $cohorts_remove,
             'password' => $password, 'forcechangepassword' => $forcechangepassword
