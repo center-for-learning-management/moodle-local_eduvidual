@@ -190,5 +190,26 @@ function xmldb_local_eduvidual_upgrade($oldversion) {
         }
         upgrade_plugin_savepoint(true, 2022033000, 'local', 'eduvidual');
     }
+    if ($oldversion < 2022102500) {
+        $table = new xmldb_table('local_eduvidual_educloud');
+        $field = new xmldb_field('enabled', XMLDB_TYPE_INTEGER, '20', null, XMLDB_NOTNULL, null, '0', 'orgid');
+        if ($dbman->field_exists($table, $field)) {
+            $dbman->rename_field($table, $field, 'permitted');
+        }
+        $field = new xmldb_field('byuserid', XMLDB_TYPE_INTEGER, '20', null, XMLDB_NOTNULL, null, '0', 'permitted');
+        if ($dbman->field_exists($table, $field)) {
+            $dbman->rename_field($table, $field, 'permittedby');
+        }
+
+        $field = new xmldb_field('accepted', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0', 'permittedby');
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+        $field = new xmldb_field('acceptedby', XMLDB_TYPE_INTEGER, '20', null, XMLDB_NOTNULL, null, '0', 'accepted');
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+        upgrade_plugin_savepoint(true, 2022102500, 'local', 'eduvidual');
+    }
     return true;
 }

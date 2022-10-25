@@ -24,11 +24,14 @@ defined('MOODLE_INTERNAL') || die;
 
 $userid = $USER->id;
 
-$url = $PAGE->url;
-$url->param('toggle', '1');
+$permiturl = $PAGE->url;
+$permiturl->param('toggle', '1');
 
-$toggle = optional_param('toggle', 0, PARAM_INT);
+$accept = optional_param('accept', '', PARAM_ALPHA);
 $showmsg = optional_param('showmsg', 0, PARAM_INT);
+$toggle = optional_param('toggle', 0, PARAM_INT);
+
+$accept = ($accept == 'on') ? 1 : 0;
 
 $record = $DB->get_record('local_eduvidual_educloud', [ 'orgid' => $org->orgid]);
 
@@ -47,29 +50,44 @@ switch($showmsg) {
     break;
 }
 
+if (!empty($accept)) {
+    $record = \local_eduvidual\educloud\school::accept($org->orgid);
+}
+
 if (!empty($toggle)) {
     if (!is_siteadmin()) {
         throw new \moodle_exception('educloud:exception:onlyadmins', 'local_eduvidual');
     }
     if (empty($record->enabled)) {
         $record = \local_eduvidual\educloud\school::enable($org->orgid);
-        $url = $PAGE->url;
-        $url->remove_params(['toggle']);
-        $url->param('showmsg', !empty($record->enabled) ? 1 : -1);
+        $permiturl = $PAGE->url;
+        $permiturl->remove_params(['toggle']);
+        $permiturl->param('showmsg', !empty($record->enabled) ? 1 : -1);
         redirect($url);
     } else {
         $record = \local_eduvidual\educloud\school::disable($org->orgid);
-        $url->remove_params(['toggle']);
-        $url->param('showmsg', empty($record->enabled) ? 1 : -1);
+        $permiturl->remove_params(['toggle']);
+        $permiturl->param('showmsg', empty($record->enabled) ? 1 : -1);
         redirect($url);
     }
 }
 
 $params = [
-    'canactivate' => is_siteadmin() ? 1 : 0,
-    'isactive' => !empty($record->enabled) ? 1 : 0,
-    'toggleurl' => $url->__toString(),
+    'acceptedby' => $record->acceptedby,
+    'canpermit' => is_siteadmin() ? 1 : 0,
+    'isaccepted' => $record->accepted,
+    'ispermitted' => !empty($record->permitted) ? 1 : 0,
+    'orgid' => $org->orgid,
+    'orgname' => $org->name,
+    'permiturl' => $permiturl->__toString(),
     'wwwroot' => $CFG->wwwroot,
 ];
+
+if (!empty($record->acceptedby)) {
+    $acceptedbyuser = \core_user::get_user($record->acceptedby);
+    $params['acceptedbylink'] = "$CFG->wwwroot/user/profile.php?id=$record->acceptedby";
+    $params['acceptedbytime'] = userdate($record->accepted, get_string('strftimedate', 'core_langconfig'));
+    $params['acceptedbyuser'] = \fullname($acceptedbyuser);
+}
 
 echo $OUTPUT->render_from_template('local_eduvidual/manage_educloud', $params);

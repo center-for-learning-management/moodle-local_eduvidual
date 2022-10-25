@@ -24,10 +24,10 @@
 
 defined('MOODLE_INTERNAL') || die;
 
-$plugin->version  = 2022033001;
+$plugin->version  = 2022102500;
 $plugin->requires = 2019111803;  // Requires Moodle 3.8.3.
 $plugin->component = 'local_eduvidual';
-$plugin->release = '2.8';
+$plugin->release = '2.9';
 $plugin->maturity = MATURITY_STABLE;
 
 $plugin->dependencies = [

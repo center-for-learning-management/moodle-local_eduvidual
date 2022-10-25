@@ -269,6 +269,12 @@ $string['defaultroles:global:inuse'] = 'Rolle wird bereits verwendet.';
 
 $string['defaultroles:refreshroles'] = 'Rollen in Kurskategorien neu setzen';
 
+$string['educloud:accept:button'] = 'Ja, ich stimme zu';
+$string['educloud:accept:text'] = 'Diese Schnittstelle synchronisiert Nutzerkonten zwischen eduvidual.at und eduCloud Austria. Infolgedessen werden personenbezogene Daten übermittelt. Sie geben hiermit stellvertretend für {$a->orgname} die Zustimmung, dass diese Daten übertragen werden dürfen.';
+$string['educloud:toggle:failed'] = 'Umschaltung des Status fehlgeschlagen';
+$string['educloud:toggle:success'] = 'Status erfolgreich umgestellt';
+$string['educloud:wasacceptedby'] = 'Die Verwendung der Schnittstelle wurde bereits durch <a href="{$a->acceptedbylink}">{$a->acceptedbyuser}</a> am {$a->acceptedbytime} freigegeben.';
+
 $string['edutube:edutubeauthurl'] = 'eduTube Auth URL';
 $string['edutube:edutubeauthtoken'] = 'eduTube Auth Token';
 $string['edutube:invalid_url'] = 'Ungültige URL erhalten ({$a->url}). Weiterleitung zu edutube.at leider nicht möglich!';

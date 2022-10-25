@@ -43,17 +43,52 @@
         <img src="{{{wwwroot}}}/local/eduvidual/pix/educloud_tiles.png" style="width: 80%; max-width: 500px;" />
     </div>
     <div style="text-align: center;">
-        <a href="{{{toggleurl}}}" class="btn btn-primary {{^canactivate}}disabled{{/canactivate}}">
-            {{#isactive}}
+        {{#isaccepted}}
+        {{#str}} educloud:wasacceptedby, local_eduvidual,
+               {
+                   "acceptedbylink": {{#quote}} {{acceptedbylink}} {{/quote}},
+                   "acceptedbyuser": {{#quote}} {{acceptedbyuser}} {{/quote}},
+                   "acceptedbytime": {{#quote}} {{acceptedbytime}} {{/quote}}
+               }
+        {{/str}}
+        {{/isaccepted}}
+        {{^isaccepted}}
+        <div class="alert alert-info" style="max-width: 500px; margin: 0 auto;">
+            <form action="" method="POST" enctype="multipart/form-data">
+                <input type="hidden" name="orgid" value="{{orgid}}" />
+                {{#str}} educloud:accept:text, local_eduvidual,
+                    {
+                        "orgname": {{#quote}} {{orgname}} {{/quote}}
+                    }
+                {{/str}}
+                <br /><br />
+                <label for="accept-{{uniqid}}">
+                    <input type="checkbox" name="accept" id="accept-{{uniqid}}" />
+                    {{#str}} educloud:accept:button, local_eduvidual {{/str}}
+                </label>
+                <br /><br />
+                <button type="submit" class="btn btn-primary">
+                    <i class="fa fa-icon fa-square-check" style="font-size: 18px;"></i>
+                    {{#str}} ok {{/str}}
+                </button>
+            </form>
+
+        </div>
+        {{/isaccepted}}
+    </div>
+
+    <div style="text-align: center; margin-top: 10px;">
+        <a href="{{{permiturl}}}" class="btn btn-primary {{^canpermit}}disabled{{/canpermit}}">
+            {{#ispermitted}}
                 <i class="fa fa-icon fa-toggle-on" style="font-size: 18px;"></i>
                 {{#str}} disable {{/str}}
-            {{/isactive}}
-            {{^isactive}}
+            {{/ispermitted}}
+            {{^ispermitted}}
                 <i class="fa fa-icon fa-toggle-off" style="font-size: 18px;"></i>
                 {{#str}} enable{{/str}}
-            {{/isactive}}
+            {{/ispermitted}}
         </a>
-        {{^canactivate}}
+        {{^canpermit}}
             <br />
             <small>
                 Nur eduvidual.at-Administrator/innen<br />
@@ -63,6 +98,6 @@
                     ZLM-Support
                 </a>.
             </small>
-        {{/canactivate}}
+        {{/canpermit}}
     </div>
 </div>

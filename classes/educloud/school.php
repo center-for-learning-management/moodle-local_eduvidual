@@ -27,6 +27,38 @@ defined('MOODLE_INTERNAL') || die;
 
 class school {
     /**
+     * Accepts the data transfer on behalf of the org.
+     * @param orgid
+     * @return object record from database of local_eduvidual_educloud or false.
+     */
+    public static function accept($orgid) {
+        global $DB, $USER;
+        try {
+            $transaction = $DB->start_delegated_transaction();
+            $record = $DB->get_record('local_eduvidual_educloud', [ 'orgid' => $orgid]);
+            if (empty($record->id)) {
+                $record = (object) [
+                    'orgid' => $orgid,
+                    'permitted' => 0,
+                    'permittedby' => 0,
+                    'accepted' => time(),
+                    'acceptedby' => $USER->id,
+                ];
+                $record->id = $DB->insert_record('local_eduvidual_educloud', $record);
+            } else {
+                $record->accepted = time();
+                $record->acceptedby = $USER->id;
+                $DB->update_record('local_eduvidual_educloud', $record);
+            }
+            self::sync($orgid);
+            $transaction->allow_commit();
+            return $record;
+        } catch(\Exception $e) {
+            $transaction->rollback($e);
+            return false;
+        }
+    }
+    /**
      * Create an org in univention portal and store its ucsurl.
      * @param orgid.
      * @return ucsurl.
@@ -85,13 +117,13 @@ class school {
         global $DB;
         try {
             $transaction = $DB->start_delegated_transaction();
-            self::sync($orgid);
             $record = $DB->get_record('local_eduvidual_educloud', [ 'orgid' => $orgid]);
             if (!empty($record->id)) {
-                $record->enabled = 0;
-                $record->byuserid = 0;
+                $record->permitted = 0;
+                $record->permittedby = 0;
                 $DB->update_record('local_eduvidual_educloud', $record);
             }
+            self::sync($orgid);
             $transaction->allow_commit();
             return $record;
         } catch(\Exception $e) {
@@ -108,20 +140,22 @@ class school {
         global $DB, $USER;
         try {
             $transaction = $DB->start_delegated_transaction();
-            self::sync($orgid);
             $record = $DB->get_record('local_eduvidual_educloud', [ 'orgid' => $orgid]);
             if (empty($record->id)) {
                 $record = (object) [
                     'orgid' => $orgid,
-                    'enabled' => time(),
-                    'byuserid' => $USER->id,
+                    'permitted' => time(),
+                    'permittedby' => $USER->id,
+                    'accepted' => 0,
+                    'acceptedby' => 0,
                 ];
                 $record->id = $DB->insert_record('local_eduvidual_educloud', $record);
             } else {
-                $record->enabled = time();
-                $record->byuserid = $USER->id;
+                $record->permitted = time();
+                $record->permittedby = $USER->id;
                 $DB->update_record('local_eduvidual_educloud', $record);
             }
+            self::sync($orgid);
             $transaction->allow_commit();
             return $record;
         } catch(\Exception $e) {
@@ -129,6 +163,10 @@ class school {
             return false;
         }
     }
+    /**
+     * Schedules a sync for all users of an org.
+     * @param int orgid
+     */
     public static function sync($orgid) {
         global $DB, $OUTPUT;
         $members = $DB->get_records('local_eduvidual_orgid_userid', [ 'orgid' => $orgid ]);

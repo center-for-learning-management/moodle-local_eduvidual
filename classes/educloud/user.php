@@ -154,7 +154,7 @@ class user {
                     FROM {local_eduvidual_educloud} ee,
                          {local_eduvidual_orgid_userid} ou
                     WHERE ee.orgid = ou.orgid
-                        AND ee.enabled > 0
+                        AND ee.permitted > 0
                         AND ou.userid = ?";
         return $DB->get_records_sql($sql, [ $userid ]);
     }

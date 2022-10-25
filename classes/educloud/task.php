@@ -72,7 +72,7 @@ class task extends \core\task\adhoc_task {
                 continue;
             }
             $useseducloud = $DB->get_record('local_eduvidual_educloud', [ 'orgid' => $userorg->orgid]);
-            if (empty($useseducloud->enabled)) {
+            if (empty($useseducloud->permitted)) {
                 mtrace(" ==> org $userorg->orgid does not use educloud.");
                 foreach ($educloudroles as $roleid) {
                     mtrace(" |   unassign $roleid from $userid in $context->id");

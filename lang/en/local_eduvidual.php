@@ -272,6 +272,8 @@ $string['defaultroles:global:inuse'] = 'Role already in use.';
 
 $string['defaultroles:refreshroles'] = 'Re-Assign Roles in course categories';
 
+$string['educloud:accept:button'] = 'Yes, I confirm';
+$string['educloud:accept:text'] = 'This interface synchronises user accounts between eduvidual.at and educloud Austria. Hence, personal data is transferred. By accepting this checkbox you agree on behalf of {$a->orgname} that these data can be transferred.';
 $string['educloud:exception:incompletesitesettings'] = 'Incomplete site settings for eduCloud API';
 $string['educloud:exception:invalidapiresponse'] = 'Invalid response from Univention-Portal';
 $string['educloud:exception:multipleobjectsforidentifier'] = 'Multiple User-Objects have been found for educloud-identifier <strong>{$a->identifier}</strong>';
@@ -292,6 +294,7 @@ $string['educloud:settings:sourceid'] = 'Source-ID';
 $string['educloud:settings:sourceid:desc'] = 'Use this attribute to distinguish different Moodle-Systems. This attribute will be the "source-id" in Univention.';
 $string['educloud:toggle:failed'] = 'Toggling educloud status failed';
 $string['educloud:toggle:success'] = 'Successfully toggled educloud status';
+$string['educloud:wasacceptedby'] = 'The interface was already accepted by <a href="{$a->acceptedbylink}">{$a->acceptedbyuser}</a> on {$a->acceptedbytime}.';
 
 $string['edutube:edutubeauthurl'] = 'eduTube Auth URL';
 $string['edutube:edutubeauthtoken'] = 'eduTube Auth Token';
