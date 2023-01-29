@@ -66,7 +66,7 @@ $isproductionsite = ($CFG->wwwroot == 'https://www.eduvidual.at');
     <script type="text/javascript"> window.sessionStorage.clear(); </script>
 </head>
 
-<body>
+<body spellcheck="false">
     <div id="page-login-index">
     <div id="page" class="container ">
         <header class="container justify-content-center">
