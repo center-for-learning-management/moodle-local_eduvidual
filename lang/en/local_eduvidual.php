@@ -164,9 +164,6 @@ $string['admin:orgs:fields:name'] = 'Name';
 $string['admin:orgs:fields:phone'] = 'Phone';
 $string['admin:orgs:fields:street'] = 'Street';
 $string['admin:orgs:fields:zip'] = 'ZIP';
-$string['admin:phplist:title'] = 'phpList Settings';
-$string['admin:phplist:description'] = 'You can configure here how the sync to phpList works.';
-$string['admin:phplist:sync'] = 'Perform a full sync now';
 $string['admin:protectedorgs:title'] = 'Protected Organizations';
 $string['admin:protectedorgs:description'] = 'Users from these Organizations are hidden to others!';
 $string['admin:questionbank:title'] = 'Available question categories';
@@ -225,7 +222,6 @@ $string['courses:enrol:searchtoomuch'] = 'Too many search results, please use th
 $string['courses:enrol:unenrol'] = 'Unenrol';
 $string['courses:noaccess'] = 'Sorry, you are not enrolled to this course!';
 
-$string['cron:phplist:title'] = 'eduvidual phpList Sync';
 $string['cron:title'] = 'eduvidual Cron';
 $string['cron:trashbin:title'] = 'eduvidual Trashbin';
 

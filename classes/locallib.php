@@ -152,7 +152,6 @@ class locallib {
                 $actions['map'] = 'admin:map:title';
                 //$actions['modulecats'] = 'admin:modulecats:title';
                 $actions['orgs'] = 'admin:orgs:title';
-                $actions['phplist'] = 'admin:phplist:title';
                 $actions['stats'] = 'admin:stats:title';
                 //$actions['termsofuse'] = 'admin:termsofuse:title';
             break;

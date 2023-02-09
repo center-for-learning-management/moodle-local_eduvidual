@@ -165,13 +165,6 @@ if (!is_siteadmin()) {
                 $reply['error'] = 'Invalid data';
             }
         break;
-        case 'phplistconfig':
-            $field = optional_param('field', '', PARAM_TEXT);
-            $content = optional_param('content', '', PARAM_TEXT);
-            if (!empty($field) && set_config('phplist_' . $field, $content, 'local_eduvidual')) {
-                $reply['status'] = 'ok';
-            }
-        break;
         case 'protectedorgs':
             $protectedorgs = optional_param('protectedorgs', '', PARAM_TEXT);
             if (set_config('protectedorgs', $protectedorgs, 'local_eduvidual')) {

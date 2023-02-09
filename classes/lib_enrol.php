@@ -243,8 +243,6 @@ class lib_enrol {
             }
         }
 
-        require_once($CFG->dirroot . '/local/eduvidual/classes/lib_phplist.php');
-        \local_eduvidual_lib_phplist::check_user_role($userid);
         return $reply;
     }
 

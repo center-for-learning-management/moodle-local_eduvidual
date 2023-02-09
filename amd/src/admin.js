@@ -615,24 +615,6 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'loc
             });
         },
         /**
-        * Sets the course-ids where managers should by automatically enrolled
-        * IDs of Courses delimited by a ','
-        **/
-        phpListConfig: function(field, el) {
-            if (this.debug > 0) console.log('ADMIN.phpListConfig(field, el)', field, el);
-            require(['local_eduvidual/main'], function(MAIN) {
-                MAIN.watchValue({
-                    target: '#local_eduvidual_admin_phplist_' + field,
-                    run: function() {
-                        var o = this;
-                        require(['local_eduvidual/main'], function(MAIN) {
-                            MAIN.connect({ module: 'admin', act: 'phplistconfig', field: field, content: $(el).val() }, { signalItem: $(o.target) });
-                        });
-                    }
-                });
-            });
-        },
-        /**
         * Sets the protectedorgs
         **/
         protectedorgs: function() {
