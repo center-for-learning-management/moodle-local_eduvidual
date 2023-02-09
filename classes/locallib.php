@@ -30,6 +30,12 @@ class locallib {
     private static $cache_request;
     private static $cache_session;
 
+    const ROLE_UNKNOWN = '';
+    const ROLE_STUDENT = 'Student';
+    const ROLE_PARENT = 'Parent';
+    const ROLE_TEACHER = 'Teacher';
+    const ROLE_MANAGER = 'Manager';
+
     /**
      * Method used as getter and setter for caches.
      * @param type either application or session
@@ -137,7 +143,7 @@ class locallib {
      * Retrieve Actions for a specific module
      * @param module Module like 'admin', 'manage', ...
      * @param localized localize action labels.
-    **/
+     **/
     public static function get_actions($module, $localized = false) {
         $actions = array();
         switch($module) {
@@ -155,7 +161,7 @@ class locallib {
                 $actions['phplist'] = 'admin:phplist:title';
                 $actions['stats'] = 'admin:stats:title';
                 //$actions['termsofuse'] = 'admin:termsofuse:title';
-            break;
+                break;
             case 'manage':
                 //$actions['archive'] = 'manage:archive';
                 //$actions['categories'] = 'manage:categories';
@@ -172,11 +178,11 @@ class locallib {
                 if (is_siteadmin()) {
                     $actions['stats'] = 'manage:stats';
                 }
-            break;
+                break;
             case 'teacher':
                 //$actions['createmodule'] = 'teacher:createmodule';
                 $actions['createcourse'] = 'teacher:createcourse';
-            break;
+                break;
         }
         $actions_by_name = array();
         foreach ($actions AS $action => $name) {
@@ -295,7 +301,7 @@ class locallib {
      * By default we only load organisations where we are manager.
      * @param role Specify another role that is used as filter (eg. Teacher), asterisk for any
      * @param allforadmin returns all organisations for website admin, default: true.
-    **/
+     **/
     public static function get_organisations($role="*", $allforadmin=true){
         global $DB, $USER;
         if ($allforadmin && is_siteadmin()) {
@@ -303,7 +309,7 @@ class locallib {
         } elseif ($role == '*') {
             return $DB->get_records_sql('SELECT o.orgid,o.* FROM {local_eduvidual_org} AS o,{local_eduvidual_orgid_userid} AS ou WHERE o.orgid=ou.orgid AND ou.userid=? GROUP BY o.orgid ORDER BY o.orgid ASC', array($USER->id));
         } else {
-        	return $DB->get_records_sql('SELECT o.orgid,o.* FROM {local_eduvidual_org} AS o,{local_eduvidual_orgid_userid} AS ou WHERE o.orgid=ou.orgid AND ou.userid=? AND (ou.role=? OR ou.role=?) GROUP BY o.orgid ORDER BY o.orgid ASC', array($USER->id, 'Manager', $role));
+            return $DB->get_records_sql('SELECT o.orgid,o.* FROM {local_eduvidual_org} AS o,{local_eduvidual_orgid_userid} AS ou WHERE o.orgid=ou.orgid AND ou.userid=? AND (ou.role=? OR ou.role=?) GROUP BY o.orgid ORDER BY o.orgid ASC', array($USER->id, 'Manager', $role));
         }
     }
 
@@ -312,7 +318,7 @@ class locallib {
      * @param orgas List of all organisations
      * @param orgid orgid to search
      * @return Return an org if found or false
-    **/
+     **/
     public static function get_organisations_check($orgas, $orgid){
         if (count($orgas) == 0) return false;
         $orgids = array();
@@ -390,16 +396,20 @@ class locallib {
         $highest = '';
         foreach ($memberships AS $membership) {
             switch ($membership->role) {
-                case 'Parent':
-                case 'Student':
-                    if (empty($highest)) $highest = $membership->role;
-                break;
-                case 'Teacher':
-                    if (empty($highest) || $highest == 'Student') $highest = $membership->role;
-                break;
-                case 'Manager':
+                case static::ROLE_PARENT:
+                case static::ROLE_STUDENT:
+                    if (empty($highest)) {
+                        $highest = $membership->role;
+                    }
+                    break;
+                case static::ROLE_TEACHER:
+                    if (empty($highest) || $highest == static::ROLE_STUDENT) {
+                        $highest = $membership->role;
+                    }
+                    break;
+                case static::ROLE_MANAGER:
                     $highest = $membership->role;
-                break;
+                    break;
             }
         }
         self::cache('session', "highestrole-$userid", $highest);
@@ -441,7 +451,7 @@ class locallib {
      * If not yet set, sets a new secret
      * @param userid UserID
      * @return returns the current secret
-    **/
+     **/
     public static function get_user_secret($userid) {
         global $DB;
         $fieldid = get_config('local_eduvidual', 'fieldid_secret');
@@ -502,7 +512,7 @@ class locallib {
      * @param orgids (optional) List of possible orgs, if empty list we use all orgs the srcuser is member of
      * @param srcuserid (optional) User we want to check, if not given use the current logged in user
      * @return Returns true if connected, false if not connected
-    **/
+     **/
     public static function is_connected($touserid, $orgids = array(), $srcuserid = 0) {
         global $DB, $USER;
         if ($srcuserid == 0) {
@@ -512,7 +522,7 @@ class locallib {
             $orgids = self::is_connected_orglist($srcuserid);
         }
         if (empty($orgids)) {
-                $orgids = [0];
+            $orgids = [0];
         }
         list($insql, $inparams) = $DB->get_in_or_equal($orgids);
         $sql = "SELECT DISTINCT(userid)
@@ -540,7 +550,7 @@ class locallib {
      * Makes a list of all orgs of a user without the "protectedorgs"
      * @param userid (optional) if not given use the current logged in user.
      * @return array containing all orgids the user is member of.
-    **/
+     **/
     public static function is_connected_orglist($userid = 0) {
         global $DB, $USER;
         if ($userid == 0) {
@@ -622,7 +632,7 @@ class locallib {
     /**
      * Show a selector for all actions that are available
      * @param actions array containing valid actions
-    **/
+     **/
     public static function print_act_selector($actions = array(), $act = '') {
         global $PAGE;
         if (empty($act)) {
