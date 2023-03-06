@@ -211,5 +211,8 @@ function xmldb_local_eduvidual_upgrade($oldversion) {
         }
         upgrade_plugin_savepoint(true, 2022102500, 'local', 'eduvidual');
     }
+
+    // TODO: local_eduvidual_org_lic tabelle löschen
+
     return true;
 }

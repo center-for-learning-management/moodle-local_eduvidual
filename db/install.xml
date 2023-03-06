@@ -164,22 +164,6 @@
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
       </KEYS>
     </TABLE>
-    <TABLE NAME="local_eduvidual_org_lic" COMMENT="Licence information for organizations">
-      <FIELDS>
-        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
-        <FIELD NAME="orgid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
-        <FIELD NAME="comment" TYPE="char" LENGTH="250" NOTNULL="false" SEQUENCE="false"/>
-        <FIELD NAME="createdby" TYPE="int" LENGTH="20" NOTNULL="true" SEQUENCE="false" COMMENT="licence was given by user"/>
-        <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
-        <FIELD NAME="timeexpires" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
-      </FIELDS>
-      <KEYS>
-        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
-      </KEYS>
-      <INDEXES>
-        <INDEX NAME="idx_orgid" UNIQUE="false" FIELDS="orgid"/>
-      </INDEXES>
-    </TABLE>
     <TABLE NAME="local_eduvidual_orgid_userid" COMMENT="Default comment for the table, please edit me">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>

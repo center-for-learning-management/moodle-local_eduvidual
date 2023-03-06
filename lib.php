@@ -139,8 +139,6 @@ function local_eduvidual_before_standard_html_head() {
 
     $RET = [];
 
-    \local_eduvidual\lib_licence::check_licence();
-
     // Protect question banks on course level.
     if (!empty($PAGE->context->contextlevel) && $PAGE->context->contextlevel == CONTEXT_COURSE) {
         if (strpos($_SERVER["SCRIPT_FILENAME"], '/question/edit.php') > 0
