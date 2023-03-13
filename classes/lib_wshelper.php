@@ -389,10 +389,10 @@ class lib_wshelper {
     /**
      * These are the override-functions, that should RETURN something like the result of ws requests.
      */
-    private static function override_block_exacomp_diggr_get_students_of_cohort($result, $params) {
-        if (self::$debug) error_log(print_r($result, 1));
-        return $result;
-    }
+    // private static function override_block_exacomp_diggr_get_students_of_cohort($result, $params) {
+    //     if (self::$debug) error_log(print_r($result, 1));
+    //     return $result;
+    // }
 
     private static function override_core_calendar_external_get_calendar_action_events_by_timesort($result, $params) {
         global $DB;
@@ -405,14 +405,15 @@ class lib_wshelper {
         }
         return $result;
     }
-    private static function override_core_cohort_add_cohort_members($result, $params) {
-        if (self::$debug) error_log(print_r($result, 1));
-        return $result;
-    }
-    private static function override_core_cohort_search_cohorts($result, $params) {
-        if (self::$debug) error_log(print_r($result, 1));
-        return $result;
-    }
+    // private static function override_core_cohort_add_cohort_members($result, $params) {
+    //     if (self::$debug) error_log(print_r($result, 1));
+    //     return $result;
+    // }
+    // private static function override_core_cohort_search_cohorts($result, $params) {
+    //     if (self::$debug) error_log(print_r($result, 1));
+    //     return $result;
+    // }
+
     private static function override_core_course_external_get_enrolled_courses_by_timeline_classification($result, $params) {
         global $DB;
         if (!empty($result['courses'])) {
@@ -570,30 +571,30 @@ class lib_wshelper {
         return $result;
     }
 
-    private static function override_core_message_message_search_users($result, $params) {
-        if (self::$debug) error_log(print_r($result, 1));
-        return $result;
-    }
-    private static function override_core_message_search_contacts($result, $params) {
-        if (self::$debug) error_log(print_r($result, 1));
-        return $result;
-    }
-    private static function override_core_search_get_relevant_users($result, $params) {
-        if (self::$debug) error_log(print_r($result, 1));
-        return $result;
-    }
-    private static function override_core_user_get_users($result, $params) {
-        if (self::$debug) error_log(print_r($result, 1));
-        return $result;
-    }
-    private static function override_tool_lp_search_cohorts($result, $params) {
-        if (self::$debug) error_log(print_r($result, 1));
-        return $result;
-    }
-    private static function override_tool_lp_search_users($result, $params) {
-        if (self::$debug) error_log(print_r($result, 1));
-        return $result;
-    }
+    // private static function override_core_message_message_search_users($result, $params) {
+    //     if (self::$debug) error_log(print_r($result, 1));
+    //     return $result;
+    // }
+    // private static function override_core_message_search_contacts($result, $params) {
+    //     if (self::$debug) error_log(print_r($result, 1));
+    //     return $result;
+    // }
+    // private static function override_core_search_get_relevant_users($result, $params) {
+    //     if (self::$debug) error_log(print_r($result, 1));
+    //     return $result;
+    // }
+    // private static function override_core_user_get_users($result, $params) {
+    //     if (self::$debug) error_log(print_r($result, 1));
+    //     return $result;
+    // }
+    // private static function override_tool_lp_search_cohorts($result, $params) {
+    //     if (self::$debug) error_log(print_r($result, 1));
+    //     return $result;
+    // }
+    // private static function override_tool_lp_search_users($result, $params) {
+    //     if (self::$debug) error_log(print_r($result, 1));
+    //     return $result;
+    // }
 
     /**
      * Assistive function for buffer_mod_jazzquiz_edit and buffer_question_edit
