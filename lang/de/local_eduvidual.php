@@ -567,10 +567,6 @@ $string['privacy:metadata:privacy:metadata:local_eduvidual_userextra:background'
 $string['privacy:metadata:privacy:metadata:local_eduvidual_userextra:backgroundcard'] = 'Der Hintergrund der Zugangskarte';
 $string['privacy:metadata:privacy:metadata:local_eduvidual_userextra:defaultorg'] = 'Die standardmäßig ausgewählte Schule (sofern jemand in mehreren Schulen tätig ist)';
 $string['privacy:metadata:privacy:metadata:local_eduvidual_userqcats'] = 'Die Kernsystem-Fragenkategorien, die angezeigt werden sollen.';
-$string['privacy:metadata:privacy:metadata:local_eduvidual_usertoken'] = 'Nutzertoken für den automatischen Login';
-$string['privacy:metadata:privacy:metadata:local_eduvidual_usertoken:token'] = 'Der Token';
-$string['privacy:metadata:privacy:metadata:local_eduvidual_usertoken:created'] = 'Der Zeitpunkt der Erstellung des Tokens';
-$string['privacy:metadata:privacy:metadata:local_eduvidual_usertoken:used'] = 'Der Zeitpunkt der Einlösung des Tokens';
 
 $string['qrscan:cameratoobject'] = 'Richten Sie nun die Kamera auf den QR Code!';
 $string['questioncategoryfilter:label'] = 'Kategoriefilter';

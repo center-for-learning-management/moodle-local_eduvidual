@@ -51,15 +51,6 @@ class provider implements \core_privacy\local\metadata\provider {
             array(),
             'privacy:metadata:privacy:metadata:local_eduvidual_userqcats'
         );
-        $collection->add_database_table(
-            'local_eduvidual_usertoken',
-            array(
-                'token' => 'privacy:metadata:local_eduvidual_usertoken:token',
-                'created' => 'privacy:metadata:local_eduvidual_usertoken:created',
-                'used' => 'privacy:metadata:local_eduvidual_usertoken:used',
-            ),
-            'privacy:metadata:privacy:metadata:local_eduvidual_usertoken'
-        );
         return $collection;
     }
     /**
@@ -84,10 +75,6 @@ class provider implements \core_privacy\local\metadata\provider {
         $contextlist->add_from_sql($sql, $params);
 
         $sql = "SELECT * FROM {local_eduvidual_userqcats} WHERE userid=?";
-        $params = ['userid' => $userid ];
-        $contextlist->add_from_sql($sql, $params);
-
-        $sql = "SELECT * FROM {local_eduvidual_usertoken} WHERE userid=?";
         $params = ['userid' => $userid ];
         $contextlist->add_from_sql($sql, $params);
 

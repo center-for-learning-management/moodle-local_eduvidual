@@ -483,7 +483,6 @@ class lib_enrol {
             $DB->delete_records('local_eduvidual_courseshow', array('userid' => $userid));
             $DB->delete_records('local_eduvidual_orgid_userid', array('userid' => $userid));
             $DB->delete_records('local_eduvidual_userqcats', array('userid' => $userid));
-            $DB->delete_records('local_eduvidual_usertoken', array('userid' => $userid));
             return false;
         } else {
             return true;

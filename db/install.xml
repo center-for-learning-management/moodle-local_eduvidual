@@ -176,17 +176,5 @@
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
       </KEYS>
     </TABLE>
-    <TABLE NAME="local_eduvidual_usertoken" COMMENT="Usertokens for auto login feature">
-      <FIELDS>
-        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
-        <FIELD NAME="userid" TYPE="int" LENGTH="20" NOTNULL="false" SEQUENCE="false"/>
-        <FIELD NAME="token" TYPE="char" LENGTH="50" NOTNULL="true" SEQUENCE="false"/>
-        <FIELD NAME="created" TYPE="int" LENGTH="20" NOTNULL="true" SEQUENCE="false" COMMENT="timestamp when it was created"/>
-        <FIELD NAME="used" TYPE="int" LENGTH="20" NOTNULL="true" SEQUENCE="false" COMMENT="timestamp when it was last time used"/>
-      </FIELDS>
-      <KEYS>
-        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
-      </KEYS>
-    </TABLE>
   </TABLES>
 </XMLDB>

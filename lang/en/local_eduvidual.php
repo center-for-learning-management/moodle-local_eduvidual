@@ -590,10 +590,6 @@ $string['privacy:metadata:privacy:metadata:local_eduvidual_userextra:background'
 $string['privacy:metadata:privacy:metadata:local_eduvidual_userextra:backgroundcard'] = 'The background of the accesscard';
 $string['privacy:metadata:privacy:metadata:local_eduvidual_userextra:defaultorg'] = 'The default organization (if user is member of more than one organization)';
 $string['privacy:metadata:privacy:metadata:local_eduvidual_userqcats'] = 'The core question categories that should appear.';
-$string['privacy:metadata:privacy:metadata:local_eduvidual_usertoken'] = 'User-Tokens for auto-login';
-$string['privacy:metadata:privacy:metadata:local_eduvidual_usertoken:token'] = 'The token';
-$string['privacy:metadata:privacy:metadata:local_eduvidual_usertoken:created'] = 'The time when the token was created';
-$string['privacy:metadata:privacy:metadata:local_eduvidual_usertoken:used'] = 'The time when the token was used';
 
 $string['qrscan:cameratoobject'] = 'Now focus your camery on the QR code!';
 $string['questioncategoryfilter:label'] = 'Categoryfilter';
