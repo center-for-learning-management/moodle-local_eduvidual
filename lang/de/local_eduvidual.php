@@ -202,7 +202,6 @@ $string['check_js:title'] = 'JavaScript';
 
 $string['coursebackupnotset'] = 'Kursvorlage nicht gefunden.';
 
-$string['courses:enrol:byqrcode'] = 'Aufnahme via QR Code';
 $string['courses:enrol:courseusers'] = 'Benutzer in {$a->name}';
 $string['courses:enrol:enrol'] = 'Aufnehmen';
 $string['courses:enrol:orgusers'] = 'Benutzer von {$a->name}';

@@ -205,7 +205,6 @@ $string['check_js:title'] = 'JavaScript';
 
 $string['coursebackupnotset'] = 'Coursetemplate not found';
 
-$string['courses:enrol:byqrcode'] = 'Enrol by QR Code';
 $string['courses:enrol:courseusers'] = 'Users in {$a->name}';
 $string['courses:enrol:enrol'] = 'Enrol';
 $string['courses:enrol:orgusers'] = 'Users of {$a->name}';
