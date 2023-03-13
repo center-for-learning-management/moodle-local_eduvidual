@@ -292,39 +292,6 @@ if (!is_siteadmin()) {
                 $reply['status'] = 'ok';
             }
         break;
-        case 'modulecatform':
-            $categoryid = optional_param('categoryid', 0, PARAM_INT);
-            $reply['category'] = $DB->get_record('local_eduvidual_modulescat', array('id' => $categoryid));
-            $reply['status'] = (isset($reply['category']) && isset($reply['category']->id))?'ok':'error';
-        break;
-        case 'modulecatstore':
-            $categoryid = optional_param('categoryid', -1, PARAM_INT);
-            $parentid = optional_param('parentid', -1, PARAM_INT);
-            $entry = new \stdClass;
-            if ($categoryid > 0) {
-                $entry = $DB->get_record('local_eduvidual_modulescat', array('id' => $categoryid));
-            } else {
-                if ($parentid > -1) {
-                    $entry->parentid = $parentid;
-                } else {
-                    exit;
-                }
-            }
-            $entry->active = optional_param('active', 0, PARAM_INT);
-            $entry->name = optional_param('name', '', PARAM_TEXT);
-            $entry->description = optional_param('description', '', PARAM_TEXT);
-            $chk = false;
-            if ($categoryid > -1) {
-                $chk = $DB->update_record('local_eduvidual_modulescat', $entry);
-            } else {
-                $entry->id = $DB->insert_record('local_eduvidual_modulescat', $entry, true);
-                $chk =  ($entry->id > 0);
-            }
-            if ($chk) {
-                $reply['status'] = 'ok';
-                $reply['category'] = $entry;
-            }
-        break;
         case 'moolevels':
             $moolevels = optional_param_array('moolevels', NULL, PARAM_INT);
             // Set to 0 if you require at least one!

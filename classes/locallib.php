@@ -156,7 +156,6 @@ class locallib {
                 $actions['questionbank'] = 'admin:questioncategories:title';
                 $actions['licence'] = 'admin:licence:title';
                 $actions['map'] = 'admin:map:title';
-                //$actions['modulecats'] = 'admin:modulecats:title';
                 $actions['orgs'] = 'admin:orgs:title';
                 $actions['stats'] = 'admin:stats:title';
                 //$actions['termsofuse'] = 'admin:termsofuse:title';

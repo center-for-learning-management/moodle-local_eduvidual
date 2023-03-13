@@ -213,7 +213,12 @@ function xmldb_local_eduvidual_upgrade($oldversion) {
     }
 
     // TODO: tabelle local_eduvidual_org_lic löschen
+
     // TODO: tabelle local_eduvidual_terms löschen
+
+    // TODO: tabelle local_eduvidual_modules löschen
+    // TODO: tabelle local_eduvidual_modulescat löschen
+
 
     return true;
 }

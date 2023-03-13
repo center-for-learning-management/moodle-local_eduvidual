@@ -211,15 +211,6 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'loc
                 MAIN.connect({ module: 'admin', act: 'modifylogin', setto: setto }, { signalItem: $('#local_eduvidual_admin_modifylogin') });
             });
         },
-        /**
-        * Gets the data for a specific category and inserts into the form
-        * @param categoryid CategoryID to load
-        **/
-        moduleCatForm: function(categoryid) {
-            require(['local_eduvidual/main'], function(MAIN) {
-                MAIN.connect({ module: 'admin', act: 'modulecatform', categoryid: categoryid });
-            });
-        },
         moolevels: function(sender) {
             if (this.debug > 0) console.log('ADMIN.moolevels()');
             var moolevels = new Array();
@@ -721,31 +712,6 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'loc
                         $('#' + o.payload.uniqid + '-field-' + error).addClass('local_eduvidual_signal_error');
                     }
                 }
-            }
-            if (o.data.act == 'modulecatstore') {
-                require(['local_eduvidual/main'], function(MAIN) {
-                    MAIN.confirmed('#local_eduvidual_admin_modulecat_form', (o.result.status=='ok'));
-                    var cat = o.result.category;
-                    console.log('There is a category', cat);
-                    if (o.result.status == 'ok' && typeof cat.id !== 'undefined' && cat.id > 0) {
-                        if (o.data.categoryid == -1) {
-                            //console.log('Going to', local_eduvidual_WWWROOT + '/local/eduvidual/pages/admin.php?act=modulecats&categoryid=' + cat.id);
-                            //location.href = local_eduvidual_WWWROOT + 'local/eduvidual/pages/admin.php?act=modulecats&categoryid=' + cat.id;
-                            MAIN.navigate(URL.fileUrl('/local/eduvidual/pages/admin.php?act=modulecats&categoryid=' + cat.id, ''));
-                            return;
-                        } else {
-                            console.log('Category just updated');
-                            $('li[data-categoryid="' + cat.id + '"]>a:first-child').html(cat.name).removeClass('inactive').removeClass('active').addClass((cat.active == 1)?'active':'inactive');
-                            $('#local_eduvidual_admin_modulecat_form').attr('data-categoryid', cat.id).attr('data-parentid', cat.parentid).css('display', 'block');
-                            $('#local_eduvidual_admin_modulecat_form input[name="categoryid"]').val(cat.id);
-                            $('#local_eduvidual_admin_modulecat_form_active').val(cat.active);
-                            $('#local_eduvidual_admin_modulecat_form_name').val(cat.name);
-                            $('#local_eduvidual_admin_modulecat_form_description').val(cat.description);
-                            $('#local_eduvidual_admin_modulecat_form_imageurl').val(cat.imageurl);
-                        }
-                    }
-                    $('#local_eduvidual_admin_modulecat_form_active').trigger('create');
-                });
             }
         },
         /**
