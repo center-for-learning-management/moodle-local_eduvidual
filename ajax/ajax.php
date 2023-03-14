@@ -30,6 +30,8 @@ require_once($CFG->libdir . '/adminlib.php');
 
 $PAGE->set_context(context_system::instance());
 
+require_sesskey();
+
 $module = optional_param('module', '', PARAM_TEXT);
 $reply = array('status' => 'error');
 $modules = array('admin', 'manage', 'preferences', 'register', 'teacher', 'user');
