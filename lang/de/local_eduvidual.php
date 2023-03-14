@@ -90,28 +90,6 @@ $string['admin:formmodificator:roleids'] = 'Rollen-IDs';
 $string['admin:formmodificator:types'] = 'Typen';
 $string['admin:globalfiles:title'] = 'Globale Dateien';
 $string['admin:globalfiles:description'] = 'Global verfügbare Dateien hochladen. Der Dateipfad lautet wie folgt: /pluginfile.php/1/local_eduvidual/globalfiles/0/{verzeichnisse}/{dateiname}';
-$string['admin:licence:active'] = 'Lizenzsystem aktivieren oder deaktivieren';
-$string['admin:licence:add'] = 'Lizenzen anlegen';
-$string['admin:licence:added'] = '{$a->added} Lizenzen erfolgreich hinzugefügt';
-$string['admin:licence:comment'] = 'Kommentar';
-$string['admin:licence:expiry'] = 'Ablaufdatum';
-$string['admin:licence:failed'] = '{$a->failed} Lizenzen konnten nicht hinzugefügt werden';
-$string['admin:licence:missing'] = 'Keine gültige Lizenz';
-$string['admin:licence:missing:text'] = '
-    <p>
-        Leider verfügt Ihre Schule über keine gültige Lizenz, um mit {$a->sitename} arbeiten zu können.
-    </p>
-    <p>
-        Bitte wenden Sie sich an den Support dieser Moodle-Seite, um eine Lizenz zu lösen oder Hilfe anzufordern.
-    </p>
-';
-$string['admin:licence:orgids'] = 'Schulkennzahlen';
-$string['admin:licence:orgids_help'] = 'Schulkennzahlen zeilenweise!';
-$string['admin:licence:revoke'] = 'Stornieren';
-$string['admin:licence:revoked'] = 'Lizenzen wurde storniert';
-$string['admin:licence:title'] = 'Lizenzen';
-$string['admin:licencesystem:disabled'] = 'Lizenzsystem wurde deaktiviert';
-$string['admin:licencesystem:enabled'] = 'Lizenzsystem wurde aktiviert';
 $string['admin:ltiresourcekey:title'] = 'Standard LTI Resource Key';
 $string['admin:ltiresourcekey:description'] = 'Falls Sie LTI Ressourcen mit eduvidual verwalten, stellen Sie sicher, dass Sie überall denselben LTI Resource Key setzen. Sie können den Standardwert hier setzen.';
 $string['admin:map:both'] = 'eduvidual (migriert von LPF)';
