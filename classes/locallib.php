@@ -164,7 +164,7 @@ class locallib {
                 //$actions['archive'] = 'manage:archive';
                 //$actions['categories'] = 'manage:categories';
                 $actions['coursesettings'] = 'manage:coursesettings';
-                $actions['mnet'] = 'manage:mnet:action';
+                $actions['login'] = 'manage:login:action';
                 $actions['orgmenu'] = 'manage:orgmenu:title';
                 $actions['style'] = 'manage:style';
                 $actions['subcats'] = 'manage:subcats:title';

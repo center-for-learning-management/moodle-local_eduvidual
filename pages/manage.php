@@ -51,8 +51,7 @@ switch($act) {
         $PAGE->requires->js('/local/eduvidual/js/archive.js');
         $PAGE->requires->css('/local/eduvidual/style/archive.css');
     break;
-    case 'data': $title = get_string('manage:data', 'local_eduvidual'); break;
-	case 'mnet': $title = get_string('manage:mnet:action', 'local_eduvidual'); break;
+	case 'login': $title = get_string('manage:login:action', 'local_eduvidual'); break;
 	case 'stats': $title = get_string('manage:stats', 'local_eduvidual'); break;
 	case 'style': $title = get_string('manage:style', 'local_eduvidual'); break;
 	case 'subcats': $title = get_string('manage:subcats:title', 'local_eduvidual'); break;

@@ -25,6 +25,9 @@ namespace local_eduvidual\task;
 
 defined('MOODLE_INTERNAL') || die;
 
+/**
+ * für statistiken: in jedem Kursbereich (=Schule) wird der verwendet Speicherplatz angezeigt (für Admins)
+ */
 class local_eduvidual_orgsizes extends \core\task\scheduled_task {
     public function get_name() {
         // Shown in admin screens.

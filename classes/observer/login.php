@@ -44,79 +44,8 @@ class login {
             $DB->set_field('user', 'idnumber', $user->idnumber, array('id' => $user->id));
         }
 
-        // We only check for roles managed by profile for mnet accounts
-        if ($user->auth == 'mnet') {
-            $org;
-            $orgs_ = $DB->get_records('local_eduvidual_org', array('mnetid' => $user->mnethostid));
-            // Create Array of orgs that use this mnethost.
-            $orgs = array();
-            $orgids = array();
-            foreach($orgs_ AS $org) {
-                $orgs[] = $org;
-                $orgids[] = $org->orgid;
-            }
-            if ($user->mnethostid == 3) {
-                $additionalorg = $DB->get_record('local_eduvidual_org', array('orgid' => '601457'));
-                $orgs[] = $additionalorg;
-                $orgids[] = $additionalorg->orgid;
-            }
-            if ($debug) error_log('This user comes via MNet, ' . count($orgs) . ' possible orgs, checking for ' . $user->institution);
-            if (count($orgs) > 0) {
-                // This mnet host belongs to at least one org
-                if (count($orgs) == 1) {
-                    if ($debug) error_log('Only 1 org - ' . $org->orgid);
-                    // There is only 1 possible org - we set this orgid in profile
-                    $org = $orgs[0];
-                    $user->institution = $org->orgid;
-                } elseif(!empty($user->institution)) {
-                    // There are more than 1 possible orgs and we have an institution
-                    // Determine if the institution given is valid!
-                    $org = -1;
-                    if ($debug) error_log(count($orgs) . ' orgs');
-                    foreach($orgs AS $org_) {
-                        if ($debug) error_log('Compare ' . $org_->orgid . ' to ' . $user->institution);
-                        if ($org_->orgid == $user->institution) {
-                            $org = $org_;
-                        }
-                    }
-                    if ($debug) error_log('Selected org - ' . $org->orgid);
-                    if (empty($org->orgid)) {
-                        $user->institution = '';
-                    }
-                } else {
-                    if ($debug) error_log('Multiple options and no institution given. Can not auto enrol to org.');
-                }
-            }
-            // Update user record
-            $DB->update_record('user', $user);
-
-            // Proceed only if we still have a valid institution.
-            //$org = $DB->get_record('oer_local_eduvidual_org', array('orgid' => $user->institution));
-            if (!empty($org->orgid) && $org->orgid == $user->institution) {
-                // Check if we already have a role.
-                $currentrole = $DB->get_record('local_eduvidual_orgid_userid', array('orgid' => $org->orgid, 'userid' => $user->id));
-                // If department is empty default to Student
-                $setrole = $user->department;
-                $roles = array('Manager', 'Teacher', 'Student', 'Parent');
-                if (!in_array($setrole, $roles) && empty($currentrole->role)) {
-                    $setrole = 'Student';
-                }
-                if (!empty($setrole)) {
-                    $reply = \local_eduvidual\lib_enrol::role_set($user->id, $org, $setrole);
-                    $success = isset($reply['enrolments']) ? count($reply['enrolments']) : 0;
-                    if ($debug) error_log('Set role from mnet: ' . $setrole . ' on user ' . $user->id . ' for org ' . $org->orgid . ' => ' . $success . ' enrolments done');
-                    //error_log(print_r($reply, 1));
-                } else {
-                    if ($debug) error_log('No role to assign');
-                    //error_log(print_r($org, 1));
-                    //error_log(print_r($user, 1));
-                }
-            } else {
-                if ($debug) error_log('No valid org for user found with institution ' . $user->institution);
-            }
-        }
-
         // For all users - check maildomain
+        // wird noch verwendet (robert 04/2023)
         $maildomain = explode('@', strtolower($user->email));
         $maildomain = '@' . $maildomain[1];
         if (strlen($maildomain) > 3) {

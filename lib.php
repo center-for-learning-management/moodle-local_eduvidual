@@ -425,7 +425,7 @@ function local_eduvidual_pre_user_delete() {
  * @return bool false if the file not found, just send the file otherwise and do not return anything
  */
 function local_eduvidual_pluginfile($course, $cm, $context, $filearea, $args, $forcedownload, array $options=array()) {
-    $areas = array('backgrounds', 'backgrounds_cards', 'globalfiles', 'orgfiles', 'orgbanner', 'mnetlogo', 'module');
+    $areas = array('backgrounds', 'backgrounds_cards', 'globalfiles', 'orgfiles', 'orgbanner', 'module');
     if (in_array($filearea, $areas)) {
         $forcedownload = false;
         $options['embed'] = true;

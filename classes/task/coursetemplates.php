@@ -29,6 +29,10 @@ namespace local_eduvidual\task;
 
 defined('MOODLE_INTERNAL') || die;
 
+/**
+ * wenn eine Kursvorlage geändert wird, wird eine Sicherung von der Kursvorlage angelegt.
+ * Damit das Kursduplizieren effizienter wird.
+ */
 class coursetemplates extends \core\task\scheduled_task {
     public function get_name() {
         // Shown in admin screens.
