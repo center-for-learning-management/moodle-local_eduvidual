@@ -67,23 +67,6 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'loc
         /**
         * Sets the default resourcekey for lti resources
         **/
-        dropZonePath: function() {
-            if (this.debug > 0) console.log('ADMIN.dropZonePath()');
-            require(['local_eduvidual/main'], function(MAIN) {
-                MAIN.watchValue({
-                    target: '#local_eduvidual_admin_dropzonepath',
-                    run: function() {
-                        var o = this;
-                        require(['local_eduvidual/main'], function(MAIN) {
-                            MAIN.connect({ module: 'admin', act: 'dropzonepath', dropzonepath: $(o.target).val() }, { signalItem: $(o.target) });
-                        });
-                    }
-                });
-            });
-        },
-        /**
-        * Sets the default resourcekey for lti resources
-        **/
         ltiresourcekey: function() {
             if (this.debug > 0) console.log('ADMIN.ltiresourcekey()');
             require(['local_eduvidual/main'], function(MAIN) {
