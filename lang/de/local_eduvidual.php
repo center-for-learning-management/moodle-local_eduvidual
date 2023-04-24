@@ -79,9 +79,6 @@ $string['admin:coursebasements:title'] = 'Kategorien mit Kursvorlagen';
 $string['admin:coursebasements:description'] = 'Bitte benennen Sie hier Vorlagekurse für die jeweilige Option:';
 $string['admin:coursedelete:title'] = 'Kurslöschlog';
 $string['admin:coursestuff:title'] = 'Kurseinstellungen';
-$string['admin:dropzone:description'] = 'Setzen Sie das Verzeichnis zu einem Dateisystem-Repository. Wenn Nutzer/innen etwas hochladen, wird Ihnen der Zugriff aufs Repository für 24 h gewährt.';
-$string['admin:dropzone:notset'] = 'Kein Verzeichnis für die Dropzone gesetzt!';
-$string['admin:dropzone:title'] = 'Dropzone';
 $string['admin:formmodificator:description'] = 'Hier können Sie angeben, inwiefern Formular zur Erstellung von Aktivitäten/Ressourcen entsprechend dem Erfahrungslevel angepasst werden sollen. Geben Sie den Typ der Ressource und die Rollen-ID an. In der Spalte "Verstecke" können Sie nun zeilenweise die CSS-Selektoren angeben, die ausgeblendet werden sollen. In der Spalte "Default Werte" geben Sie Wertepaare an, welche Standardwerte im Formular gesetzt werden sollen, bspw. css_selektor1=default_wert1\n css_selektor2=default_wert2 usw.';
 $string['admin:formmodificator:ids_to_hide'] = 'Verstecke';
 $string['admin:formmodificator:ids_to_set'] = 'Default Werte';
@@ -208,7 +205,7 @@ $string['dataprivacyorgerror:orgid'] = 'Schulkennzahl';
 $string['dataprivacyorgerror:orgname'] = 'Schulname';
 $string['dataprivacyorgerror:pagetitle'] = 'Datenlöschung nicht möglich';
 
-$string['defaultroles:title'] = 'Rollen';
+$string['admin:defaultroles:title'] = 'Rollen';
 $string['defaultroles:course:title'] = 'Rollen (für Kurse)';
 $string['defaultroles:course:description'] = 'Definieren Sie hier jene Rollen, die in Kursen durch dieses Plugin vergeben werden!';
 $string['defaultroles:course:parent'] = 'Erziehungsberechtige/r';

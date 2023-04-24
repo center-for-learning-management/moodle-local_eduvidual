@@ -50,7 +50,6 @@ echo $OUTPUT->render_from_template(
         'coursebasementempty' => get_config('local_eduvidual', 'coursebasementempty'),
         'coursebasementrestore' => get_config('local_eduvidual', 'coursebasementrestore'),
         'coursebasementtemplate' => get_config('local_eduvidual', 'coursebasementtemplate'),
-        'dropzonepath' => get_config('local_eduvidual', 'dropzonepath'),
         'ltiresourcekey' => get_config('local_eduvidual', 'ltiresourcekey'),
         'orgcoursebasements' => $orgcoursebasements,
         'protectedorgs' => get_config('local_eduvidual', 'protectedorgs'),

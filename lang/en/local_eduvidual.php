@@ -79,9 +79,6 @@ $string['admin:coursebasements:title'] = 'Course basement categories';
 $string['admin:coursebasements:description'] = 'Please enter template course ids here, that are used for the named purpose:';
 $string['admin:coursedelete:title'] = 'Course Delete Log';
 $string['admin:coursestuff:title'] = 'Course Stuff';
-$string['admin:dropzone:description'] = 'Set a path to a filesystem-repository. Users will get capability to use it for 24 hours when they upload something.';
-$string['admin:dropzone:notset'] = 'No directory for Dropzone set!';
-$string['admin:dropzone:title'] = 'Dropzone';
 $string['admin:formmodificator:description'] = 'Here you can specify how the activity-creation-form should be modified according to certain experience levels. Enter the type of activity/resource and the role-id (you see it above within the brackets). Name all elements that should be hidden line by line. Do the same for default values, but use the syntax my_css_selector1=my_default_value1\n my_css_selector2=my_default_value2 and so on.';
 $string['admin:formmodificator:ids_to_hide'] = 'Hide Elements';
 $string['admin:formmodificator:ids_to_set'] = 'Default values';
@@ -210,7 +207,7 @@ $string['dataprivacyorgerror:orgid'] = 'Organization-ID';
 $string['dataprivacyorgerror:orgname'] = 'Name';
 $string['dataprivacyorgerror:pagetitle'] = 'Dataremoval impossible';
 
-$string['defaultroles:title'] = 'Default Roles';
+$string['admin:defaultroles:title'] = 'Default Roles';
 $string['defaultroles:course:title'] = 'Default Roles (Courses)';
 $string['defaultroles:course:description'] = 'Define the default roles to be assigned within courses. These will be used for membership management in courses by this plugin!';
 $string['defaultroles:course:parent'] = 'Parent';

@@ -152,7 +152,7 @@ class locallib {
                 //$actions['blockfooter'] = 'admin:blockfooter:title';
                 $actions['coursedelete'] = 'admin:coursedelete:title';
                 $actions['coursestuff'] = 'admin:coursestuff:title';
-                $actions['defaultroles'] = 'defaultroles:title';
+                $actions['defaultroles'] = 'admin:defaultroles:title';
                 $actions['questionbank'] = 'admin:questioncategories:title';
                 $actions['map'] = 'admin:map:title';
                 $actions['orgs'] = 'admin:orgs:title';

@@ -56,23 +56,6 @@ if (!is_siteadmin()) {
                 $reply['error'] = 'invalid_type';
             }
         break;
-        case 'dropzonepath':
-            $dropzonepath = optional_param('dropzonepath', '', PARAM_TEXT);
-            if (empty($dropzonepath)) {
-                set_config('dropzonepath', '', 'local_eduvidual');
-                $reply['status'] = 'ok';
-            } elseif (is_dir($dropzonepath)) {
-                if (is_writable($dropzonepath)) {
-                    if (set_config('dropzonepath', $dropzonepath, 'local_eduvidual')) {
-                        $reply['status'] = 'ok';
-                    } else {
-                        $reply['status'] = 'Could not set config!';
-                    }
-                }
-            } else {
-                $reply['status'] = 'Does not exist!';
-            }
-        break;
         case 'ltiresourcekey':
             $ltiresourcekey = optional_param('ltiresourcekey', '', PARAM_TEXT);
             if (set_config('ltiresourcekey', $ltiresourcekey, 'local_eduvidual')) {
