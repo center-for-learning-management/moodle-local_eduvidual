@@ -192,7 +192,6 @@ $string['courses:enrol:searchtoomuch'] = 'Too many search results, please use th
 $string['courses:enrol:unenrol'] = 'Unenrol';
 $string['courses:noaccess'] = 'Sorry, you are not enrolled to this course!';
 
-$string['cron:title'] = 'eduvidual Cron';
 $string['cron:trashbin:title'] = 'eduvidual Trashbin';
 
 $string['dataprivacyorgerror:contacts'] = 'Contacts';

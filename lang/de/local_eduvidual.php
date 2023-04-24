@@ -189,7 +189,6 @@ $string['courses:enrol:searchtoomuch'] = 'Zu viele Nutzer/innen, bitte nutzen Si
 $string['courses:enrol:unenrol'] = 'Abmelden';
 $string['courses:noaccess'] = 'Leider sind Sie in diesem Kurs nicht eingeschrieben!';
 
-$string['cron:title'] = 'eduvidual Cron';
 $string['cron:trashbin:title'] = 'eduvidual Papierkorb';
 
 $string['dataprivacyorgerror:contacts'] = 'Ansprechpersonen';
