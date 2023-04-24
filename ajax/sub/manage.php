@@ -134,12 +134,7 @@ switch ($act) {
                 } else {
                     $cat = \coursecat::get($parentid);
                     $reply['removedcat'] = $DB->get_record('course_categories', array('id' => $parentid));
-                    $trashcategory = get_config('local_eduvidual', 'trashcategory');
-                    if (!empty($trashcategory)) {
-                        $cat->delete_move($trashcategory);
-                    } else {
-                        $cat->delete_full();
-                    }
+                    $cat->delete_full();
                     $reply['status'] = 'ok';
                 }
             }

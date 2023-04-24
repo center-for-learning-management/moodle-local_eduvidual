@@ -189,8 +189,6 @@ $string['courses:enrol:searchtoomuch'] = 'Zu viele Nutzer/innen, bitte nutzen Si
 $string['courses:enrol:unenrol'] = 'Abmelden';
 $string['courses:noaccess'] = 'Leider sind Sie in diesem Kurs nicht eingeschrieben!';
 
-$string['cron:trashbin:title'] = 'eduvidual Papierkorb';
-
 $string['dataprivacyorgerror:contacts'] = 'Ansprechpersonen';
 $string['dataprivacyorgerror:description'] = '
     <p>
@@ -386,8 +384,6 @@ $string['manage:archive:source:description'] = 'Sie können Kurse en masse ausw�
 $string['manage:archive:target'] = 'Ziel';
 $string['manage:archive:target:title'] = 'Ziel wählen';
 $string['manage:archive:target:description'] = 'Sie haben {$a->count} Kurs(e) gewählt.';
-$string['manage:archive:trashbin'] = 'Papierkorb';
-$string['manage:archive:trashbin:description'] = 'Kurse können in einen systemweiten Papierkorb geschoben werden. Solange Kurse im Papierkorb sind, können sie wiederhergestellt werden. Der Papierkorb wird regelmäßig geleert!';
 $string['manage:authtype'] = 'Kontotyp';
 $string['manage:bunch:all'] = 'Alle';
 $string['manage:bunch:allwithoutbunch'] = 'Alle Nutzer/innen ohne "globale Gruppe"';
@@ -595,9 +591,6 @@ $string['teacher:createmodule:missing_capability'] = 'Ihnen fehlt das Recht Modu
 $string['teacher:createmodule:selectcourse'] = 'Kurs wählen';
 $string['teacher:createmodule:selectmodule'] = 'Modul wählen';
 $string['teacher:createmodule:selectsection'] = 'Kursabschnitt wählen';
-
-$string['trashcategory:title'] = 'Kurskategorie für Papierkorb';
-$string['trashcategory:description'] = 'Sie können eine Kurskategorie als Papierkorb angeben. Dieser wird täglich geleert.';
 
 $string['user:categories:adminshowall'] = 'Alle Schulen';
 $string['user:categories:adminshowmine'] = 'Nur meine Schulen';

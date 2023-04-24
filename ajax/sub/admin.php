@@ -371,11 +371,6 @@ if (!is_siteadmin()) {
                 $reply['status'] = 'ok';
             }
         break;
-        case 'trashcategory':
-            $category = optional_param('trashcategory', 0, PARAM_TEXT);
-            set_config('trashcategory', $category, 'local_eduvidual');
-            $reply['status'] = 'ok';
-        break;
         default:
             $reply['error'] = 'Unknown action';
     }

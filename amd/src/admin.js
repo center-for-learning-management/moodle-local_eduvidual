@@ -744,22 +744,5 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'loc
                 });
             });
         },
-        /**
-        * Sets the Category of the trashbin
-        **/
-        trashcategory: function() {
-            if (this.debug > 0) console.log('ADMIN.trashcategory()');
-            require(['local_eduvidual/main'], function(MAIN) {
-                MAIN.watchValue({
-                    target: '#local_eduvidual_admin_trashcategory',
-                    run: function() {
-                        var o = this;
-                        require(['local_eduvidual/main'], function(MAIN) {
-                            MAIN.connect({ module: 'admin', act: 'trashcategory', trashcategory: $(o.target).val() }, { signalItem: $(o.target) });
-                        });
-                    }
-                });
-            });
-        },
     };
 });

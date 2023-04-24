@@ -57,6 +57,5 @@ echo $OUTPUT->render_from_template(
         'registrationcc' => get_config('local_eduvidual', 'registrationcc'),
         'registrationsupport' => get_config('local_eduvidual', 'registrationsupport'),
         'supportcourseurl' => get_config('local_eduvidual', 'supportcourseurl'),
-        'trashcategory' => get_config('local_eduvidual', 'trashcategory'),
     )
 );

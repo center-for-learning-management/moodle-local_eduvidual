@@ -192,8 +192,6 @@ $string['courses:enrol:searchtoomuch'] = 'Too many search results, please use th
 $string['courses:enrol:unenrol'] = 'Unenrol';
 $string['courses:noaccess'] = 'Sorry, you are not enrolled to this course!';
 
-$string['cron:trashbin:title'] = 'eduvidual Trashbin';
-
 $string['dataprivacyorgerror:contacts'] = 'Contacts';
 $string['dataprivacyorgerror:description'] = '
     <p>
@@ -403,12 +401,10 @@ $string['manage:archive:confirmation:description'] = 'The following course(s) wi
 $string['manage:archive:restart'] = 'Restart';
 $string['manage:archive:source'] = 'Source';
 $string['manage:archive:source:title'] = 'Select courses';
-$string['manage:archive:source:description'] = 'You can select a bulk of courses to move them to another location, eg. archive all courses of a specific year to another course category. Alternatively you can move the courses to a system-wide trashbin (if set by admin).';
+$string['manage:archive:source:description'] = 'You can select a bulk of courses to move them to another location, eg. archive all courses of a specific year to another course category.';
 $string['manage:archive:target'] = 'Target';
 $string['manage:archive:target:title'] = 'Select target';
 $string['manage:archive:target:description'] = 'You have selected {$a->count} course(s).';
-$string['manage:archive:trashbin'] = 'Trashbin';
-$string['manage:archive:trashbin:description'] = 'Courses can be moved to a system-wide trashbin. As long as courses remain in the trashbin they can be recovered by any person who is enrolled as trainer in this course. Regularly the trashbin is emptied. Please ask your system administrator how often this happens!';
 $string['manage:authtype'] = 'Accounttype';
 $string['manage:bunch:all'] = 'All';
 $string['manage:bunch:allwithoutbunch'] = 'All users without cohort';
@@ -619,9 +615,6 @@ $string['teacher:createmodule:missing_capability'] = 'Missing capability to crea
 $string['teacher:createmodule:selectcourse'] = 'Select course';
 $string['teacher:createmodule:selectmodule'] = 'Select module';
 $string['teacher:createmodule:selectsection'] = 'Select section';
-
-$string['trashcategory:title'] = 'Category as Trashbin';
-$string['trashcategory:description'] = 'You may specify an optional category as global trashbin. Courses in trashbin will be removed daily!';
 
 $string['user:categories:adminshowall'] = 'All orgs';
 $string['user:categories:adminshowmine'] = 'Only my orgs';

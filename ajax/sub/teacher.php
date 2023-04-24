@@ -47,15 +47,6 @@ switch ($act) {
                 break;
                 case 'course_remove':
                     delete_course($course);
-                    $trashcategory = get_config('local_eduvidual', 'trashcategory');
-                    if ($trashcategory > 0) {
-                        $course->category = $trashcategory;
-                        $trashbinstring = '(' . get_string('manage:archive:trashbin', 'local_eduvidual') . ') ';
-                        $course->fullname = $trashbinstring . str_replace($trashbinstring, '', $course->fullname);
-                        update_course($course);
-                    } else {
-                        delete_course($course);
-                    }
                     $reply['status'] = 'ok';
                 break;
             }

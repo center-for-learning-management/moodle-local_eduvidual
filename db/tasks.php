@@ -42,13 +42,4 @@ $tasks = array(
         'dayofweek' => '*',
         'month' => '*',
     ),
-    array(
-        'classname' => 'local_eduvidual\task\local_eduvidual_trashbin',
-        'blocking' => 0,
-        'minute' => 0,
-        'hour' => 0,
-        'day' => '*',
-        'dayofweek' => '*',
-        'month' => '*',
-    )
 );
