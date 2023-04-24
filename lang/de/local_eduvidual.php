@@ -64,10 +64,8 @@ $string['accesscard:orgcode'] = 'Code oder Passphrase';
 $string['accesscard:orgcode_access'] = 'Zugang mittels Code (aktiv)';
 $string['accesscard:orgid'] = 'Die Schulkennzahl';
 
-$string['admin:backgrounds:filearealabel'] = '';
 $string['admin:backgrounds:title'] = 'Hintergrund';
 $string['admin:backgrounds:description'] = 'Sie können an dieser Stelle Hintergrundbilder hochladen, aus denen die Nutzer/innen auswählen können.';
-$string['admin:backgrounds:files:send'] = 'Bilder speichern';
 $string['admin:backgrounds_cards:title'] = 'Hintergrund für Zugangskarten';
 $string['admin:backgrounds_cards:description'] = 'Sie können hier Hintergrundbilder für Zugangskarten hochladen!';
 $string['admin:blockfooter:title'] = 'Fußzeile des eduvidual Blocks';
@@ -572,8 +570,8 @@ $string['settings:emailmustbeusername:description'] = 'Wenn diese Option aktivie
 
 $string['start_with_at'] = 'Starte mit einem  "@"-Zeichen';
 $string['supportarea'] = 'Supportbereich';
-$string['supportcourse:title'] = 'Supportkurs';
-$string['supportcourse:description'] = 'Sie können hier einen Supportkurs angeben, auf den in der Registrierungsmail verlinkt wird.';
+$string['admin:supportcourse:title'] = 'Supportkurs';
+$string['admin:supportcourse:description'] = 'Sie können hier einen Supportkurs angeben, auf den in der Registrierungsmail verlinkt wird.';
 
 $string['teacher:addfromcatalogue'] = 'Ressourcenkatalog';
 $string['teacher:course:enrol'] = 'Nutzer/innen aufnehmen';

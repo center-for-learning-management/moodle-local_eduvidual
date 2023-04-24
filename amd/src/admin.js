@@ -24,22 +24,6 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'loc
             });
         },
         /**
-        * Sets the categoryids where coursebasements reside
-        * IDs of Courses delimited by a ','
-        **/
-        coursebasements: function(sender) {
-            if (this.debug > 0) console.log('ADMIN.coursebasements()');
-            var params = {
-                module: 'admin', act: 'coursebasements',
-                courseempty: $('#local_eduvidual_admin_coursebasements_courseempty').val(),
-                courserestore: $('#local_eduvidual_admin_coursebasements_courserestore').val(),
-                coursetemplate: $('#local_eduvidual_admin_coursebasements_coursetemplate').val(),
-            };
-            require(['local_eduvidual/main'], function(MAIN) {
-                MAIN.connect(params, { signalItem: $(sender) });
-            });
-        },
-        /**
          * Helper for next- and previous-button in coursedeletelog.
          * @param act 'next' or 'previous'
          * @param uniqid the uniqid of the parent div.
@@ -52,23 +36,6 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'loc
 
             $('#' + uniqid + ' input[name=from]').val(to);
             $('#' + uniqid + ' form').submit();
-        },
-        /**
-        * Sets the default resourcekey for lti resources
-        **/
-        ltiresourcekey: function() {
-            if (this.debug > 0) console.log('ADMIN.ltiresourcekey()');
-            require(['local_eduvidual/main'], function(MAIN) {
-                MAIN.watchValue({
-                    target: '#local_eduvidual_admin_ltiresourcekey',
-                    run: function() {
-                        var o = this;
-                        require(['local_eduvidual/main'], function(MAIN) {
-                            MAIN.connect({ module: 'admin', act: 'ltiresourcekey', ltiresourcekey: $(o.target).val() }, { signalItem: $(o.target) });
-                        });
-                    }
-                });
-            });
         },
         /**
          * Triggers when the search-field in admin_orgs is used.
@@ -555,33 +522,6 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'loc
                 $('#' + uniqid + '-legend table.' + filterid + ' td.sum').html(sums[filterid]);
             });
         },
-        /**
-        * Sets the default basement fornewly created organisation-coursess
-        * @param basement ID of basement
-        **/
-        orgcoursebasement: function(basement) {
-            if (this.debug > 0) console.log('ADMIN.orgcoursebasement(basement)', basement);
-            require(['local_eduvidual/main'], function(MAIN) {
-                MAIN.connect({ module: 'admin', act: 'orgcoursebasement', basement: basement }, { signalItem: $('#local_eduvidual_admin_orgcoursebasement') });
-            });
-        },
-        /**
-        * Sets the protectedorgs
-        **/
-        protectedorgs: function() {
-            if (this.debug > 0) console.log('ADMIN.protectedorgs()');
-            require(['local_eduvidual/main'], function(MAIN) {
-                MAIN.watchValue({
-                    target: '#local_eduvidual_admin_protectedorgs',
-                    run: function() {
-                        var o = this;
-                        require(['local_eduvidual/main'], function(MAIN) {
-                            MAIN.connect({ module: 'admin', act: 'protectedorgs', protectedorgs: $(o.target).val() }, { signalItem: $(o.target) });
-                        });
-                    }
-                });
-            });
-        },
         questioncategories: function(uniqid, catid) {
             if (this.debug > 0) console.log('ADMIN.questioncategories(uniqid, catid)', uniqid, catid);
             var sender = $('.questioncategory-' + uniqid + '-' + catid);
@@ -594,34 +534,6 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'loc
             });
             require(['local_eduvidual/main'], function(MAIN) {
                 MAIN.connect({ module: 'admin', act: 'questioncategories', questioncategories: questioncategories, supportcourses: supportcourses }, { signalItem: $(sender) });
-            });
-        },
-        registrationcc: function() {
-            if (this.debug > 0) console.log('ADMIN.registrationcc()');
-            require(['local_eduvidual/main'], function(MAIN) {
-                MAIN.watchValue({
-                    target: '#local_eduvidual_admin_registrationcc',
-                    run: function() {
-                        var o = this;
-                        require(['local_eduvidual/main'], function(MAIN) {
-                            MAIN.connect({ module: 'admin', act: 'registrationcc', registrationcc: $(o.target).val() }, { signalItem: $(o.target) });
-                        });
-                    }
-                });
-            });
-        },
-        registrationsupport: function() {
-            if (this.debug > 0) console.log('ADMIN.registrationsupport()');
-            require(['local_eduvidual/main'], function(MAIN) {
-                MAIN.watchValue({
-                    target: '#local_eduvidual_admin_registrationsupport',
-                    run: function() {
-                        var o = this;
-                        require(['local_eduvidual/main'], function(MAIN) {
-                            MAIN.connect({ module: 'admin', act: 'registrationsupport', registrationsupport: $(o.target).val() }, { signalItem: $(o.target) });
-                        });
-                    }
-                });
             });
         },
         /**
@@ -639,7 +551,7 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'loc
             if (o.data.act == 'blockfooter') {
                 $('#local_eduvidual_footer').html(o.data.blockfooter);
             }
-            if (o.data.act == 'coursebasements') {
+            if (o.data.act == 'coursebasements') {p
                 // Refresh page to enforce a reload of basements in selectmenu
                 history.go(0);
             }
@@ -686,23 +598,6 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'loc
             var settostate = ($(sender).prop('checked')) ? 'block' : 'none';
             //console.log(' => Set visibility of .' + uniqid + '-type to ' + settostate + ' as checked is ' + $(sender).prop('checked'));
             el.css('display', settostate);
-        },
-        /**
-        * Sets the supportcourseurl
-        **/
-        supportcourseurl: function() {
-            if (this.debug > 0) console.log('ADMIN.supportcourseurl()');
-            require(['local_eduvidual/main'], function(MAIN) {
-                MAIN.watchValue({
-                    target: '#local_eduvidual_admin_supportcourseurl',
-                    run: function() {
-                        var o = this;
-                        require(['local_eduvidual/main'], function(MAIN) {
-                            MAIN.connect({ module: 'admin', act: 'supportcourseurl', supportcourseurl: $(o.target).val() }, { signalItem: $(o.target) });
-                        });
-                    }
-                });
-            });
         },
     };
 });

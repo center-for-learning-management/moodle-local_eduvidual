@@ -34,23 +34,6 @@ if (!is_siteadmin()) {
                 $reply['status'] = 'ok';
             }
         break;
-        case 'coursebasements':
-            $courseempty = optional_param('courseempty', 0, PARAM_INT);
-            $courserestore = optional_param('courserestore', 0, PARAM_INT);
-            $coursetemplate = optional_param('coursetemplate', 0, PARAM_INT);
-
-            set_config('coursebasementempty', $courseempty, 'local_eduvidual');
-            set_config('coursebasementrestore', $courserestore, 'local_eduvidual');
-            set_config('coursebasementtemplate', $coursetemplate, 'local_eduvidual');
-
-            $reply['status'] = 'ok';
-        break;
-        case 'ltiresourcekey':
-            $ltiresourcekey = optional_param('ltiresourcekey', '', PARAM_TEXT);
-            if (set_config('ltiresourcekey', $ltiresourcekey, 'local_eduvidual')) {
-                $reply['status'] = 'ok';
-            }
-        break;
         case 'manageorgs_search':
             $search = optional_param('search', '', PARAM_TEXT);
             if (!empty($search)) $search = '%' . $search . '%';
@@ -137,12 +120,6 @@ if (!is_siteadmin()) {
                 $reply['error'] = 'Invalid data';
             }
         break;
-        case 'protectedorgs':
-            $protectedorgs = optional_param('protectedorgs', '', PARAM_TEXT);
-            if (set_config('protectedorgs', $protectedorgs, 'local_eduvidual')) {
-                $reply['status'] = 'ok';
-            }
-        break;
         case 'modifylogin':
             $setto = optional_param('setto', 0, PARAM_INT);
             if (set_config('modifylogin', $setto, 'local_eduvidual')) {
@@ -163,16 +140,6 @@ if (!is_siteadmin()) {
             $navbar = optional_param('navbar', '', PARAM_TEXT);
             if (set_config('navbar', $navbar, 'local_eduvidual')) {
                 $reply['status'] = 'ok';
-            }
-        break;
-        case 'orgcoursebasement':
-            $basement = optional_param('basement', 0, PARAM_INT);
-
-            if (\local_eduvidual\lib_enrol::is_valid_course_basement('system', $basement)) {
-                set_config('orgcoursebasement', $basement, 'local_eduvidual');
-                $reply['status'] = 'ok';
-            } else {
-                $reply['error'] = 'invalid_orgcoursebasement';
             }
         break;
         case 'questioncategories':
@@ -207,24 +174,6 @@ if (!is_siteadmin()) {
         case 'requirecapability':
             $requirecapability = optional_param('requirecapability', 0, PARAM_INT);
             if (set_config('requirecapability', $requirecapability, 'local_eduvidual')) {
-                $reply['status'] = 'ok';
-            }
-        break;
-        case 'registrationcc':
-            $registrationcc = optional_param('registrationcc', '', PARAM_TEXT);
-            if (set_config('registrationcc', $registrationcc, 'local_eduvidual')) {
-                $reply['status'] = 'ok';
-            }
-        break;
-        case 'registrationsupport':
-            $registrationsupport = optional_param('registrationsupport', '', PARAM_TEXT);
-            if (set_config('registrationsupport', $registrationsupport, 'local_eduvidual')) {
-                $reply['status'] = 'ok';
-            }
-        break;
-        case 'supportcourseurl':
-            $supportcourseurl = optional_param('supportcourseurl', '', PARAM_TEXT);
-            if (set_config('supportcourseurl', $supportcourseurl, 'local_eduvidual')) {
                 $reply['status'] = 'ok';
             }
         break;

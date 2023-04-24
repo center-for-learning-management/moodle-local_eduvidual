@@ -64,10 +64,8 @@ $string['accesscard:orgcode'] = 'Code or passphrase';
 $string['accesscard:orgcode_access'] = 'Access by code (actively)';
 $string['accesscard:orgid'] = 'Organization-ID';
 
-$string['admin:backgrounds:filearealabel'] = '';
 $string['admin:backgrounds:title'] = 'Backgrounds';
 $string['admin:backgrounds:description'] = 'You can upload background images here that your users can select';
-$string['admin:backgrounds:files:send'] = 'Store images';
 $string['admin:backgrounds_cards:title'] = 'Backgrounds for Accesscards';
 $string['admin:backgrounds_cards:description'] = 'You can upload background images that are used as background on access cards';
 $string['admin:blockfooter:title'] = 'Footer of eduvidual Block';
@@ -594,8 +592,8 @@ $string['settings:emailmustbeusername:description'] = 'If this enabled local_edu
 
 $string['start_with_at'] = 'Start with an  "@"-sign';
 $string['supportarea'] = 'Supportarea';
-$string['supportcourse:title'] = 'Supportcourse';
-$string['supportcourse:description'] = 'You can specify a support course here that is linked to within the registration email.';
+$string['admin:supportcourse:title'] = 'Supportcourse';
+$string['admin:supportcourse:description'] = 'You can specify a support course here that is linked to within the registration email.';
 
 $string['task:coursetemplates:title'] = 'Creates a backup when a template course has been modified.';
 

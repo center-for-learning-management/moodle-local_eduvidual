@@ -176,4 +176,130 @@ if ($hassiteconfig) {
             $potentialroles_global
         ));
     }
+
+
+    $settings->add(new admin_setting_heading('local_eduvidual_coursebasements',
+        get_string('admin:coursebasements:title', 'local_eduvidual'),
+        get_string('admin:coursebasements:description', 'local_eduvidual'),
+    ));
+
+    $settings->add(new admin_setting_configtext(
+        'local_eduvidual/coursebasementempty',
+        get_string('admin:coursebasements:courseempty', 'local_eduvidual'),
+        '',
+        '',
+        PARAM_TEXT
+    ));
+
+    $settings->add(new admin_setting_configtext(
+        'local_eduvidual/coursebasementrestore',
+        get_string('admin:coursebasements:courserestore', 'local_eduvidual'),
+        '',
+        '',
+        PARAM_TEXT
+    ));
+
+    $settings->add(new admin_setting_configtext(
+        'local_eduvidual/coursebasementtemplate',
+        get_string('admin:coursebasements:coursetemplate', 'local_eduvidual'),
+        '',
+        '',
+        PARAM_TEXT
+    ));
+
+    $settings->add(new admin_setting_heading('local_eduvidual_course_settings',
+        get_string('admin:coursestuff:title', 'local_eduvidual'),
+        '',
+    ));
+
+    $orgcoursebasements = \local_eduvidual\lib_enrol::get_course_basements('system');
+    $orgcoursebasements_options = [];
+
+    // make a one-dimensional array, two-dimenisonal options-array does not work in moodle 4.1
+    foreach ($orgcoursebasements as $key => $basements) {
+        foreach ($basements as $basement) {
+            $orgcoursebasements_options[$basement->id] = "{$key} => {$basement->fullname}";
+        }
+    }
+
+    $settings->add(new admin_setting_configselect(
+        'local_eduvidual/orgcoursebasement',
+        get_string('admin:orgcoursebasement:title', 'local_eduvidual'),
+        get_string('admin:orgcoursebasement:description', 'local_eduvidual'),
+        0,
+        $orgcoursebasements_options
+    ));
+
+    $settings->add(new admin_setting_configtext(
+        'local_eduvidual/supportcourseurl',
+        get_string('admin:supportcourse:title', 'local_eduvidual'),
+        get_string('admin:supportcourse:description', 'local_eduvidual'),
+        '',
+        PARAM_TEXT
+    ));
+
+    $settings->add(new admin_setting_configtext(
+        'local_eduvidual/ltiresourcekey',
+        get_string('admin:ltiresourcekey:title', 'local_eduvidual'),
+        get_string('admin:ltiresourcekey:description', 'local_eduvidual'),
+        '',
+        PARAM_TEXT
+    ));
+
+    $settings->add(new admin_setting_configtext(
+        'local_eduvidual/protectedorgs',
+        get_string('admin:protectedorgs:title', 'local_eduvidual'),
+        get_string('admin:protectedorgs:description', 'local_eduvidual'),
+        '',
+        PARAM_TEXT
+    ));
+
+    $settings->add(new admin_setting_configtext(
+        'local_eduvidual/registrationcc',
+        get_string('admin:registrationcc:title', 'local_eduvidual'),
+        get_string('admin:registrationcc:description', 'local_eduvidual'),
+        '',
+        PARAM_TEXT
+    ));
+
+    $settings->add(new admin_setting_configtext(
+        'local_eduvidual/registrationsupport',
+        get_string('admin:registrationsupport:title', 'local_eduvidual'),
+        get_string('admin:registrationsupport:description', 'local_eduvidual'),
+        '',
+        PARAM_TEXT
+    ));
+
+    $settings->add(new admin_setting_heading('local_eduvidual_backgrounds_header',
+        get_string('admin:backgrounds:title', 'local_eduvidual'),
+        '',
+    ));
+
+    $settings->add(new admin_setting_configstoredfile(
+        'local_eduvidual/backgrounds',
+        get_string('admin:backgrounds:title', 'local_eduvidual'),
+        get_string('admin:backgrounds:description', 'local_eduvidual'),
+        'backgrounds',
+        0,
+        array('subdirs' => 0, 'maxbytes' => 1024 * 1024, 'maxfiles' => 500),
+    ));
+
+    $settings->add(new admin_setting_configstoredfile(
+        'local_eduvidual/backgrounds_cards',
+        get_string('admin:backgrounds_cards:title', 'local_eduvidual'),
+        get_string('admin:backgrounds_cards:description', 'local_eduvidual'),
+        'backgrounds_cards',
+        0,
+        array('subdirs' => 0, 'maxbytes' => 1024 * 1024, 'maxfiles' => 500),
+    ));
+
+    $settings->add(new admin_setting_configstoredfile(
+        'local_eduvidual/globalfiles',
+        get_string('admin:globalfiles:title', 'local_eduvidual'),
+        get_string('admin:globalfiles:description', 'local_eduvidual'),
+        'globalfiles',
+        0,
+        array('subdirs' => 99, 'maxbytes' => 1024 * 1024, 'maxfiles' => 500),
+    ));
+
 }

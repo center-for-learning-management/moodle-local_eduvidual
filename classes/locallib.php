@@ -148,10 +148,8 @@ class locallib {
         $actions = array();
         switch($module) {
             case 'admin':
-                $actions['backgrounds'] = 'admin:backgrounds:title';
                 //$actions['blockfooter'] = 'admin:blockfooter:title';
                 $actions['coursedelete'] = 'admin:coursedelete:title';
-                $actions['coursestuff'] = 'admin:coursestuff:title';
                 $actions['questionbank'] = 'admin:questioncategories:title';
                 $actions['map'] = 'admin:map:title';
                 $actions['orgs'] = 'admin:orgs:title';
