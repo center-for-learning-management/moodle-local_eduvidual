@@ -490,7 +490,6 @@ $string['nouserstoshow'] = 'Keine Nutzer/innen gefunden mit Suche nach {$a->sear
 $string['oauth2:nosuchissuer'] = 'Kein oAuth Service für {$a->issuer} konfiguriert!';
 $string['or'] = 'oder';
 $string['orgmenu'] = 'Schulspezifische Links';
-$string['orgrole:role_already_in_use'] = 'Rolle wird bereits benutzt!';
 $string['orgsizes:title'] = 'Dateisystemgröße';
 
 $string['login:direct'] = 'melden Sie sich direkt an:';

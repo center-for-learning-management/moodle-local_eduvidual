@@ -511,7 +511,6 @@ $string['nouserstoshow'] = 'No users found for search {$a->search}';
 $string['oauth2:nosuchissuer'] = 'No oAuth service for {$a->issuer} was configured!';
 $string['or'] = 'or';
 $string['orgmenu'] = 'custom links of my organizations';
-$string['orgrole:role_already_in_use'] = 'Role already in use';
 $string['orgsizes:title'] = 'Filesystem Size';
 
 $string['login:direct'] = 'use the direct login';

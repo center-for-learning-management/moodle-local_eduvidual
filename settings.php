@@ -18,12 +18,12 @@
  * @package    local_eduvidual
  * @copyright  2019 Digital Education Society (http://www.dibig.at)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
-*/
+ */
 
 defined('MOODLE_INTERNAL') || die;
 
 if ($hassiteconfig) {
-    $settings = new admin_settingpage( 'local_eduvidual_settings', ''); // We ommit the label, so that it does not show the heading.
+    $settings = new admin_settingpage('local_eduvidual_settings', ''); // We ommit the label, so that it does not show the heading.
     $ADMIN->add('localplugins', new admin_category('local_eduvidual', get_string('pluginname', 'local_eduvidual')));
     $ADMIN->add('local_eduvidual', $settings);
     if (optional_param('category', '', PARAM_TEXT) == 'local_eduvidual') {
@@ -31,7 +31,7 @@ if ($hassiteconfig) {
     }
     $actions = \local_eduvidual\locallib::get_actions('admin');
     $links = "<div class=\"grid-eq-3\">";
-    foreach($actions AS $action => $name) {
+    foreach ($actions as $action => $name) {
         $links .= '<a class="btn" href="' . $CFG->wwwroot . '/local/eduvidual/pages/admin.php?act=' . $action . '">' . get_string($name, 'local_eduvidual') . '</a>';
     }
     $links .= "</div>";
@@ -102,4 +102,78 @@ if ($hassiteconfig) {
     );
 
     \local_eduvidual\educloud\settings::admin_settings_page($settings);
+
+    $map_roles = function($roles) {
+        foreach ($roles as &$role) {
+            $role = $role->name ?: $role->shortname;
+        }
+        return $roles;
+    };
+
+    $potentialroles_course = $map_roles($DB->get_records_sql('SELECT r.* FROM {role} AS r, {role_context_levels} AS rcl WHERE r.id=rcl.roleid  AND rcl.contextlevel = ? ORDER BY r.name ASC', array(CONTEXT_COURSE)));
+    $potentialroles_org = $map_roles($DB->get_records_sql('SELECT r.* FROM {role} AS r, {role_context_levels} AS rcl WHERE r.id=rcl.roleid  AND rcl.contextlevel = ?  ORDER BY name ASC', array(CONTEXT_COURSECAT)));
+    $potentialroles_global = $map_roles($DB->get_records_sql('SELECT r.* FROM {role} AS r, {role_context_levels} AS rcl WHERE r.id=rcl.roleid  AND rcl.contextlevel = ?  ORDER BY name ASC', array(CONTEXT_SYSTEM)));
+
+    $rolestoset_course = array(
+        array('roleidentifier' => 'parent'),
+        array('roleidentifier' => 'student'),
+        array('roleidentifier' => 'teacher'),
+    );
+    $rolestoset_org = array(
+        array('roleidentifier' => 'manager'),
+        array('roleidentifier' => 'parent'),
+        array('roleidentifier' => 'student'),
+        array('roleidentifier' => 'teacher'),
+    );
+    $rolestoset_global = array(
+        array('roleidentifier' => 'manager'),
+        array('roleidentifier' => 'parent'),
+        array('roleidentifier' => 'student'),
+        array('roleidentifier' => 'teacher'),
+    );
+
+    $settings->add(new admin_setting_heading('local_eduvidual_defaultroles_course',
+        get_string('defaultroles:course:title', 'local_eduvidual'),
+        get_string('defaultroles:course:description', 'local_eduvidual'),
+    ));
+
+    foreach ($rolestoset_course as $roletoset) {
+        $settings->add(new \admin_setting_configselect(
+            'local_eduvidual/defaultrole' . $roletoset['roleidentifier'],
+            get_string('defaultroles:course:' . $roletoset['roleidentifier'], 'local_eduvidual'),
+            '',
+            0,
+            $potentialroles_course
+        ));
+    }
+
+    $settings->add(new admin_setting_heading('local_eduvidual_defaultroles_orgcategory',
+        get_string('defaultroles:orgcategory:title', 'local_eduvidual'),
+        get_string('defaultroles:orgcategory:description', 'local_eduvidual'),
+    ));
+
+    foreach ($rolestoset_org as $roletoset) {
+        $settings->add(new \admin_setting_configselect(
+            'local_eduvidual/defaultorgrole' . $roletoset['roleidentifier'],
+            get_string('defaultroles:orgcategory:' . $roletoset['roleidentifier'], 'local_eduvidual'),
+            '',
+            0,
+            $potentialroles_org
+        ));
+    }
+
+    $settings->add(new admin_setting_heading('local_eduvidual_defaultroles_global',
+        get_string('defaultroles:global:title', 'local_eduvidual'),
+        get_string('defaultroles:global:description', 'local_eduvidual'),
+    ));
+
+    foreach ($rolestoset_global as $roletoset) {
+        $settings->add(new \admin_setting_configselect(
+            'local_eduvidual/defaultglobalrole' . $roletoset['roleidentifier'],
+            get_string('defaultroles:global:' . $roletoset['roleidentifier'], 'local_eduvidual'),
+            '',
+            0,
+            $potentialroles_global
+        ));
+    }
 }

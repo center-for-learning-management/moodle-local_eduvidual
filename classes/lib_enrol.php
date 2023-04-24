@@ -287,6 +287,10 @@ class lib_enrol {
         if ($type == 'system' || $type == 'all') {
             $coursebasements = explode(",", get_config('local_eduvidual', 'coursebasements'));
             foreach($coursebasements AS $cb) {
+                if (!$cb) {
+                    // hack für local-dev von daniel: das setting "coursebasements" existiert mehr?!?
+                    $cb = 1;
+                }
                 $category = $DB->get_record('course_categories', array('id' => $cb));
                 $courses[$category->name] = array();
                 $cs = $DB->get_records_sql('SELECT * FROM {course} WHERE category=? AND visible=1 ORDER BY fullname ASC', array($cb));

@@ -60,6 +60,8 @@ $subpages = array_keys($actions);
 $includefile = $CFG->dirroot . '/local/eduvidual/pages/sub/admin_' . $act . '.php';
 if (in_array($act, $subpages) && file_exists($includefile)) {
     include($includefile);
+} else {
+    echo "action '{$act}' not found";
 }
 
 echo $OUTPUT->footer();

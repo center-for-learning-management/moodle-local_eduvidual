@@ -54,17 +54,6 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'loc
             $('#' + uniqid + ' form').submit();
         },
         /**
-        * Sets the default role of teachers, students and parents
-        * @param type 'teacher', 'student' or 'parent'
-        * @param role roleid to set
-        **/
-        defaultrole: function(type, role) {
-            if (this.debug > 0) console.log('ADMIN.defaultrole(type, role)', type, role);
-            require(['local_eduvidual/main'], function(MAIN) {
-                MAIN.connect({ module: 'admin', act: 'defaultrole', type: type, role: role }, { signalItem: $('#local_eduvidual_admin_defaultrole' + type) });
-            });
-        },
-        /**
         * Sets the default resourcekey for lti resources
         **/
         ltiresourcekey: function() {
@@ -169,18 +158,6 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'loc
                         });
                     }
                 });
-            });
-        },
-        orgrole: function(type, role) {
-            if (this.debug > 0) console.log('ADMIN.orgrole(type, role)', type, role);
-            require(['local_eduvidual/main'], function(MAIN) {
-                MAIN.connect({ module: 'admin', act: 'orgrole', type: type, role: role }, { signalItem: $('#local_eduvidual_admin_orgrole' + type) });
-            });
-        },
-        globalrole: function(type, role) {
-            if (this.debug > 0) console.log('ADMIN.globalrole(type, role)', type, role);
-            require(['local_eduvidual/main'], function(MAIN) {
-                MAIN.connect({ module: 'admin', act: 'globalrole', type: type, role: role }, { signalItem: $('#local_eduvidual_admin_globalrole' + type) });
             });
         },
         /**

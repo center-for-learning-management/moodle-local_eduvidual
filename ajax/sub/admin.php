@@ -45,17 +45,6 @@ if (!is_siteadmin()) {
 
             $reply['status'] = 'ok';
         break;
-        case 'defaultrole':
-            $role = optional_param('role', 0, PARAM_INT);
-            $type = optional_param('type', '', PARAM_TEXT);
-            $types = array('parent', 'student', 'teacher');
-            if (in_array($type, $types)) {
-                set_config('defaultrole' . $type, $role, 'local_eduvidual');
-                $reply['status'] = 'ok';
-            } else {
-                $reply['error'] = 'invalid_type';
-            }
-        break;
         case 'ltiresourcekey':
             $ltiresourcekey = optional_param('ltiresourcekey', '', PARAM_TEXT);
             if (set_config('ltiresourcekey', $ltiresourcekey, 'local_eduvidual')) {
@@ -152,121 +141,6 @@ if (!is_siteadmin()) {
             $protectedorgs = optional_param('protectedorgs', '', PARAM_TEXT);
             if (set_config('protectedorgs', $protectedorgs, 'local_eduvidual')) {
                 $reply['status'] = 'ok';
-            }
-        break;
-        case 'orgrole':
-            $role = optional_param('role', 0, PARAM_INT);
-            $type = optional_param('type', '', PARAM_TEXT);
-            $types = array('manager', 'teacher', 'student', 'parent');
-            // Set to 0 if you require at least one!
-            if (in_array($type, $types)) {
-                // We test if the new role is already used by another role.
-                $roleinuse = false;
-                foreach ($types AS $testtype) {
-                    if ($testtype == $type) continue;
-                    if (get_config('local_eduvidual', 'defaultorgrole' . $testtype) == $role) {
-                        $roleinuse = true;
-                    };
-                }
-                if (!$roleinuse) {
-                    $previousrole = get_config('local_eduvidual', 'defaultorgrole' . $type);
-                    //$reply['previousrole'] = $previousrole;
-                    if (!empty($previousrole) && $previousrole != $role) {
-                        // We remove the previously set roles.
-                        //$reply['unassigning'] = array();
-                        $members = $DB->get_records('local_eduvidual_orgid_userid', array('role' => ucfirst($type)), 'orgid ASC', '*');
-                        $orgid = 0; $contextid = 0;
-                        foreach ($members AS $member) {
-                            if ($member->orgid != $orgid) {
-                                $org = $DB->get_record('local_eduvidual_org', array('orgid' => $member->orgid));
-                                if (empty($org->categoryid)) continue; // Skip this org - no category.
-                                $context = \context_coursecat::instance($org->categoryid, IGNORE_MISSING);
-                                $contextid = $context->id;
-                            }
-                            if (empty($contextid)) continue;
-                            //$reply['unassigning'][] = $member->userid . ' / ' . $contextid;
-                            role_unassign($previousrole, $member->userid, $contextid);
-                        }
-                    }
-                    if (!empty($role)) {
-                        set_config('defaultorgrole' . $type, $role, 'local_eduvidual');
-                        //$reply['assigning'] = array();
-                        $members = $DB->get_records('local_eduvidual_orgid_userid', array('role' => ucfirst($type)), 'orgid ASC', '*');
-                        $orgid = 0; $contextid = 0;
-                        foreach ($members AS $member) {
-                            if ($member->orgid != $orgid) {
-                                $org = $DB->get_record('local_eduvidual_org', array('orgid' => $member->orgid));
-                                if (empty($org->categoryid)) continue; // Skip this org - no category.
-                                $context = \context_coursecat::instance($org->categoryid, IGNORE_MISSING);
-                                $contextid = $context->id;
-                            }
-                            if (empty($contextid)) continue;
-                            // Check if this user still exists.
-                            $user = \core_user::get_user($member->userid, 'id,deleted', IGNORE_MISSING);
-                            if (empty($user->id) || $user->deleted) continue;
-                            //$reply['assigning'][] = $member->userid . ' / ' . $contextid;
-                            role_assign($role, $member->userid, $contextid);
-                        }
-                    } else {
-                        // How to remove a plugin-config?
-                        //remove_config('defaultorgrole' . $type, 'local_eduvidual');
-                    }
-                    $reply['status'] = 'ok';
-                } else {
-                    $reply['error'] = get_string('orgrole:role_already_in_use', 'local_eduvidual');
-                }
-
-
-            } else {
-                $reply['error'] = 'config_not_set';
-            }
-        break;
-        case 'globalrole':
-            $role = optional_param('role', 0, PARAM_INT);
-            $type = optional_param('type', '', PARAM_TEXT);
-            $types = array('manager', 'teacher', 'student', 'parent');
-            // Set to 0 if you require at least one!
-            if (in_array($type, $types)) {
-                // We test if the new role is already used by another role.
-                $roleinuse = false;
-                foreach ($types AS $testtype) {
-                    if ($testtype == $type) continue;
-                    if (get_config('local_eduvidual', 'defaultglobalrole' . $testtype) == $role) {
-                        $roleinuse = true;
-                    };
-                }
-                if (!$roleinuse) {
-                    $context = \context_system::instance();
-                    $previousrole = get_config('local_eduvidual', 'defaultglobalrole' . $type);
-                    //$reply['previousrole'] = $previousrole;
-                    if (!empty($previousrole) && $previousrole != $role) {
-                        // We remove the previously set roles.
-                        $assignments = $DB->get_records('role_assignments', array('roleid' => $previousrole, 'contextid' => $context->id));
-                        foreach ($assignments AS $assignment) {
-                            role_unassign($previousrole, $assignment->userid, $context->id);
-                        }
-                    }
-                    if (!empty($role)) {
-                        set_config('defaultglobalrole' . $type, $role, 'local_eduvidual');
-                        //$reply['assigning'] = array();
-                        $members = $DB->get_records('local_eduvidual_orgid_userid', array('role' => ucfirst($type)));
-                        foreach ($members AS $member) {
-                            // Check if this user still exists.
-                            $user = \core_user::get_user($member->userid, 'id,deleted', IGNORE_MISSING);
-                            if (empty($user->id) || $user->deleted) continue;
-                            //$reply['assigning'][] = $member->userid . ' / ' . $contextid;
-                            role_assign($role, $member->userid, $context->id);
-                        }
-                    } else {
-                        // How to remove a plugin-config?
-                        //remove_config('defaultglobalrole' . $type, 'local_eduvidual');
-                    }
-                    $reply['status'] = 'ok';
-                } else {
-                    $reply['error'] = get_string('defaultroles:global:inuse', 'local_eduvidual');
-                }
-            } else {
-                $reply['error'] = 'config_not_set';
             }
         break;
         case 'modifylogin':

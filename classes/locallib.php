@@ -152,7 +152,6 @@ class locallib {
                 //$actions['blockfooter'] = 'admin:blockfooter:title';
                 $actions['coursedelete'] = 'admin:coursedelete:title';
                 $actions['coursestuff'] = 'admin:coursestuff:title';
-                $actions['defaultroles'] = 'admin:defaultroles:title';
                 $actions['questionbank'] = 'admin:questioncategories:title';
                 $actions['map'] = 'admin:map:title';
                 $actions['orgs'] = 'admin:orgs:title';
@@ -634,6 +633,9 @@ class locallib {
         global $PAGE;
         if (empty($act)) {
             $act = optional_param('act', '', PARAM_TEXT);
+        }
+        if (empty($actions[$act])) {
+            $act = key($actions);
         }
         $orgid = optional_param('orgid', '', PARAM_TEXT);
         $action = get_string('none');
