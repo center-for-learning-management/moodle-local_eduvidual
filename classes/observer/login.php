@@ -36,6 +36,11 @@ class login {
         $user = $DB->get_record('user', array('id' => $data->userid));
         require_once($CFG->dirroot . '/user/profile/lib.php');
         profile_load_data($user);
+
+        // hack for https://github.com/center-for-learning-management/moodle-local_eduvidual/issues/176
+        // Error: Class "local_eduvidual\locallib" not found
+        require_once __DIR__.'/../locallib.php';
+
         \local_eduvidual\locallib::get_user_secret($user->id);
         //error_log(json_encode($user, JSON_NUMERIC_CHECK));
 
