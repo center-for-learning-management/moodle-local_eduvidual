@@ -156,7 +156,7 @@ function local_eduvidual_before_standard_html_head() {
     $PAGE->requires->js('/local/eduvidual/js/ajax_observer.js');
 
     // Main styles for eduvidual.
-    if (!\local_eduvidual\locallib::is_4()) {
+    if (!\local_eduvidual\locallib::is_moodle_4()) {
         $PAGE->requires->css('/local/eduvidual/style/main.css');
         $PAGE->requires->css('/local/eduvidual/style/spinner.css');
         //$PAGE->requires->css('/local/eduvidual/style/ui.css');

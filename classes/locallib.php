@@ -495,7 +495,7 @@ class locallib {
      * @param getbuildnumber if true returns the build number, else returns boolean.
      * @return boolean in case of getbuildnumber = false, int in case of getbuildnumber = true.
      */
-    public static function is_4($getbuildnumber = false) {
+    public static function is_moodle_4($getbuildnumber = false) {
         global $CFG;
         if ($getbuildnumber) return $CFG->version;
         else return ($CFG->version >= 2021110600);
