@@ -225,6 +225,23 @@ function local_eduvidual_before_standard_html_head() {
     if (!empty($org->banner)) {
         $inject_styles[] = "body #page-header .card { background-image: url(" . $CFG->wwwroot . $org->banner . ") !important; }";
     }
+
+    $fs = get_file_storage();
+    $logo = current($fs->get_area_files(1, 'local_eduvidual', 'orglogo', $org->orgid, 'itemid', false));
+    if ($logo) {
+        $inject_styles[] = "
+            .site-name.has-logo img.site-logo {
+                display: none;
+            }
+            .site-name.has-logo {
+                width: 35px;
+                height: 35px;
+                background-image: url({$CFG->wwwroot}/pluginfile.php/1/local_eduvidual/orglogo/{$org->orgid}/{$logo->get_filename()});
+                background-size: 100% 100%;
+            }
+        ";
+    }
+
     $inject_styles[] = "</style>";
 
     // Disabled, needs performance tests.
@@ -425,7 +442,7 @@ function local_eduvidual_pre_user_delete() {
  * @return bool false if the file not found, just send the file otherwise and do not return anything
  */
 function local_eduvidual_pluginfile($course, $cm, $context, $filearea, $args, $forcedownload, array $options=array()) {
-    $areas = array('backgrounds', 'backgrounds_cards', 'globalfiles', 'orgfiles', 'orgbanner', 'module');
+    $areas = array('backgrounds', 'backgrounds_cards', 'globalfiles', 'orgfiles', 'orglogo', 'orgbanner', 'module');
     if (in_array($filearea, $areas)) {
         $forcedownload = false;
         $options['embed'] = true;

@@ -18,7 +18,7 @@
 {{#js}}
 require(['jquery'], function($) {
     var html = [
-        '<li class="dropdown nav-item local-eduvidual-orgmenu">',
+        '<div class="dropdown nav-item local-eduvidual-orgmenu">',
         '    <a class="dropdown-toggle nav-link" id="drop-down-{{uniqid}}"',
         '        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"',
         '        href="#" title="{{#str}} orgmenu, local_eduvidual {{/str}}"',
@@ -44,9 +44,9 @@ require(['jquery'], function($) {
                     {{/entries}}
                 {{/orgmenus}}
         '    </div>',
-        '</li>',
+        '</div>',
     ].join("\n");
 
-    $(html).insertBefore($('#page-wrapper>.navbar div.usermenu').closest('li'));
+    $(html).insertBefore('.usermenu-container');
 });
 {{/js}}
