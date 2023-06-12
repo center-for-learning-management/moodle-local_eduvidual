@@ -105,7 +105,6 @@ if (!is_siteadmin()) {
         set_config('ltiresourcekey', $randomkey, 'local_eduvidual');
 
         set_config('blockfooter', '', 'local_eduvidual');
-        set_config('modifylogin', 1, 'local_eduvidual');
         set_config('registrationcc', "support+$randomkey@lernmanagement.at", 'local_eduvidual');
         set_config('registrationsupport', "support+$randomkey@lernmanagement.at", 'local_eduvidual');
 

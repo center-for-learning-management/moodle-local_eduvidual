@@ -128,17 +128,6 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'loc
             });
         },
         /**
-        * Sets the default role of teachers and students
-        * @param type 'teacher' or 'student'
-        * @param role roleid to set
-        **/
-        modifylogin: function(setto) {
-            if (this.debug > 0) console.log('ADMIN.modifylogin(setto)', setto);
-            require(['local_eduvidual/main'], function(MAIN) {
-                MAIN.connect({ module: 'admin', act: 'modifylogin', setto: setto }, { signalItem: $('#local_eduvidual_admin_modifylogin') });
-            });
-        },
-        /**
          * Load orgs in a specific rectangle.
          * @param uniqid of mustache used.
          * @param lon1 longitude 1 of rectangle.

@@ -120,12 +120,6 @@ if (!is_siteadmin()) {
                 $reply['error'] = 'Invalid data';
             }
         break;
-        case 'modifylogin':
-            $setto = optional_param('setto', 0, PARAM_INT);
-            if (set_config('modifylogin', $setto, 'local_eduvidual')) {
-                $reply['status'] = 'ok';
-            }
-        break;
         case 'navbar':
             $navbar = optional_param('navbar', '', PARAM_TEXT);
             if (set_config('navbar', $navbar, 'local_eduvidual')) {
