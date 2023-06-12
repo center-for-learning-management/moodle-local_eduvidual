@@ -138,16 +138,6 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'loc
                 MAIN.connect({ module: 'admin', act: 'modifylogin', setto: setto }, { signalItem: $('#local_eduvidual_admin_modifylogin') });
             });
         },
-        moolevels: function(sender) {
-            if (this.debug > 0) console.log('ADMIN.moolevels()');
-            var moolevels = new Array();
-            $.each($("input[name='moolevels[]']:checked"), function() {
-                moolevels.push($(this).val());
-            });
-            require(['local_eduvidual/main'], function(MAIN) {
-                MAIN.connect({ module: 'admin', act: 'moolevels', moolevels: moolevels }, { signalItem: $(sender).parent() });
-            });
-        },
         /**
          * Load orgs in a specific rectangle.
          * @param uniqid of mustache used.

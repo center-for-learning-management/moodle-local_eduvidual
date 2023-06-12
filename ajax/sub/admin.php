@@ -126,16 +126,6 @@ if (!is_siteadmin()) {
                 $reply['status'] = 'ok';
             }
         break;
-        case 'moolevels':
-            $moolevels = optional_param_array('moolevels', NULL, PARAM_INT);
-            // Set to 0 if you require at least one!
-            if (count($moolevels) > -1) {
-                set_config('moolevels', implode(",", $moolevels), 'local_eduvidual');
-                $reply['status'] = 'ok';
-            } else {
-                $reply['error'] = 'config_not_set';
-            }
-        break;
         case 'navbar':
             $navbar = optional_param('navbar', '', PARAM_TEXT);
             if (set_config('navbar', $navbar, 'local_eduvidual')) {
