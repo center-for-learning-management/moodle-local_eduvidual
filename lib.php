@@ -227,19 +227,22 @@ function local_eduvidual_before_standard_html_head() {
     }
 
     $fs = get_file_storage();
-    $logo = current($fs->get_area_files(1, 'local_eduvidual', 'orglogo', $org->orgid, 'itemid', false));
-    if ($logo) {
-        $inject_styles[] = "
-            .site-name.has-logo img.site-logo {
-                display: none;
-            }
-            .site-name.has-logo {
-                width: 35px;
-                height: 35px;
-                background-image: url({$CFG->wwwroot}/pluginfile.php/1/local_eduvidual/orglogo/{$org->orgid}/{$logo->get_filename()});
-                background-size: 100% 100%;
-            }
-        ";
+
+    if ($org) {
+        $logo = current($fs->get_area_files(1, 'local_eduvidual', 'orglogo', $org->orgid, 'itemid', false));
+        if ($logo) {
+            $inject_styles[] = "
+                .site-name.has-logo img.site-logo {
+                    display: none;
+                }
+                .site-name.has-logo {
+                    width: 35px;
+                    height: 35px;
+                    background-image: url({$CFG->wwwroot}/pluginfile.php/1/local_eduvidual/orglogo/{$org->orgid}/{$logo->get_filename()});
+                    background-size: 100% 100%;
+                }
+            ";
+        }
     }
 
     $inject_styles[] = "</style>";
