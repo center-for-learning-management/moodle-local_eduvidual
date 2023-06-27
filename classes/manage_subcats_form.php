@@ -26,10 +26,11 @@ defined('MOODLE_INTERNAL') || die;
 require_once($CFG->libdir . "/formslib.php");
 
 class local_eduvidual_manage_subcats_form extends moodleform {
-    var $maxbytes = 1024*1024;
+    var $maxbytes = 1024 * 1024;
     var $areamaxbytes = 10485760;
     var $maxfiles = 1;
     var $subdirs = 0;
+
     function definition() {
         global $DB, $org;
         $mform = $this->_form;
@@ -74,6 +75,7 @@ class local_eduvidual_manage_subcats_form extends moodleform {
 
         $this->add_action_buttons();
     }
+
     //Custom validation should be added here
     function validation($data, $files) {
         return array();

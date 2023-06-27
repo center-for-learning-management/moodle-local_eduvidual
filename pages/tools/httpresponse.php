@@ -98,14 +98,14 @@ $http_status_codes = array(
     510 => "Not Extended",
     511 => "Network Authentication Required",
     598 => "Network read timeout error",
-    599 => "Network connect timeout error"
+    599 => "Network connect timeout error",
 );
 
 $code = $_GET['code'];
 
 if (!empty($http_status_codes[$code])) {
-    header($_SERVER["SERVER_PROTOCOL"] . " " . $code . " " .  $http_status_codes[$code]);
-    echo $_SERVER["SERVER_PROTOCOL"] . " " . $code . " " .  $http_status_codes[$code];
+    header($_SERVER["SERVER_PROTOCOL"] . " " . $code . " " . $http_status_codes[$code]);
+    echo $_SERVER["SERVER_PROTOCOL"] . " " . $code . " " . $http_status_codes[$code];
 } else {
     echo "Invalid status code requested. Valid codes are:<br /><ul>\n";
     foreach ($http_status_codes as $code => $status) {

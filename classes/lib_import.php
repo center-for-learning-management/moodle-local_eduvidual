@@ -20,7 +20,7 @@
  *             2020 onwards Center for Learning Management (http://www.lernmanagement.at)
  * @author     Robert Schrenk
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
-**/
+ **/
 
 defined('MOODLE_INTERNAL') || die;
 
@@ -33,29 +33,33 @@ class local_eduvidual_lib_import {
     var $fields = array();
     var $rowobjects = array();
     var $compiler;
+
     /**
      * Set the valid fields we use for import
-    **/
+     **/
     public function set_fields($fields) {
         $this->fields = $fields;
         $this->rowobjects = array();
     }
+
     public function set_compiler($compiler) {
         $this->compiler = $compiler;
     }
+
     /**
      * Load all modules that have been sent via post
-    **/
+     **/
     public function load_post() {
         $this->fields = (array)json_decode(optional_param('fields', '{}', PARAM_TEXT));
         $this->rowobjects = (array)json_decode(optional_param('rowobjects', '{}', PARAM_TEXT));
-        for($a = 0; $a < count($this->rowobjects); $a++) {
+        for ($a = 0; $a < count($this->rowobjects); $a++) {
             $this->rowobjects[$a] = $this->compile($this->rowobjects[$a]);
         }
     }
+
     /**
      * Load modules from an uploaded spreadsheet
-    **/
+     **/
     public function load_file($filepath) {
         if (!is_array($this->fields) || count($this->fields) == 0) {
             return;
@@ -86,15 +90,16 @@ class local_eduvidual_lib_import {
         $row = 2;
         $stop = false;
 
-        while(empty($stop)) {
+        while (empty($stop)) {
             // Create object from row-data.
             $foundany = false;
             $obj = new stdClass();
-            for($col = 1; $col < $maxcols; $col++) {
+            for ($col = 1; $col < $maxcols; $col++) {
                 if (!empty($colids[$col])) {
                     // Concat with empty string to force string conversion.
                     $obj->{$colids[$col]} = "" . $sheet->getCellByColumnAndRow($col, $row, false);
-                    if (!empty($obj->{$colids[$col]})) $foundany = true;
+                    if (!empty($obj->{$colids[$col]}))
+                        $foundany = true;
                 }
             }
             if (!empty($obj->role)) {
@@ -107,50 +112,54 @@ class local_eduvidual_lib_import {
             }
         }
     }
+
     /**
      * Print all rows in hidden textareas to be used in a form.
      * Returns text-areas as array to be used in a form.
-    **/
+     **/
     public function print_hidden_form() {
         $form = array();
         $form[] = '<textarea style="display: none;" name="fields">' . json_encode($this->fields, JSON_NUMERIC_CHECK) . '</textarea>';
         $form[] = '<textarea style="display: none;" name="rowobjects">' . json_encode($this->rowobjects, JSON_NUMERIC_CHECK) . '</textarea>';
         return "\t\t" . implode("\n\t\t", $form);
     }
+
     /**
      * Returns text-areas as array to be used in a form.
-    **/
+     **/
     public function print_hidden_array() {
         return array(
             'fields' => json_encode($this->fields, JSON_NUMERIC_CHECK),
             'rowobjects' => json_encode($this->rowobjects, JSON_NUMERIC_CHECK),
         );
     }
+
     /**
      * If there is a compiler we use it to compile the object
-    **/
+     **/
     public function compile($obj) {
         if (isset($this->compiler)) {
             $obj = $this->compiler->compile($obj);
         }
         return $obj;
     }
+
     /**
      * Creates an XSLX-Sheet to be downloaded.
-    **/
-    public function download($filename = 'import'){
+     **/
+    public function download($filename = 'import') {
         $writer = \Box\Spout\Writer\WriterFactory::create(Type::XLSX); // for XLSX files
         $writer->openToBrowser($filename . '.xlsx'); // stream data directly to the browser
 
         $row = array();
-        for($fieldid = 0; $fieldid < count($this->fields); $fieldid++) {
+        for ($fieldid = 0; $fieldid < count($this->fields); $fieldid++) {
             $row[$fieldid] = $this->fields[$fieldid];
         }
         $writer->addRow($row);
 
-        foreach($this->rowobjects AS $rowobject) {
+        foreach ($this->rowobjects as $rowobject) {
             $row = array();
-            for($fieldid = 0; $fieldid < count($this->fields); $fieldid++) {
+            for ($fieldid = 0; $fieldid < count($this->fields); $fieldid++) {
                 $row[$fieldid] = $rowobject->{$this->fields[$fieldid]};
             }
             $writer->addRow($row);
@@ -158,22 +167,25 @@ class local_eduvidual_lib_import {
 
         $writer->close();
     }
+
     /**
      * @return all rowobjects
-    **/
-    public function get_rowobjects(){
+     **/
+    public function get_rowobjects() {
         return $this->rowobjects;
     }
+
     /**
      * Overwrites rowobjects
-    **/
+     **/
     public function set_rowobjects($rowobjects) {
         $this->rowobjects = $rowobjects;
     }
+
     /**
      * @return all known fields
-    **/
-    public function get_fields(){
+     **/
+    public function get_fields() {
         return $this->fields;
     }
 }
@@ -215,6 +227,7 @@ class local_eduvidual_lib_import_compiler_module extends local_eduvidual_lib_imp
 
 class local_eduvidual_lib_import_compiler_user extends local_eduvidual_lib_import_compiler {
     var $lasts = 0;
+
     public function compile($obj) {
         global $CFG, $DB, $org;
         $payload = new stdClass();
@@ -235,11 +248,11 @@ class local_eduvidual_lib_import_compiler_user extends local_eduvidual_lib_impor
         $dummydomain = \local_eduvidual\locallib::get_dummydomain();
         if (empty($obj->email)) {
             $pattern = 'e-' . date("Ym") . '-';
-            $usernameformat= $pattern . '%1$04d';
+            $usernameformat = $pattern . '%1$04d';
             $lasts = $DB->get_records_sql('SELECT username FROM {user} WHERE username LIKE ? ORDER BY username DESC LIMIT 0,1', array($pattern . '%'));
 
             if ((count($lasts)) > 0) {
-                foreach($lasts AS $last){
+                foreach ($lasts as $last) {
                     $usernumber = intval(str_replace($pattern, '', $last->username)) + $this->lasts + 1;
                 }
             } else {
@@ -290,7 +303,7 @@ class local_eduvidual_lib_import_compiler_user extends local_eduvidual_lib_impor
                         email LIKE ? ESCAPE '^'";
         $params = array(
             str_replace('_', '^_', $obj->email),
-            str_replace('_', '^_', $obj->email)
+            str_replace('_', '^_', $obj->email),
         );
         $ids = array_keys($DB->get_records_sql($sql, $params));
         if (count($ids) > 0) {
@@ -346,7 +359,7 @@ class local_eduvidual_lib_import_compiler_user extends local_eduvidual_lib_impor
             str_replace('_', '^_', $obj->username),
             str_replace('_', '^_', $obj->email),
             str_replace('_', '^_', $obj->username),
-            str_replace('_', '^_', $obj->email)
+            str_replace('_', '^_', $obj->email),
         );
         if (!empty($obj->id)) {
             $sql .= " AND id <> ?";

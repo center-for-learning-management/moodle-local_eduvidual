@@ -47,8 +47,8 @@ if (isguestuser($USER)) {
 echo $OUTPUT->header();
 
 if ($embed || $act == 'backgrounds') {
-    $params = (object) [
-        'wwwroot'       => $CFG->wwwroot,
+    $params = (object)[
+        'wwwroot' => $CFG->wwwroot,
     ];
 
     $colorimage = "local/eduvidual/pix/bg_pixel.php?color=";
@@ -73,7 +73,7 @@ if ($embed || $act == 'backgrounds') {
     $params->options = [];
 
     foreach ($files as $file) {
-        if (str_replace('.', '', $file->get_filename()) != ""){
+        if (str_replace('.', '', $file->get_filename()) != "") {
             $url = moodle_url::make_pluginfile_url(
                 $file->get_contextid(), $file->get_component(), $file->get_filearea(),
                 $file->get_itemid(), $file->get_filepath(), $file->get_filename()

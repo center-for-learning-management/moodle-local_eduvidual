@@ -29,7 +29,7 @@ class settings {
     /**
      * Add required settings to admin settings page.
      * @param settings the node settings are attached to.
-    **/
+     **/
     public static function admin_settings_page($settings) {
         global $ADMIN;
         if (empty($ADMIN) || !$ADMIN->fulltree) {
@@ -37,7 +37,7 @@ class settings {
         }
 
         $heading = get_string('educloud:settings', 'local_eduvidual');
-        $text    = get_string('educloud:settings:description', 'local_eduvidual');
+        $text = get_string('educloud:settings:description', 'local_eduvidual');
         $settings->add(
             new \admin_setting_heading(
                 'local_eduvidual_educloud',
@@ -97,7 +97,7 @@ class settings {
                   ORDER BY name ASC";
         $potentialroles_ = $DB->get_records_sql($sql, array(CONTEXT_COURSECAT));
         $potentialroles = [];
-        foreach ($potentialroles_ AS $potentialrole) {
+        foreach ($potentialroles_ as $potentialrole) {
             $potentialroles[$potentialrole->id] = !empty($potentialrole->name) ? $potentialrole->name : $potentialrole->shortname;
         }
         $settings->add(

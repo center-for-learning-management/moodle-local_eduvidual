@@ -21,6 +21,7 @@
  */
 
 defined('MOODLE_INTERNAL') || die;
-if (!is_siteadmin()) die;
+if (!is_siteadmin())
+    die;
 
 echo $OUTPUT->render_from_template('local_eduvidual/admin_orgs', array());

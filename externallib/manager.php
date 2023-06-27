@@ -41,16 +41,17 @@ class local_eduvidual_external_manager extends external_api {
             'forcechangepassword' => new external_value(PARAM_TEXT, 'forcechangepassword'),
         ));
     }
+
     public static function create_users($orgid, $id, $firstname, $lastname, $email, $role, $cohorts_add, $cohorts_remove, $password, $forcechangepassword) {
         global $CFG, $DB, $org;
         $params = self::validate_parameters(self::create_users_parameters(), [
             'orgid' => $orgid, 'id' => $id,
             'firstname' => $firstname, 'lastname' => $lastname, 'email' => $email,
             'role' => $role, 'cohorts_add' => $cohorts_add, 'cohorts_remove' => $cohorts_remove,
-            'password' => $password, 'forcechangepassword' => $forcechangepassword
+            'password' => $password, 'forcechangepassword' => $forcechangepassword,
         ]);
 
-        $ret = (object) [
+        $ret = (object)[
             'status' => 0, // 0 ... unknown, 1 ... success, -1 ... failed
             'message' => '', // On error contains error message
         ];
@@ -79,16 +80,16 @@ class local_eduvidual_external_manager extends external_api {
             if (empty($obj->id)) {
                 $action = 'create';
                 // Create user.
-                $user = (object) [
-                    'confirmed'     => 1,
-                    'mnethostid'    => 1,
-                    'username'      => $obj->username,
-                    'firstname'     => $obj->firstname,
-                    'lastname'      => $obj->lastname,
-                    'email'         => $obj->email,
-                    'auth'          => 'manual',
-                    'lang'          => 'de',
-                    'calendartype'  => 'gregorian',
+                $user = (object)[
+                    'confirmed' => 1,
+                    'mnethostid' => 1,
+                    'username' => $obj->username,
+                    'firstname' => $obj->firstname,
+                    'lastname' => $obj->lastname,
+                    'email' => $obj->email,
+                    'auth' => 'manual',
+                    'lang' => 'de',
+                    'calendartype' => 'gregorian',
                 ];
                 try {
                     $user->id = \user_create_user($user, false, false);
@@ -102,7 +103,7 @@ class local_eduvidual_external_manager extends external_api {
                     \update_internal_user_password($user, $obj->password, false);
                     \local_eduvidual\lib_enrol::choose_background($user->id);
                     \core\event\user_created::create_from_userid($user->id)->trigger();
-                } catch(Exception $e) {
+                } catch (Exception $e) {
                     throw new \moodle_exception('could not create user');
                 } finally {
                     if (!empty($user->id)) {
@@ -120,7 +121,7 @@ class local_eduvidual_external_manager extends external_api {
                 $user->firstname = $obj->firstname;
                 $user->lastname = $obj->lastname;
                 $user->email = $obj->email;
-                $local_auth_methods = [ 'manual', 'email'];
+                $local_auth_methods = ['manual', 'email'];
                 if (in_array($user->auth, $local_auth_methods)) {
                     // For these methods we also update the username.
                     $sql = "SELECT id,username,email
@@ -173,6 +174,7 @@ class local_eduvidual_external_manager extends external_api {
 
         return $ret;
     }
+
     public static function create_users_returns() {
         return new external_single_structure(
             array(
@@ -189,6 +191,7 @@ class local_eduvidual_external_manager extends external_api {
             'userids' => new external_value(PARAM_TEXT, 'userids'),
         ));
     }
+
     public static function user_exportform($orgid, $userids) {
         global $CFG, $DB, $OUTPUT, $PAGE;
         $params = self::validate_parameters(self::user_exportform_parameters(), array('orgid' => $orgid, 'userids' => $userids));
@@ -207,15 +210,18 @@ class local_eduvidual_external_manager extends external_api {
             array('orgid' => $params['orgid'], 'userids' => $params['userids'])
         ));
     }
+
     public static function user_exportform_returns() {
         return new external_value(PARAM_RAW, 'Returns the form as html.');
     }
+
     public static function user_form_parameters() {
         return new external_function_parameters(array(
             'orgid' => new external_value(PARAM_INT, 'orgid'),
             'userid' => new external_value(PARAM_INT, 'userid'),
         ));
     }
+
     public static function user_form($orgid, $userid) {
         global $CFG, $DB, $PAGE;
         $params = self::validate_parameters(self::user_form_parameters(), array('orgid' => $orgid, 'userid' => $userid));
@@ -234,9 +240,11 @@ class local_eduvidual_external_manager extends external_api {
             return $mform->render();
         }
     }
+
     public static function user_form_returns() {
         return new external_value(PARAM_RAW, 'Returns the form as html.');
     }
+
     public static function user_update_parameters() {
         return new external_function_parameters(array(
             'orgid' => new external_value(PARAM_INT, 'orgid'),
@@ -246,6 +254,7 @@ class local_eduvidual_external_manager extends external_api {
             'email' => new external_value(PARAM_TEXT, 'email'),
         ));
     }
+
     public static function user_update($orgid, $userid, $firstname, $lastname, $email) {
         global $CFG, $DB, $PAGE;
         $params = self::validate_parameters(self::user_update_parameters(), array('orgid' => $orgid, 'userid' => $userid, 'firstname' => $firstname, 'lastname' => $lastname, 'email' => $email));
@@ -269,18 +278,18 @@ class local_eduvidual_external_manager extends external_api {
             $mform = new local_eduvidual_manage_user_form();
             $errors = $mform->validation($params, null);
             if (count($errors) == 0) {
-                $DB->set_field('user', 'firstname', $params['firstname'], [ 'id' => $params['userid']]);
-                $DB->set_field('user', 'lastname', $params['lastname'], [ 'id' => $params['userid']]);
-                $DB->set_field('user', 'email', $params['email'], [ 'id' => $params['userid']]);
+                $DB->set_field('user', 'firstname', $params['firstname'], ['id' => $params['userid']]);
+                $DB->set_field('user', 'lastname', $params['lastname'], ['id' => $params['userid']]);
+                $DB->set_field('user', 'email', $params['email'], ['id' => $params['userid']]);
 
                 $sql = "SELECT id
                             FROM {user}
                             WHERE username LIKE ?
                                 OR email LIKE ?";
-                $params = [ $user->email, $user->email ];
+                $params = [$user->email, $user->email];
                 $otheru = $DB->get_record_sql($sql, $params);
                 if (empty($otheru->id)) {
-                    $DB->set_field('user', 'username', $params['email'], [ 'id' => $params['userid']]);
+                    $DB->set_field('user', 'username', $params['email'], ['id' => $params['userid']]);
                 }
 
                 $reply->message = '';
@@ -294,6 +303,7 @@ class local_eduvidual_external_manager extends external_api {
         }
         return $reply;
     }
+
     public static function user_update_returns() {
         return new external_single_structure(
             array(

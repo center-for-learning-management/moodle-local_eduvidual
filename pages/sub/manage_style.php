@@ -52,7 +52,6 @@ if ($data = $form->get_data()) {
 }
 
 
-
 $entry = new \stdClass;
 $entry->orgid = $org->orgid;
 

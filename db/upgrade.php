@@ -44,7 +44,7 @@ function xmldb_local_eduvidual_upgrade($oldversion) {
         }
 
         $users = $DB->get_records_sql("SELECT id,email FROM {user} WHERE email LIKE '%@doesnotexist.eduvidual.org' OR email LIKE '%@doesnotexist.eduvidual.at'", array());
-        foreach ($users AS $user) {
+        foreach ($users as $user) {
             $DB->set_field('user', 'email', 'a' . $user->id . '@a.eduvidual.at', array('id' => $user->id));
         }
 
@@ -68,7 +68,7 @@ function xmldb_local_eduvidual_upgrade($oldversion) {
         $courseids = array(
             get_config('local_eduvidual', 'coursebasementempty'),
             get_config('local_eduvidual', 'coursebasementrestore'),
-            get_config('local_eduvidual', 'coursebasementtemplate')
+            get_config('local_eduvidual', 'coursebasementtemplate'),
         );
         set_config('coursebasement-scheduled', implode(',', $courseids), 'local_eduvidual');
         upgrade_plugin_savepoint(true, 2021011100, 'local', 'eduvidual');
@@ -84,7 +84,7 @@ function xmldb_local_eduvidual_upgrade($oldversion) {
                     WHERE c.id=leo.courseid
                         AND leo.authenticated > ?";
         $orgcourses = $DB->get_records_sql($sql, array(0));
-        foreach ($orgcourses AS $orgcourse) {
+        foreach ($orgcourses as $orgcourse) {
             $DB->set_field('local_eduvidual_org', 'authenticated', $orgcourse->timecreated, array('courseid' => $orgcourse->id));
         }
 
@@ -96,8 +96,8 @@ function xmldb_local_eduvidual_upgrade($oldversion) {
         if (!empty($supportcourseid)) {
             set_config(
                 'coursebasement-scheduled',
-                get_config('local_eduvidual','coursebasement-scheduled') .
-                    ',' . $supportcourseid,
+                get_config('local_eduvidual', 'coursebasement-scheduled') .
+                ',' . $supportcourseid,
                 'local_eduvidual'
             );
         }
@@ -260,7 +260,6 @@ function xmldb_local_eduvidual_upgrade($oldversion) {
     // TODO: tabelle local_eduvidual_modulescat löschen
 
     // TODO: tabelle local_eduvidual_usertoken löschen
-
 
 
     return true;

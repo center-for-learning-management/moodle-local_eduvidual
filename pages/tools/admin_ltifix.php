@@ -52,33 +52,33 @@ $sql = "SELECT * FROM moodle.oer_block_edupublisher_packages p WHERE course NOT 
 	);";
 
 $packages = $DB->get_records_sql($sql);
-$channels = [ 'etapas', 'eduthek' ];
+$channels = ['etapas', 'eduthek'];
 foreach ($packages as $dbpackage) {
     $package = \block_edupublisher::get_package($dbpackage->id, true);
     foreach ($channels as $channel) {
         $publish = !empty($package->{$channel . '_publishas'});
         if (!empty($publish)) {
             echo "Want to publish $package->course $package->title<br />";
-            $course = $DB->get_record('course', [ 'id' => $package->course ]);
+            $course = $DB->get_record('course', ['id' => $package->course]);
             if (empty($course->id)) {
-                 echo "=> THIS COURSE WAS REMOVED<br />";
-                 $DB->delete_records('block_edupublisher_uses', array('package' => $id));
-                 $DB->delete_records('block_edupublisher_rating', array('package' => $id));
-                 $DB->delete_records('block_edupublisher_metadata', array('package' => $id));
+                echo "=> THIS COURSE WAS REMOVED<br />";
+                $DB->delete_records('block_edupublisher_uses', array('package' => $id));
+                $DB->delete_records('block_edupublisher_rating', array('package' => $id));
+                $DB->delete_records('block_edupublisher_metadata', array('package' => $id));
 
-                 $DB->delete_records('block_edupublisher_extitem', array('packageid' => $package->id));
-                 $DB->delete_records('block_edupublisher_extsect', array('packageid' => $package->id));
-                 $DB->delete_records('block_edupublisher_extpack', array('packageid' => $package->id));
+                $DB->delete_records('block_edupublisher_extitem', array('packageid' => $package->id));
+                $DB->delete_records('block_edupublisher_extsect', array('packageid' => $package->id));
+                $DB->delete_records('block_edupublisher_extpack', array('packageid' => $package->id));
 
-                 $DB->delete_records('block_edupublisher_packages', array('id' => $package->id));
-                 continue;
+                $DB->delete_records('block_edupublisher_packages', array('id' => $package->id));
+                continue;
             }
 
             $context = \context_course::instance($package->course);
             $course = get_course($package->course, IGNORE_MISSING);
 
             if (empty($package->{$channel . '_ltisecret'})) {
-                $package->{$channel . '_ltisecret'} = substr(md5(date("Y-m-d H:i:s") . rand(0,1000)),0,30);
+                $package->{$channel . '_ltisecret'} = substr(md5(date("Y-m-d H:i:s") . rand(0, 1000)), 0, 30);
             }
             $lti = array(
                 'contextid' => $context->id,

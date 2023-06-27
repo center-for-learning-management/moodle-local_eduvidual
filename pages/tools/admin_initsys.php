@@ -42,7 +42,7 @@ echo $OUTPUT->header();
 if (!is_siteadmin()) {
     echo $OUTPUT->render_from_template('local_eduvidual/alert', array(
         'content' => get_string('access_denied', 'local_eduvidual'),
-        'type' => 'danger'
+        'type' => 'danger',
     ));
 } elseif (empty($confirm)) {
     echo $OUTPUT->render_from_template('local_eduvidual/alert', array(
@@ -56,7 +56,7 @@ if (!is_siteadmin()) {
     if ($chk->amount > 2) {
         echo $OUTPUT->render_from_template('local_eduvidual/alert', array(
             'content' => 'Set up cancelled - this site has >5 users',
-            'type' => 'danger'
+            'type' => 'danger',
         ));
     } else {
         echo "<h3>Setting up test environment</h3>";
@@ -70,7 +70,7 @@ if (!is_siteadmin()) {
             'defaultroleparent', 'defaultorgrolemanager', 'defaultorgroleparent',
             'defaultorgrolestudent', 'defaultorroleteacher',
             'defaultglobalrolemanager', 'defaultglobalroleparent',
-            'defaultglobalrolestudent', 'defaultglobalroleteacher'
+            'defaultglobalrolestudent', 'defaultglobalroleteacher',
         );
 
         foreach ($rolenames as $rolename) {

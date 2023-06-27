@@ -38,7 +38,7 @@ $depth = optional_param('depth', 0, PARAM_INT);
 $PAGE->set_context(context_system::instance());
 $PAGE->set_pagelayout('admin');
 $PAGE->set_url('/local/eduvidual/pages/tools/admin_fakecategories.php', array(
-    'parent' => $parent, 'children' => $children, 'depth' => $depth
+    'parent' => $parent, 'children' => $children, 'depth' => $depth,
 ));
 $PAGE->set_title('Fake categories');
 $PAGE->set_heading('Fake categories');
@@ -49,7 +49,7 @@ if (!is_siteadmin()) {
     echo $OUTPUT->header();
     echo $OUTPUT->render_from_template('local_eduvidual/alert', array(
         'content' => get_string('access_denied', 'local_eduvidual'),
-        'type' => 'danger'
+        'type' => 'danger',
     ));
     echo $OUTPUT->footer();
     die();
@@ -58,25 +58,25 @@ if (!is_siteadmin()) {
 echo $OUTPUT->header();
 
 ?>
-<div class="alert alert-danger">
-    Attention, be carefully with this!!!
-    <form action="" method="post" enctype="multipart/form-data">
-        <div class="grid-eq-3">
-            <div>
-                <input type="number" name="parent" placeholder="Parent category" value="<?php echo $parent; ?>" />
+    <div class="alert alert-danger">
+        Attention, be carefully with this!!!
+        <form action="" method="post" enctype="multipart/form-data">
+            <div class="grid-eq-3">
+                <div>
+                    <input type="number" name="parent" placeholder="Parent category" value="<?php echo $parent; ?>"/>
+                </div>
+                <div>
+                    <input type="number" name="children" placeholder="Children per node" value="<?php echo $children; ?>"/>
+                </div>
+                <div>
+                    <input type="number" name="depth" placeholder="Depth of nodes" value="<?php echo $depth; ?>"/>
+                </div>
             </div>
             <div>
-                <input type="number" name="children" placeholder="Children per node" value="<?php echo $children; ?>" />
+                <input type="submit" value="create" class="btn btn-primary btn-block"/>
             </div>
-            <div>
-                <input type="number" name="depth" placeholder="Depth of nodes" value="<?php echo $depth; ?>" />
-            </div>
-        </div>
-        <div>
-            <input type="submit" value="create" class="btn btn-primary btn-block" />
-        </div>
-    </form>
-</div>
+        </form>
+    </div>
 
 
 <?php
@@ -86,7 +86,7 @@ if (!empty($parent)) {
     if (empty($category->id)) {
         echo $OUTPUT->render_from_template('local_eduvidual/alert', array(
             'content' => 'Invalid categoryid',
-            'type' => 'danger'
+            'type' => 'danger',
         ));
     } else {
         echo "Create in $parent $children children with a depth of $depth";
@@ -98,17 +98,18 @@ if (!empty($parent)) {
 echo $OUTPUT->footer();
 
 function admin_fakecategories_create($parentnode, $children, $depth, $namepath) {
-    if ($depth < 1) return;
+    if ($depth < 1)
+        return;
     $depth--;
     global $OUTPUT;
     if (empty($parentnode->id)) {
         echo $OUTPUT->render_from_template('local_eduvidual/alert', array(
             'content' => 'Invalid categoryid for parentnode ' . $namepath,
-            'type' => 'danger'
+            'type' => 'danger',
         ));
     } else {
         for ($a = 1; $a <= $children; $a++) {
-            $data = (object) array(
+            $data = (object)array(
                 'name' => $namepath . '/' . $a,
                 'description' => 'created by category faker',
                 'descriptionformat' => 0,
@@ -118,7 +119,7 @@ function admin_fakecategories_create($parentnode, $children, $depth, $namepath) 
             $subnode = \core_course_category::create($data);
             echo $OUTPUT->render_from_template('local_eduvidual/alert', array(
                 'content' => 'Created subnode ' . $subnode->name,
-                'type' => 'success'
+                'type' => 'success',
             ));
             admin_fakecategories_create($subnode, $children, $depth, $namepath . '/' . $a);
         }

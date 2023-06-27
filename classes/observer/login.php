@@ -39,7 +39,7 @@ class login {
 
         // hack for https://github.com/center-for-learning-management/moodle-local_eduvidual/issues/176
         // Error: Class "local_eduvidual\locallib" not found
-        require_once __DIR__.'/../locallib.php';
+        require_once __DIR__ . '/../locallib.php';
 
         \local_eduvidual\locallib::get_user_secret($user->id);
         //error_log(json_encode($user, JSON_NUMERIC_CHECK));
@@ -56,15 +56,17 @@ class login {
         if (strlen($maildomain) > 3) {
             //error_log('SELECT * FROM oer_local_eduvidual_org WHERE maildomain="' . $maildomain . '" OR maildomainteacher="' . $maildomain . '"');
             $chkorgs = $DB->get_records_sql('SELECT * FROM {local_eduvidual_org} WHERE maildomain LIKE ? OR maildomainteacher LIKE ?', array('%' . $maildomain . '%', '%' . $maildomain . '%'));
-            foreach($chkorgs AS $chkorg) {
+            foreach ($chkorgs as $chkorg) {
                 $member = $DB->get_record('local_eduvidual_orgid_userid', array('orgid' => $chkorg->orgid, 'userid' => $user->id));
                 if (!isset($member->role) || empty($member->role)) {
-                    $setrole = (strpos($chkorg->maildomainteacher, $maildomain) !== false) ? 'Teacher': 'Student';
+                    $setrole = (strpos($chkorg->maildomainteacher, $maildomain) !== false) ? 'Teacher' : 'Student';
                     if (!isset($reply['enrolments'])) {
                         $reply['enrolments'] = array();
                     }
-                    if ($member->role == 'Manager') $setrole = 'Manager';
-                    if ($debug) error_log('Set role from maildomain ' . $maildomain . ': ' . $setrole . ' on user ' . $user->id . ' for org ' . $chkorg->orgid);
+                    if ($member->role == 'Manager')
+                        $setrole = 'Manager';
+                    if ($debug)
+                        error_log('Set role from maildomain ' . $maildomain . ': ' . $setrole . ' on user ' . $user->id . ' for org ' . $chkorg->orgid);
                     $reply['enrolments'][] = \local_eduvidual\lib_enrol::role_set($user->id, $chkorg, $setrole);
                 }
             }

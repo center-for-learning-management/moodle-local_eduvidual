@@ -43,7 +43,7 @@ if (!is_siteadmin()) {
     echo $OUTPUT->header();
     echo $OUTPUT->render_from_template('local_eduvidual/alert', array(
         'content' => get_string('access_denied', 'local_eduvidual'),
-        'type' => 'danger'
+        'type' => 'danger',
     ));
     echo $OUTPUT->footer();
     die();
@@ -53,7 +53,7 @@ function header_status($statusCode) {
     static $status_codes = null;
 
     if ($status_codes === null) {
-        $status_codes = array (
+        $status_codes = array(
             100 => 'Continue',
             101 => 'Switching Protocols',
             102 => 'Processing',
@@ -103,7 +103,7 @@ function header_status($statusCode) {
             506 => 'Variant Also Negotiates',
             507 => 'Insufficient Storage',
             509 => 'Bandwidth Limit Exceeded',
-            510 => 'Not Extended'
+            510 => 'Not Extended',
         );
     }
 

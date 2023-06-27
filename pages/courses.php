@@ -45,7 +45,7 @@ if ($id == 0) {
     ?>
     <ul id="local_eduvidual_user_courselist" data-role="listview" data-inset="true" data-split-icon="eye">
         <?php
-        foreach($courses AS $course) {
+        foreach ($courses as $course) {
             $shown = $DB->get_record('local_eduvidual_courseshow', array('userid' => $USER->id, 'courseid' => $course->id));
             $url = $CFG->wwwroot . "/course/view.php?id=" . $course->id;
             $context = context_course::instance($course->id);
@@ -61,23 +61,25 @@ if ($id == 0) {
                 foreach ($_course->get_course_overviewfiles() as $file) {
                     if ($file->is_valid_image()) {
                         $imagepath = '/' . $file->get_contextid() .
-                                '/' . $file->get_component() .
-                                '/' . $file->get_filearea() .
-                                $file->get_filepath() .
-                                $file->get_filename();
-                                $course->image = file_encode_url($CFG->wwwroot . '/pluginfile.php', $imagepath, false);
+                            '/' . $file->get_component() .
+                            '/' . $file->get_filearea() .
+                            $file->get_filepath() .
+                            $file->get_filename();
+                        $course->image = file_encode_url($CFG->wwwroot . '/pluginfile.php', $imagepath, false);
                         // Use the first image found.
                         break;
                     }
                 }
                 ?>
-                <li<?php if ($course->visible == 0 || (isset($shown->courseid) && $shown->courseid == $course->id)) { echo ' class="inactive ishidden"'; } ?> data-courseid="<?php echo $course->id; ?>">
+                <li<?php if ($course->visible == 0 || (isset($shown->courseid) && $shown->courseid == $course->id)) {
+                    echo ' class="inactive ishidden"';
+                } ?> data-courseid="<?php echo $course->id; ?>">
                     <a href="<?php echo $url; ?>">
-                        <img src="<?php echo $course->image; ?>" alt="course image" />
+                        <img src="<?php echo $course->image; ?>" alt="course image"/>
                         <h3><?php echo $course->fullname; ?></h3>
                         <p><?php echo strip_tags($course->summary); ?></p>
                     </a>
-                    <a href="#" onclick="var a = this; require(['local_eduvidual/user'], function(USER) { USER.setHidden(a); });"><img src="/pix/i/hide.svg" alt="trigger" /></a>
+                    <a href="#" onclick="var a = this; require(['local_eduvidual/user'], function(USER) { USER.setHidden(a); });"><img src="/pix/i/hide.svg" alt="trigger"/></a>
                 </li>
                 <?php
             }
@@ -104,7 +106,7 @@ if ($id == 0) {
     if (!$isenrolled && file_exists($CFG->dirroot . '/enrol/autoenrol/lib.php')) {
         // Check for possible auto enrolments.
         $enrolinstances = enrol_get_instances($course->id, false);
-        foreach($enrolinstances AS $enrolinstance) {
+        foreach ($enrolinstances as $enrolinstance) {
             if ($enrolinstance->enrol == 'autoenrol' && $enrolinstance->status == 0) {
                 require_once($CFG->dirroot . '/enrol/autoenrol/lib.php');
                 $aep = new enrol_autoenrol_plugin();
@@ -136,7 +138,7 @@ if ($id == 0) {
                     <option value=""><?php echo get_string('action'); ?></option>
                     <option value="enrol"><?php echo get_string('teacher:course:enrol', 'local_eduvidual'); ?></option>
                     <option value="gradings"><?php echo get_string('teacher:course:gradings', 'local_eduvidual'); ?></option>
-                    <option value="hideshow"><?php echo get_string('course') . ' ' . get_string(($course->visible==1)?'hide':'show'); ?></option>
+                    <option value="hideshow"><?php echo get_string('course') . ' ' . get_string(($course->visible == 1) ? 'hide' : 'show'); ?></option>
                     <option value="remove"><?php echo get_string('course') . ' ' . get_string('remove'); ?></option>
                 </select>
                 <?php
@@ -147,53 +149,55 @@ if ($id == 0) {
         if ($isenrolled || is_siteadmin()) {
             ?>
             <ul data-role="listview" data-inset="true" class="ui-listview ui-listview-inset ui-corner-all ui-shadow fix-images" data-icon="false" data-split-icon="action">
-            <?php
-            $sections = $DB->get_records('course_sections', array('course' => $course->id));
-            $sectionno = 0;
-            foreach($sections AS $section) {
-                ?>
-                <li data-role="list-divider" style="display: block !important;"><?php
-                    if ($canedit) {
-                        ?><a href="<?php echo $CFG->wwwroot . '/local/eduvidual/pages/teacher.php?act=createmodule&courseid=' . $course->id . '&sectionid=' . $sectionno++; ?>">
-                            <img src="/pix/t/add.svg" alt="<?php echo get_string('add'); ?>"/>
-                        </a>
-                            <?php
-                    }
-                    echo '<h3>' . (($section->name != "")?$section->name:get_string('section') . ' ' . $sectionno++) . '</h3>';
-                ?></li>
                 <?php
-                //$sequence = $DB->get_record('course_sections', array('id' => $section->id), 'sequence');
-                $sequence = explode(',', $section->sequence);
-
-                foreach($sequence AS $cmid) {
-                    if ($cmid == 0) continue;
-                    if (!isset($cms[$cmid])) continue;
-                    $cm = $cms[$cmid];
-                    if ($cm->visible == 1 || $canedit) {
-                        ?>
-                        <li class="<?php echo ($cm->visible == 0)?' local_eduvidual_inactive':''; ?>">
-                            <a href="#" onclick="var a = this; require(['local_eduvidual/user'], function(USER) { USER.showModuleInfo(a); });" data-ajax="false" data-url="<?php echo $cm->url; ?>">
-                                <img src="<?php echo $cm->get_icon_url(); ?>" alt="<?php echo $cm->modname; ?>" />
-                                <h3><?php echo $cm->name; ?></h3>
-                                <p><?php echo strip_tags($cm->content); ?></p>
+                $sections = $DB->get_records('course_sections', array('course' => $course->id));
+                $sectionno = 0;
+                foreach ($sections as $section) {
+                    ?>
+                    <li data-role="list-divider" style="display: block !important;"><?php
+                        if ($canedit) {
+                            ?><a href="<?php echo $CFG->wwwroot . '/local/eduvidual/pages/teacher.php?act=createmodule&courseid=' . $course->id . '&sectionid=' . $sectionno++; ?>">
+                            <img src="/pix/t/add.svg" alt="<?php echo get_string('add'); ?>"/>
                             </a>
                             <?php
-                            if (!empty($cm->url)) {
-                                ?>
-                                <a href="<?php echo $cm->url; ?>" class="openurl">
-                                    <img src="<?php echo $CFG->wwwroot; ?>/local/eduvidual/pix/action-black.svg" alt="open" />
+                        }
+                        echo '<h3>' . (($section->name != "") ? $section->name : get_string('section') . ' ' . $sectionno++) . '</h3>';
+                        ?></li>
+                    <?php
+                    //$sequence = $DB->get_record('course_sections', array('id' => $section->id), 'sequence');
+                    $sequence = explode(',', $section->sequence);
+
+                    foreach ($sequence as $cmid) {
+                        if ($cmid == 0)
+                            continue;
+                        if (!isset($cms[$cmid]))
+                            continue;
+                        $cm = $cms[$cmid];
+                        if ($cm->visible == 1 || $canedit) {
+                            ?>
+                            <li class="<?php echo ($cm->visible == 0) ? ' local_eduvidual_inactive' : ''; ?>">
+                                <a href="#" onclick="var a = this; require(['local_eduvidual/user'], function(USER) { USER.showModuleInfo(a); });" data-ajax="false" data-url="<?php echo $cm->url; ?>">
+                                    <img src="<?php echo $cm->get_icon_url(); ?>" alt="<?php echo $cm->modname; ?>"/>
+                                    <h3><?php echo $cm->name; ?></h3>
+                                    <p><?php echo strip_tags($cm->content); ?></p>
                                 </a>
                                 <?php
-                            }
-                            ?>
-                        </li>
-                        <?php
+                                if (!empty($cm->url)) {
+                                    ?>
+                                    <a href="<?php echo $cm->url; ?>" class="openurl">
+                                        <img src="<?php echo $CFG->wwwroot; ?>/local/eduvidual/pix/action-black.svg" alt="open"/>
+                                    </a>
+                                    <?php
+                                }
+                                ?>
+                            </li>
+                            <?php
+                        }
                     }
                 }
-            }
-            ?>
+                ?>
             </ul>
-        <?php
+            <?php
         } else { ?>
             <p class="alert alert-warning"><?php echo get_string('courses:noaccess', 'local_eduvidual'); ?></p>
             <?php

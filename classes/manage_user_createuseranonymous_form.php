@@ -50,6 +50,7 @@ class local_eduvidual_manage_user_createuseranonymous_form extends moodleform {
         $mform->addElement('submit', null, get_string('manage:createuseranonymous:send', 'local_eduvidual'));
         //$this->add_action_buttons();
     }
+
     //Custom validation should be added here
     function validation($data, $files) {
         $errors = array();

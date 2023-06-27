@@ -33,21 +33,21 @@ $toggle = optional_param('toggle', 0, PARAM_INT);
 
 $accept = ($accept == 'on') ? 1 : 0;
 
-$record = $DB->get_record('local_eduvidual_educloud', [ 'orgid' => $org->orgid]);
+$record = $DB->get_record('local_eduvidual_educloud', ['orgid' => $org->orgid]);
 
-switch($showmsg) {
+switch ($showmsg) {
     case -1:
         echo $OUTPUT->render_from_template('local_eduvidual/alert', [
             'type' => 'danger',
             'content' => get_string('educloud:toggle:failed', 'local_eduvidual'),
         ]);
-    break;
+        break;
     case 1:
         echo $OUTPUT->render_from_template('local_eduvidual/alert', [
             'type' => 'success',
             'content' => get_string('educloud:toggle:success', 'local_eduvidual'),
         ]);
-    break;
+        break;
 }
 
 if (!empty($accept)) {

@@ -21,7 +21,8 @@
  */
 
 defined('MOODLE_INTERNAL') || die;
-if (!is_siteadmin()) die;
+if (!is_siteadmin())
+    die;
 $updatedb = optional_param('updatedb', 0, PARAM_INT);
 if ($updatedb == 0) {
     echo $OUTPUT->render_from_template('local_eduvidual/admin_map', array(
@@ -169,7 +170,7 @@ if ($updatedb == 0) {
         $DB->execute("UPDATE {local_eduvidual_org_gps} SET failed=0", array());
     }
     // Only update orgs that have not been updated in the last week!
-    $since = time() - 60*60*24*7;
+    $since = time() - 60 * 60 * 24 * 7;
     $limit = optional_param('limit', 500, PARAM_INT);
     $sql = "SELECT o.orgid,o.street,o.zip,o.city,o.district,o.country
                 FROM {local_eduvidual_org} o, {local_eduvidual_org_gps} og
@@ -182,11 +183,13 @@ if ($updatedb == 0) {
     echo "<li>Going through " . count(array_keys($orgs)) . " orgs</li>";
     flush();
     $services = array();
-    if (!empty($googlekey)) $services[] = 'google';
-    if (!empty($mapquestkey)) $services[] = 'mapquest';
+    if (!empty($googlekey))
+        $services[] = 'google';
+    if (!empty($mapquestkey))
+        $services[] = 'mapquest';
     $services[] = 'nominatim';
-    foreach ($orgs AS $orgid => $org) {
-        foreach ($services AS $srvnr => $service) {
+    foreach ($orgs as $orgid => $org) {
+        foreach ($services as $srvnr => $service) {
             switch ($service) {
                 case 'nominatim':
                     $searchurl = "https://nominatim.openstreetmap.org/search?";
@@ -203,7 +206,7 @@ if ($updatedb == 0) {
                     $data = substr($data, 1, strlen($data) - 2);
                     $data = json_decode($data);
 
-                break;
+                    break;
                 case 'mapquest':
                     $searchurl = "http://open.mapquestapi.com/nominatim/v1/search.php?";
                     $searchurl .= "&key=" . $mapquestkey;
@@ -214,7 +217,7 @@ if ($updatedb == 0) {
                     $data = do_curl($searchurl);
                     $data = substr($data, 1, strlen($data) - 2);
                     $data = json_decode($data);
-                break;
+                    break;
                 case 'google':
                     $searchurl = "https://maps.googleapis.com/maps/api/place/findplacefromtext/json?";
                     $searchurl .= "&key=" . $googlekey . "&inputtype=textquery";
@@ -226,7 +229,7 @@ if ($updatedb == 0) {
                         $data = $data->candidates[0]->geometry->location;
                         $data->lon = $data->lng;
                     }
-                break;
+                    break;
             }
             echo "<li>Retrieved data from " . $service . " for <a href=\"" . $searchurl . "\" target=\"_blank\">" . $orgid . "</a></li>\n";
 
@@ -240,7 +243,7 @@ if ($updatedb == 0) {
                     $DB->update_record('local_eduvidual_org_gps', $testorg);
                     echo "<li>Updated " . $orgid . "</li>";
                 } else {
-                    $testorg = (object) array(
+                    $testorg = (object)array(
                         'orgid' => $orgid,
                         'lat' => $data->lat,
                         'lon' => $data->lon,
@@ -254,13 +257,13 @@ if ($updatedb == 0) {
                 break;
             } else {
                 echo "<li>Failed for " . $orgid . " using " . $service . "</li>";
-                if ($srvnr == count($services)){
+                if ($srvnr == count($services)) {
                     echo "<li>This was the last service. Flag as failed.</li>";
                     if (!empty($testorg->id)) {
                         $testorg->failed = time();
                         $DB->update_record('local_eduvidual_org_gps', $testorg);
                     } else {
-                        $testorg = (object) array(
+                        $testorg = (object)array(
                             'orgid' => $orgid,
                             'lat' => 0,
                             'lon' => 0,
@@ -282,15 +285,15 @@ if ($updatedb == 0) {
 function do_curl($searchurl) {
     $options = array(
         CURLOPT_RETURNTRANSFER => true,   // return web page
-        CURLOPT_HEADER         => false,  // don't return headers
+        CURLOPT_HEADER => false,  // don't return headers
         CURLOPT_FOLLOWLOCATION => true,   // follow redirects
-        CURLOPT_MAXREDIRS      => 10,     // stop after 10 redirects
-        CURLOPT_ENCODING       => "",     // handle compressed
-        CURLOPT_USERAGENT      => 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.13) Gecko/20080311 Firefox/2.0.0.13', //, id-' . time(), // name of client
-        CURLOPT_AUTOREFERER    => true,   // set referrer on redirect
+        CURLOPT_MAXREDIRS => 10,     // stop after 10 redirects
+        CURLOPT_ENCODING => "",     // handle compressed
+        CURLOPT_USERAGENT => 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.13) Gecko/20080311 Firefox/2.0.0.13', //, id-' . time(), // name of client
+        CURLOPT_AUTOREFERER => true,   // set referrer on redirect
         CURLOPT_CONNECTTIMEOUT => 120,    // time-out on connect
-        CURLOPT_TIMEOUT        => 120,    // time-out on response
-        CURLOPT_URL            => $searchurl,
+        CURLOPT_TIMEOUT => 120,    // time-out on response
+        CURLOPT_URL => $searchurl,
     );
 
     $ch = curl_init($searchurl);
@@ -306,8 +309,7 @@ function make_safe_for_utf8_use($string) {
 
     if ($encoding != 'UTF-8') {
         return iconv($encoding, 'UTF-8//TRANSLIT', $string);
-    }
-    else {
+    } else {
         return $string;
     }
 }

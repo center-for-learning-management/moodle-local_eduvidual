@@ -41,7 +41,7 @@ class local_eduvidual_orgsizes extends \core\task\scheduled_task {
                     WHERE categoryid>0";
         $orgs = $DB->get_records_sql($sql, array());
         require_once($CFG->dirroot . '/local/eduvidual/classes/lib_manage.php');
-        foreach ($orgs AS $org) {
+        foreach ($orgs as $org) {
             $filesize = \local_eduvidual\lib_manage::get_category_filesize($org->categoryid);
             echo "Read $org->orgid for category $org->categoryid with size $filesize<br />\n";
             if (!empty($filesize)) {

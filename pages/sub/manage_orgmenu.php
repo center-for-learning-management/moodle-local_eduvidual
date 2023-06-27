@@ -23,9 +23,9 @@
 defined('MOODLE_INTERNAL') || die;
 
 ?>
-<h5><?php echo get_string('manage:orgmenu:title', 'local_eduvidual'); ?></h5>
-<p class="alert alert-info"><?php echo get_string('manage:orgmenu:description', 'local_eduvidual'); ?></p>
-<p class="alert alert-danger"><?php echo get_string('manage:orgmenu:cachewarning', 'local_eduvidual'); ?></p>
+    <h5><?php echo get_string('manage:orgmenu:title', 'local_eduvidual'); ?></h5>
+    <p class="alert alert-info"><?php echo get_string('manage:orgmenu:description', 'local_eduvidual'); ?></p>
+    <p class="alert alert-danger"><?php echo get_string('manage:orgmenu:cachewarning', 'local_eduvidual'); ?></p>
 <?php
 require_once($CFG->dirroot . "/local/eduvidual/classes/manage_orgmenu_form.php");
 
@@ -36,7 +36,7 @@ if ($data = $form->get_data()) {
     $DB->set_field('local_eduvidual_org', 'orgmenu', $org->orgmenu, array('orgid' => $org->orgid));
     echo $OUTPUT->render_from_template('local_eduvidual/alert', array(
         'content' => get_string('store:success', 'local_eduvidual'),
-        'type' => 'success'
+        'type' => 'success',
     ));
     echo "<script>window.sessionStorage.clear();</script>\n";
 }

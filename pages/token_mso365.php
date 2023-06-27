@@ -29,7 +29,6 @@ require_login();
 require_once($CFG->libdir . '/adminlib.php');
 
 
-
 $PAGE->set_context(context_system::instance());
 $PAGE->set_pagelayout('mydashboard');
 $PAGE->set_url('/local/eduvidual/pages/token_mso365.php', array());
@@ -56,7 +55,6 @@ if (empty($service->id)) {
         'tokens' => $tokens,
     ));
 }
-
 
 
 echo $OUTPUT->footer();

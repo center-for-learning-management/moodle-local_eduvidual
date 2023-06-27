@@ -40,22 +40,22 @@ echo $OUTPUT->header();
 if (isloggedin() && !isguestuser()) {
     echo $OUTPUT->render_from_template(
         'local_eduvidual/register',
-        (object) array(
+        (object)array(
             'orgid' => $orgid,
             'maxlength' => 30,
             'registrationsupport' => get_config('local_eduvidual', 'registrationsupport'),
             'userid' => $USER->id,
-            'wwwroot' => $CFG->wwwroot
+            'wwwroot' => $CFG->wwwroot,
         )
     );
 } else {
     $SESSION->wantsurl = $PAGE->url->__toString();
     echo $OUTPUT->render_from_template(
         'local_eduvidual/register_requirelogin',
-        (object) array(
+        (object)array(
             'registrationsupport' => get_config('local_eduvidual', 'registrationsupport'),
             'userid' => $USER->id,
-            'wwwroot' => $CFG->wwwroot
+            'wwwroot' => $CFG->wwwroot,
         )
     );
 }

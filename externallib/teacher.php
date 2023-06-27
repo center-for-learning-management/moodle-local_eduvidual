@@ -36,6 +36,7 @@ class local_eduvidual_external_teacher extends external_api {
             'subcat3' => new external_value(PARAM_RAW, 'subcat3 - value'),
         ));
     }
+
     public static function createcourse_selections($orgid, $subcat1, $subcat2, $subcat3) {
         global $CFG, $DB;
         $params = self::validate_parameters(self::createcourse_selections_parameters(), array('orgid' => $orgid, 'subcat1' => $subcat1, 'subcat2' => $subcat2, 'subcat3' => $subcat3));
@@ -62,13 +63,17 @@ class local_eduvidual_external_teacher extends external_api {
 
         for ($a = 1; $a <= 3; $a++) {
             $seltree['subcat' . $a] = $params['subcat' . $a];
-            if (empty($org->subcats2lbl)) continue;
-            if ($a > 1 && empty($seltree['subcat' . ($a-1)])) $seltree['subcat' . $a] = '';
-            if (is_array($seltree['subcats' . $a]) && !empty($params['subcat' . $a]) && !in_array($params['subcat' . $a], $seltree['subcats' . $a])) $seltree['subcat' . $a] = '';
+            if (empty($org->subcats2lbl))
+                continue;
+            if ($a > 1 && empty($seltree['subcat' . ($a - 1)]))
+                $seltree['subcat' . $a] = '';
+            if (is_array($seltree['subcats' . $a]) && !empty($params['subcat' . $a]) && !in_array($params['subcat' . $a], $seltree['subcats' . $a]))
+                $seltree['subcat' . $a] = '';
         }
 
         return json_encode($seltree, JSON_NUMERIC_CHECK);
     }
+
     public static function createcourse_selections_returns() {
         return new external_value(PARAM_RAW, 'Returns information about possible values at every subcat.');
     }

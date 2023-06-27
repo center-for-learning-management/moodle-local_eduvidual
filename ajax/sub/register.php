@@ -43,7 +43,7 @@ if (isloggedin() && !isguestuser()) {
             } else {
                 $reply['status'] = 'silent';
             }
-        break;
+            break;
         case 1:
             /*
              * Generate registration token for this org and send to org-mail
@@ -72,7 +72,7 @@ if (isloggedin() && !isguestuser()) {
 
                 $messagehtml = $OUTPUT->render_from_template(
                     'local_eduvidual/register_mail_authtan',
-                    (object) array(
+                    (object)array(
                         'authtan' => $org->authtan,
                         'email' => $USER->email,
                         'orgid' => $org->orgid,
@@ -85,14 +85,15 @@ if (isloggedin() && !isguestuser()) {
                 );
 
                 $messagetext = html_to_text($messagehtml);
-                $subject = get_string('mailregister:subject' , 'local_eduvidual');
+                $subject = get_string('mailregister:subject', 'local_eduvidual');
                 email_to_user($touser, $fromuser, $subject, $messagetext, $messagehtml, "", true);
 
                 // Sending a short statement to CC-Users
                 $ccmails = explode(',', get_config('local_eduvidual', 'registrationcc'));
                 if (count($ccmails) > 0) {
-                    foreach($ccmails AS $ccmail) {
-                        if (!filter_var($ccmail, FILTER_VALIDATE_EMAIL)) continue;
+                    foreach ($ccmails as $ccmail) {
+                        if (!filter_var($ccmail, FILTER_VALIDATE_EMAIL))
+                            continue;
                         $touser->email = trim($ccmail);
                         email_to_user($touser, $fromuser, $subject, $messagetext, $messagehtml, "", true);
                     }
@@ -101,7 +102,7 @@ if (isloggedin() && !isguestuser()) {
             } else {
                 $reply['status'] = 'error';
             }
-        break;
+            break;
         case 2:
             /*
              * Check registration token for this org and create if correct
@@ -135,7 +136,7 @@ if (isloggedin() && !isguestuser()) {
                     if (!empty($org->courseid)) {
                         $messagehtml = $OUTPUT->render_from_template(
                             'local_eduvidual/register_mail_completed',
-                            (object) array(
+                            (object)array(
                                 'categoryurl' => $CFG->wwwroot . '/course/index.php?categoryid=' . $org->categoryid,
                                 'supportcourseurl' => get_config('local_eduvidual', 'supportcourseurl'),
                                 'orgid' => $org->orgid,
@@ -147,7 +148,7 @@ if (isloggedin() && !isguestuser()) {
 
                         $messagetext = html_to_text($messagehtml);
 
-                        $subject = get_string('mailregister:2:subject' , 'local_eduvidual');
+                        $subject = get_string('mailregister:2:subject', 'local_eduvidual');
 
                         $fromuser = \core_user::get_support_user();
 
@@ -166,8 +167,9 @@ if (isloggedin() && !isguestuser()) {
                         // Sending a short statement to CC-Users
                         $ccmails = explode(',', get_config('local_eduvidual', 'registrationcc'));
                         if (count($ccmails) > 0) {
-                            foreach($ccmails AS $ccmail) {
-                                if (!filter_var($ccmail, FILTER_VALIDATE_EMAIL)) continue;
+                            foreach ($ccmails as $ccmail) {
+                                if (!filter_var($ccmail, FILTER_VALIDATE_EMAIL))
+                                    continue;
                                 $touser->email = trim($ccmail);
                                 email_to_user($touser, $fromuser, $subject, $messagetext, $messagehtml, "", true);
                             }
@@ -186,7 +188,7 @@ if (isloggedin() && !isguestuser()) {
                     $reply['status'] = 'error';
                 }
             }
-        break;
+            break;
     }
 } else {
     $reply['error'] = get_string('registration:loginfirst', 'local_eduvidual');

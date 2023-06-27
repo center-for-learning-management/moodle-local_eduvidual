@@ -22,9 +22,9 @@
  */
 
 // livetime of cache in seconds -> 7 days
-$exp = 60*60*24*7;
-$exp_gmt = gmdate("D, d M Y H:i:s", time() + $exp) ." GMT";
-$mod_gmt = gmdate("D, d M Y H:i:s", getlastmod()) ." GMT";
+$exp = 60 * 60 * 24 * 7;
+$exp_gmt = gmdate("D, d M Y H:i:s", time() + $exp) . " GMT";
+$mod_gmt = gmdate("D, d M Y H:i:s", getlastmod()) . " GMT";
 header("Expires: " . $exp_gmt);
 header("Last-Modified: " . $mod_gmt);
 header("Cache-Control: public, max-age=" . $exp);
@@ -39,7 +39,7 @@ if (count($color) != 3) {
 }
 
 $gd = @imagecreatetruecolor(1, 1)
-        or die('Cannot initialize image stream');
+or die('Cannot initialize image stream');
 $col = imagecolorallocate(
     $gd,
     intval($color[0]),

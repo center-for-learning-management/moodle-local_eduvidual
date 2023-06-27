@@ -27,7 +27,8 @@ defined('MOODLE_INTERNAL') || die();
  * It receives all profile data from the Shibboleth-Login and managers enrolments to organisations.
  */
 
-if (empty($idpparams['userinfo']['username'])) return;
+if (empty($idpparams['userinfo']['username']))
+    return;
 
 global $DB, $USER;
 
@@ -45,10 +46,10 @@ if (empty($idpparams['userinfo']['lastname'])) {
 if (empty($idpparams['userinfo']['email'])) {
     $dummydomain = \local_eduvidual\locallib::get_dummydomain();
     $pattern = 'e-' . date("Ym") . '-';
-    $usernameformat= $pattern . '%1$04d';
+    $usernameformat = $pattern . '%1$04d';
     $lasts = $DB->get_records_sql('SELECT username FROM {user} WHERE username LIKE ? ORDER BY username DESC LIMIT 0,1', array($pattern . '%'));
     if ((count($lasts)) > 0) {
-        foreach($lasts AS $last){
+        foreach ($lasts as $last) {
             $usernumber = intval(str_replace($pattern, '', $last->username)) + 1;
         }
     } else {
@@ -67,17 +68,23 @@ if (empty($idpparams['userinfo']['email'])) {
 if (!empty($idpparams['userinfo']['institution'])) {
     $role = 'Student';
     if (!empty($idpparams['userinfo']['appList'])) {
-         $applist = explode('\;', $idpparams['userinfo']['appList']);
-         foreach ($applist as $app) {
-             $approle = explode('@', $app);
-             if (count($approle) > 1 && $approle[1] == 'EVI') {
-                 switch ($approle[0]) {
-                     case 'std': $role = 'Student'; break;
-                     case 'tch': $role = 'Teacher'; break;
-                     case 'adm': $role = 'Manager'; break;
-                 }
-             }
-         }
+        $applist = explode('\;', $idpparams['userinfo']['appList']);
+        foreach ($applist as $app) {
+            $approle = explode('@', $app);
+            if (count($approle) > 1 && $approle[1] == 'EVI') {
+                switch ($approle[0]) {
+                    case 'std':
+                        $role = 'Student';
+                        break;
+                    case 'tch':
+                        $role = 'Teacher';
+                        break;
+                    case 'adm':
+                        $role = 'Manager';
+                        break;
+                }
+            }
+        }
     }
     $org = $DB->get_record('local_eduvidual_org', array('orgid' => $idpparams['userinfo']['institution']));
 
@@ -92,13 +99,13 @@ if (!empty($idpparams['userinfo']['institution'])) {
                     if (in_array($role, array('Manager'))) {
                         \local_eduvidual\lib_enrol::role_set($USER->id, $org, $role);
                     }
-                break;
+                    break;
                 case 'Student':
                 case 'Parent':
                     if (in_array($role, array('Manager', 'Teacher'))) {
                         \local_eduvidual\lib_enrol::role_set($USER->id, $org, $role);
                     }
-                break;
+                    break;
             }
         }
         // 3.) If there is a department create a cohort for that department

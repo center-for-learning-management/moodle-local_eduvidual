@@ -41,7 +41,7 @@ function local_eduvidual_after_config() {
     $scripts = array(
         '/enrol/manual/manage.php', '/mod/jazzquiz/edit.php', '/mod/activequiz/edit.php',
         '/question/category.php', '/question/edit.php',
-        '/question/export.php', '/user/selector/search.php'
+        '/question/export.php', '/user/selector/search.php',
     );
     $script = str_replace($CFG->dirroot, '', $_SERVER["SCRIPT_FILENAME"]);
     if (in_array($script, $scripts)) {
@@ -88,14 +88,14 @@ function local_eduvidual_after_config() {
                     $cmid = $cm->id;
                 }
             }
-        } elseif(strpos($_SERVER["SCRIPT_FILENAME"], '/mod/bigbluebuttonbn/bbb_ajax.php') > 0) {
+        } elseif (strpos($_SERVER["SCRIPT_FILENAME"], '/mod/bigbluebuttonbn/bbb_ajax.php') > 0) {
             $bbbtn = optional_param('bigbluebuttonbn', 0, PARAM_INT);
             $bbb = $DB->get_record('bigbluebuttonbn', array('id' => $bbbtn));
             list($course, $cm) = get_course_and_cm_from_instance($bbb, 'bigbluebuttonbn');
             if (!empty($cm->id)) {
                 $cmid = $cm->id;
             }
-        } elseif(strpos($_SERVER["SCRIPT_FILENAME"], '/webservice/rest/server.php') > 0) {
+        } elseif (strpos($_SERVER["SCRIPT_FILENAME"], '/webservice/rest/server.php') > 0) {
             $params = array_merge($_GET, $_POST);
             $args = $params['args'];
             if (!empty($args)) {
@@ -163,10 +163,10 @@ function local_eduvidual_before_standard_html_head() {
         // General boost-modifications.
         $PAGE->requires->css('/local/eduvidual/style/theme_boost.css');
 
-	    // Wenn das neue edumaker theme (August 2022) aktiv ist, sollen die Anpassungen für theme boost_campus im theme_39.css nicht geladen werden
-		if ($CFG->theme != 'edumaker') {
-			$PAGE->requires->css('/local/eduvidual/style/theme_39.css');
-		}
+        // Wenn das neue edumaker theme (August 2022) aktiv ist, sollen die Anpassungen für theme boost_campus im theme_39.css nicht geladen werden
+        if ($CFG->theme != 'edumaker') {
+            $PAGE->requires->css('/local/eduvidual/style/theme_39.css');
+        }
     }
 
     // The default banner needs to be injected via Internal Stylesheet to
@@ -185,15 +185,15 @@ function local_eduvidual_before_standard_html_head() {
         redirect($CFG->wwwroot . '/user/index.php?id=' . optional_param('id', 0, PARAM_INT));
     }
     if (strpos($_SERVER["SCRIPT_FILENAME"], '/login/signup.php') > 0) {
-        echo $OUTPUT->render_from_template('local_eduvidual/inject', [ 'signupPage' => 1]);
+        echo $OUTPUT->render_from_template('local_eduvidual/inject', ['signupPage' => 1]);
     }
     if (strpos($_SERVER["SCRIPT_FILENAME"], '/course/edit.php') > 0) {
-        echo $OUTPUT->render_from_template('local_eduvidual/inject', [ 'courseEditPage' => 1, 'userid' => $USER->id, 'issiteadmin' => is_siteadmin()]);
+        echo $OUTPUT->render_from_template('local_eduvidual/inject', ['courseEditPage' => 1, 'userid' => $USER->id, 'issiteadmin' => is_siteadmin()]);
     }
 
     $data = array(
         'context' => $CONTEXT,
-        'course' => (object) array(
+        'course' => (object)array(
             'id' => $COURSE->id,
             'contextid' => $PAGE->context->id,
         ),
@@ -255,11 +255,10 @@ function local_eduvidual_before_standard_html_head() {
     // Favicon & Apple Touch Icons
     $RET[] = '<link rel="icon" href="' . $CFG->wwwroot . '/local/eduvidual/pix/favicons/favicon.ico" type="image/x-icon">';
     $RET[] = '<link rel="apple-touch-icon" href="' . $CFG->wwwroot . '/local/eduvidual/pix/favicons/apple-touch-icon.png">';
-    $sizes = [ '57x57', '72x72', '76x76', '114x114', '120x120', '144x144', '152x152', '180x180' ];
+    $sizes = ['57x57', '72x72', '76x76', '114x114', '120x120', '144x144', '152x152', '180x180'];
     foreach ($sizes as $size) {
         $RET[] = '<link rel="apple-touch-icon" sizes="' . $size . '" href="' . $CFG->wwwroot . '/local/eduvidual/pix/favicons/apple-touch-icon-57x57.png">';
     }
-
 
 
     return implode("\n", $RET);
@@ -280,10 +279,11 @@ function local_eduvidual_control_view_profile($user, $course = null, $usercontex
  */
 function local_eduvidual_extend_navigation($navigation) {
     $highestrole = \local_eduvidual\locallib::get_highest_role();
-    if (empty($highestrole)) return;
+    if (empty($highestrole))
+        return;
 
     $nodehome = $navigation->get('home');
-    if (empty($nodehome)){
+    if (empty($nodehome)) {
         $nodehome = $navigation;
     }
 
@@ -387,9 +387,10 @@ function local_eduvidual_myprofile_navigation($tree, $user, $iscurrentuser, $cou
         $node = new \core_user\output\myprofile\node('eduvidual', 'eduvidualsecret', $user->id . '#' . \local_eduvidual\locallib::get_user_secret($user->id));
         $category->add_node($node);
         $memberships = \local_eduvidual\locallib::get_user_memberships($user->id);
-        foreach ($memberships AS $membership) {
+        foreach ($memberships as $membership) {
             $org = \local_eduvidual\locallib::get_org('orgid', $membership->orgid);
-            if (empty($org->id)) continue;
+            if (empty($org->id))
+                continue;
             $link = '<a href="' . $CFG->wwwroot . '/local/eduvidual/pages/manage.php?orgid=' . $org->orgid . '">' . $org->name . ' (' . $membership->role . ')</a>';
             $node = new \core_user\output\myprofile\node('eduvidual', 'eduvidualmembership-' . $membership->orgid . '-' . $membership->role, $link);
             $category->add_node($node);
@@ -411,14 +412,16 @@ function local_eduvidual_override_webservice_execution($function, $params) {
         'core_enrol_external_get_potential_users', 'core_external_get_fragment',
         'core_message_message_search_users', 'core_message_data_for_messagearea_search_users',
         'core_message_search_contacts', 'core_search_get_relevant_users',
-        'core_user_get_users', 'tool_lp_search_cohorts', 'tool_lp_search_users'
+        'core_user_get_users', 'tool_lp_search_cohorts', 'tool_lp_search_users',
     );
     $func = $function->classname . '_' . $function->methodname;
-    if ($CFG->debug == 32767) error_log($func);
+    if ($CFG->debug == 32767)
+        error_log($func);
     if (in_array($func, $supported)) {
         global $CFG;
         require_once($CFG->dirroot . '/local/eduvidual/classes/lib_wshelper.php');
-        if ($CFG->debug == 32767) error_log('Overriding ' . $func);
+        if ($CFG->debug == 32767)
+            error_log('Overriding ' . $func);
         return \local_eduvidual\lib_wshelper::override($function->classname, $function->methodname, $params);
     }
     return false;
@@ -444,7 +447,7 @@ function local_eduvidual_pre_user_delete() {
  * @param array $options additional options affecting the file serving
  * @return bool false if the file not found, just send the file otherwise and do not return anything
  */
-function local_eduvidual_pluginfile($course, $cm, $context, $filearea, $args, $forcedownload, array $options=array()) {
+function local_eduvidual_pluginfile($course, $cm, $context, $filearea, $args, $forcedownload, array $options = array()) {
     $areas = array('backgrounds', 'backgrounds_cards', 'globalfiles', 'orgfiles', 'orglogo', 'orgbanner', 'module');
     if (in_array($filearea, $areas)) {
         $forcedownload = false;
@@ -503,7 +506,7 @@ function local_eduvidual_pluginfile($course, $cm, $context, $filearea, $args, $f
     if (!$args) {
         $filepath = '/'; // $args is empty => the path is '/'
     } else {
-        $filepath = '/'.implode('/', $args).'/'; // $args contains elements of the filepath
+        $filepath = '/' . implode('/', $args) . '/'; // $args contains elements of the filepath
     }
 
     // Retrieve the file from the Files API.
@@ -524,12 +527,12 @@ function local_eduvidual_pluginfile($course, $cm, $context, $filearea, $args, $f
 function local_eduvidual_pre_course_delete($course) {
     global $DB, $USER;
 
-    $entry = (object) [
-        'courseid'    => $course->id,
-        'categoryid'  => $course->category,
-        'fullname'    => $course->fullname,
-        'shortname'   => $course->shortname,
-        'userid'      => $USER->id,
+    $entry = (object)[
+        'courseid' => $course->id,
+        'categoryid' => $course->category,
+        'fullname' => $course->fullname,
+        'shortname' => $course->shortname,
+        'userid' => $USER->id,
         'timedeleted' => time(),
     ];
 

@@ -24,7 +24,7 @@ require_once('../../../config.php');
 require_login();
 
 require_once($CFG->libdir . '/adminlib.php');
-require_once($CFG->dirroot. '/course/lib.php');
+require_once($CFG->dirroot . '/course/lib.php');
 
 $orgid = optional_param('orgid', 0, PARAM_INT);
 $cohort = optional_param('cohort', '', PARAM_TEXT);
@@ -46,12 +46,12 @@ $PAGE->requires->css('/local/eduvidual/style/manage_bunch.css');
 // Only allow a certain user group access to this script
 $allow = array("Manager");
 if (!in_array(\local_eduvidual\locallib::get_orgrole($orgid), $allow) && !is_siteadmin()) {
-	echo $OUTPUT->header();
-	?>
-		<p class="alert alert-danger"><?php get_string('access_denied', 'local_eduvidual'); ?></p>
-	<?php
-	echo $OUTPUT->footer();
-	exit;
+    echo $OUTPUT->header();
+    ?>
+    <p class="alert alert-danger"><?php get_string('access_denied', 'local_eduvidual'); ?></p>
+    <?php
+    echo $OUTPUT->footer();
+    exit;
 }
 
 $PAGE->navbar->add(get_string('Management', 'local_eduvidual'), new moodle_url('/local/eduvidual/pages/manage.php', array('orgid' => $orgid)));
@@ -60,21 +60,21 @@ echo $OUTPUT->header();
 
 $cohorts = array_values($DB->get_records_sql("SELECT id,name FROM {cohort} WHERE contextid=? ORDER BY name ASC", array($context->id)));
 if (empty($cohort)) {
-	foreach ($cohorts AS $_cohort) {
-		$cohort = $_cohort->id;
-		break;
-	}
+    foreach ($cohorts as $_cohort) {
+        $cohort = $_cohort->id;
+        break;
+    }
 
 }
 if (!empty($cohort)) {
-	$cohorto = $DB->get_record('cohort', array('id' => $cohort, 'contextid' => $context->id));
+    $cohorto = $DB->get_record('cohort', array('id' => $cohort, 'contextid' => $context->id));
 }
 
-$cohorts[] = (object) array('id' => '___all', 'name' => get_string('manage:bunch:all', 'local_eduvidual'));
-$cohorts[] = (object) array('id' => '___allparents', 'name' => get_string('manage:bunch:allparents', 'local_eduvidual'));
-$cohorts[] = (object) array('id' => '___allstudents', 'name' => get_string('manage:bunch:allstudents', 'local_eduvidual'));
-$cohorts[] = (object) array('id' => '___allteachers', 'name' => get_string('manage:bunch:allteachers', 'local_eduvidual'));
-$cohorts[] = (object) array('id' => '___allmanagers', 'name' => get_string('manage:bunch:allmanagers', 'local_eduvidual'));
+$cohorts[] = (object)array('id' => '___all', 'name' => get_string('manage:bunch:all', 'local_eduvidual'));
+$cohorts[] = (object)array('id' => '___allparents', 'name' => get_string('manage:bunch:allparents', 'local_eduvidual'));
+$cohorts[] = (object)array('id' => '___allstudents', 'name' => get_string('manage:bunch:allstudents', 'local_eduvidual'));
+$cohorts[] = (object)array('id' => '___allteachers', 'name' => get_string('manage:bunch:allteachers', 'local_eduvidual'));
+$cohorts[] = (object)array('id' => '___allmanagers', 'name' => get_string('manage:bunch:allmanagers', 'local_eduvidual'));
 
 foreach ($cohorts as &$c) {
     $c->selected = ($cohort == $c->id);
@@ -87,43 +87,43 @@ $orderasc = ($orderasc == 'asc') ? 'ASC' : 'DESC';
 switch ($orderby) {
     case 'firstname':
         $orderbysql = "u.firstname $orderasc, u.lastname $orderasc";
-    break;
+        break;
     case 'email':
         $orderbysql = "u.email $orderasc";
-    break;
+        break;
     case 'role':
         $orderbysql = "ou.role $orderasc";
-    break;
+        break;
     case 'authtype':
         $orderbysql = "u.auth $orderasc";
-    break;
+        break;
     case 'secret':
         $orderbysql = "u.id $orderasc";
-    break;
+        break;
     case 'lastname':
     default:
         $orderby = 'lastname';
         $orderbysql = "u.lastname $orderasc, u.firstname $orderasc";
 }
 
-switch($cohort) {
+switch ($cohort) {
     case '___all':
-        $userids = array_keys($DB->get_records('local_eduvidual_orgid_userid', [ 'orgid' => $orgid ], '', 'userid'));
-    break;
+        $userids = array_keys($DB->get_records('local_eduvidual_orgid_userid', ['orgid' => $orgid], '', 'userid'));
+        break;
     case '___allparents':
-        $userids = array_keys($DB->get_records('local_eduvidual_orgid_userid', [ 'orgid' => $orgid, 'role' => 'Parent' ], '', 'userid'));
-    break;
+        $userids = array_keys($DB->get_records('local_eduvidual_orgid_userid', ['orgid' => $orgid, 'role' => 'Parent'], '', 'userid'));
+        break;
     case '___allstudents':
-        $userids = array_keys($DB->get_records('local_eduvidual_orgid_userid', [ 'orgid' => $orgid, 'role' => 'Student' ], '', 'userid'));
-    break;
+        $userids = array_keys($DB->get_records('local_eduvidual_orgid_userid', ['orgid' => $orgid, 'role' => 'Student'], '', 'userid'));
+        break;
     case '___allteachers':
-        $userids = array_keys($DB->get_records('local_eduvidual_orgid_userid', [ 'orgid' => $orgid, 'role' => 'Teacher' ], '', 'userid'));
-    break;
+        $userids = array_keys($DB->get_records('local_eduvidual_orgid_userid', ['orgid' => $orgid, 'role' => 'Teacher'], '', 'userid'));
+        break;
     case '___allmanagers':
-        $userids = array_keys($DB->get_records('local_eduvidual_orgid_userid', [ 'orgid' => $orgid, 'role' => 'Manager' ], '', 'userid'));
-    break;
+        $userids = array_keys($DB->get_records('local_eduvidual_orgid_userid', ['orgid' => $orgid, 'role' => 'Manager'], '', 'userid'));
+        break;
     default:
-        $userids = array_keys($DB->get_records('cohort_members', [ 'cohortid' => $cohort ], '', 'userid'));
+        $userids = array_keys($DB->get_records('cohort_members', ['cohortid' => $cohort], '', 'userid'));
 }
 
 list($insql, $inparams) = $DB->get_in_or_equal($userids);
@@ -136,8 +136,8 @@ $entries = $DB->get_records_sql($sql, $inparams);
 $dummydomain = \local_eduvidual\locallib::get_dummydomain();
 
 $formats = array(
-    (object) array('format' => 'cards', 'name' => get_string('manage:user_bunches:format:cards', 'local_eduvidual')),
-    (object) array('format' => 'list', 'name' => get_string('manage:user_bunches:format:list', 'local_eduvidual')),
+    (object)array('format' => 'cards', 'name' => get_string('manage:user_bunches:format:cards', 'local_eduvidual')),
+    (object)array('format' => 'list', 'name' => get_string('manage:user_bunches:format:list', 'local_eduvidual')),
 );
 foreach ($formats as &$f) {
     $f->selected = ($format == $f->format);
@@ -146,19 +146,20 @@ foreach ($formats as &$f) {
 $users = array();
 $userids = array();
 $cnt = 0;
-foreach($entries AS $user) {
+foreach ($entries as $user) {
     $role = $DB->get_record('local_eduvidual_orgid_userid', array('orgid' => $orgid, 'userid' => $user->id));
-    if (empty($role->role)) continue;
+    if (empty($role->role))
+        continue;
     profile_load_data($user);
     $user->backgroundcard = get_user_preferences('local_eduvidual_backgroundcard', '', $user->id);
-	if (empty($user->backgroundcard)) {
-		$user->backgroundcard = \local_eduvidual\lib_enrol::choose_background($user->id);
-	}
+    if (empty($user->backgroundcard)) {
+        $user->backgroundcard = \local_eduvidual\lib_enrol::choose_background($user->id);
+    }
     $user->role = $role->role;
     $user->userpicture = $OUTPUT->user_picture($user, array('size' => 200));
     $user->userpicturesmall = $OUTPUT->user_picture($user, array('size' => 50));
     $user->secret_encoded = rawurlencode($user->id . '#' . $user->profile_field_secret);
-	$user->displayusername = $user->username;
+    $user->displayusername = $user->username;
 
     $cnt++;
     if ($cnt == 18) {

@@ -38,7 +38,7 @@ $PAGE->set_heading(get_string('restricted:title', 'local_eduvidual'));
 echo $OUTPUT->header();
 ?>
 
-<h3><?php echo get_string('restricted:title', 'local_eduvidual') ?></h3>
+    <h3><?php echo get_string('restricted:title', 'local_eduvidual') ?></h3>
 <?php echo get_string('restricted:description', 'local_eduvidual') ?>
 
 <?php

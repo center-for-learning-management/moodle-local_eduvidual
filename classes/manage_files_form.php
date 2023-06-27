@@ -26,10 +26,11 @@ defined('MOODLE_INTERNAL') || die;
 require_once($CFG->libdir . "/formslib.php");
 
 class local_eduvidual_manage_files_form extends moodleform {
-    var $maxbytes = 1024*1024;
+    var $maxbytes = 1024 * 1024;
     var $areamaxbytes = 10485760;
     var $maxfiles = 10;
     var $subdirs = 0;
+
     function definition() {
         global $_url, $CFG;
         $mform = $this->_form;
@@ -42,7 +43,7 @@ class local_eduvidual_manage_files_form extends moodleform {
         $mform->addElement('filemanager', 'orglogo', get_string('manage:style:orglogo:filearealabel', 'local_eduvidual'), null,
             array(
                 'subdirs' => $this->subdirs, 'maxbytes' => $this->maxbytes, 'areamaxbytes' => $this->areamaxbytes,
-                'maxfiles' => 1, 'accepted_types' => array('image')
+                'maxfiles' => 1, 'accepted_types' => array('image'),
             )
         );
 
@@ -50,7 +51,7 @@ class local_eduvidual_manage_files_form extends moodleform {
         $mform->addElement('filemanager', 'orgbanner', get_string('manage:style:orgbanner:filearealabel', 'local_eduvidual'), null,
             array(
                 'subdirs' => $this->subdirs, 'maxbytes' => $this->maxbytes, 'areamaxbytes' => $this->areamaxbytes,
-                'maxfiles' => 1, 'accepted_types' => array('image')
+                'maxfiles' => 1, 'accepted_types' => array('image'),
             )
         );
 
@@ -64,6 +65,7 @@ class local_eduvidual_manage_files_form extends moodleform {
 
         $this->add_action_buttons(true, get_string('manage:style:files:send', 'local_eduvidual'));
     }
+
     //Custom validation should be added here
     function validation($data, $files) {
         return array();

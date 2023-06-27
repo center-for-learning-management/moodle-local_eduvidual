@@ -24,7 +24,7 @@ defined('MOODLE_INTERNAL') || die;
 
 $action = optional_param('action', 'usermap', PARAM_TEXT); // tab the will be shown initially.
 
-$orgmaps = array_values($DB->get_records('local_webuntis_orgmap', [ 'connected' => 1, 'orgid' => $orgid ]));
+$orgmaps = array_values($DB->get_records('local_webuntis_orgmap', ['connected' => 1, 'orgid' => $orgid]));
 if (count($orgmaps) > 1) {
     foreach ($orgmaps as $_orgmap) {
         if ($orgmap->orgid == $orgid) {
@@ -34,10 +34,10 @@ if (count($orgmaps) > 1) {
 } else if (count($orgmaps) > 0) {
     $orgmap = $orgmaps[0];
 } else {
-    $orgmap = (object) [];
+    $orgmap = (object)[];
 }
 if (empty($orgmap->orgid) || $orgmap->orgid != $orgid) {
-    $alert = (object) [
+    $alert = (object)[
         'type' => 'warning',
         'content' => get_string('manage:webuntis:orgnotconnected', 'local_eduvidual'),
     ];
@@ -65,29 +65,29 @@ foreach ($params->usermaps as $usermap) {
     }
 }
 $actions = [
-    (object) [
-            'active' => ($action == 'usermap'),
-            'label' => get_string('admin:usermaps:pagetitle', 'local_webuntis'),
-            'relativepath' => "/local/eduvidual/pages/manage.php?act=webuntis&orgid=$orgid&action=usermap",
-        ],
-    (object) [
-            'active' => ($action == 'create'),
-            'label' => get_string('admin:usersync:usercreate', 'local_webuntis'),
-            'relativepath' => "/local/eduvidual/pages/manage.php?act=webuntis&orgid=$orgid&action=create",
-        ],
-    (object) [
-            'active' => ($action == 'purge'),
-            'label' => get_string('admin:usersync:userpurge', 'local_webuntis'),
-            'relativepath' => "/local/eduvidual/pages/manage.php?act=webuntis&orgid=$orgid&action=purge",
-        ],
-    (object) [
-            'active' => ($action == 'roles'),
-            'label' => get_string('admin:usersync:userroles', 'local_webuntis'),
-            'relativepath' => "/local/eduvidual/pages/manage.php?act=webuntis&orgid=$orgid&action=roles",
-        ]
+    (object)[
+        'active' => ($action == 'usermap'),
+        'label' => get_string('admin:usermaps:pagetitle', 'local_webuntis'),
+        'relativepath' => "/local/eduvidual/pages/manage.php?act=webuntis&orgid=$orgid&action=usermap",
+    ],
+    (object)[
+        'active' => ($action == 'create'),
+        'label' => get_string('admin:usersync:usercreate', 'local_webuntis'),
+        'relativepath' => "/local/eduvidual/pages/manage.php?act=webuntis&orgid=$orgid&action=create",
+    ],
+    (object)[
+        'active' => ($action == 'purge'),
+        'label' => get_string('admin:usersync:userpurge', 'local_webuntis'),
+        'relativepath' => "/local/eduvidual/pages/manage.php?act=webuntis&orgid=$orgid&action=purge",
+    ],
+    (object)[
+        'active' => ($action == 'roles'),
+        'label' => get_string('admin:usersync:userroles', 'local_webuntis'),
+        'relativepath' => "/local/eduvidual/pages/manage.php?act=webuntis&orgid=$orgid&action=roles",
+    ],
 ];
 
-echo $OUTPUT->render_from_template('local_webuntis/navbar', [ 'actions' => $actions ]);
+echo $OUTPUT->render_from_template('local_webuntis/navbar', ['actions' => $actions]);
 
 switch ($action) {
     case 'create':
@@ -96,16 +96,16 @@ switch ($action) {
                     WHERE tenant_id = ?
                         AND (userid = 0 OR userid IS NULL)
                     ORDER BY lastname ASC, firstname ASC";
-        $params->notmappedusers = array_values($DB->get_records_sql($sql, [ $TENANT->get_tenant_id() ]));
+        $params->notmappedusers = array_values($DB->get_records_sql($sql, [$TENANT->get_tenant_id()]));
         foreach ($params->notmappedusers as $nmu) {
             $nmu->missingdata = (empty($nmu->email) || empty($nmu->firstname) || empty($nmu->lastname));
             if (!empty($nmu->missingdata)) {
-                $chkusers = array_values($DB->get_records('user', [ 'email' => strtolower($nmu->email)]));
+                $chkusers = array_values($DB->get_records('user', ['email' => strtolower($nmu->email)]));
                 $nmu->exists = (count($chkusers) > 0);
             }
         }
         echo $OUTPUT->render_from_template('local_webuntis/usersync_create', $params);
-    break;
+        break;
     case 'purge':
         $params->orgid = $orgid;
         $sql = "SELECT *
@@ -126,8 +126,8 @@ switch ($action) {
                     AND id NOT IN ($CFG->siteadmins)
                     AND deleted = 0
                     ORDER BY lastname ASC, firstname ASC";
-        $params->purgecandidates = array_values($DB->get_records_sql($sql, [ $params->orgid, $TENANT->get_tenant_id(), $USER->id ]));
-        $roles = $DB->get_records_sql('SELECT userid,role FROM {local_eduvidual_orgid_userid} WHERE orgid=?', [ 'orgid' => $params->orgid ]);
+        $params->purgecandidates = array_values($DB->get_records_sql($sql, [$params->orgid, $TENANT->get_tenant_id(), $USER->id]));
+        $roles = $DB->get_records_sql('SELECT userid,role FROM {local_eduvidual_orgid_userid} WHERE orgid=?', ['orgid' => $params->orgid]);
 
         foreach ($params->purgecandidates as $pc) {
             $u = \core_user::get_user($pc->id);
@@ -135,7 +135,7 @@ switch ($action) {
             $pc->role = $roles[$pc->id]->role;
         }
         echo $OUTPUT->render_from_template('local_webuntis/usersync_purge', $params);
-    break;
+        break;
     case 'roles':
         $params->orgid = $orgid;
 
@@ -158,7 +158,7 @@ switch ($action) {
                         AND webuntis.userid > 0
                         AND webuntis.userid = moodle.id
                     ORDER BY webuntis.lastname ASC, webuntis.firstname ASC";
-        $mappedusers = array_values($DB->get_records_sql($sql, [ $TENANT->get_tenant_id() ]));
+        $mappedusers = array_values($DB->get_records_sql($sql, [$TENANT->get_tenant_id()]));
 
         foreach ($mappedusers as $mu) {
             $mu->w_role = ucfirst($mu->w_role);
@@ -173,13 +173,13 @@ switch ($action) {
         }
 
         echo $OUTPUT->render_from_template('local_webuntis/usersync_roles', $params);
-    break;
+        break;
     default:
         $toggle = optional_param('autoenrol', 0, PARAM_INT);
         if (!empty($toggle)) {
             $setto = ($toggle == 1) ? 1 : 0;
             $orgmap->autoenrol = $setto;
-            $DB->set_field('local_webuntis_orgmap', 'autoenrol', $setto, [ 'id' => $orgmap->id ]);
+            $DB->set_field('local_webuntis_orgmap', 'autoenrol', $setto, ['id' => $orgmap->id]);
         }
         $triggerurl = $PAGE->url;
         $triggerurl->param('autoenrol', empty($orgmap->autoenrol) ? 1 : -1);

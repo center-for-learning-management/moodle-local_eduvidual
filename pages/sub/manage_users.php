@@ -31,7 +31,7 @@ $tab = optional_param('tab', 'manageusers', PARAM_TEXT); // tab the will be show
 
 $_codes = $DB->get_records_sql('SELECT * FROM {local_eduvidual_org_codes} WHERE orgid=? ORDER BY maturity DESC', array($org->orgid));
 $codes = array();
-foreach($_codes AS $code) {
+foreach ($_codes as $code) {
     $code->isvalid = ($code->maturity > time());
     $code->role_localized = get_string('role:' . $code->role, 'local_eduvidual');
 
@@ -46,10 +46,10 @@ foreach($_codes AS $code) {
 
 echo $OUTPUT->render_from_template(
     'local_eduvidual/manage_users',
-    (object) array(
+    (object)array(
         'codes' => $codes,
         'codes_amount' => count($codes),
-        'yyyymmddhhiiss' => date('Y-m-d H:i:s', time() + 60*60*24*30),
+        'yyyymmddhhiiss' => date('Y-m-d H:i:s', time() + 60 * 60 * 24 * 30),
         'orgid' => $org->orgid,
         'tab' => $tab,
         'urlspreadsheet' => get_config('local_eduvidual', 'manage_importusers_spreadsheettemplate'),

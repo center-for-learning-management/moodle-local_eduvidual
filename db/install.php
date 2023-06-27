@@ -23,7 +23,7 @@
 
 defined('MOODLE_INTERNAL') || die;
 
-function xmldb_local_eduvidual_install(){
+function xmldb_local_eduvidual_install() {
     global $DB;
 
     $obj = new \stdClass;

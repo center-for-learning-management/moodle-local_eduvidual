@@ -44,13 +44,13 @@ class user_updated {
         }
 
         $entry = (object)$event->get_data();
-        $user = $DB->get_record('user', [ 'id' => $entry->relateduserid ]);
+        $user = $DB->get_record('user', ['id' => $entry->relateduserid]);
         if ($user->username != $user->email) {
             // Check if there is no user already using this username within the same auth-type.
-            $chk = $DB->get_record('user', [ 'username' => $user->email, 'auth' => $user->auth, 'mnethostid' => $user->mnethostid]);
+            $chk = $DB->get_record('user', ['username' => $user->email, 'auth' => $user->auth, 'mnethostid' => $user->mnethostid]);
             if (empty($chk->id)) {
                 $user->username = $user->email;
-                $DB->set_field('user', 'username', $user->username, [ 'id' => $user->id ]);
+                $DB->set_field('user', 'username', $user->username, ['id' => $user->id]);
             }
         }
 

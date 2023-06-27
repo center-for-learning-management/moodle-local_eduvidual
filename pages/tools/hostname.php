@@ -36,7 +36,7 @@ $PAGE->set_heading('Hostname');
 echo $OUTPUT->header();
 
 $hostname = gethostname();
-$ip = $_SERVER["REMOTE_ADDR"]; 
+$ip = $_SERVER["REMOTE_ADDR"];
 echo "<p>Hostname: $hostname</p>";
 echo "<p>IP-Address: $ip</p>";
 

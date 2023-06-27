@@ -35,13 +35,14 @@ $PAGE->set_heading(get_string('Administration', 'local_eduvidual'));
 
 require_login();
 
-if (!is_siteadmin()) die;
+if (!is_siteadmin())
+    die;
 
 $msgs = array();
 
 if (!empty($orgids) && !empty($manageruserid)) {
     $orgs = explode("\n", $orgids);
-    foreach ($orgs AS $orgid) {
+    foreach ($orgs as $orgid) {
         $orgid = trim($orgid);
         $org = $DB->get_record('local_eduvidual_org', array('orgid' => $orgid));
 

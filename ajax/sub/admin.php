@@ -15,11 +15,11 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
-* @package    local_eduvidual
-* @copyright  2018 Digital Education Society (http://www.dibig.at)
-* @author     Robert Schrenk
-* @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
-*/
+ * @package    local_eduvidual
+ * @copyright  2018 Digital Education Society (http://www.dibig.at)
+ * @author     Robert Schrenk
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 
 defined('MOODLE_INTERNAL') || die;
 
@@ -33,17 +33,18 @@ if (!is_siteadmin()) {
             if (set_config('blockfooter', $blockfooter, 'local_eduvidual')) {
                 $reply['status'] = 'ok';
             }
-        break;
+            break;
         case 'manageorgs_search':
             $search = optional_param('search', '', PARAM_TEXT);
-            if (!empty($search)) $search = '%' . $search . '%';
+            if (!empty($search))
+                $search = '%' . $search . '%';
             $fields = array('id', 'categoryid', 'city', 'country', 'orgid', 'name', 'mail', 'phone', 'street', 'zip');
             $sql = "SELECT o." . implode(',o.', $fields) . ",og.lon,og.lat
                         FROM {local_eduvidual_org} o
                             LEFT JOIN {local_eduvidual_org_gps} og ON o.orgid=og.orgid
                         WHERE o." . implode(' LIKE ? OR o.', $fields);
             $params = array();
-            foreach($fields AS $field) {
+            foreach ($fields as $field) {
                 $params[] = $search;
             }
             $sql .= " LIKE ? ORDER BY name ASC";
@@ -51,7 +52,7 @@ if (!is_siteadmin()) {
             $reply['sql'] = $sql;
             $reply['orgs'] = $DB->get_records_sql($sql, $params);
             $reply['status'] = 'ok';
-        break;
+            break;
         case 'manageorgs_store':
             $params = optional_param_array('fields', '', PARAM_TEXT);
             $fields = array_keys($params);
@@ -61,7 +62,7 @@ if (!is_siteadmin()) {
             $reply['errors_reasons'] = array();
             // Check if required fields are set.
             $required = array('orgid', 'mail', 'name');
-            foreach($required AS $_required) {
+            foreach ($required as $_required) {
                 if (empty($params[$_required])) {
                     $valid = false;
                     $reply['errors'][] = $_required;
@@ -83,13 +84,13 @@ if (!is_siteadmin()) {
             if ($valid) {
                 if (!empty($params['id'])) {
                     $org = $DB->get_record('local_eduvidual_org', array('id' => $params['id']));
-                    foreach ($fields AS $field) {
+                    foreach ($fields as $field) {
                         $org->{$field} = $params[$field];
                     }
                     $DB->update_record('local_eduvidual_org', $org);
                     $reply['status'] = 'ok';
                 } else {
-                    $org = \local_eduvidual\lib_register::create_org((object) $params);
+                    $org = \local_eduvidual\lib_register::create_org((object)$params);
                     if ($org->id > 0) {
                         $reply['status'] = 'ok';
                     }
@@ -103,7 +104,7 @@ if (!is_siteadmin()) {
                         $gps->failed = 0;
                         $DB->update_record('local_eduvidual_org_gps', $gps);
                     } else {
-                        $gps = (object) array(
+                        $gps = (object)array(
                             'orgid' => $org->orgid,
                             'lat' => $params['lat'],
                             'lon' => $params['lon'],
@@ -119,13 +120,13 @@ if (!is_siteadmin()) {
                 $reply['status'] = 'error';
                 $reply['error'] = 'Invalid data';
             }
-        break;
+            break;
         case 'navbar':
             $navbar = optional_param('navbar', '', PARAM_TEXT);
             if (set_config('navbar', $navbar, 'local_eduvidual')) {
                 $reply['status'] = 'ok';
             }
-        break;
+            break;
         case 'questioncategories':
             $qc = optional_param_array('questioncategories', NULL, PARAM_INT);
             $sc = optional_param_array('supportcourses', NULL, PARAM_INT);
@@ -154,13 +155,13 @@ if (!is_siteadmin()) {
             } else {
                 $reply['error'] = 'config_not_set';
             }
-        break;
+            break;
         case 'requirecapability':
             $requirecapability = optional_param('requirecapability', 0, PARAM_INT);
             if (set_config('requirecapability', $requirecapability, 'local_eduvidual')) {
                 $reply['status'] = 'ok';
             }
-        break;
+            break;
         default:
             $reply['error'] = 'Unknown action';
     }
