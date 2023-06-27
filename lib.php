@@ -277,29 +277,24 @@ function local_eduvidual_control_view_profile($user, $course = null, $usercontex
 /**
  * Extend Moodle Navigation.
  */
-function local_eduvidual_extend_navigation($navigation) {
+function local_eduvidual_extend_navigation(global_navigation $navigation) {
+    global $CFG;
+
     $highestrole = \local_eduvidual\locallib::get_highest_role();
     if (empty($highestrole))
         return;
 
-    $nodehome = $navigation->get('home');
-    if (empty($nodehome)) {
-        $nodehome = $navigation;
-    }
+    // $custommenu = "Eduvidual\n";
+
+    $custommenu = '';
+    
+    $custommenu .= get_string('browse_org', 'local_eduvidual') . "|/local/eduvidual/pages/myorgs.php\n";
 
     if (in_array($highestrole, array('Manager', 'Teacher'))) {
-        $label = get_string('createcourse:here', 'local_eduvidual');
-        $link = new moodle_url('/local/eduvidual/pages/createcourse.php', array());
-        $icon = new pix_icon('create-course', '', 'local_eduvidual');
-        $nodecreatecourse = $nodehome->add($label, $link, navigation_node::NODETYPE_LEAF, $label, 'createcourse', $icon);
-        $nodecreatecourse->showinflatnavigation = true;
+        $custommenu .= get_string('createcourse:here', 'local_eduvidual') . "|/local/eduvidual/pages/createcourse.php\n";
     }
 
-    $label = get_string('Browse_org', 'local_eduvidual');
-    $link = new moodle_url('/local/eduvidual/pages/myorgs.php');
-    $icon = new pix_icon('my-orgs', '', 'local_eduvidual');
-    $nodemyorgs = $nodehome->add($label, $link, navigation_node::NODETYPE_LEAF, $label, 'browseorgs', $icon);
-    $nodemyorgs->showinflatnavigation = true;
+    $CFG->custommenuitems = $custommenu . $CFG->custommenuitems;
 }
 
 /**
