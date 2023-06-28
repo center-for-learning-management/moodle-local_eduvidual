@@ -43,7 +43,7 @@ if (empty($oauth->id)) {
     echo $OUTPUT->render_from_template('local_eduvidual/alert', array(
         'content' => get_string('oauth2:nosuchissuer', 'local_eduvidual', array('issuer' => $issuer)),
         'type' => 'danger',
-        'url' => new \moodle_url('/local/eduvidual/pages/login.php'),
+        'url' => new \moodle_url('/login/index.php'),
     ));
     echo $OUTPUT->footer();
 } else {
