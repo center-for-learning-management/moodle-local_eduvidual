@@ -196,8 +196,8 @@ function local_eduvidual_before_standard_html_head() {
         'course' => (object)array(
             'id' => $COURSE->id,
             'contextid' => $PAGE->context->id,
-            'islogedin' => isloggedin() && !isguestuser(),
         ),
+        'isloggedin' => isloggedin() && !isguestuser(),
     );
     $PAGE->requires->js_call_amd("local_eduvidual/jsinjector", "run", array($data));
 
