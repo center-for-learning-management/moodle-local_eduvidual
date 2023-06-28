@@ -196,6 +196,7 @@ function local_eduvidual_before_standard_html_head() {
         'course' => (object)array(
             'id' => $COURSE->id,
             'contextid' => $PAGE->context->id,
+            'islogedin' => isloggedin() && !isguestuser(),
         ),
     );
     $PAGE->requires->js_call_amd("local_eduvidual/jsinjector", "run", array($data));
@@ -358,6 +359,11 @@ function local_eduvidual_extend_navigation_user_settings($nav, $user, $context, 
     global $DB, $USER;
     if (!isguestuser($user)) {
         $node = $nav->add_node(navigation_node::create(get_string('pluginname', 'local_eduvidual')));
+
+        $is_on = get_user_preferences('local_experience_level', 0) == 1;
+
+        $node->add(get_string('advanced_options', 'local_experience') . ': ' . get_string($is_on ? 'on' : 'off', 'mnet'), new moodle_url('/local/experience/pages/advanced_options.php'));
+
         //print_r($nav);die();
         //$nav->add(get_string('test'), new moodle_url('/local/eduvidual/pages/preferendes.php'));
         $node->add(get_string('preferences:selectbg:title', 'local_eduvidual'), new moodle_url('/local/eduvidual/pages/preferences.php', array('act' => 'backgrounds', 'userid' => $user->id)));

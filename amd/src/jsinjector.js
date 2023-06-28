@@ -17,6 +17,13 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'loc
             });
             $("a[href*='/login/logout.php?sesskey']").attr('href', URL.relativeUrl('/local/eduvidual/pages/redirects/logout.php'));
             this.fakeBreadCrumb();
+
+            if (!data.isloggedin && $('body').attr('id') == 'page-site-index') {
+                // login nach header verschieben
+                $('.block.block_login')
+                    .insertBefore('.hero-section')
+                    .addClass('special-startpage-login-box');
+            }
         },
         /**
          * Clear session cache.
