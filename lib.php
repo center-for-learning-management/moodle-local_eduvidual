@@ -287,7 +287,7 @@ function local_eduvidual_extend_navigation(global_navigation $navigation) {
     // $custommenu = "Eduvidual\n";
 
     $custommenu = '';
-    
+
     $custommenu .= get_string('browse_org', 'local_eduvidual') . "|/local/eduvidual/pages/myorgs.php\n";
 
     if (in_array($highestrole, array('Manager', 'Teacher'))) {
