@@ -153,6 +153,14 @@ function local_eduvidual_before_standard_html_head() {
 
     // Direct JS commands.
     $PAGE->requires->js('/local/eduvidual/js/direct.js');
+
+    // fastest way to call js is with js_init_code and js_init_call
+    // call eduvidual_init in direct.js
+    $data = [
+        'isloggedin' => isloggedin() && !isguestuser()
+    ];
+    $PAGE->requires->js_init_code('eduvidual_init('.json_encode($data).');');
+
     $PAGE->requires->js('/local/eduvidual/js/ajax_observer.js');
 
     // Main styles for eduvidual.
@@ -197,7 +205,6 @@ function local_eduvidual_before_standard_html_head() {
             'id' => $COURSE->id,
             'contextid' => $PAGE->context->id,
         ),
-        'isloggedin' => isloggedin() && !isguestuser(),
     );
     $PAGE->requires->js_call_amd("local_eduvidual/jsinjector", "run", array($data));
 
