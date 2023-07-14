@@ -90,7 +90,7 @@ $isproductionsite = ($CFG->wwwroot == 'https://www.eduvidual.at');
                         <a href="<?php echo $CFG->wwwroot; ?>/auth/shibboleth_link/login.php?idp=<?php echo $idp; ?>"
                             title="Bildungsportal" id="eduvidual-btn-sso-bip" data-ajax="false">
                             <button class="btn btn-block" type="button" name="portal">
-                                <img src="<?php echo $CFG->wwwroot; ?>/local/eduvidual/pix/logo_bip-32x32.png" width="20" alt="BiP">&nbsp;Bildungportal
+                                <img src="<?php echo $CFG->wwwroot; ?>/local/eduvidual/pix/logo_bip.svg" width="38" alt="BiP">&nbsp;Bildungportal
                             </button>
                         </a>
                     </div>
