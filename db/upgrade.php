@@ -251,6 +251,8 @@ function xmldb_local_eduvidual_upgrade($oldversion) {
     // }
     // move_logos_from_css_to_stored_file();
 
+    // set microsoft oauth logo of login button on login page
+    $DB->execute("UPDATE {oauth2_issuer} SET `image` = '/theme/edumaker/pix/microsoft.ico' WHERE (`name` LIKE '%microsoft%')");
 
     // TODO: tabelle local_eduvidual_org_lic löschen
 
