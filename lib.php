@@ -302,6 +302,10 @@ function local_eduvidual_extend_navigation(global_navigation $navigation) {
         $custommenu .= get_string('createcourse:here', 'local_eduvidual') . "|/local/eduvidual/pages/createcourse.php\n";
     }
 
+    if (is_siteadmin()) {
+        $custommenu .= 'eduvidual-Administration' . "|/admin/category.php?category=local_eduvidual\n";
+    }
+
     $CFG->custommenuitems = $custommenu . $CFG->custommenuitems;
 }
 
