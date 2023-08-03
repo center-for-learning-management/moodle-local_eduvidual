@@ -171,7 +171,7 @@ class locallib {
                 $actions['style'] = 'manage:style';
                 $actions['subcats'] = 'manage:subcats:title';
                 $actions['users'] = 'manage:users';
-                $actions['educloud'] = 'manage:educloud';
+                // $actions['educloud'] = 'manage:educloud';
                 if (get_config('local_webuntis', 'version') >= 2021121500) {
                     $actions['webuntis'] = 'manage:webuntis';
                 }

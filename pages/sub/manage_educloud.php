@@ -22,6 +22,9 @@
 
 defined('MOODLE_INTERNAL') || die;
 
+echo 'disabled #7442jkfds';
+return;
+
 $userid = $USER->id;
 
 $permiturl = $PAGE->url;
