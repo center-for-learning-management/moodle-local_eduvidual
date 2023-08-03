@@ -157,9 +157,9 @@ function local_eduvidual_before_standard_html_head() {
     // fastest way to call js is with js_init_code and js_init_call
     // call eduvidual_init in direct.js
     $data = [
-        'isloggedin' => isloggedin() && !isguestuser()
+        'isloggedin' => isloggedin() && !isguestuser(),
     ];
-    $PAGE->requires->js_init_code('eduvidual_init('.json_encode($data).');');
+    $PAGE->requires->js_init_code('eduvidual_init(' . json_encode($data) . ');');
 
     $PAGE->requires->js('/local/eduvidual/js/ajax_observer.js');
 
@@ -300,6 +300,10 @@ function local_eduvidual_extend_navigation(global_navigation $navigation) {
 
     if (in_array($highestrole, array('Manager', 'Teacher'))) {
         $custommenu .= get_string('createcourse:here', 'local_eduvidual') . "|/local/eduvidual/pages/createcourse.php\n";
+    }
+
+    if (class_exists(\local_edusupport\lib) && \local_edusupport\lib::is_supportteam()) {
+        $custommenu .= get_string('issues', 'local_edusupport') . "|/local/edusupport/issues.php\n";
     }
 
     if (is_siteadmin()) {
