@@ -302,6 +302,10 @@ function local_eduvidual_extend_navigation(global_navigation $navigation) {
         $custommenu .= get_string('createcourse:here', 'local_eduvidual') . "|/local/eduvidual/pages/createcourse.php\n";
     }
 
+    if (class_exists(\block_edupublisher\lib::class)) {
+        $custommenu .= get_string('resource_catalogue', 'block_edupublisher') . "|/blocks/edupublisher/pages/search.php\n";
+    }
+
     if (class_exists(\local_edusupport\lib::class) && \local_edusupport\lib::is_supportteam()) {
         $custommenu .= get_string('issues', 'local_edusupport') . "|/local/edusupport/issues.php\n";
     }
