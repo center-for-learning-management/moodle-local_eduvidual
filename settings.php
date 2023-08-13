@@ -101,8 +101,6 @@ if ($hassiteconfig) {
         )
     );
 
-    \local_eduvidual\educloud\settings::admin_settings_page($settings);
-
     $map_roles = function($roles) {
         foreach ($roles as &$role) {
             $role = $role->name ?: $role->shortname;
