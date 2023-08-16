@@ -284,6 +284,7 @@ class lib_wshelper {
         global $DB, $USER;
         $result = new \stdClass; // json_decode($buffer);
         $result->results = array();
+        $result->results[0] = (object)[];
         $result->results[0]->name = get_string('enrolcandidatesmatching', 'enrol');
         $result->results[0]->users = array();
 
