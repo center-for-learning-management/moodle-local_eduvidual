@@ -382,7 +382,7 @@ class lib_helper {
         $memberships = $DB->get_records('local_eduvidual_orgid_userid', array('userid' => $USER->id));
         foreach ($memberships as $membership) {
             $org = $DB->get_record('local_eduvidual_org', array('orgid' => $membership->orgid));
-            $entries = explode("\n", $org->orgmenu);
+            $entries = explode("\n", $org->orgmenu ?? '');
             if (count($entries) > 0) {
                 $orgmenu = array(
                     'entries' => array(),
