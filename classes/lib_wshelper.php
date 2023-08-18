@@ -552,7 +552,8 @@ class lib_wshelper {
             $orgids = array_keys(\local_eduvidual\locallib::get_organisations('Teacher', false));
 
             $utf8converted = mb_convert_encoding($result['html'], 'HTML-ENTITIES', "UTF-8");
-            $doc = \DOMDocument::loadHTML($utf8converted, LIBXML_NOWARNING | LIBXML_NOERROR);
+            $doc = new \DOMDocument();
+            $doc->loadHTML($utf8converted, LIBXML_NOWARNING | LIBXML_NOERROR);
 
             $optgroups = $doc->getElementsByTagName('optgroup');
             $options = $optgroups->item($optgroups->length - 1)->getElementsByTagName('option');
