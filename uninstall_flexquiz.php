@@ -3,12 +3,18 @@
 require_once("../../config.php");
 
 $delete = $_REQUEST['delete'] ?? false;
-var_dump(['delete' => $delete]);
+
+echo '<pre>';
+var_dump([
+    'version' => '0002',
+    'delete' => $delete,
+]);
+
+require_once($CFG->dirroot . '/mod/quiz/lib.php');
 
 // $sql = "SELECT * FROM {flexquiz}";
 $flexquizzes = $DB->get_records('flexquiz');
 
-echo '<pre>';
 foreach ($flexquizzes as $flexquizz) {
     echo "Flex Quiz: {$flexquizz->name} (id: {$flexquizz->id}) => TODO: löschen\n";
 
@@ -18,10 +24,6 @@ foreach ($flexquizzes as $flexquizz) {
         continue;
     }
     echo "Basis Quiz: {$quiz->name} (id: {$quiz->id}) => TODO: löschen\n";
-
-    if ($delete) {
-        $DB->delete_records('quiz', ['id' => $flexquizz->parentquiz]);
-    }
 
     $sql = "SELECT c.*
                         FROM {flexquiz_children} c
@@ -40,10 +42,14 @@ foreach ($flexquizzes as $flexquizz) {
         echo "Kind Quizzes: {$quiz->name} (id: {$quiz->id}) => TODO: löschen\n";
 
         if ($delete) {
-            $DB->delete_records('quiz', ['id' => $child->quizid]);
+            quiz_delete_instance($child->quizid);
         }
     }
     // var_dump($children);
+
+    if ($delete) {
+        quiz_delete_instance($flexquizz->parentquiz);
+    }
 
     echo "\n";
 }
