@@ -88,9 +88,9 @@ $isproductionsite = ($CFG->wwwroot == 'https://www.eduvidual.at');
                 <div class="row justify-content-md-center">
                     <div class="col-lg-12 col-sm-12">
                         <a href="<?php echo $CFG->wwwroot; ?>/auth/shibboleth_link/login.php?idp=<?php echo $idp; ?>"
-                           title="Portal Digitale Schule (PODS)" id="eduvidual-btn-sso-pods" data-ajax="false">
+                            title="Bildungsportal" id="eduvidual-btn-sso-bip" data-ajax="false">
                             <button class="btn btn-block" type="button" name="portal">
-                                <img src="<?php echo $CFG->wwwroot; ?>/local/eduvidual/pix/logo_pods-32x32.png" width="20" alt="PODS">&nbsp;Portal Digitale Schule
+                                <img src="<?php echo $CFG->wwwroot; ?>/local/eduvidual/pix/logo_bip-32x32.png" width="20" alt="BiP">&nbsp;Bildungportal
                             </button>
                         </a>
                     </div>
