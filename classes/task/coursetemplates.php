@@ -23,12 +23,16 @@
 
 /**
  * Creates a backup when a template course has been modified.
-*/
+ */
 
 namespace local_eduvidual\task;
 
 defined('MOODLE_INTERNAL') || die;
 
+/**
+ * wenn eine Kursvorlage geändert wird, wird eine Sicherung von der Kursvorlage angelegt.
+ * Damit das Kursduplizieren effizienter wird.
+ */
 class coursetemplates extends \core\task\scheduled_task {
     public function get_name() {
         // Shown in admin screens.
@@ -39,7 +43,8 @@ class coursetemplates extends \core\task\scheduled_task {
         global $CFG, $DB;
 
         $scheduled = explode(',', get_config('local_eduvidual', 'coursebasement-scheduled'));
-        if (count($scheduled) == 0) return;
+        if (count($scheduled) == 0)
+            return;
 
         $admin = \get_admin();
         if (!$admin) {
@@ -57,7 +62,8 @@ class coursetemplates extends \core\task\scheduled_task {
         require_once($CFG->dirroot . '/backup/moodle2/backup_plan_builder.class.php');
 
         foreach ($scheduled as $courseid) {
-            if (empty($courseid)) continue;
+            if (empty($courseid))
+                continue;
             $course = \get_course($courseid);
             if (empty($course->id)) {
                 echo "ERROR: COURSE #$courseid DOES NOT EXIST<br />";
@@ -67,9 +73,9 @@ class coursetemplates extends \core\task\scheduled_task {
             echo "Backing up #$course->id ($course->fullname) to $targetfilename<br />\n";
 
             $bc = new \backup_controller(
-                        \backup::TYPE_1COURSE, $course->id, \backup::FORMAT_MOODLE,
-                        \backup::INTERACTIVE_YES, \backup::MODE_GENERAL, $admin->id
-                    );
+                \backup::TYPE_1COURSE, $course->id, \backup::FORMAT_MOODLE,
+                \backup::INTERACTIVE_YES, \backup::MODE_GENERAL, $admin->id
+            );
             $format = $bc->get_format();
             $type = $bc->get_type();
             $id = $bc->get_id();
@@ -89,9 +95,9 @@ class coursetemplates extends \core\task\scheduled_task {
 
             $ctx = \context_course::instance($course->id);
             $fs = \get_file_storage();
-            $fr = array('contextid'=>$ctx->id, 'component'=>'local_eduvidual', 'filearea'=>'coursebackup',
-                'itemid'=>0, 'filepath'=>'/', 'filename'=> $targetfilename,
-                'timecreated'=>time(), 'timemodified'=>time()
+            $fr = array('contextid' => $ctx->id, 'component' => 'local_eduvidual', 'filearea' => 'coursebackup',
+                'itemid' => 0, 'filepath' => '/', 'filename' => $targetfilename,
+                'timecreated' => time(), 'timemodified' => time(),
             );
 
             $testfile = $fs->get_file($fr['contextid'], $fr['component'], $fr['filearea'], $fr['itemid'], $fr['filepath'], $fr['filename']);

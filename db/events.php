@@ -25,23 +25,23 @@ defined('MOODLE_INTERNAL') || die;
 
 $observers = array(
     array(
-        'eventname'   => '\core\event\course_created',
-        'callback'    => '\local_eduvidual\observer\course_created::event',
+        'eventname' => '\core\event\course_created',
+        'callback' => '\local_eduvidual\observer\course_created::event',
         'includefile' => '/local/eduvidual/classes/observer/course_created.php',
-        'priority'    => 9999,
+        'priority' => 9999,
     ),
     array(
-        'eventname'   => '\core\event\user_loggedin',
-        'callback'    => '\local_eduvidual\observer\login::event',
+        'eventname' => '\core\event\user_loggedin',
+        'callback' => '\local_eduvidual\observer\login::event',
         'includefile' => '/local/eduvidual/classes/observer/login.php',
-        'priority'    => 9999,
+        'priority' => 9999,
     ),
     array(
-        'eventname'   => '\core\event\user_updated',
-        'callback'    => '\local_eduvidual\observer\user_updated::event',
-        'priority'    => 1,
-        'internal'    => false,
-    )
+        'eventname' => '\core\event\user_updated',
+        'callback' => '\local_eduvidual\observer\user_updated::event',
+        'priority' => 1,
+        'internal' => false,
+    ),
 );
 
 $events = array(
@@ -51,11 +51,11 @@ $events = array(
     '\core\event\course_updated',
 
 );
-foreach ($events AS $event) {
+foreach ($events as $event) {
     $observers[] = array(
-            'eventname'   => $event,
-            'callback'    => '\local_eduvidual\observer\course_changed::event',
-            'includefile' => '/local/eduvidual/classes/observer/course_changed.php',
-            'priority'    => 9999,
-        );
+        'eventname' => $event,
+        'callback' => '\local_eduvidual\observer\course_changed::event',
+        'includefile' => '/local/eduvidual/classes/observer/course_changed.php',
+        'priority' => 9999,
+    );
 }

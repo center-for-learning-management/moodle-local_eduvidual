@@ -53,7 +53,7 @@ class lib_helper {
 
         // Create new course
         require_once($CFG->dirroot . '/course/lib.php');
-        $coursedata = (object) array(
+        $coursedata = (object)array(
             'category' => $categoryid,
             'fullname' => $fullname,
             'shortname' => $shortname,
@@ -73,9 +73,9 @@ class lib_helper {
                 'comments' => 0,
                 'userscompletion' => 0,
                 'logs' => 0,
-                'grade_histories' => 0
+                'grade_histories' => 0,
             );
-            foreach ($backupsettings AS $name => $value) {
+            foreach ($backupsettings as $name => $value) {
                 if (!empty($options[$name])) {
                     $backupsettings[$name] = $options[$name];
                 }
@@ -83,17 +83,17 @@ class lib_helper {
 
             // Backup the course.
             $bc = new \backup_controller(\backup::TYPE_1COURSE, $basecourse->id, \backup::FORMAT_MOODLE,
-                                    \backup::INTERACTIVE_NO, \backup::MODE_SAMESITE, $USER->id);
+                \backup::INTERACTIVE_NO, \backup::MODE_SAMESITE, $USER->id);
 
             $settings = $bc->get_plan()->get_settings();
-            foreach($settings AS $setting) {
+            foreach ($settings as $setting) {
                 if (!empty($backupsettings[$setting->get_name()])) {
                     // Deactivated, caused permission error.
                     // $setting->set_value($backupsettings[$setting->get_name()]);
                 }
             }
 
-            $backupid       = $bc->get_backupid();
+            $backupid = $bc->get_backupid();
             $backupbasepath = $bc->get_plan()->get_basepath();
 
             $bc->execute_plan();
@@ -109,7 +109,7 @@ class lib_helper {
             }
 
             $rc = new \restore_controller($backupid, $targetcourse->id,
-                    \backup::INTERACTIVE_NO, \backup::MODE_SAMESITE, $USER->id, \backup::TARGET_NEW_COURSE);
+                \backup::INTERACTIVE_NO, \backup::MODE_SAMESITE, $USER->id, \backup::TARGET_NEW_COURSE);
 
             foreach ($backupsettings as $name => $value) {
                 $setting = $rc->get_plan()->get_setting($name);
@@ -162,7 +162,7 @@ class lib_helper {
             $file->delete();
 
             return $course;
-        } catch(Exception $e) {
+        } catch (Exception $e) {
             // There should be no direct output, this function is often used in ajax calls.
             /*
             echo $OUTPUT->render_from_template('local_eduvidual/alert', array(
@@ -172,10 +172,11 @@ class lib_helper {
             */
         }
     }
+
     public static function duplicate_course_from_template($basementcourseid, $categoryid, $fullname, $shortname, $enroluser = 0) {
         global $CFG, $DB, $USER;
         // First check if the template is valid.
-        require_once($CFG->dirroot.'/backup/util/includes/restore_includes.php');
+        require_once($CFG->dirroot . '/backup/util/includes/restore_includes.php');
         $fs = \get_file_storage();
         $files = $fs->get_area_files(\context_course::instance($basementcourseid)->id, 'local_eduvidual', 'coursebackup', 0, '', false);
         $files = array_values($files);
@@ -185,7 +186,7 @@ class lib_helper {
         }
 
         // Now create a course.
-        require_once($CFG->dirroot.'/course/lib.php');
+        require_once($CFG->dirroot . '/course/lib.php');
         $data = $DB->get_record('course', array('id' => $basementcourseid));
         $data->category = $categoryid;
         $data->fullname = $fullname;
@@ -197,7 +198,8 @@ class lib_helper {
         $context = \context_course::instance($course->id);
         $role = get_config('local_eduvidual', 'defaultroleteacher');
         $enroluser = optional_param('setteacher', 0, PARAM_INT);
-        if (empty($enroluser) || $enroluser == 0) $enroluser = $USER->id;
+        if (empty($enroluser) || $enroluser == 0)
+            $enroluser = $USER->id;
 
         // Enrol user as teacher.
         \local_eduvidual\lib_enrol::course_manual_enrolments(array($course->id), array($enroluser), $role);
@@ -255,6 +257,7 @@ class lib_helper {
             return $course;
         }
     }
+
     /**
      * If a course belongs to "mycourses", moodle will not show the coursecategories in the navbar.
      * We want that, so we modify the navbar, if the "mycourses"-node is found.
@@ -272,7 +275,7 @@ class lib_helper {
             $nodes = array();
             $nodesafter = array();
 
-            foreach ($navbaritems AS &$navbaritem) {
+            foreach ($navbaritems as &$navbaritem) {
                 if ($navbaritem->key == 'myhome') {
                     $nodes[] = array(
                         'has_action' => true,
@@ -319,7 +322,7 @@ class lib_helper {
                                 'is_hidden' => false,
                             );
                         }
-                    break;
+                        break;
                     case CONTEXT_COURSE:
                         $o = $DB->get_record('course', array('id' => $ctx->instanceid));
                         if (!empty($o->id)) {
@@ -332,7 +335,7 @@ class lib_helper {
                                 'is_hidden' => false,
                             );
                         }
-                    break;
+                        break;
                 }
             }
 
@@ -342,16 +345,17 @@ class lib_helper {
             register_shutdown_function('\local_eduvidual\lib_wshelper::buffer_navbar');
         }
     }
+
     /**
      * Makes a natural sort on an array of objects.
      * @param os The array.
      * @param indexname the property name of the objects that is used for sorting.
-    **/
+     **/
     public static function natsort($os, $indexname, $debugname = '') {
         global $reply;
         $reply['natsort_' . $debugname . '_os'] = $os;
         $unsortedos = array();
-        foreach($os AS $o) {
+        foreach ($os as $o) {
             $unsortedos[$o->{$indexname}] = $o;
         }
         $reply['natsort_' . $debugname . '_unsortedos'] = $unsortedos;
@@ -359,12 +363,13 @@ class lib_helper {
         natcasesort($indices);
         $reply['natsort_' . $debugname . '_indices'] = $indices;
         $sorted = array();
-        foreach($indices AS $index) {
+        foreach ($indices as $index) {
             $sorted[] = $unsortedos[$index];
         }
         $reply['natsort_' . $debugname . '_sorted'] = $sorted;
         return $sorted;
     }
+
     /**
      * Build tree for orgmenus.
      */
@@ -375,9 +380,9 @@ class lib_helper {
         $display_managerlink = false;
         $fields = array("name", "url", "target", "roles");
         $memberships = $DB->get_records('local_eduvidual_orgid_userid', array('userid' => $USER->id));
-        foreach($memberships as $membership){
+        foreach ($memberships as $membership) {
             $org = $DB->get_record('local_eduvidual_org', array('orgid' => $membership->orgid));
-            $entries = explode("\n", $org->orgmenu);
+            $entries = explode("\n", $org->orgmenu ?? '');
             if (count($entries) > 0) {
                 $orgmenu = array(
                     'entries' => array(),
@@ -385,13 +390,14 @@ class lib_helper {
                     'orgid' => $org->orgid,
                     'url' => $CFG->wwwroot . '/course/index.php?categoryid=' . $org->categoryid,
                     'urlmanagement' => ($display_managerlink && $membership->role == 'Manager') ?
-                                            $CFG->wwwroot . '/local/eduvidual/pages/manage.php?orgid=' . $org->orgid : '',
+                        $CFG->wwwroot . '/local/eduvidual/pages/manage.php?orgid=' . $org->orgid : '',
                 );
-                foreach ($entries AS $entry) {
+                foreach ($entries as $entry) {
                     $entry = explode("|", $entry);
-                    if (empty($entry[0])) continue;
+                    if (empty($entry[0]))
+                        continue;
                     $o = array();
-                    foreach ($fields AS $k => $field) {
+                    foreach ($fields as $k => $field) {
                         $o[$field] = (!empty($entry[$k])) ? trim($entry[$k]) : '';
                     }
                     if (empty($o['roles']) || strpos($o['roles'], $membership->role) > -1) {
@@ -405,6 +411,7 @@ class lib_helper {
         }
         return $orgmenus;
     }
+
     /**
      * Get the org menu from cache or generate it.
      */
@@ -447,7 +454,7 @@ class lib_helper {
         $overrides = $DB->get_records('local_eduvidual_overrides', array('orgid' => $org->orgid));
         foreach ($overrides as $override) {
             $field = explode('_', $override->field);
-            switch($field[0]) {
+            switch ($field[0]) {
                 case 'courserole':
                     if (count($field) == 3 && $field[2] == 'name') {
                         $roleid = $field[1];
@@ -455,7 +462,7 @@ class lib_helper {
                         if (!empty($rec->id)) {
                             $DB->set_field('role_names', 'name', $override->value, array('contextid' => $ctx->id, 'roleid' => $roleid));
                         } else {
-                            $rec = (object) array(
+                            $rec = (object)array(
                                 'contextid' => $ctx->id,
                                 'name' => $override->value,
                                 'roleid' => $roleid,
@@ -463,7 +470,7 @@ class lib_helper {
                             $DB->insert_record('role_names', $rec);
                         }
                     }
-                break;
+                    break;
             }
 
         }

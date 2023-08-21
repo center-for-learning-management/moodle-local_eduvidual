@@ -37,8 +37,8 @@ if (!in_array(\local_eduvidual\locallib::get_highest_role(), $allow) && !is_site
         'type' => 'danger',
         'content' => get_string('access_denied', 'local_eduvidual'),
     ));
-	echo $OUTPUT->footer();
-	exit;
+    echo $OUTPUT->footer();
+    exit;
 }
 
 // Used to determine if we can teach in this org
@@ -72,9 +72,9 @@ if ($formsent) {
             'type' => 'error',
         ));
     } elseif (empty($org->id) ||
-            !empty($subcat1) && !empty($subcats1) && !in_array($subcat1, $subcats1) ||
-            !empty($subcat2) && !empty($subcats2) && !in_array($subcat2, $subcats2) ||
-            !empty($subcat3) && !empty($subcats3) && !in_array($subcat3, $subcats3)) {
+        !empty($subcat1) && !empty($subcats1) && !in_array($subcat1, $subcats1) ||
+        !empty($subcat2) && !empty($subcats2) && !in_array($subcat2, $subcats2) ||
+        !empty($subcat3) && !empty($subcats3) && !in_array($subcat3, $subcats3)) {
 
         $msg[] = $OUTPUT->render_from_template('local_eduvidual/alert', array(
             'content' => get_string('missing_permission', 'local_eduvidual'),
@@ -84,9 +84,12 @@ if ($formsent) {
     } else {
         // We can create a course in that org!
         $parts = array();
-        if (!empty($subcat2)) $parts[] = $subcat2;
-        if (!empty($subcat3)) $parts[] = $subcat3;
-        if (!empty($subcat4)) $parts[] = $subcat4;
+        if (!empty($subcat2))
+            $parts[] = $subcat2;
+        if (!empty($subcat3))
+            $parts[] = $subcat3;
+        if (!empty($subcat4))
+            $parts[] = $subcat4;
         $coursename = implode(' ', $parts);
         if (empty(str_replace(' ', '', $coursename))) {
             $msg[] = $OUTPUT->render_from_template('local_eduvidual/alert', array(
@@ -100,11 +103,11 @@ if ($formsent) {
             if (empty($cat1->id)) {
                 // Create this category!
 
-                $cat1 = (object) array(
+                $cat1 = (object)array(
                     'name' => $subcat1,
                     'description' => '',
                     'parent' => $org->categoryid,
-                    'visible' => 1
+                    'visible' => 1,
                 );
                 $cat1 = \core_course_category::create($cat1);
             }
@@ -126,7 +129,7 @@ if ($formsent) {
                             'name' => $subcat2,
                             'description' => '',
                             'parent' => $cat1->id,
-                            'visible' => 1
+                            'visible' => 1,
                         );
                         $cat2 = \core_course_category::create($cat2);
                     }
@@ -145,21 +148,28 @@ if ($formsent) {
                     // Now check if basement is valid
                     $basementcourseid = 0;
                     switch ($basement) {
-                        case 'empty': $basementcourseid = get_config('local_eduvidual', 'coursebasementempty'); break;
-                        case 'restore': $basementcourseid = get_config('local_eduvidual', 'coursebasementrestore'); break;
-                        case 'template': $basementcourseid = get_config('local_eduvidual', 'coursebasementtemplate'); break;
+                        case 'empty':
+                            $basementcourseid = get_config('local_eduvidual', 'coursebasementempty');
+                            break;
+                        case 'restore':
+                            $basementcourseid = get_config('local_eduvidual', 'coursebasementrestore');
+                            break;
+                        case 'template':
+                            $basementcourseid = get_config('local_eduvidual', 'coursebasementtemplate');
+                            break;
                     }
 
-                    if(!empty($basementcourseid)){
+                    if (!empty($basementcourseid)) {
                         // Create course here
                         $fullname = $coursename;
                         $categoryid = $targcat->id;
                         $shortname = $org->orgid . '-' . $USER->id . '-' . date('YmdHis');
-                        if (strlen($shortname) > 30) $shortname = substr($shortname, 0, 30);
+                        if (strlen($shortname) > 30)
+                            $shortname = substr($shortname, 0, 30);
 
                         if (strlen($fullname) > 5) {
                             // First check if the template is valid.
-                            require_once($CFG->dirroot.'/backup/util/includes/restore_includes.php');
+                            require_once($CFG->dirroot . '/backup/util/includes/restore_includes.php');
                             $fs = \get_file_storage();
                             $files = $fs->get_area_files(\context_course::instance($basementcourseid)->id, 'local_eduvidual', 'coursebackup', 0, '', false);
                             $files = array_values($files);
@@ -169,7 +179,7 @@ if ($formsent) {
                             }
 
                             // Now create a course.
-                            require_once($CFG->dirroot.'/course/lib.php');
+                            require_once($CFG->dirroot . '/course/lib.php');
                             $data = $DB->get_record('course', array('id' => $basementcourseid));
                             $data->category = $categoryid;
                             $data->fullname = $fullname;
@@ -181,7 +191,8 @@ if ($formsent) {
                             $context = \context_course::instance($course->id);
                             $role = get_config('local_eduvidual', 'defaultroleteacher');
                             $enroluser = optional_param('setteacher', 0, PARAM_INT);
-                            if (empty($enroluser) || $enroluser == 0) $enroluser = $USER->id;
+                            if (empty($enroluser) || $enroluser == 0)
+                                $enroluser = $USER->id;
 
                             // Enrol user as teacher.
                             \local_eduvidual\lib_enrol::course_manual_enrolments(array($course->id), array($enroluser), $role);
@@ -232,13 +243,17 @@ if ($formsent) {
                             } finally {
                                 $course->fullname = $fullname;
                                 $course->shortname = $shortname;
-                                $course->startdate = (date("m") < 6)?strtotime((date("Y")-1) . '0901000000'):strtotime(date("Y") . '0901000000');
-                                $course->enddate = (date("m") < 6)?strtotime((date("Y")) . '0831000000'):strtotime((date("Y")+1) . '0831000000');
+                                $course->startdate = (date("m") < 6) ? strtotime((date("Y") - 1) . '0901000000') : strtotime(date("Y") . '0901000000');
+                                $course->enddate = (date("m") < 6) ? strtotime((date("Y")) . '0831000000') : strtotime((date("Y") + 1) . '0831000000');
                                 $course->summary = "";
-                                if (!empty($subcat1)) $course->summary .= $org->subcats1lbl . ': ' . $subcat1 . "<br />\n";
-                                if (!empty($subcat2)) $course->summary .= $org->subcats2lbl . ': ' . $subcat2 . "<br />\n";
-                                if (!empty($subcat3)) $course->summary .= $org->subcats3lbl . ': ' . $subcat3 . "<br />\n";
-                                if (!empty($subcat4)) $course->summary .= $org->subcats4lbl . ': ' . $subcat4 . "<br />\n";
+                                if (!empty($subcat1))
+                                    $course->summary .= $org->subcats1lbl . ': ' . $subcat1 . "<br />\n";
+                                if (!empty($subcat2))
+                                    $course->summary .= $org->subcats2lbl . ': ' . $subcat2 . "<br />\n";
+                                if (!empty($subcat3))
+                                    $course->summary .= $org->subcats3lbl . ': ' . $subcat3 . "<br />\n";
+                                if (!empty($subcat4))
+                                    $course->summary .= $org->subcats4lbl . ': ' . $subcat4 . "<br />\n";
                                 $DB->update_record('course', $course);
                                 rebuild_course_cache($course->id);
 
@@ -301,11 +316,13 @@ if (count($msg) > 0) {
         ));
     } else {
         $_orgs = array();
-        foreach($orgs AS $_org) { $_orgs[] = $_org; }
+        foreach ($orgs as $_org) {
+            $_orgs[] = $_org;
+        }
         $schoolyears = array('SJ 19/20', 'SJ 20/21');
 
         $favorgid = \local_eduvidual\locallib::get_favorgid();
-        foreach ($_orgs AS &$_org) {
+        foreach ($_orgs as &$_org) {
             $_org->isselected = ((empty($orgid) && $favorgid == $_org->orgid) || (!empty($orgid) && $orgid == $_org->orgid)) ? 1 : 0;
         }
 

@@ -48,12 +48,16 @@ class lib_manage {
                     )";
 
         $sizes = $DB->get_records_sql($sql, array($db_context->path . '/%'));
-        foreach($sizes AS $size) { break; }
+        foreach ($sizes as $size) {
+            break;
+        }
         return $size->fs;
     }
+
     public static function readable_filesize($bytes, $decimals = 2) {
         $factor = floor((strlen($bytes) - 1) / 3);
-        if ($factor > 0) $sz = 'KMGT';
+        if ($factor > 0)
+            $sz = 'KMGT';
         return sprintf("%.{$decimals}f", $bytes / pow(1024, $factor)) . @$sz[$factor - 1] . 'B';
     }
 }

@@ -18,13 +18,12 @@
 {{#js}}
 require(['jquery'], function($) {
     var html = [
-        '<li class="dropdown nav-item local-eduvidual-orgmenu">',
+        '<div class="dropdown local-eduvidual-orgmenu">',
         '    <a class="dropdown-toggle nav-link" id="drop-down-{{uniqid}}"',
         '        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"',
         '        href="#" title="{{#str}} orgmenu, local_eduvidual {{/str}}"',
         '        aria-controls="drop-down-menu-{{uniqid}}">',
-        '        <!-- {{#str}} Browse_org, local_eduvidual {{/str}} -->',
-        '        <i class="fa fa-icon fa-university"></i>',
+        '        <i class="icon fa fa-icon fa-sharp fa-light fa-school-flag"></i>',
         '    </a>',
         '    <div class="dropdown-menu {{#menuright}} dropdown-menu-right {{/menuright}}" role="menu" id="drop-down-menu-{{uniqid}}" aria-labelledby="drop-down-{{uniqid}}">',
                 {{#orgmenus}}
@@ -44,9 +43,9 @@ require(['jquery'], function($) {
                     {{/entries}}
                 {{/orgmenus}}
         '    </div>',
-        '</li>',
+        '</div>',
     ].join("\n");
 
-    $(html).insertBefore($('#page-wrapper>.navbar div.usermenu').closest('li'));
+    $(html).insertBefore('.usermenu-container');
 });
 {{/js}}

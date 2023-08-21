@@ -33,15 +33,17 @@ $PAGE->set_title($issuer);
 $PAGE->set_heading($issuer);
 $PAGE->set_url(new \moodle_url('/local/eduvidual/pages/redirects/login_oauth.php', array('issuer' => $issuer)));
 
-if (!empty($SESSION->wantsurl)) $wantsurl = str_replace($CFG->wwwroot, "", $SESSION->wantsurl);
-if (empty($wantsurl)) $wantsurl = '/my';
+if (!empty($SESSION->wantsurl))
+    $wantsurl = str_replace($CFG->wwwroot, "", $SESSION->wantsurl);
+if (empty($wantsurl))
+    $wantsurl = '/my';
 
 if (empty($oauth->id)) {
     echo $OUTPUT->header();
     echo $OUTPUT->render_from_template('local_eduvidual/alert', array(
         'content' => get_string('oauth2:nosuchissuer', 'local_eduvidual', array('issuer' => $issuer)),
         'type' => 'danger',
-        'url' => new \moodle_url('/local/eduvidual/pages/login.php'),
+        'url' => new \moodle_url('/login/index.php'),
     ));
     echo $OUTPUT->footer();
 } else {

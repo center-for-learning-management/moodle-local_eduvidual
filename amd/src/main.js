@@ -1,6 +1,6 @@
 define(
-    ['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'local_eduvidual/admin', 'local_eduvidual/manager', 'local_eduvidual/teacher', 'local_eduvidual/user', 'local_eduvidual/register', 'local_eduvidual/preferences','core/modal_factory', 'core/modal_events'],
-    function($, AJAX, NOTIFICATION, STR, URL, ADMIN, MANAGER, TEACHER, USER, REGISTER, PREFERENCES, ModalFactory, ModalEvents) {
+    ['jquery', 'core/ajax', 'core/config', 'core/notification', 'core/str', 'core/url', 'local_eduvidual/admin', 'local_eduvidual/manager', 'local_eduvidual/teacher', 'local_eduvidual/user', 'local_eduvidual/register', 'local_eduvidual/preferences','core/modal_factory', 'core/modal_events'],
+    function($, AJAX, config, NOTIFICATION, STR, URL, ADMIN, MANAGER, TEACHER, USER, REGISTER, PREFERENCES, ModalFactory, ModalEvents) {
     return {
         requestId: 0,
         debug: 3,
@@ -18,12 +18,19 @@ define(
         },
         connect: function(data, payload) {
             if (this.debug > 0) console.log('MAIN.connect(data, payload)', data, payload);
+
+            // add session key to data
+            if (typeof data !== 'object') {
+                throw 'data is not an object';
+            }
+            data.sesskey = config.sesskey;
+
             var o = { 'data': data, 'payload': payload, requestId: this.requestId++ };
             var MAIN =  this;
             MAIN.signal(o.payload, true);
             MAIN.spinnerGrid(true);
             $.ajax({
-                url: URL.fileUrl("/local/eduvidual/ajax/ajax.php", ""),
+                url: URL.relativeUrl("/local/eduvidual/ajax/ajax.php"),
                 method: 'POST',
                 data: data,
             }).done(function(res){

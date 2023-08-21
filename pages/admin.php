@@ -28,8 +28,9 @@ if (!is_siteadmin()) {
 }
 
 $act = optional_param('act', '', PARAM_TEXT);
+$actions = \local_eduvidual\locallib::get_actions('admin');
 if (empty($act)) {
-    $act = 'backgrounds';
+    $act = key($actions);
 }
 
 $PAGE->set_context(\context_system::instance());
@@ -52,7 +53,6 @@ if (!empty($act)) {
 echo $OUTPUT->header();
 
 echo "<div class=\"grid-eq-2\">\n";
-$actions = \local_eduvidual\locallib::get_actions('admin');
 \local_eduvidual\locallib::print_act_selector($actions);
 echo "</div>\n";
 
@@ -60,6 +60,8 @@ $subpages = array_keys($actions);
 $includefile = $CFG->dirroot . '/local/eduvidual/pages/sub/admin_' . $act . '.php';
 if (in_array($act, $subpages) && file_exists($includefile)) {
     include($includefile);
+} else {
+    echo "action '{$act}' not found";
 }
 
 echo $OUTPUT->footer();

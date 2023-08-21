@@ -37,7 +37,7 @@ $string['Accesscard'] = 'Zugangskarte';
 $string['Accesscards'] = 'Zugangskarten';
 $string['Administration'] = 'Administration';
 $string['Attributions'] = 'Namensnennung';
-$string['Browse_org'] = 'Meine Schulen';
+$string['browse_org'] = 'Meine Schulen';
 $string['Courses'] = 'Meine Kurse';
 $string['Management'] = 'Management';
 $string['Login'] = 'Anmelden';
@@ -64,10 +64,8 @@ $string['accesscard:orgcode'] = 'Code oder Passphrase';
 $string['accesscard:orgcode_access'] = 'Zugang mittels Code (aktiv)';
 $string['accesscard:orgid'] = 'Die Schulkennzahl';
 
-$string['admin:backgrounds:filearealabel'] = '';
 $string['admin:backgrounds:title'] = 'Hintergrund';
 $string['admin:backgrounds:description'] = 'Sie können an dieser Stelle Hintergrundbilder hochladen, aus denen die Nutzer/innen auswählen können.';
-$string['admin:backgrounds:files:send'] = 'Bilder speichern';
 $string['admin:backgrounds_cards:title'] = 'Hintergrund für Zugangskarten';
 $string['admin:backgrounds_cards:description'] = 'Sie können hier Hintergrundbilder für Zugangskarten hochladen!';
 $string['admin:blockfooter:title'] = 'Fußzeile des eduvidual Blocks';
@@ -79,9 +77,6 @@ $string['admin:coursebasements:title'] = 'Kategorien mit Kursvorlagen';
 $string['admin:coursebasements:description'] = 'Bitte benennen Sie hier Vorlagekurse für die jeweilige Option:';
 $string['admin:coursedelete:title'] = 'Kurslöschlog';
 $string['admin:coursestuff:title'] = 'Kurseinstellungen';
-$string['admin:dropzone:description'] = 'Setzen Sie das Verzeichnis zu einem Dateisystem-Repository. Wenn Nutzer/innen etwas hochladen, wird Ihnen der Zugriff aufs Repository für 24 h gewährt.';
-$string['admin:dropzone:notset'] = 'Kein Verzeichnis für die Dropzone gesetzt!';
-$string['admin:dropzone:title'] = 'Dropzone';
 $string['admin:formmodificator:description'] = 'Hier können Sie angeben, inwiefern Formular zur Erstellung von Aktivitäten/Ressourcen entsprechend dem Erfahrungslevel angepasst werden sollen. Geben Sie den Typ der Ressource und die Rollen-ID an. In der Spalte "Verstecke" können Sie nun zeilenweise die CSS-Selektoren angeben, die ausgeblendet werden sollen. In der Spalte "Default Werte" geben Sie Wertepaare an, welche Standardwerte im Formular gesetzt werden sollen, bspw. css_selektor1=default_wert1\n css_selektor2=default_wert2 usw.';
 $string['admin:formmodificator:ids_to_hide'] = 'Verstecke';
 $string['admin:formmodificator:ids_to_set'] = 'Default Werte';
@@ -90,28 +85,6 @@ $string['admin:formmodificator:roleids'] = 'Rollen-IDs';
 $string['admin:formmodificator:types'] = 'Typen';
 $string['admin:globalfiles:title'] = 'Globale Dateien';
 $string['admin:globalfiles:description'] = 'Global verfügbare Dateien hochladen. Der Dateipfad lautet wie folgt: /pluginfile.php/1/local_eduvidual/globalfiles/0/{verzeichnisse}/{dateiname}';
-$string['admin:licence:active'] = 'Lizenzsystem aktivieren oder deaktivieren';
-$string['admin:licence:add'] = 'Lizenzen anlegen';
-$string['admin:licence:added'] = '{$a->added} Lizenzen erfolgreich hinzugefügt';
-$string['admin:licence:comment'] = 'Kommentar';
-$string['admin:licence:expiry'] = 'Ablaufdatum';
-$string['admin:licence:failed'] = '{$a->failed} Lizenzen konnten nicht hinzugefügt werden';
-$string['admin:licence:missing'] = 'Keine gültige Lizenz';
-$string['admin:licence:missing:text'] = '
-    <p>
-        Leider verfügt Ihre Schule über keine gültige Lizenz, um mit {$a->sitename} arbeiten zu können.
-    </p>
-    <p>
-        Bitte wenden Sie sich an den Support dieser Moodle-Seite, um eine Lizenz zu lösen oder Hilfe anzufordern.
-    </p>
-';
-$string['admin:licence:orgids'] = 'Schulkennzahlen';
-$string['admin:licence:orgids_help'] = 'Schulkennzahlen zeilenweise!';
-$string['admin:licence:revoke'] = 'Stornieren';
-$string['admin:licence:revoked'] = 'Lizenzen wurde storniert';
-$string['admin:licence:title'] = 'Lizenzen';
-$string['admin:licencesystem:disabled'] = 'Lizenzsystem wurde deaktiviert';
-$string['admin:licencesystem:enabled'] = 'Lizenzsystem wurde aktiviert';
 $string['admin:ltiresourcekey:title'] = 'Standard LTI Resource Key';
 $string['admin:ltiresourcekey:description'] = 'Falls Sie LTI Ressourcen mit eduvidual verwalten, stellen Sie sicher, dass Sie überall denselben LTI Resource Key setzen. Sie können den Standardwert hier setzen.';
 $string['admin:map:both'] = 'eduvidual (migriert von LPF)';
@@ -136,13 +109,6 @@ $string['admin:module:ltisecret'] = 'LTI Secret';
 $string['admin:module:payload'] = 'Payload';
 $string['admin:module:payload:jsoneditor'] = 'Für LTI-Ressourcen wird der "Payload" automatisch zusammengestellt. Für alle anderen Typen nutzen Sie bitte einen JSON-Editor wie bspw. <a href="https://jsoneditoronline.org/" target="_blank">json editor online</a>!';
 $string['admin:module:type'] = 'Typ';
-$string['admin:modulecats:title'] = 'Modulkategorien';
-$string['admin:modulecat:edit'] = 'Module ändern';
-$string['admin:modulecat:generaldata'] = 'Allgemeine Daten';
-$string['admin:modulecat:title'] = 'Modulkategorie';
-$string['admin:modulecat:images'] = 'Bild für Modulkategorie';
-$string['admin:modulecat:filearealabel'] = '';
-$string['admin:modulecat:files:send'] = 'Kategorie speichern';
 $string['admin:modules:title'] = 'Module';
 $string['admin:modulesimport:datavalidated'] = 'Daten sind in Ordnung, übertrage in Datenbank!';
 $string['admin:modulesimport:downloadfile'] = 'Module wurden aktualisiert. Bitte laden Sie das Excel-Sheet mit den Modulen herunter. Mittels dieser Liste können Sie die Module später komfortabel ändern.';
@@ -209,7 +175,6 @@ $string['check_js:title'] = 'JavaScript';
 
 $string['coursebackupnotset'] = 'Kursvorlage nicht gefunden.';
 
-$string['courses:enrol:byqrcode'] = 'Aufnahme via QR Code';
 $string['courses:enrol:courseusers'] = 'Benutzer in {$a->name}';
 $string['courses:enrol:enrol'] = 'Aufnehmen';
 $string['courses:enrol:orgusers'] = 'Benutzer von {$a->name}';
@@ -218,9 +183,6 @@ $string['courses:enrol:searchforuser'] = 'Suche und wähle Nutzer/innen';
 $string['courses:enrol:searchtoomuch'] = 'Zu viele Nutzer/innen, bitte nutzen Sie das Suchfeld!';
 $string['courses:enrol:unenrol'] = 'Abmelden';
 $string['courses:noaccess'] = 'Leider sind Sie in diesem Kurs nicht eingeschrieben!';
-
-$string['cron:title'] = 'eduvidual Cron';
-$string['cron:trashbin:title'] = 'eduvidual Papierkorb';
 
 $string['dataprivacyorgerror:contacts'] = 'Ansprechpersonen';
 $string['dataprivacyorgerror:description'] = '
@@ -241,7 +203,7 @@ $string['dataprivacyorgerror:orgid'] = 'Schulkennzahl';
 $string['dataprivacyorgerror:orgname'] = 'Schulname';
 $string['dataprivacyorgerror:pagetitle'] = 'Datenlöschung nicht möglich';
 
-$string['defaultroles:title'] = 'Rollen';
+$string['admin:defaultroles:title'] = 'Rollen';
 $string['defaultroles:course:title'] = 'Rollen (für Kurse)';
 $string['defaultroles:course:description'] = 'Definieren Sie hier jene Rollen, die in Kursen durch dieses Plugin vergeben werden!';
 $string['defaultroles:course:parent'] = 'Erziehungsberechtige/r';
@@ -417,8 +379,6 @@ $string['manage:archive:source:description'] = 'Sie können Kurse en masse ausw�
 $string['manage:archive:target'] = 'Ziel';
 $string['manage:archive:target:title'] = 'Ziel wählen';
 $string['manage:archive:target:description'] = 'Sie haben {$a->count} Kurs(e) gewählt.';
-$string['manage:archive:trashbin'] = 'Papierkorb';
-$string['manage:archive:trashbin:description'] = 'Kurse können in einen systemweiten Papierkorb geschoben werden. Solange Kurse im Papierkorb sind, können sie wiederhergestellt werden. Der Papierkorb wird regelmäßig geleert!';
 $string['manage:authtype'] = 'Kontotyp';
 $string['manage:bunch:all'] = 'Alle';
 $string['manage:bunch:allwithoutbunch'] = 'Alle Nutzer/innen ohne "globale Gruppe"';
@@ -462,18 +422,13 @@ $string['manage:createuserspreadsheet:import:filetypeerror'] = 'Sorry, der Datei
 $string['manage:createuserspreadsheet:templateurl'] = 'URL zur Excelvorlage';
 $string['manage:createuserspreadsheet:templateurl:description'] = 'Geben Sie hier die URL zur Excelvorlage ein, die bei der Erstellung von Nutzer/innen verwendet werden kann.';
 $string['manage:data'] = 'Daten';
-$string['manage:educloud'] = 'eduCloud Austria';
+// $string['manage:educloud'] = 'eduCloud Austria';
 $string['manage:enrolmeasteacher'] = 'Schreibe mich mit Trainer-Rechten ein!';
 $string['manage:maildomain'] = 'Maildomain';
 $string['manage:maildomain:description'] = 'Wenn dieser Wert gesetzt wird, werden Nutzer/innen mit einer solchen Mailadresse automatisch dieser Organisation zugeordnet!';
-$string['manage:mnet:action'] = 'Logineinstellungen';
-$string['manage:mnet'] = 'MNet Host';
-$string['manage:mnet:adminonly'] = 'Nur Administrator/innen können hier Änderungen vornehmen!';
-$string['manage:mnet:enrol'] = 'Alle Nutzer/innen zuordnen, die diesen Maildomains entsprechen!';
-$string['manage:mnet:send'] = 'speichern';
-$string['manage:mnet:selectnone'] = 'Keine';
-$string['manage:mnet:selectorg'] = 'Zuerst Schule wählen!';
-$string['manage:mnet:filearealabel'] = 'Logo';
+$string['manage:login:action'] = 'Logineinstellungen';
+$string['manage:login:adminonly'] = 'Nur Administrator/innen können hier Änderungen vornehmen!';
+$string['manage:login:enrol'] = 'Alle Nutzer/innen zuordnen, die diesen Maildomains entsprechen!';
 $string['manage:orgmenu:cachewarning'] = 'Achtung: Dieses Menü wird im Sessioncache der Nutzer/innen gespeichert. Etwaige Änderungen werden erst nach einem Logout und Login sichtbar!';
 $string['manage:orgmenu:title'] = 'Schulspezifisches Menü';
 $string['manage:orgmenu:description'] = 'Alle hier angegebenen Menüeinträge werden dem Hauptmenü hinzugefügt. Bitte geben Sie die Einträge zeilenweise nach dem folgenden Format an:<br /><br />Titel|URL|Ziel|Benötigte Rolle(n)<br /><br />Beispiel: UnsereHomepage|http://www.ourhomepage.org|_blank|Teacher+Student<br /><br />Gültige Ziele: <i>leer</i> oder _blank<br />Gültige Rollen: <i>leer</i>, Manager, Teacher, Student, Parent';
@@ -484,6 +439,8 @@ $string['manage:selectorganization'] = 'Schule wählen';
 $string['manage:stats'] = 'Statistik';
 $string['manage:stats:currentconsumption'] = 'Der aktuelle Verbrauch ist';
 $string['manage:style:orgfiles:title'] = 'Bilder hochladen';
+$string['manage:style:orglogo:header'] = 'Organisationslogo';
+$string['manage:style:orglogo:filearealabel'] = 'Sie können hier eine Logografik hochladen, die im anstelle des Eduvidual Logos in allen Kursen und Kursbereichen angezeigt wird. Diese Grafik sollte quadratisch sein (35 x 35 Pixel)';
 $string['manage:style:orgbanner:header'] = 'Organisationsbanner';
 $string['manage:style:orgbanner:filearealabel'] = 'Sie können hier eine Bannergrafik hochladen, die im Boost-Theme als Header in allen Kursen und Kursbereichen angezeigt wird. Diese Grafik sollte etwa 2.200px * 1.200px aufweisen. Beachten Sie bitte, dass die Grafik in unterschiedlichen Seitenverhältnissen angezeigt wird und ggfs. Teile des Bildes abgeschnitten werden!';
 $string['manage:style:orgfiles:header'] = 'Eigene Bilder für Styles';
@@ -533,7 +490,6 @@ $string['nouserstoshow'] = 'Keine Nutzer/innen gefunden mit Suche nach {$a->sear
 $string['oauth2:nosuchissuer'] = 'Kein oAuth Service für {$a->issuer} konfiguriert!';
 $string['or'] = 'oder';
 $string['orgmenu'] = 'Schulspezifische Links';
-$string['orgrole:role_already_in_use'] = 'Rolle wird bereits benutzt!';
 $string['orgsizes:title'] = 'Dateisystemgröße';
 
 $string['login:direct'] = 'melden Sie sich direkt an:';
@@ -574,10 +530,6 @@ $string['privacy:metadata:privacy:metadata:local_eduvidual_userextra:background'
 $string['privacy:metadata:privacy:metadata:local_eduvidual_userextra:backgroundcard'] = 'Der Hintergrund der Zugangskarte';
 $string['privacy:metadata:privacy:metadata:local_eduvidual_userextra:defaultorg'] = 'Die standardmäßig ausgewählte Schule (sofern jemand in mehreren Schulen tätig ist)';
 $string['privacy:metadata:privacy:metadata:local_eduvidual_userqcats'] = 'Die Kernsystem-Fragenkategorien, die angezeigt werden sollen.';
-$string['privacy:metadata:privacy:metadata:local_eduvidual_usertoken'] = 'Nutzertoken für den automatischen Login';
-$string['privacy:metadata:privacy:metadata:local_eduvidual_usertoken:token'] = 'Der Token';
-$string['privacy:metadata:privacy:metadata:local_eduvidual_usertoken:created'] = 'Der Zeitpunkt der Erstellung des Tokens';
-$string['privacy:metadata:privacy:metadata:local_eduvidual_usertoken:used'] = 'Der Zeitpunkt der Einlösung des Tokens';
 
 $string['qrscan:cameratoobject'] = 'Richten Sie nun die Kamera auf den QR Code!';
 $string['questioncategoryfilter:label'] = 'Kategoriefilter';
@@ -620,8 +572,8 @@ $string['settings:emailmustbeusername:description'] = 'Wenn diese Option aktivie
 
 $string['start_with_at'] = 'Starte mit einem  "@"-Zeichen';
 $string['supportarea'] = 'Supportbereich';
-$string['supportcourse:title'] = 'Supportkurs';
-$string['supportcourse:description'] = 'Sie können hier einen Supportkurs angeben, auf den in der Registrierungsmail verlinkt wird.';
+$string['admin:supportcourse:title'] = 'Supportkurs';
+$string['admin:supportcourse:description'] = 'Sie können hier einen Supportkurs angeben, auf den in der Registrierungsmail verlinkt wird.';
 
 $string['teacher:addfromcatalogue'] = 'Ressourcenkatalog';
 $string['teacher:course:enrol'] = 'Nutzer/innen aufnehmen';
@@ -635,9 +587,6 @@ $string['teacher:createmodule:missing_capability'] = 'Ihnen fehlt das Recht Modu
 $string['teacher:createmodule:selectcourse'] = 'Kurs wählen';
 $string['teacher:createmodule:selectmodule'] = 'Modul wählen';
 $string['teacher:createmodule:selectsection'] = 'Kursabschnitt wählen';
-
-$string['trashcategory:title'] = 'Kurskategorie für Papierkorb';
-$string['trashcategory:description'] = 'Sie können eine Kurskategorie als Papierkorb angeben. Dieser wird täglich geleert.';
 
 $string['user:categories:adminshowall'] = 'Alle Schulen';
 $string['user:categories:adminshowmine'] = 'Nur meine Schulen';

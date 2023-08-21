@@ -46,7 +46,7 @@ if (!empty($setto)) {
                 $_COOKIE['X-orgclass'] = 'tester';
                 $_COOKIE['X-usehost'] = $host;
             }
-        break;
+            break;
         case 'admin':
             if (is_siteadmin()) {
                 setcookie('X-orgclass', 'admin', 0, '/');
@@ -54,16 +54,16 @@ if (!empty($setto)) {
                 $_COOKIE['X-orgclass'] = 'admin';
                 $_COOKIE['X-usehost'] = 'evcron01';
             }
-        break;
+            break;
         case 9:
             setcookie('X-orgclass', $setto, 0, '/');
             $_COOKIE['X-orgclass'] = 9;
-        break;
+            break;
         default:
             setcookie('X-userid', 0, 0, '/');
             $_COOKIE['X-orgclass'] = '';
             $_COOKIE['X-orgclass'] = \local_eduvidual\locallib::set_xorg_data();
-            setcookie('X-usehost', '', time()-3600, '/');
+            setcookie('X-usehost', '', time() - 3600, '/');
             unset($_COOKIE['X-usehost']);
     }
 }
@@ -73,11 +73,11 @@ if (!empty($varnish)) {
         case 'on':
             setcookie('X-use-varnish', 'true', 0, '/');
             $_COOKIE['X-use-varnish'] = 'true';
-        break;
+            break;
         case 'off':
-            setcookie('X-use-varnish', '', time()-3600, '/');
+            setcookie('X-use-varnish', '', time() - 3600, '/');
             unset($_COOKIE['X-use-varnish']);
-        break;
+            break;
     }
 
 }
@@ -91,19 +91,19 @@ require_login();
 echo $OUTPUT->header();
 
 ?>
-<h3>Liebe/r Nutzer/in,</h3>
-<p>
-    wir testen unsere neue Infrastruktur und bedanken uns sehr für dein Interesse,
-    uns dabei zu helfen. Wenn der Testmodus aktiv ist, kannst du alle Funktionen
-    der Seite ganz normal verwenden. Möglicherweise aber treten Fehler auf.
-    Diese Fehler helfen uns die Probleme zu beheben, bevor wir das System für
-    alle aktivieren. Bitte nutze in diesem Fall die Funktion "Problem melden", die
-    du rechts oben unter dem Arztkoffer-Symbol vorfindest!
-</p>
-<p>
-    Selbstverständlich kannst du hier auch jederzeit auf das normale Produktivsystem
-    zurückschalten!
-</p>
+    <h3>Liebe/r Nutzer/in,</h3>
+    <p>
+        wir testen unsere neue Infrastruktur und bedanken uns sehr für dein Interesse,
+        uns dabei zu helfen. Wenn der Testmodus aktiv ist, kannst du alle Funktionen
+        der Seite ganz normal verwenden. Möglicherweise aber treten Fehler auf.
+        Diese Fehler helfen uns die Probleme zu beheben, bevor wir das System für
+        alle aktivieren. Bitte nutze in diesem Fall die Funktion "Problem melden", die
+        du rechts oben unter dem Arztkoffer-Symbol vorfindest!
+    </p>
+    <p>
+        Selbstverständlich kannst du hier auch jederzeit auf das normale Produktivsystem
+        zurückschalten!
+    </p>
 <?php
 
 if ($_COOKIE['X-orgclass'] != 9) {
@@ -123,10 +123,10 @@ if ($_COOKIE['X-orgclass'] != 9) {
 
 ?>
 
-<hr />
-<h4>Site varnish</h4>
+    <hr/>
+    <h4>Site varnish</h4>
 
-Mit der "varnish"-Option testen wir eine Methode zur beschleunigten Auslieferung von Dateien.
+    Mit der "varnish"-Option testen wir eine Methode zur beschleunigten Auslieferung von Dateien.
 
 <?php
 
@@ -146,7 +146,7 @@ if (empty($_COOKIE['X-use-varnish'])) {
 
 if (is_siteadmin()) {
     ?>
-    <hr />
+    <hr/>
     <h4>Wartungsmodus (evcron01):</h4>
     <?php
     if (!empty($_COOKIE['X-orgclass']) && $_COOKIE['X-orgclass'] == 'admin') {
@@ -165,14 +165,14 @@ if (is_siteadmin()) {
 
     ?>
 
-    <hr />
+    <hr/>
     <h4>Bestimmten Server einstellen:</h4>
     <a href="<?php echo $url_setoff; ?>" class="btn btn-primary btn-block">
         Deaktivieren
     </a>
 
     <?php
-    $servers = array("evweb01","evweb02","evweb03","evweb04","evweb05","evweb06","evweb07","evweb08","evweb09","evcron01");
+    $servers = array("evweb01", "evweb02", "evweb03", "evweb04", "evweb05", "evweb06", "evweb07", "evweb08", "evweb09", "evcron01");
     foreach ($servers as $server) {
         $url_seton = $CFG->wwwroot . '/local/eduvidual/pages/tools/betatester.php?setto=tester&host=' . $server;
         ?>

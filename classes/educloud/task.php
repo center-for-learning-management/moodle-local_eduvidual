@@ -23,7 +23,7 @@
 
 /**
  * Creates a backup when a template course has been modified.
-*/
+ */
 
 namespace local_eduvidual\educloud;
 
@@ -71,7 +71,7 @@ class task extends \core\task\adhoc_task {
                 mtrace(" ==> aborting, this organization has an invalid context");
                 continue;
             }
-            $useseducloud = $DB->get_record('local_eduvidual_educloud', [ 'orgid' => $userorg->orgid]);
+            $useseducloud = $DB->get_record('local_eduvidual_educloud', ['orgid' => $userorg->orgid]);
             if (empty($useseducloud->permitted)) {
                 mtrace(" ==> org $userorg->orgid does not use educloud.");
                 foreach ($educloudroles as $roleid) {

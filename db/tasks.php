@@ -34,15 +34,6 @@ $tasks = array(
         'month' => '*',
     ),
     array(
-        'classname' => 'local_eduvidual\task\local_eduvidual_cron',
-        'blocking' => 0,
-        'minute' => '*',
-        'hour' => '*',
-        'day' => '*',
-        'dayofweek' => '*',
-        'month' => '*',
-    ),
-    array(
         'classname' => 'local_eduvidual\task\local_eduvidual_orgsizes',
         'blocking' => 0,
         'minute' => 0,
@@ -51,13 +42,4 @@ $tasks = array(
         'dayofweek' => '*',
         'month' => '*',
     ),
-    array(
-        'classname' => 'local_eduvidual\task\local_eduvidual_trashbin',
-        'blocking' => 0,
-        'minute' => 0,
-        'hour' => 0,
-        'day' => '*',
-        'dayofweek' => '*',
-        'month' => '*',
-    )
 );

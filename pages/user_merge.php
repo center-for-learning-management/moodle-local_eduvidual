@@ -44,7 +44,7 @@ $PAGE->set_heading(get_string('user:merge_accounts', 'local_eduvidual'));
 echo $OUTPUT->header();
 
 if (!empty($mail) && empty($code)) {
-    $users = array_values($DB->get_records('user', [ 'email' => $mail, 'suspended' => 0 ]));
+    $users = array_values($DB->get_records('user', ['email' => $mail, 'suspended' => 0]));
     if (count($users) == 0) {
         $params = [
             'content' => get_string('user:merge_accounts:mailnotfound', 'local_eduvidual'),
@@ -65,7 +65,7 @@ if (!empty($mail) && empty($code)) {
         $cache->set('user_merge_code', $sendcode);
         $cache->set('user_merge_mail', $mail);
         $cache->set('user_merge_user', $users[0]->id);
-        $url = new \moodle_url('/local/eduvidual/pages/user_merge.php', [ 'mail' => $mail, 'code' => $sendcode]);
+        $url = new \moodle_url('/local/eduvidual/pages/user_merge.php', ['mail' => $mail, 'code' => $sendcode]);
 
         $params = [
             'code' => $sendcode,
@@ -75,7 +75,7 @@ if (!empty($mail) && empty($code)) {
         $messagehtml = get_string('user:merge_accounts:mailtext', 'local_eduvidual', $params);
         $messagetext = html_to_text($messagehtml);
 
-        $subject = get_string('user:merge_accounts:mailsubject' , 'local_eduvidual');
+        $subject = get_string('user:merge_accounts:mailsubject', 'local_eduvidual');
 
         $fromuser = \core_user::get_support_user();
 

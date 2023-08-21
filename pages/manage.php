@@ -40,25 +40,37 @@ $PAGE->set_url('/local/eduvidual/pages/manage.php', array('act' => $act, 'orgid'
 $PAGE->set_title(get_string('Management', 'local_eduvidual'));
 $PAGE->set_heading(get_string('Management', 'local_eduvidual'));
 
-switch($act) {
+switch ($act) {
     case 'archive':
         $title = get_string('manage:archive', 'local_eduvidual');
         $PAGE->requires->js('/local/eduvidual/js/archive.js');
         $PAGE->requires->css('/local/eduvidual/style/archive.css');
-    break;
-	case 'categories':
+        break;
+    case 'categories':
         $title = get_string('manage:categories', 'local_eduvidual');
         $PAGE->requires->js('/local/eduvidual/js/archive.js');
         $PAGE->requires->css('/local/eduvidual/style/archive.css');
-    break;
-    case 'data': $title = get_string('manage:data', 'local_eduvidual'); break;
-	case 'mnet': $title = get_string('manage:mnet:action', 'local_eduvidual'); break;
-	case 'stats': $title = get_string('manage:stats', 'local_eduvidual'); break;
-	case 'style': $title = get_string('manage:style', 'local_eduvidual'); break;
-	case 'subcats': $title = get_string('manage:subcats:title', 'local_eduvidual'); break;
-	case 'users': $title = get_string('manage:users', 'local_eduvidual'); break;
-    case 'webuntis': $title = get_string('manage:webuntis', 'local_eduvidual'); break;
-	default: $title = get_string('Management', 'local_eduvidual');
+        break;
+    case 'login':
+        $title = get_string('manage:login:action', 'local_eduvidual');
+        break;
+    case 'stats':
+        $title = get_string('manage:stats', 'local_eduvidual');
+        break;
+    case 'style':
+        $title = get_string('manage:style', 'local_eduvidual');
+        break;
+    case 'subcats':
+        $title = get_string('manage:subcats:title', 'local_eduvidual');
+        break;
+    case 'users':
+        $title = get_string('manage:users', 'local_eduvidual');
+        break;
+    case 'webuntis':
+        $title = get_string('manage:webuntis', 'local_eduvidual');
+        break;
+    default:
+        $title = get_string('Management', 'local_eduvidual');
 }
 
 $PAGE->set_title($org->name . ': ' . $title);
@@ -70,7 +82,7 @@ $manageurl = new \moodle_url('/local/eduvidual/pages/manage.php', array('orgid' 
 $PAGE->navbar->add(get_string('Management', 'local_eduvidual'), $manageurl);
 
 if (!empty($act)) {
-	$PAGE->navbar->add($title, $PAGE->url);
+    $PAGE->navbar->add($title, $PAGE->url);
 }
 
 echo $OUTPUT->header();
@@ -85,13 +97,13 @@ $includefile = $CFG->dirroot . '/local/eduvidual/pages/sub/manage_' . $act . '.p
 $oactions = array();
 
 foreach ($actions as $key => $action) {
-	$oactions[] = array(
-		'action' => $action,
-		'key' => $key,
-		'localized' => get_string($action, 'local_eduvidual'),
-		'selected' => ($key == $act),
-		'url' => new \moodle_url('/local/eduvidual/pages/manage.php', array('orgid' => $orgid, 'act' => $key)),
-	);
+    $oactions[] = array(
+        'action' => $action,
+        'key' => $key,
+        'localized' => get_string($action, 'local_eduvidual'),
+        'selected' => ($key == $act),
+        'url' => new \moodle_url('/local/eduvidual/pages/manage.php', array('orgid' => $orgid, 'act' => $key)),
+    );
 }
 echo $OUTPUT->render_from_template('local_eduvidual/manage_overview', array('actions' => $oactions));
 

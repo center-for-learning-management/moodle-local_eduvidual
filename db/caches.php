@@ -32,5 +32,5 @@ $definitions = array(
     ),
     'session' => array(
         'mode' => cache_store::MODE_SESSION,
-    )
+    ),
 );

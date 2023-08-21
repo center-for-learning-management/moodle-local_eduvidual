@@ -56,7 +56,6 @@ if ($USER->id > 1 && !isguestuser($USER)) {
                     <div class="contact"><?php echo $USER->email; ?></div>
                     <div class="header"><?php echo get_string('Accesscard', 'local_eduvidual'); ?></div>
                     <div class="avatar"><?php echo $OUTPUT->user_picture($USER, array('size' => 200)); ?></div>
-                    <!-- <div class="qr"><img src="<?php echo $CFG->wwwroot . '/local/eduvidual/pix/qr.php?txt=' . $secret_encoded; ?>" alt="QR" /></div> -->
                     <div class="secret" style="display: flex; align-items: flex-end; justify-content: flex-end;">
                         <span class="uid"><?php echo $USER->id; ?></span>
                         <span class="hash">#</span>
@@ -70,9 +69,9 @@ if ($USER->id > 1 && !isguestuser($USER)) {
                 <label for="local_eduvidual_user_accesscode_orgid"><?php echo get_string('accesscard:orgid', 'local_eduvidual'); ?></label>
                 <input type="text" id="local_eduvidual_user_accesscode_orgid" autocomplete="off" readonly onfocus="this.removeAttribute('readonly');" style="width: 100%;"/>
                 <label for="local_eduvidual_user_accesscode_code"><?php echo get_string('accesscard:orgcode', 'local_eduvidual'); ?></label>
-                <input type="password" id="local_eduvidual_user_accesscode_code" autocomplete="off"  readonly onfocus="this.removeAttribute('readonly');" style="width: 100%;" />
+                <input type="password" id="local_eduvidual_user_accesscode_code" autocomplete="off" readonly onfocus="this.removeAttribute('readonly');" style="width: 100%;"/>
                 <a class="btn btn-secondary btn-block" href="#" id="local_eduvidual_user_accesscode_btn" style="margin-top: 5px;"
-                    onclick="require(['local_eduvidual/user'], function(USER) { USER.accesscode(); }); return false;">
+                   onclick="require(['local_eduvidual/user'], function(USER) { USER.accesscode(); }); return false;">
                     <?php echo get_string('accesscard:enrol', 'local_eduvidual'); ?>
                 </a>
             </div>
@@ -82,7 +81,7 @@ if ($USER->id > 1 && !isguestuser($USER)) {
 } else {
     echo $OUTPUT->render_from_template(
         'local_eduvidual/alert',
-        (object) array('type' => 'warning', 'content' => get_string('accesscard:not_for_guest', 'local_eduvidual'), 'url' => $CFG->wwwroot . '/my')
+        (object)array('type' => 'warning', 'content' => get_string('accesscard:not_for_guest', 'local_eduvidual'), 'url' => $CFG->wwwroot . '/my')
     );
 }
 

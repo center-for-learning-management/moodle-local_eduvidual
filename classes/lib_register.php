@@ -33,7 +33,7 @@ class lib_register {
      */
     public static function create_org($orgdata) {
         global $DB;
-        $fields = [ 'orgid', 'name', 'mail', 'phone', 'street', 'zip', 'city', 'country' ];
+        $fields = ['orgid', 'name', 'mail', 'phone', 'street', 'zip', 'city', 'country'];
         for ($a = 0; $a < count($fields); $a++) {
             if (empty($orgdata->{$fields[$a]})) {
                 throw new \moodle_exception('missing required data', 'local_eduvidual');
@@ -48,6 +48,7 @@ class lib_register {
         $orgdata->id = $DB->insert_record('local_eduvidual_org', $orgdata);
         return $orgdata;
     }
+
     /**
      * Create a category for the org if none exists or it was deleted.
      * @param org as object.
@@ -66,16 +67,17 @@ class lib_register {
 
         if (empty($org->categoryid)) {
             // Create a course category for this org
-            $data = (object) [
+            $data = (object)[
                 'name' => $org->name,
                 'description' => $org->name,
                 'idnumber' => $org->orgid,
             ];
             $category = \core_course_category::create($data);
             $org->categoryid = $category->id;
-            $DB->set_field('local_eduvidual_org', 'categoryid', $org->categoryid, [ 'orgid' => $org->orgid ]);
+            $DB->set_field('local_eduvidual_org', 'categoryid', $org->categoryid, ['orgid' => $org->orgid]);
         }
     }
+
     /**
      * Create required courses for this org, if they don't exist.
      * @param org as object.
@@ -138,6 +140,7 @@ class lib_register {
             }
         }
     }
+
     /**
      * Set the name or the org.
      * @param org object containing org data.
@@ -147,7 +150,7 @@ class lib_register {
         global $DB;
         if ($org->name != $name) {
             $org->name = $name;
-            $DB->set_field('local_eduvidual_org', 'name', $org->name, [ 'orgid' => $org->orgid ]);
+            $DB->set_field('local_eduvidual_org', 'name', $org->name, ['orgid' => $org->orgid]);
         }
     }
 }

@@ -44,7 +44,8 @@ class locallib {
      * @param delete (optional) delete this key.
      */
     public static function cache($type, $key = '', $value = '', $delete = 0) {
-        if (!in_array($type, array('application', 'request', 'session'))) return;
+        if (!in_array($type, array('application', 'request', 'session')))
+            return;
         $cache = self::${'cache_' . $type};
         if (empty($cache)) {
             $cache = \cache::make('local_eduvidual', $type);
@@ -75,18 +76,22 @@ class locallib {
      */
     public static function can_access_course_questionbank($coursecontext, $user = null, $doanything = true) {
         global $DB, $USER;
-        if (empty($user)) $user = $USER;
-        if ($USER->id == $user->id && is_siteadmin() && $doanything) return true;
+        if (empty($user))
+            $user = $USER;
+        if ($USER->id == $user->id && is_siteadmin() && $doanything)
+            return true;
 
         $cachefieldid = "can_access_course_questionbank-" . $user->id . "-" . $coursecontext->id;
         $canaccess = self::cache('session', $cachefieldid);
-        if (!empty($canaccess)) return ($canaccess == 1) ? true : false;
+        if (!empty($canaccess))
+            return ($canaccess == 1) ? true : false;
 
         $syscontext = \context_system::instance();
         $roles = get_user_roles($coursecontext, $user->id);
         foreach ($roles as $role) {
             // We only accept roles in the course context itself.
-            if ($role->contextid != $coursecontext->id) continue;
+            if ($role->contextid != $coursecontext->id)
+                continue;
             $sql = "SELECT id,contextid FROM {role_capabilities}
                         WHERE roleid=?
                             AND (contextid=? OR contextid=?)
@@ -103,6 +108,7 @@ class locallib {
         // We are not allowed.
         self::cache('session', $cachefieldid, -1);
     }
+
     /**
      * Filter a list of users given. Only connected users shall be kept.
      * @param users Array of users.
@@ -111,7 +117,7 @@ class locallib {
      */
     public static function filter_userlist($users, $idfield = 'id', $namefield = 'name') {
         $users2 = array();
-        foreach ($users AS $user) {
+        foreach ($users as $user) {
             if (is_array($user)) {
                 if (!self::is_connected($user[$idfield])) {
                     if (is_siteadmin()) {
@@ -146,17 +152,12 @@ class locallib {
      **/
     public static function get_actions($module, $localized = false) {
         $actions = array();
-        switch($module) {
+        switch ($module) {
             case 'admin':
-                $actions['backgrounds'] = 'admin:backgrounds:title';
                 //$actions['blockfooter'] = 'admin:blockfooter:title';
                 $actions['coursedelete'] = 'admin:coursedelete:title';
-                $actions['coursestuff'] = 'admin:coursestuff:title';
-                $actions['defaultroles'] = 'defaultroles:title';
                 $actions['questionbank'] = 'admin:questioncategories:title';
-                $actions['licence'] = 'admin:licence:title';
                 $actions['map'] = 'admin:map:title';
-                //$actions['modulecats'] = 'admin:modulecats:title';
                 $actions['orgs'] = 'admin:orgs:title';
                 $actions['stats'] = 'admin:stats:title';
                 //$actions['termsofuse'] = 'admin:termsofuse:title';
@@ -165,12 +166,12 @@ class locallib {
                 //$actions['archive'] = 'manage:archive';
                 //$actions['categories'] = 'manage:categories';
                 $actions['coursesettings'] = 'manage:coursesettings';
-                $actions['mnet'] = 'manage:mnet:action';
+                $actions['login'] = 'manage:login:action';
                 $actions['orgmenu'] = 'manage:orgmenu:title';
                 $actions['style'] = 'manage:style';
                 $actions['subcats'] = 'manage:subcats:title';
                 $actions['users'] = 'manage:users';
-                $actions['educloud'] = 'manage:educloud';
+                // $actions['educloud'] = 'manage:educloud';
                 if (get_config('local_webuntis', 'version') >= 2021121500) {
                     $actions['webuntis'] = 'manage:webuntis';
                 }
@@ -184,13 +185,13 @@ class locallib {
                 break;
         }
         $actions_by_name = array();
-        foreach ($actions AS $action => $name) {
+        foreach ($actions as $action => $name) {
             $actions_by_name[get_string($name, 'local_eduvidual')] = $action;
         }
         $names = array_keys($actions_by_name);
         asort($names);
         $sorted = array();
-        foreach($names AS $name) {
+        foreach ($names as $name) {
             if ($localized) {
                 $sorted[$actions_by_name[$name]] = get_string($actions[$actions_by_name[$name]], 'local_eduvidual');
             } else {
@@ -199,6 +200,7 @@ class locallib {
         }
         return $sorted;
     }
+
     /**
      * Returns the dummydomain for creating user accounts without email.
      * @param pattern (String) to be prepended before wwwroot, by default 'doesnotexist'
@@ -233,7 +235,8 @@ class locallib {
         if (!empty($orgid)) {
             $org = self::cache('session', "org-$orgid");
         }
-        if (!empty($org)) return $org;
+        if (!empty($org))
+            return $org;
 
         $org = $DB->get_record('local_eduvidual_org', array($field => $value));
         if (!empty($org->orgid)) {
@@ -262,7 +265,8 @@ class locallib {
             $categoryid = $COURSE->category;
         }
         $ctx = \context_coursecat::instance($categoryid);
-        if (empty($ctx->id)) return false;
+        if (empty($ctx->id))
+            return false;
 
         return self::get_org_by_context($ctx->id);
     }
@@ -273,11 +277,14 @@ class locallib {
      */
     public static function get_org_by_context($ctxid = 0) {
         global $CONTEXT, $DB, $PAGE;
-        if (empty($ctxid)) $ctxid = $PAGE->context->id;
+        if (empty($ctxid))
+            $ctxid = $PAGE->context->id;
         $ctx = \context::instance_by_id($ctxid);
-        if (empty($ctx->id)) return;
+        if (empty($ctx->id))
+            return;
         $path = explode("/", $ctx->path);
-        if (count($path) < 3) return;
+        if (count($path) < 3)
+            return;
         $rootctx = \context::instance_by_id($path[2]);
         return self::get_org('categoryid', $rootctx->instanceid);
     }
@@ -291,7 +298,8 @@ class locallib {
     public static function get_org_by_courseid($courseid, $strictness = MUST_EXIST) {
         global $DB;
         $ctx = \context_course::instance($courseid, $strictness);
-        if (empty($ctx->id)) return;
+        if (empty($ctx->id))
+            return;
         return self::get_org_by_context($ctx->id);
     }
 
@@ -301,7 +309,7 @@ class locallib {
      * @param role Specify another role that is used as filter (eg. Teacher), asterisk for any
      * @param allforadmin returns all organisations for website admin, default: true.
      **/
-    public static function get_organisations($role="*", $allforadmin=true){
+    public static function get_organisations($role = "*", $allforadmin = true) {
         global $DB, $USER;
         if ($allforadmin && is_siteadmin()) {
             return $DB->get_records_sql('SELECT * FROM {local_eduvidual_org} WHERE authenticated>0 ORDER BY orgid ASC', array());
@@ -318,10 +326,11 @@ class locallib {
      * @param orgid orgid to search
      * @return Return an org if found or false
      **/
-    public static function get_organisations_check($orgas, $orgid){
-        if (count($orgas) == 0) return false;
+    public static function get_organisations_check($orgas, $orgid) {
+        if (count($orgas) == 0)
+            return false;
         $orgids = array();
-        foreach($orgas AS $org) {
+        foreach ($orgas as $org) {
             if ($orgid > 0 && $org->orgid == $orgid) {
                 return $org;
             }
@@ -346,22 +355,25 @@ class locallib {
      */
     public static function get_orgrole($orgid, $userid = 0) {
         global $DB, $USER;
-        if (empty($userid)) $userid = $USER->id;
+        if (empty($userid))
+            $userid = $USER->id;
         $r = $DB->get_record('local_eduvidual_orgid_userid', array('orgid' => $orgid, 'userid' => $userid));
-        if (!empty($r->role)) return $r->role;
+        if (!empty($r->role))
+            return $r->role;
     }
 
     public static function get_orgsubcats($orgid, $key, $payload = "") {
         global $DB, $USER;
         $org = $DB->get_record('local_eduvidual_org', array('orgid' => $orgid));
-        if (empty($org->orgid)) return;
+        if (empty($org->orgid))
+            return;
 
         $_options = explode("\n", $org->{$key});
         $options = array();
         if (count($_options) == 0 || empty(trim($_options[0]))) {
             return '';
         } else {
-            foreach ($_options AS $a => $option) {
+            foreach ($_options as $a => $option) {
                 if (strpos($option, '#') > 0) {
                     if (substr($option, 0, strlen($payload) + 1) == $payload . '#') {
                         $option = trim(substr($option, strlen($payload) + 1));
@@ -386,14 +398,16 @@ class locallib {
      */
     public static function get_highest_role($userid = 0) {
         global $DB, $USER;
-        if (empty($userid)) $userid = $USER->id;
+        if (empty($userid))
+            $userid = $USER->id;
 
         $highest = self::cache('session', "highestrole-$userid");
-        if (!empty($highest)) return $highest;
+        if (!empty($highest))
+            return $highest;
 
         $memberships = $DB->get_records('local_eduvidual_orgid_userid', array('userid' => $userid));
         $highest = '';
-        foreach ($memberships AS $membership) {
+        foreach ($memberships as $membership) {
             switch ($membership->role) {
                 case static::ROLE_PARENT:
                 case static::ROLE_STUDENT:
@@ -414,6 +428,7 @@ class locallib {
         self::cache('session', "highestrole-$userid", $highest);
         return $highest;
     }
+
     /**
      * Create a temporary directory and return its path.
      * @return path to tempdir.
@@ -426,6 +441,7 @@ class locallib {
         }
         return $dir;
     }
+
     /**
      * Get all orgs a user is member of. Optionally you can filter by role.
      * @param userid if empty will use $USER
@@ -433,11 +449,13 @@ class locallib {
      */
     public static function get_user_memberships($userid = 0, $roles = array()) {
         global $DB, $USER;
-        if (empty($userid)) $userid = $USER->id;
+        if (empty($userid))
+            $userid = $USER->id;
         $_memberships = $DB->get_records('local_eduvidual_orgid_userid', array('userid' => $userid));
-        if (count($roles) == 0) return $_memberships;
+        if (count($roles) == 0)
+            return $_memberships;
         $memberships = array();
-        foreach ($memberships AS $id => $membership) {
+        foreach ($memberships as $id => $membership) {
             if (in_array($membership->role, $roles)) {
                 $memberships[$id] = $membership;
             }
@@ -500,11 +518,13 @@ class locallib {
      * @param getbuildnumber if true returns the build number, else returns boolean.
      * @return boolean in case of getbuildnumber = false, int in case of getbuildnumber = true.
      */
-    public static function is_4($getbuildnumber = false) {
+    public static function is_moodle_4($getbuildnumber = false) {
         global $CFG;
-        if ($getbuildnumber) return $CFG->version;
+        if ($getbuildnumber)
+            return $CFG->version;
         else return ($CFG->version >= 2021110600);
     }
+
     /**
      * Determines if a user is in the same org like another user
      * @param touserid UserID we want to check if we are connected to
@@ -532,12 +552,13 @@ class locallib {
         // If we already had a positive result for this search in cache, use it.
         $cachefieldid = "isconnected-" . $touserid . "-" . md5($sql);
         $isconnected = self::cache('session', $cachefieldid);
-        if ($isconnected) return true;
+        if ($isconnected)
+            return true;
 
         $params = array($touserid);
-        $chks = $DB->get_records_sql($sql, array_merge($params,$inparams));
+        $chks = $DB->get_records_sql($sql, array_merge($params, $inparams));
 
-        foreach ($chks AS $chk) {
+        foreach ($chks as $chk) {
             if (!empty($chk->userid) && $chk->userid == $touserid) {
                 self::cache('session', $cachefieldid, 1);
                 return true;
@@ -545,6 +566,7 @@ class locallib {
         }
         return false;
     }
+
     /**
      * Makes a list of all orgs of a user without the "protectedorgs"
      * @param userid (optional) if not given use the current logged in user.
@@ -558,7 +580,7 @@ class locallib {
         $protectedorgs = explode(',', get_config('local_eduvidual', 'protectedorgs'));
         $orgids = array();
         $orgs = $DB->get_records('local_eduvidual_orgid_userid', array('userid' => $userid));
-        foreach($orgs AS $org) {
+        foreach ($orgs as $org) {
             if (!in_array($org->orgid, $protectedorgs)) {
                 $orgids[] = $org->orgid;
             }
@@ -571,7 +593,8 @@ class locallib {
      * @param int categoryid (optional)
      */
     public static function is_manager($categoryid = 0, $nocaches = false) {
-        if (is_siteadmin()) return true;
+        if (is_siteadmin())
+            return true;
         global $DB, $USER;
         $ismanager = false;
         if (empty($categoryid)) {
@@ -591,13 +614,15 @@ class locallib {
             }
             if (empty($ismanager)) {
                 $org = self::get_org_by_categoryid($categoryid);
-                if (empty($org->orgid)) return false;
+                if (empty($org->orgid))
+                    return false;
                 $chk = $DB->get_record('local_eduvidual_orgid_userid', array('orgid' => $org->orgid, 'role' => 'Manager', 'userid' => $USER->id));
                 $ismanager = self::cache('session', "ismanager-$USER->id-$categoryid", !empty($chk->orgid));
             }
             return $ismanager;
         }
     }
+
     /**
      * Checks whether a course is a template course.
      * @param courseid to check.
@@ -606,10 +631,12 @@ class locallib {
     public static function is_templatecourse($courseid) {
         $identifiers = array('coursebasementempty', 'coursebasementrestore', 'coursebasementtemplate', 'orgcoursebasement', 'supportcourse_template');
         foreach ($identifiers as $identifier) {
-            if ($courseid == get_config('local_eduvidual', $identifier)) return true;
+            if ($courseid == get_config('local_eduvidual', $identifier))
+                return true;
         }
         return false;
     }
+
     /**
      * List all files from a certain file area
      */
@@ -621,13 +648,14 @@ class locallib {
         $fs = get_file_storage();
         $files_ = $fs->get_area_files($context->id, 'local_eduvidual', $areaname, $itemid);
         foreach ($files_ as $file) {
-            if (str_replace('.', '', $file->get_filename()) != ""){
+            if (str_replace('.', '', $file->get_filename()) != "") {
                 $file->url = '' . \moodle_url::make_pluginfile_url($file->get_contextid(), $file->get_component(), $file->get_filearea(), $file->get_itemid(), $file->get_filepath(), $file->get_filename());
                 $files[] = $file;
             }
         }
         return $files;
     }
+
     /**
      * Show a selector for all actions that are available
      * @param actions array containing valid actions
@@ -636,6 +664,9 @@ class locallib {
         global $PAGE;
         if (empty($act)) {
             $act = optional_param('act', '', PARAM_TEXT);
+        }
+        if (empty($actions[$act])) {
+            $act = key($actions);
         }
         $orgid = optional_param('orgid', '', PARAM_TEXT);
         $action = get_string('none');
@@ -650,11 +681,12 @@ class locallib {
         $url = $parts['scheme'] . '://' . $parts['host'] . $parts['path'];
         echo "\t<select class=\"custom-select\" onchange=\"var sel = this; require(['local_eduvidual/main'], function(MAIN) { MAIN.navigate('" . $url . "?orgid=" . $orgid . "&act=' + sel.value); });\">\n";
         $keys = array_keys($actions);
-        foreach($keys AS $key) {
-            echo "\t\t<option value=\"" . $key . "\"" . (($key == $act)?' selected':'') . ">" . get_string($actions[$key], 'local_eduvidual') . "</option>\n";
+        foreach ($keys as $key) {
+            echo "\t\t<option value=\"" . $key . "\"" . (($key == $act) ? ' selected' : '') . ">" . get_string($actions[$key], 'local_eduvidual') . "</option>\n";
         }
         echo "\t</select>\n";
     }
+
     /**
      * Set the X-orgclass and X-orgid for the current user.
      * @return the given X-orgclass.
@@ -669,7 +701,7 @@ class locallib {
 
         if (empty($_COOKIE[$xuseri]) || $_COOKIE[$xuseri] != $USER->id) {
             if (isloggedin() && !isguestuser()) {
-                $primaryorg = (object) array('orgid' => '');
+                $primaryorg = (object)array('orgid' => '');
                 $sql = "SELECT o.orgid,o.orgclass
                             FROM {local_eduvidual_org} o, {local_eduvidual_orgid_userid} ou
                             WHERE o.orgid=ou.orgid
@@ -682,9 +714,9 @@ class locallib {
                 if (!empty($primaryorg->orgid)) {
                     header($xorgid . ': ' . $primaryorg->orgid);
                     header($xorgcl . ': ' . $primaryorg->orgclass);
-                    setcookie($xorgid, $primaryorg->orgid, 0,'/');
-                    setcookie($xorgcl, $primaryorg->orgclass, 0,'/');
-                    setcookie($xuseri, $USER->id, 0,'/');
+                    setcookie($xorgid, $primaryorg->orgid, 0, '/');
+                    setcookie($xorgcl, $primaryorg->orgclass, 0, '/');
+                    setcookie($xuseri, $USER->id, 0, '/');
                     return $primaryorg->orgclass;
                 }
             }

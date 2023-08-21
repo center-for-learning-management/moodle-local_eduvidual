@@ -34,7 +34,7 @@ switch ($act) {
             $entries = $DB->get_records('local_eduvidual_org_codes', array('orgid' => $orgid, 'code' => $code));
             if (count($entries) > 0) {
                 $role = '';
-                foreach($entries AS $entry) {
+                foreach ($entries as $entry) {
                     if ($entry->maturity > time()) {
                         $role = $entry->role;
                     }
@@ -51,7 +51,7 @@ switch ($act) {
                 $reply['error'] = 'accesscard:code_invalid';
             }
         }
-    break;
+        break;
     case 'seteditor':
         if (isguestuser($USER)) {
             $reply['error'] = 'guestuser:nopermission';
@@ -66,7 +66,7 @@ switch ($act) {
                 }
             }
         }
-    break;
+        break;
     case 'questioncategories':
         $sysctx = \context_system::instance();
         $questioncategories = optional_param_array('questioncategories', array(), PARAM_INT);
@@ -75,7 +75,7 @@ switch ($act) {
             $hascats_ = $DB->get_records('local_eduvidual_userqcats', array('userid' => $USER->id));
             $hascats = array();
             $setrole = get_config('local_eduvidual', 'defaultrolestudent');
-            foreach($hascats_ AS $hascat) {
+            foreach ($hascats_ as $hascat) {
                 if (!in_array($hascat->categoryid, $questioncategories)) {
                     $reply['acts'][] = 'Remove ' . $hascat->categoryid;
                     $DB->delete_records('local_eduvidual_userqcats', array('userid' => $USER->id, 'categoryid' => $hascat->categoryid));
@@ -97,8 +97,9 @@ switch ($act) {
             }
 
             $allowed_questioncategories = explode(",", get_config('local_eduvidual', 'questioncategories'));
-            foreach ($questioncategories AS $cat) {
-                if (!in_array($cat, $allowed_questioncategories)) continue;
+            foreach ($questioncategories as $cat) {
+                if (!in_array($cat, $allowed_questioncategories))
+                    continue;
                 if (!in_array($cat, $hascats)) {
                     $entry = new stdClass();
                     $entry->userid = $USER->id;
@@ -117,9 +118,9 @@ switch ($act) {
             $reply['status'] = 'ok';
         }
 
-    break;
+        break;
     case 'whoami':
         $reply['status'] = 'ok';
         $reply['userid'] = $USER->id;
-    break;
+        break;
 }

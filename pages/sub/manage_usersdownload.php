@@ -71,7 +71,7 @@ if (\local_eduvidual\locallib::get_orgrole($orgid) != "Manager" && !is_siteadmin
 
     \core\dataformat::download_data('users_' . date("Ymd-His"), $dataformat, $columns, $rs, function($record) {
         global $DB, $orgid;
-        $r = (object) array('id' => $record->id);
+        $r = (object)array('id' => $record->id);
         profile_load_data($r);
         $org = $DB->get_record('local_eduvidual_org', array('orgid' => $orgid));
         $context = \context_coursecat::instance($org->categoryid);

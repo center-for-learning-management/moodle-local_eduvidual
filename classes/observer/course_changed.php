@@ -32,8 +32,8 @@ class course_changed {
         if (\local_eduvidual\locallib::is_templatecourse($entry->courseid)) {
             set_config(
                 'coursebasement-scheduled',
-                get_config('local_eduvidual','coursebasement-scheduled') .
-                    ',' . $entry->courseid,
+                get_config('local_eduvidual', 'coursebasement-scheduled') .
+                ',' . $entry->courseid,
                 'local_eduvidual'
             );
         }

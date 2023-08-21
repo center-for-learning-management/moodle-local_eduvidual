@@ -37,7 +37,7 @@ $string['Accesscard'] = 'Accesscard';
 $string['Accesscards'] = 'Accesscards';
 $string['Administration'] = 'Administration';
 $string['Attributions'] = 'Attributions';
-$string['Browse_org'] = 'My schools';
+$string['browse_org'] = 'My schools';
 $string['Courses'] = 'My courses';
 $string['Management'] = 'Management';
 $string['Login'] = 'Login';
@@ -64,10 +64,8 @@ $string['accesscard:orgcode'] = 'Code or passphrase';
 $string['accesscard:orgcode_access'] = 'Access by code (actively)';
 $string['accesscard:orgid'] = 'Organization-ID';
 
-$string['admin:backgrounds:filearealabel'] = '';
 $string['admin:backgrounds:title'] = 'Backgrounds';
 $string['admin:backgrounds:description'] = 'You can upload background images here that your users can select';
-$string['admin:backgrounds:files:send'] = 'Store images';
 $string['admin:backgrounds_cards:title'] = 'Backgrounds for Accesscards';
 $string['admin:backgrounds_cards:description'] = 'You can upload background images that are used as background on access cards';
 $string['admin:blockfooter:title'] = 'Footer of eduvidual Block';
@@ -79,9 +77,6 @@ $string['admin:coursebasements:title'] = 'Course basement categories';
 $string['admin:coursebasements:description'] = 'Please enter template course ids here, that are used for the named purpose:';
 $string['admin:coursedelete:title'] = 'Course Delete Log';
 $string['admin:coursestuff:title'] = 'Course Stuff';
-$string['admin:dropzone:description'] = 'Set a path to a filesystem-repository. Users will get capability to use it for 24 hours when they upload something.';
-$string['admin:dropzone:notset'] = 'No directory for Dropzone set!';
-$string['admin:dropzone:title'] = 'Dropzone';
 $string['admin:formmodificator:description'] = 'Here you can specify how the activity-creation-form should be modified according to certain experience levels. Enter the type of activity/resource and the role-id (you see it above within the brackets). Name all elements that should be hidden line by line. Do the same for default values, but use the syntax my_css_selector1=my_default_value1\n my_css_selector2=my_default_value2 and so on.';
 $string['admin:formmodificator:ids_to_hide'] = 'Hide Elements';
 $string['admin:formmodificator:ids_to_set'] = 'Default values';
@@ -90,28 +85,6 @@ $string['admin:formmodificator:roleids'] = 'Role-IDs';
 $string['admin:formmodificator:types'] = 'Types';
 $string['admin:globalfiles:title'] = 'Global Files';
 $string['admin:globalfiles:description'] = 'Upload global files here. The path is /pluginfile.php/1/local_eduvidual/globalfiles/0/{directories}/{filename}';
-$string['admin:licence:active'] = 'Enable or disable licence system';
-$string['admin:licence:add'] = 'Add licences';
-$string['admin:licence:added'] = 'Added {$a->added} licences';
-$string['admin:licence:comment'] = 'Comment';
-$string['admin:licence:expiry'] = 'Expiry date';
-$string['admin:licence:failed'] = 'Failed adding {$a->failed} licences';
-$string['admin:licence:missing'] = 'Missing valid licence';
-$string['admin:licence:missing:text'] = '
-    <p>
-        Unfortunatley no valid licence was found for your organization for working at {$a->sitename}.
-    </p>
-    <p>
-        Please contact the site support to receive a licence or further help.
-    </p>
-';
-$string['admin:licence:orgids'] = 'Org-IDs';
-$string['admin:licence:orgids_help'] = 'Org-IDs line by line!';
-$string['admin:licence:revoke'] = 'Revoke';
-$string['admin:licence:revoked'] = 'Licence was revoked';
-$string['admin:licence:title'] = 'Licences';
-$string['admin:licencesystem:disabled'] = 'Licencesystem was disabled';
-$string['admin:licencesystem:enabled'] = 'Licencesystem was enabled';
 $string['admin:ltiresourcekey:title'] = 'Default LTI Resource Key';
 $string['admin:ltiresourcekey:description'] = 'When manageing LTI Resources through this tool you should ensure, that you are using the same resource key for the same platforms. You can specify the default value here.';
 $string['admin:map:both'] = 'eduvidual (migrated from LPF)';
@@ -136,13 +109,6 @@ $string['admin:module:ltisecret'] = 'LTI Secret';
 $string['admin:module:payload'] = 'Payload';
 $string['admin:module:payload:jsoneditor'] = 'For LTI-Sources the payload is compiled automatically. For other types use a JSON Editor like <a href="https://jsoneditoronline.org/" target="_blank">json editor online</a> to build the payload!';
 $string['admin:module:type'] = 'Type';
-$string['admin:modulecats:title'] = 'Module Categories';
-$string['admin:modulecat:edit'] = 'Edit Module';
-$string['admin:modulecat:generaldata'] = 'General Data';
-$string['admin:modulecat:title'] = 'Module Category';
-$string['admin:modulecat:images'] = 'Images for Module Categories';
-$string['admin:modulecat:filearealabel'] = '';
-$string['admin:modulecat:files:send'] = 'Store category';
 $string['admin:modules:title'] = 'Modules';
 $string['admin:modulesimport:datavalidated'] = 'Data is ok, store to database';
 $string['admin:modulesimport:downloadfile'] = 'Modules have been updated. Please download the provided Excel-Sheet containing these modules. You can use it afterwards if you want to update the data of this import.';
@@ -212,7 +178,6 @@ $string['check_js:title'] = 'JavaScript';
 
 $string['coursebackupnotset'] = 'Coursetemplate not found';
 
-$string['courses:enrol:byqrcode'] = 'Enrol by QR Code';
 $string['courses:enrol:courseusers'] = 'Users in {$a->name}';
 $string['courses:enrol:enrol'] = 'Enrol';
 $string['courses:enrol:orgusers'] = 'Users of {$a->name}';
@@ -221,9 +186,6 @@ $string['courses:enrol:searchforuser'] = 'Search and select a user';
 $string['courses:enrol:searchtoomuch'] = 'Too many search results, please use the filter!';
 $string['courses:enrol:unenrol'] = 'Unenrol';
 $string['courses:noaccess'] = 'Sorry, you are not enrolled to this course!';
-
-$string['cron:title'] = 'eduvidual Cron';
-$string['cron:trashbin:title'] = 'eduvidual Trashbin';
 
 $string['dataprivacyorgerror:contacts'] = 'Contacts';
 $string['dataprivacyorgerror:description'] = '
@@ -243,7 +205,7 @@ $string['dataprivacyorgerror:orgid'] = 'Organization-ID';
 $string['dataprivacyorgerror:orgname'] = 'Name';
 $string['dataprivacyorgerror:pagetitle'] = 'Dataremoval impossible';
 
-$string['defaultroles:title'] = 'Default Roles';
+$string['admin:defaultroles:title'] = 'Default Roles';
 $string['defaultroles:course:title'] = 'Default Roles (Courses)';
 $string['defaultroles:course:description'] = 'Define the default roles to be assigned within courses. These will be used for membership management in courses by this plugin!';
 $string['defaultroles:course:parent'] = 'Parent';
@@ -434,12 +396,10 @@ $string['manage:archive:confirmation:description'] = 'The following course(s) wi
 $string['manage:archive:restart'] = 'Restart';
 $string['manage:archive:source'] = 'Source';
 $string['manage:archive:source:title'] = 'Select courses';
-$string['manage:archive:source:description'] = 'You can select a bulk of courses to move them to another location, eg. archive all courses of a specific year to another course category. Alternatively you can move the courses to a system-wide trashbin (if set by admin).';
+$string['manage:archive:source:description'] = 'You can select a bulk of courses to move them to another location, eg. archive all courses of a specific year to another course category.';
 $string['manage:archive:target'] = 'Target';
 $string['manage:archive:target:title'] = 'Select target';
 $string['manage:archive:target:description'] = 'You have selected {$a->count} course(s).';
-$string['manage:archive:trashbin'] = 'Trashbin';
-$string['manage:archive:trashbin:description'] = 'Courses can be moved to a system-wide trashbin. As long as courses remain in the trashbin they can be recovered by any person who is enrolled as trainer in this course. Regularly the trashbin is emptied. Please ask your system administrator how often this happens!';
 $string['manage:authtype'] = 'Accounttype';
 $string['manage:bunch:all'] = 'All';
 $string['manage:bunch:allwithoutbunch'] = 'All users without cohort';
@@ -482,19 +442,13 @@ $string['manage:createuserspreadsheet:import:downloadfile'] = 'Users have been u
 $string['manage:createuserspreadsheet:import:filetypeerror'] = 'Sorry, the used filetype ({$a->filetype}) of this spreadsheet is unsupported. Please upload an XLSX-file!';
 $string['manage:createuserspreadsheet:templateurl'] = 'URL template spreadsheet';
 $string['manage:createuserspreadsheet:templateurl:description'] = 'Enter the URL to the template spreadsheet that should be used for creating users using a spreadsheet.';
-$string['manage:data'] = 'Data';
-$string['manage:educloud'] = 'eduCloud Austria';
+// $string['manage:educloud'] = 'eduCloud Austria';
 $string['manage:enrolmeasteacher'] = 'Enrol me as teacher';
 $string['manage:maildomain'] = 'Maildomain';
 $string['manage:maildomain:description'] = 'If this is set users with a mailaddress from this domain are automatically assigned to this organization!';
-$string['manage:mnet:action'] = 'Loginsettings';
-$string['manage:mnet'] = 'MNet Host';
-$string['manage:mnet:adminonly'] = 'Only Admins can modify settings on this page!';
-$string['manage:mnet:enrol'] = 'Enrol users that match the underneath domains';
-$string['manage:mnet:send'] = 'Store';
-$string['manage:mnet:selectnone'] = 'none';
-$string['manage:mnet:selectorg'] = 'Select organization first!';
-$string['manage:mnet:filearealabel'] = 'Logo';
+$string['manage:login:action'] = 'Loginsettings';
+$string['manage:login:adminonly'] = 'Only Admins can modify settings on this page!';
+$string['manage:login:enrol'] = 'Enrol users that match the underneath domains';
 $string['manage:orgmenu:cachewarning'] = 'Attention: the menu is stored in the users session cache. Any changes will only be updated upon a logout and login of the users.';
 $string['manage:orgmenu:title'] = 'Organisation Menu';
 $string['manage:orgmenu:description'] = 'Any menu items added here will appear in the sites main menu bar. Please name the links line by line in the following format:<br /><br />Label|URL|Target|Required Role(s)<br /><br />Example: OurHomepage|http://www.ourhomepage.org|_blank|Teacher+Student<br /><br />Valid targets: <i>leave empty</i> or _blank<br />Valid roles: <i>leave empty</i>, Manager, Teacher, Student, Parent';
@@ -505,6 +459,8 @@ $string['manage:selectorganization'] = 'Select Organization';
 $string['manage:stats'] = 'Statistics';
 $string['manage:stats:currentconsumption'] = 'Your current consumption is';
 $string['manage:style:orgfiles:title'] = 'Upload images';
+$string['manage:style:orglogo:header'] = 'Organisation Logo Graphic';
+$string['manage:style:orglogo:filearealabel'] = 'You can upload a logo graphic here that will be used instead of the eduvidual logo in all courses and course categories of your organization. This graphic should be square (35 x 35 pixel)';
 $string['manage:style:orgbanner:header'] = 'Organisation Banner Graphic';
 $string['manage:style:orgbanner:filearealabel'] = 'You can upload a banner graphic here that will be used in boost theme as header in all courses and course categories of your organization. This graphic should be relatively big (approx. 2200px : 1200px) and should be suitable to be cutted for various screen sizes.';
 $string['manage:style:orgfiles:header'] = 'Own Graphics for Styles';
@@ -555,7 +511,6 @@ $string['nouserstoshow'] = 'No users found for search {$a->search}';
 $string['oauth2:nosuchissuer'] = 'No oAuth service for {$a->issuer} was configured!';
 $string['or'] = 'or';
 $string['orgmenu'] = 'custom links of my organizations';
-$string['orgrole:role_already_in_use'] = 'Role already in use';
 $string['orgsizes:title'] = 'Filesystem Size';
 
 $string['login:direct'] = 'use the direct login';
@@ -597,10 +552,6 @@ $string['privacy:metadata:privacy:metadata:local_eduvidual_userextra:background'
 $string['privacy:metadata:privacy:metadata:local_eduvidual_userextra:backgroundcard'] = 'The background of the accesscard';
 $string['privacy:metadata:privacy:metadata:local_eduvidual_userextra:defaultorg'] = 'The default organization (if user is member of more than one organization)';
 $string['privacy:metadata:privacy:metadata:local_eduvidual_userqcats'] = 'The core question categories that should appear.';
-$string['privacy:metadata:privacy:metadata:local_eduvidual_usertoken'] = 'User-Tokens for auto-login';
-$string['privacy:metadata:privacy:metadata:local_eduvidual_usertoken:token'] = 'The token';
-$string['privacy:metadata:privacy:metadata:local_eduvidual_usertoken:created'] = 'The time when the token was created';
-$string['privacy:metadata:privacy:metadata:local_eduvidual_usertoken:used'] = 'The time when the token was used';
 
 $string['qrscan:cameratoobject'] = 'Now focus your camery on the QR code!';
 $string['questioncategoryfilter:label'] = 'Categoryfilter';
@@ -643,8 +594,8 @@ $string['settings:emailmustbeusername:description'] = 'If this enabled local_edu
 
 $string['start_with_at'] = 'Start with an  "@"-sign';
 $string['supportarea'] = 'Supportarea';
-$string['supportcourse:title'] = 'Supportcourse';
-$string['supportcourse:description'] = 'You can specify a support course here that is linked to within the registration email.';
+$string['admin:supportcourse:title'] = 'Supportcourse';
+$string['admin:supportcourse:description'] = 'You can specify a support course here that is linked to within the registration email.';
 
 $string['task:coursetemplates:title'] = 'Creates a backup when a template course has been modified.';
 
@@ -660,9 +611,6 @@ $string['teacher:createmodule:missing_capability'] = 'Missing capability to crea
 $string['teacher:createmodule:selectcourse'] = 'Select course';
 $string['teacher:createmodule:selectmodule'] = 'Select module';
 $string['teacher:createmodule:selectsection'] = 'Select section';
-
-$string['trashcategory:title'] = 'Category as Trashbin';
-$string['trashcategory:description'] = 'You may specify an optional category as global trashbin. Courses in trashbin will be removed daily!';
 
 $string['user:categories:adminshowall'] = 'All orgs';
 $string['user:categories:adminshowmine'] = 'Only my orgs';

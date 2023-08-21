@@ -37,6 +37,7 @@ class local_eduvidual_external_admin extends external_api {
             'advanceddata' => new external_value(PARAM_INT, 'if 1 we will include postal information.'),
         ));
     }
+
     public static function org_gps($lon1, $lon2, $lat1, $lat2, $includenonegroup, $advanceddata = 0) {
         global $CFG, $DB, $PAGE;
 
@@ -56,13 +57,14 @@ class local_eduvidual_external_admin extends external_api {
                     WHERE o.orgid=og.orgid
                         AND lon>? AND lon<?
                         AND lat>? AND lat<?";
-        $ps = array($params['lon1'],$params['lon2'],$params['lat1'],$params['lat2']);
+        $ps = array($params['lon1'], $params['lon2'], $params['lat1'], $params['lat2']);
         if ($params['includenonegroup'] != 1) {
             //$sql .= " AND (authenticated > 0 OR lpf IS NOT NULL)";
         }
         $orgsinbounds = $DB->get_records_sql($sql, $ps);
         return json_encode($orgsinbounds, JSON_NUMERIC_CHECK);
     }
+
     public static function org_gps_returns() {
         return new external_value(PARAM_RAW, 'Returns orgs as json encoded array.');
     }

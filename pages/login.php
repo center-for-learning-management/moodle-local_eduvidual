@@ -49,7 +49,7 @@ $isproductionsite = ($CFG->wwwroot == 'https://www.eduvidual.at');
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <?php if (!$isproductionsite) { ?>
-        <meta name="robots" content="noindex" />
+        <meta name="robots" content="noindex"/>
     <?php } ?>
 
     <title>Moodle Startseite: Hier können Sie sich anmelden</title>
@@ -67,7 +67,7 @@ $isproductionsite = ($CFG->wwwroot == 'https://www.eduvidual.at');
 </head>
 
 <body spellcheck="false">
-    <div id="page-login-index">
+<div id="page-login-index">
     <div id="page" class="container ">
         <header class="container justify-content-center">
             <img src="<?php echo $CFG->wwwroot; ?>/local/eduvidual/pix/icon.svg" alt="eduvidual Logo">
@@ -76,7 +76,7 @@ $isproductionsite = ($CFG->wwwroot == 'https://www.eduvidual.at');
 
         <?php if (!$isproductionsite) { ?>
             <div class="alert alert-danger">
-                <strong>Achtung, Test- und Entwicklungsserver!</strong><br /><br />
+                <strong>Achtung, Test- und Entwicklungsserver!</strong><br/><br/>
                 Das hier ist ein Test- und Entwicklungsserver für die Lernplattform eduvidual.at!
                 Bitte melden Sie sich hier nur an, wenn Sie wissen, was Sie tun. Die eigentliche
                 eduvidual.at-Lernplattform finden Sie unter <a href="https://www.eduvidual.at">www.eduvidual.at</a>!
@@ -99,7 +99,7 @@ $isproductionsite = ($CFG->wwwroot == 'https://www.eduvidual.at');
                     <div class="col-lg-6 col-sm-12">
                         <a href="<?php echo $CFG->wwwroot; ?>/local/eduvidual/pages/redirects/login_oauth.php?issuer=Microsoft" title="Microsoft" id="eduvidual-btn-sso-microsoft" data-ajax="false">
                             <button class="btn btn-block" type="button" name="microsoft">
-                            <img src="<?php echo $CFG->wwwroot; ?>/local/eduvidual/pix/logo_microsoft.svg" width="20" alt="Microsoft">&nbsp;Microsoft
+                                <img src="<?php echo $CFG->wwwroot; ?>/local/eduvidual/pix/logo_microsoft.svg" width="20" alt="Microsoft">&nbsp;Microsoft
                             </button>
                         </a>
                     </div>
@@ -123,43 +123,43 @@ $isproductionsite = ($CFG->wwwroot == 'https://www.eduvidual.at');
                     </p>
                 </div>
             </div>
-<?php
+            <?php
 
-if ($errorcode > 0) {
-    $errormessage = "";
-    require_once($CFG->dirroot . '/lib/authlib.php');
-    switch ($errorcode) {
-        /** Can not login because user does not exist. */
-        case AUTH_LOGIN_NOUSER: // 1
-            $errormessage = get_string('nousers', 'error');
-        break;
-        /** Can not login because user is suspended. */
-        case AUTH_LOGIN_SUSPENDED: // 2
-            $errormessage = get_string('suspended');
-        break;
-        /** Can not login, most probably password did not match. */
-        case AUTH_LOGIN_FAILED: // 3
-            $errormessage = get_string('invalidlogin');
-        break;
-        /** Can not login because user is locked out. */
-        case AUTH_LOGIN_LOCKOUT: // 4
-            $errormessage = get_string('sessionexpired', 'error');
-        break;
-        /** Can not login becauser user is not authorised. */
-        case AUTH_LOGIN_UNAUTHORISED: // 5
-            $errormessage = get_string("unauthorisedlogin", "", optional_param('username', '', PARAM_TEXT));
-        break;
-    }
-    if (!empty($errormessage)) {
-        echo $OUTPUT->render_from_template('local_eduvidual/alert', array(
-            'content' => $errormessage,
-            'type' => 'danger'
-        ));
-    }
-}
+            if ($errorcode > 0) {
+                $errormessage = "";
+                require_once($CFG->dirroot . '/lib/authlib.php');
+                switch ($errorcode) {
+                    /** Can not login because user does not exist. */
+                    case AUTH_LOGIN_NOUSER: // 1
+                        $errormessage = get_string('nousers', 'error');
+                        break;
+                    /** Can not login because user is suspended. */
+                    case AUTH_LOGIN_SUSPENDED: // 2
+                        $errormessage = get_string('suspended');
+                        break;
+                    /** Can not login, most probably password did not match. */
+                    case AUTH_LOGIN_FAILED: // 3
+                        $errormessage = get_string('invalidlogin');
+                        break;
+                    /** Can not login because user is locked out. */
+                    case AUTH_LOGIN_LOCKOUT: // 4
+                        $errormessage = get_string('sessionexpired', 'error');
+                        break;
+                    /** Can not login becauser user is not authorised. */
+                    case AUTH_LOGIN_UNAUTHORISED: // 5
+                        $errormessage = get_string("unauthorisedlogin", "", optional_param('username', '', PARAM_TEXT));
+                        break;
+                }
+                if (!empty($errormessage)) {
+                    echo $OUTPUT->render_from_template('local_eduvidual/alert', array(
+                        'content' => $errormessage,
+                        'type' => 'danger',
+                    ));
+                }
+            }
 
 
-?>
+            ?>
             <form action="<?php echo $CFG->wwwroot; ?>/login/index.php" method="post" id="login">
                 <div class="form-row">
                     <input type="text" class="form-control" name="username" id="username" placeholder="<?php echo get_string('username') . ' / ' . get_string('email'); ?>">
@@ -211,27 +211,27 @@ if ($errorcode > 0) {
                 </div>
             </div>
             <div class="logos" style="margin-bottom: 15px;">
-                <hr />
+                <hr/>
                 <div class="row justify-content-md-center" style="justify-content: space-around !important;">
                     <div class="col-lg-4 col-sm-4" style="text-align: right;">
                         <a href="https://www.bmbwf.gv.at" target="_blank" data-ajax="false"
-                            title="Bundesministerium für Bildung, Wissenschaft und Forschung">
+                           title="Bundesministerium für Bildung, Wissenschaft und Forschung">
                             <img src="<?php echo $CFG->wwwroot; ?>/local/eduvidual/pix/logo_bmbwf.png"
-                                height="60" alt="Bundesministerium für Bildung, Wissenschaft und Forschung">
+                                 height="60" alt="Bundesministerium für Bildung, Wissenschaft und Forschung">
                         </a>
                     </div>
                     <div class="col-lg-2 col-sm-2" style="text-align: center;">
                         <a href="https://www.ph-ooe.at" target="_blank" data-ajax="false"
-                            title="Pädagogische Hochschule Oberösterreich">
+                           title="Pädagogische Hochschule Oberösterreich">
                             <img src="<?php echo $CFG->wwwroot; ?>/local/eduvidual/pix/logo_phooe.png"
-                                height="60" alt="Pädagogische Hochschule Oberösterreich">
+                                 height="60" alt="Pädagogische Hochschule Oberösterreich">
                         </a>
                     </div>
                     <div class="col-lg-4 col-sm-4" style="text-align: left;">
                         <a href="https://www.lernmanagement.at" target="_blank" data-ajax="false"
-                            title="Zentrum für Lernmanagement">
+                           title="Zentrum für Lernmanagement">
                             <img src="<?php echo $CFG->wwwroot; ?>/local/eduvidual/pix/logo_zlm.svg"
-                                height="60" alt="Zentrum für Lernmanagement">
+                                 height="60" alt="Zentrum für Lernmanagement">
                         </a>
                     </div>
                 </div>
@@ -261,6 +261,6 @@ if ($errorcode > 0) {
             </div>
         </div>
     </footer>
-        </div>
+</div>
 </body>
 </html>

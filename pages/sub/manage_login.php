@@ -16,12 +16,19 @@
 
 /**
  * @package    local_eduvidual
- * @copyright  2019 Digital Education Society (http://www.dibig.at)
+ * @copyright  2018 Digital Education Society (http://www.dibig.at)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die;
-if (!is_siteadmin())
-    die;
 
-echo $OUTPUT->render_from_template('local_eduvidual/admin_orgs', array());
+echo $OUTPUT->render_from_template(
+    'local_eduvidual/manage_login',
+    (object)array(
+        'is_siteadmin' => is_siteadmin(),
+        'maildomain' => $org->maildomain,
+        'maildomainteacher' => $org->maildomainteacher,
+        'orgid' => $org->orgid,
+        'wwwroot' => $CFG->wwwroot,
+    )
+);

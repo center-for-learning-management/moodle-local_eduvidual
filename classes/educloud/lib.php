@@ -32,7 +32,7 @@ class lib {
      * @return object with configuration for educloud api.
      */
     public static function api_config($noexception = false) {
-        $cfg = (object) [
+        $cfg = (object)[
             'apipass' => \get_config('local_eduvidual', 'educloud_apipass'),
             'apipath' => \get_config('local_eduvidual', 'educloud_apipath'),
             'apiuser' => \get_config('local_eduvidual', 'educloud_apiuser'),
@@ -44,6 +44,7 @@ class lib {
         }
         return $cfg;
     }
+
     /**
      * Do a particular API-Call
      * @param module extension to the apipath like e.g. udm/users/user
@@ -151,6 +152,7 @@ class lib {
         curl_close($ch);
         return $output;
     }
+
     /**
      * Receive an API token.
      * @param forcereload force a new token.
@@ -169,7 +171,7 @@ class lib {
                     'username' => $cfg->apiuser,
                     'password' => $cfg->apipass,
                 ],
-                [ 'Content-Type: application/x-www-form-urlencoded' ],
+                ['Content-Type: application/x-www-form-urlencoded'],
             );
             $token = json_decode($token);
             if (!empty($token->access_token)) {

@@ -39,7 +39,7 @@ if (!is_siteadmin()) {
     echo $OUTPUT->header();
     echo $OUTPUT->render_from_template('local_eduvidual/alert', array(
         'content' => get_string('access_denied', 'local_eduvidual'),
-        'type' => 'danger'
+        'type' => 'danger',
     ));
     echo $OUTPUT->footer();
     die();
@@ -109,12 +109,11 @@ $template = get_config('local_eduvidual', 'supportcourse_template');
 if (empty($template)) {
     echo $OUTPUT->render_from_template('local_eduvidual/alert', array(
         'content' => get_string('admin:supportcourse:missingsetup', 'local_eduvidual'),
-        'type' => 'danger'
+        'type' => 'danger',
     ));
     echo $OUTPUT->footer();
     die();
 }
-
 
 
 $templatecourse = $DB->get_record('course', array('id' => $template), '*', IGNORE_MISSING);
@@ -178,8 +177,9 @@ echo "<ul>\n";
 require_once($CFG->dirroot . '/course/externallib.php');
 $sql = "SELECT * FROM {local_eduvidual_org} WHERE authenticated > ?";
 $orgs = $DB->get_records_sql($sql, array(0));
-foreach ($orgs AS $org) {
-    if ($org->categoryid == 0) continue;
+foreach ($orgs as $org) {
+    if ($org->categoryid == 0)
+        continue;
     // Reload entry, if another process created the course in the meanwhile
     $org = $DB->get_record('local_eduvidual_org', array('orgid' => $org->orgid));
     $course = $DB->get_record('course', array('id' => $org->supportcourseid), 'id', IGNORE_MISSING);
@@ -193,8 +193,9 @@ foreach ($orgs AS $org) {
         $members = $DB->get_records('local_eduvidual_orgid_userid', array('orgid' => $org->orgid));
         $managers = array();
         $others = array();
-        foreach ($members AS $member) {
-            if ($member->role == 'Manager') $managers[] = $member->userid;
+        foreach ($members as $member) {
+            if ($member->role == 'Manager')
+                $managers[] = $member->userid;
             else $others[] = $member->userid;
         }
         \local_eduvidual\lib_enrol::course_manual_enrolments(array($coursen->id), $managers, get_config('local_eduvidual', 'defaultroleteacher'));
@@ -206,10 +207,10 @@ foreach ($orgs AS $org) {
         if (count($forums) == 0) {
             echo "<li class='alert alert-danger'>There are no forums in supportcourse <a href=\"$CFG->wwwroot/course/view.php?id=$coursen->id\">#$coursen->id</a></li>\n";
         } else {
-            foreach ($forums AS $forum) {
+            foreach ($forums as $forum) {
                 \local_edusupport\lib::supportforum_enable($forum->id);
                 // Add subscriptions for managers.
-                foreach ($managers AS $managerid) {
+                foreach ($managers as $managerid) {
                     $chk = $DB->get_record('forum_subscriptions', array('userid' => $managerid, 'forum' => $forum->id));
                     if (empty($chk->id)) {
                         echo "<li>Added subscription for Manager #$managerid in forum #$forum->id</li>\n";
@@ -236,8 +237,9 @@ foreach ($orgs AS $org) {
             $members = $DB->get_records('local_eduvidual_orgid_userid', array('orgid' => $org->orgid));
             $managers = array();
             $others = array();
-            foreach ($members AS $member) {
-                if ($member->role == 'Manager') $managers[] = $member->userid;
+            foreach ($members as $member) {
+                if ($member->role == 'Manager')
+                    $managers[] = $member->userid;
                 else $others[] = $member->userid;
             }
             \local_eduvidual\lib_enrol::course_manual_enrolments(array($supportcourse->id), $managers, get_config('local_eduvidual', 'defaultroleteacher'));
@@ -251,10 +253,10 @@ foreach ($orgs AS $org) {
             if (count($forums) == 0) {
                 echo "<li class='alert alert-danger'>There are no forums in supportcourse <a href=\"$CFG->wwwroot/course/view.php?id=$supportcourse->id\">#$supportcourse->id</a></li>\n";
             } else {
-                foreach ($forums AS $forum) {
+                foreach ($forums as $forum) {
                     \local_edusupport\lib::supportforum_enable($forum->id);
                     // Add subscriptions for managers.
-                    foreach ($managers AS $managerid) {
+                    foreach ($managers as $managerid) {
                         $chk = $DB->get_record('forum_subscriptions', array('userid' => $managerid, 'forum' => $forum->id));
                         if (empty($chk->id)) {
                             echo "<li>Added subscription for Manager #$managerid in forum #$forum->id</li>\n";

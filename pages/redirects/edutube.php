@@ -31,7 +31,7 @@ $PAGE->set_url('/local/eduvidual/pages/redirects/edutube.php', array());
 $PAGE->set_title(get_string('edutube:title', 'local_eduvidual'));
 $PAGE->set_heading(get_string('edutube:title', 'local_eduvidual'));
 
-$authurl= get_config('local_eduvidual', 'edutubeauthurl');
+$authurl = get_config('local_eduvidual', 'edutubeauthurl');
 $authtoken = get_config('local_eduvidual', 'edutubeauthtoken');
 
 

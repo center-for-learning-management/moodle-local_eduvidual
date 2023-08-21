@@ -25,17 +25,17 @@ defined('MOODLE_INTERNAL') || die;
 
 $act = optional_param('act', '', PARAM_TEXT);
 switch ($act) {
-	case 'background':
+    case 'background':
         if (isguestuser($USER)) {
             $reply['error'] = 'guestuser:nopermission';
         } else {
             $background = str_replace('none', '', str_replace($CFG->wwwroot, '', optional_param('background', '', PARAM_TEXT)));
-			$chk = set_user_preference('local_eduvidual_background', $background);
+            $chk = set_user_preference('local_eduvidual_background', $background);
             if ($chk) {
                 $reply['status'] = 'ok';
             } else {
                 $reply['error'] = 'db_error';
             }
         }
-    break;
+        break;
 }

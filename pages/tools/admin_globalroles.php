@@ -45,13 +45,14 @@ $roles = array(
     35 => 'parent',
 );
 echo "<ul>\n";
-foreach ($roles AS $role => $type) {
+foreach ($roles as $role => $type) {
     // Set to 0 if you require at least one!
     if (in_array($type, $types)) {
         // We test if the new role is already used by another role.
         $roleinuse = false;
-        foreach ($types AS $testtype) {
-            if ($testtype == $type) continue;
+        foreach ($types as $testtype) {
+            if ($testtype == $type)
+                continue;
             if (get_config('local_eduvidual', 'defaultglobalrole' . $testtype) == $role) {
                 $roleinuse = true;
             };
@@ -63,7 +64,7 @@ foreach ($roles AS $role => $type) {
             if (!empty($previousrole) && $previousrole != $role) {
                 // We remove the previously set roles.
                 $assignments = $DB->get_records('role_assignments', array('roleid' => $previousrole, 'contextid' => $context->id));
-                foreach ($assignments AS $assignment) {
+                foreach ($assignments as $assignment) {
                     echo "<li>UNASSIGN role " . $previousrole . " for " . $assignment->userid . " in " . $context->id . "</li>\n";
                     role_unassign($previousrole, $assignment->userid, $context->id);
                 }
@@ -72,10 +73,11 @@ foreach ($roles AS $role => $type) {
                 set_config('defaultglobalrole' . $type, $role, 'local_eduvidual');
                 //$reply['assigning'] = array();
                 $members = $DB->get_records('local_eduvidual_orgid_userid', array('role' => ucfirst($type)));
-                foreach ($members AS $member) {
+                foreach ($members as $member) {
                     // Check if this user still exists.
                     $user = \core_user::get_user($member->userid, 'id,deleted', IGNORE_MISSING);
-                    if (empty($user->id) || $user->deleted) continue;
+                    if (empty($user->id) || $user->deleted)
+                        continue;
                     echo "<li>ASSIGN role " . $role . " for " . $member->userid . " in " . $context->id . "</li>\n";
                     role_assign($role, $member->userid, $context->id);
                 }

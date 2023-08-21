@@ -60,7 +60,7 @@ $favorgid = \local_eduvidual\locallib::get_favorgid();
 
 $memberships = array_values($DB->get_records_sql($sql, $params));
 
-foreach ($memberships AS &$membership) {
+foreach ($memberships as &$membership) {
     $membership->isfavorite = ($membership->orgid == $favorgid);
     $membership->canmanage = is_siteadmin() || in_array($membership->role, array('Manager'));
     if ($membership->canmanage) {
@@ -68,7 +68,7 @@ foreach ($memberships AS &$membership) {
             $_actions = \local_eduvidual\locallib::get_actions('manage', true);
             $actions = array_keys($_actions);
             $managersactions = array();
-            foreach ($actions AS $action) {
+            foreach ($actions as $action) {
                 $managersactions[] = array(
                     'name' => $_actions[$action],
                     'url' => $CFG->wwwroot . '/local/eduvidual/pages/manage.php?act=' . $action,
@@ -85,7 +85,7 @@ echo $OUTPUT->render_from_template('local_eduvidual/user_orgs', array(
     'hasmultiple' => count($memberships) > 1,
     'isadmin' => is_siteadmin(),
     'memberships' => $memberships,
-    'wwwroot' => $CFG->wwwroot
+    'wwwroot' => $CFG->wwwroot,
 ));
 
 echo $OUTPUT->footer();

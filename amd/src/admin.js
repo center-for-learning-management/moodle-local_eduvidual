@@ -24,22 +24,6 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'loc
             });
         },
         /**
-        * Sets the categoryids where coursebasements reside
-        * IDs of Courses delimited by a ','
-        **/
-        coursebasements: function(sender) {
-            if (this.debug > 0) console.log('ADMIN.coursebasements()');
-            var params = {
-                module: 'admin', act: 'coursebasements',
-                courseempty: $('#local_eduvidual_admin_coursebasements_courseempty').val(),
-                courserestore: $('#local_eduvidual_admin_coursebasements_courserestore').val(),
-                coursetemplate: $('#local_eduvidual_admin_coursebasements_coursetemplate').val(),
-            };
-            require(['local_eduvidual/main'], function(MAIN) {
-                MAIN.connect(params, { signalItem: $(sender) });
-            });
-        },
-        /**
          * Helper for next- and previous-button in coursedeletelog.
          * @param act 'next' or 'previous'
          * @param uniqid the uniqid of the parent div.
@@ -52,51 +36,6 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'loc
 
             $('#' + uniqid + ' input[name=from]').val(to);
             $('#' + uniqid + ' form').submit();
-        },
-        /**
-        * Sets the default role of teachers, students and parents
-        * @param type 'teacher', 'student' or 'parent'
-        * @param role roleid to set
-        **/
-        defaultrole: function(type, role) {
-            if (this.debug > 0) console.log('ADMIN.defaultrole(type, role)', type, role);
-            require(['local_eduvidual/main'], function(MAIN) {
-                MAIN.connect({ module: 'admin', act: 'defaultrole', type: type, role: role }, { signalItem: $('#local_eduvidual_admin_defaultrole' + type) });
-            });
-        },
-        /**
-        * Sets the default resourcekey for lti resources
-        **/
-        dropZonePath: function() {
-            if (this.debug > 0) console.log('ADMIN.dropZonePath()');
-            require(['local_eduvidual/main'], function(MAIN) {
-                MAIN.watchValue({
-                    target: '#local_eduvidual_admin_dropzonepath',
-                    run: function() {
-                        var o = this;
-                        require(['local_eduvidual/main'], function(MAIN) {
-                            MAIN.connect({ module: 'admin', act: 'dropzonepath', dropzonepath: $(o.target).val() }, { signalItem: $(o.target) });
-                        });
-                    }
-                });
-            });
-        },
-        /**
-        * Sets the default resourcekey for lti resources
-        **/
-        ltiresourcekey: function() {
-            if (this.debug > 0) console.log('ADMIN.ltiresourcekey()');
-            require(['local_eduvidual/main'], function(MAIN) {
-                MAIN.watchValue({
-                    target: '#local_eduvidual_admin_ltiresourcekey',
-                    run: function() {
-                        var o = this;
-                        require(['local_eduvidual/main'], function(MAIN) {
-                            MAIN.connect({ module: 'admin', act: 'ltiresourcekey', ltiresourcekey: $(o.target).val() }, { signalItem: $(o.target) });
-                        });
-                    }
-                });
-            });
         },
         /**
          * Triggers when the search-field in admin_orgs is used.
@@ -186,48 +125,6 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'loc
                         });
                     }
                 });
-            });
-        },
-        orgrole: function(type, role) {
-            if (this.debug > 0) console.log('ADMIN.orgrole(type, role)', type, role);
-            require(['local_eduvidual/main'], function(MAIN) {
-                MAIN.connect({ module: 'admin', act: 'orgrole', type: type, role: role }, { signalItem: $('#local_eduvidual_admin_orgrole' + type) });
-            });
-        },
-        globalrole: function(type, role) {
-            if (this.debug > 0) console.log('ADMIN.globalrole(type, role)', type, role);
-            require(['local_eduvidual/main'], function(MAIN) {
-                MAIN.connect({ module: 'admin', act: 'globalrole', type: type, role: role }, { signalItem: $('#local_eduvidual_admin_globalrole' + type) });
-            });
-        },
-        /**
-        * Sets the default role of teachers and students
-        * @param type 'teacher' or 'student'
-        * @param role roleid to set
-        **/
-        modifylogin: function(setto) {
-            if (this.debug > 0) console.log('ADMIN.modifylogin(setto)', setto);
-            require(['local_eduvidual/main'], function(MAIN) {
-                MAIN.connect({ module: 'admin', act: 'modifylogin', setto: setto }, { signalItem: $('#local_eduvidual_admin_modifylogin') });
-            });
-        },
-        /**
-        * Gets the data for a specific category and inserts into the form
-        * @param categoryid CategoryID to load
-        **/
-        moduleCatForm: function(categoryid) {
-            require(['local_eduvidual/main'], function(MAIN) {
-                MAIN.connect({ module: 'admin', act: 'modulecatform', categoryid: categoryid });
-            });
-        },
-        moolevels: function(sender) {
-            if (this.debug > 0) console.log('ADMIN.moolevels()');
-            var moolevels = new Array();
-            $.each($("input[name='moolevels[]']:checked"), function() {
-                moolevels.push($(this).val());
-            });
-            require(['local_eduvidual/main'], function(MAIN) {
-                MAIN.connect({ module: 'admin', act: 'moolevels', moolevels: moolevels }, { signalItem: $(sender).parent() });
             });
         },
         /**
@@ -604,33 +501,6 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'loc
                 $('#' + uniqid + '-legend table.' + filterid + ' td.sum').html(sums[filterid]);
             });
         },
-        /**
-        * Sets the default basement fornewly created organisation-coursess
-        * @param basement ID of basement
-        **/
-        orgcoursebasement: function(basement) {
-            if (this.debug > 0) console.log('ADMIN.orgcoursebasement(basement)', basement);
-            require(['local_eduvidual/main'], function(MAIN) {
-                MAIN.connect({ module: 'admin', act: 'orgcoursebasement', basement: basement }, { signalItem: $('#local_eduvidual_admin_orgcoursebasement') });
-            });
-        },
-        /**
-        * Sets the protectedorgs
-        **/
-        protectedorgs: function() {
-            if (this.debug > 0) console.log('ADMIN.protectedorgs()');
-            require(['local_eduvidual/main'], function(MAIN) {
-                MAIN.watchValue({
-                    target: '#local_eduvidual_admin_protectedorgs',
-                    run: function() {
-                        var o = this;
-                        require(['local_eduvidual/main'], function(MAIN) {
-                            MAIN.connect({ module: 'admin', act: 'protectedorgs', protectedorgs: $(o.target).val() }, { signalItem: $(o.target) });
-                        });
-                    }
-                });
-            });
-        },
         questioncategories: function(uniqid, catid) {
             if (this.debug > 0) console.log('ADMIN.questioncategories(uniqid, catid)', uniqid, catid);
             var sender = $('.questioncategory-' + uniqid + '-' + catid);
@@ -643,34 +513,6 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'loc
             });
             require(['local_eduvidual/main'], function(MAIN) {
                 MAIN.connect({ module: 'admin', act: 'questioncategories', questioncategories: questioncategories, supportcourses: supportcourses }, { signalItem: $(sender) });
-            });
-        },
-        registrationcc: function() {
-            if (this.debug > 0) console.log('ADMIN.registrationcc()');
-            require(['local_eduvidual/main'], function(MAIN) {
-                MAIN.watchValue({
-                    target: '#local_eduvidual_admin_registrationcc',
-                    run: function() {
-                        var o = this;
-                        require(['local_eduvidual/main'], function(MAIN) {
-                            MAIN.connect({ module: 'admin', act: 'registrationcc', registrationcc: $(o.target).val() }, { signalItem: $(o.target) });
-                        });
-                    }
-                });
-            });
-        },
-        registrationsupport: function() {
-            if (this.debug > 0) console.log('ADMIN.registrationsupport()');
-            require(['local_eduvidual/main'], function(MAIN) {
-                MAIN.watchValue({
-                    target: '#local_eduvidual_admin_registrationsupport',
-                    run: function() {
-                        var o = this;
-                        require(['local_eduvidual/main'], function(MAIN) {
-                            MAIN.connect({ module: 'admin', act: 'registrationsupport', registrationsupport: $(o.target).val() }, { signalItem: $(o.target) });
-                        });
-                    }
-                });
             });
         },
         /**
@@ -688,7 +530,7 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'loc
             if (o.data.act == 'blockfooter') {
                 $('#local_eduvidual_footer').html(o.data.blockfooter);
             }
-            if (o.data.act == 'coursebasements') {
+            if (o.data.act == 'coursebasements') {p
                 // Refresh page to enforce a reload of basements in selectmenu
                 history.go(0);
             }
@@ -722,31 +564,6 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'loc
                     }
                 }
             }
-            if (o.data.act == 'modulecatstore') {
-                require(['local_eduvidual/main'], function(MAIN) {
-                    MAIN.confirmed('#local_eduvidual_admin_modulecat_form', (o.result.status=='ok'));
-                    var cat = o.result.category;
-                    console.log('There is a category', cat);
-                    if (o.result.status == 'ok' && typeof cat.id !== 'undefined' && cat.id > 0) {
-                        if (o.data.categoryid == -1) {
-                            //console.log('Going to', local_eduvidual_WWWROOT + '/local/eduvidual/pages/admin.php?act=modulecats&categoryid=' + cat.id);
-                            //location.href = local_eduvidual_WWWROOT + 'local/eduvidual/pages/admin.php?act=modulecats&categoryid=' + cat.id;
-                            MAIN.navigate(URL.fileUrl('/local/eduvidual/pages/admin.php?act=modulecats&categoryid=' + cat.id, ''));
-                            return;
-                        } else {
-                            console.log('Category just updated');
-                            $('li[data-categoryid="' + cat.id + '"]>a:first-child').html(cat.name).removeClass('inactive').removeClass('active').addClass((cat.active == 1)?'active':'inactive');
-                            $('#local_eduvidual_admin_modulecat_form').attr('data-categoryid', cat.id).attr('data-parentid', cat.parentid).css('display', 'block');
-                            $('#local_eduvidual_admin_modulecat_form input[name="categoryid"]').val(cat.id);
-                            $('#local_eduvidual_admin_modulecat_form_active').val(cat.active);
-                            $('#local_eduvidual_admin_modulecat_form_name').val(cat.name);
-                            $('#local_eduvidual_admin_modulecat_form_description').val(cat.description);
-                            $('#local_eduvidual_admin_modulecat_form_imageurl').val(cat.imageurl);
-                        }
-                    }
-                    $('#local_eduvidual_admin_modulecat_form_active').trigger('create');
-                });
-            }
         },
         /**
          * Toggles the visibility of a column in admin_stats.
@@ -760,40 +577,6 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'loc
             var settostate = ($(sender).prop('checked')) ? 'block' : 'none';
             //console.log(' => Set visibility of .' + uniqid + '-type to ' + settostate + ' as checked is ' + $(sender).prop('checked'));
             el.css('display', settostate);
-        },
-        /**
-        * Sets the supportcourseurl
-        **/
-        supportcourseurl: function() {
-            if (this.debug > 0) console.log('ADMIN.supportcourseurl()');
-            require(['local_eduvidual/main'], function(MAIN) {
-                MAIN.watchValue({
-                    target: '#local_eduvidual_admin_supportcourseurl',
-                    run: function() {
-                        var o = this;
-                        require(['local_eduvidual/main'], function(MAIN) {
-                            MAIN.connect({ module: 'admin', act: 'supportcourseurl', supportcourseurl: $(o.target).val() }, { signalItem: $(o.target) });
-                        });
-                    }
-                });
-            });
-        },
-        /**
-        * Sets the Category of the trashbin
-        **/
-        trashcategory: function() {
-            if (this.debug > 0) console.log('ADMIN.trashcategory()');
-            require(['local_eduvidual/main'], function(MAIN) {
-                MAIN.watchValue({
-                    target: '#local_eduvidual_admin_trashcategory',
-                    run: function() {
-                        var o = this;
-                        require(['local_eduvidual/main'], function(MAIN) {
-                            MAIN.connect({ module: 'admin', act: 'trashcategory', trashcategory: $(o.target).val() }, { signalItem: $(o.target) });
-                        });
-                    }
-                });
-            });
         },
     };
 });

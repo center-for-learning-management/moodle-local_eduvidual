@@ -21,7 +21,8 @@
  */
 
 defined('MOODLE_INTERNAL') || die;
-if (!is_siteadmin()) die;
+if (!is_siteadmin())
+    die;
 
 // Restrit
 $ROWS = array(
@@ -69,7 +70,7 @@ for ($z = 0; $z < 2; $z++) {
         $STATS[$z]['restrictions'][$restriction]['selected'] = '1';
     }
 
-    switch($z) {
+    switch ($z) {
         case 0:
             $STATS[$z]['label'] = get_string('admin:stats:states', 'local_eduvidual');
             $rest = (($restriction > -1) ? "AND RIGHT(orgid, 1) = " . $restriction : "");
@@ -108,7 +109,7 @@ for ($z = 0; $z < 2; $z++) {
                         GROUP BY ord
                         ORDER BY ord ASC";
             $lpfeduv = $DB->get_records_sql($sql, array());
-        break;
+            break;
         case 1:
             $STATS[$z]['label'] = get_string('admin:stats:types', 'local_eduvidual');
             $rest = (($restriction > -1) ? "AND LEFT(orgid, 1) = " . $restriction : "");
@@ -148,11 +149,12 @@ for ($z = 0; $z < 2; $z++) {
                         GROUP BY ord
                         ORDER BY ord ASC";
             $lpfeduv = $DB->get_records_sql($sql, array());
-        break;
+            break;
     }
 
-    foreach ($STATS[$z]['rows'] AS $a => $row) {
-        if (empty($row['label'])) continue;
+    foreach ($STATS[$z]['rows'] as $a => $row) {
+        if (empty($row['label']))
+            continue;
         if (!empty($all[$a]->cnt)) {
             $rate = round(intval(@$registered[$a]->cnt) / intval(@$all[$a]->cnt) * 100, 1) . '%';
         } else {

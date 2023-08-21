@@ -39,38 +39,29 @@ switch ($act) {
             $course = $DB->get_record('course', array('id' => $courseid));
             $reply['course_before'] = $course;
             require_once($CFG->dirroot . '/course/lib.php');
-            switch($act) {
+            switch ($act) {
                 case 'course_hideshow':
-                    $course->visible = ($course->visible == 1)?0:1;
+                    $course->visible = ($course->visible == 1) ? 0 : 1;
                     update_course($course);
                     $reply['status'] = 'ok';
-                break;
+                    break;
                 case 'course_remove':
                     delete_course($course);
-                    $trashcategory = get_config('local_eduvidual', 'trashcategory');
-                    if ($trashcategory > 0) {
-                        $course->category = $trashcategory;
-                        $trashbinstring = '(' . get_string('manage:archive:trashbin', 'local_eduvidual') . ') ';
-                        $course->fullname = $trashbinstring . str_replace($trashbinstring, '', $course->fullname);
-                        update_course($course);
-                    } else {
-                        delete_course($course);
-                    }
                     $reply['status'] = 'ok';
-                break;
+                    break;
             }
             $reply['course_after'] = $course;
         } else {
             $reply['error'] = get_string('access_denied', 'local_eduvidual');
         }
-    break;
+        break;
     case 'createcourse_basements':
         $reply['status'] = 'ok';
         $reply['basements'] = \local_eduvidual\lib_enrol::get_course_basements('all');
         $orgid = optional_param('orgid', 0, PARAM_INT);
         $membership = $DB->get_record('local_eduvidual_orgid_userid', array('orgid' => $orgid, 'userid' => $USER->id));
         $reply['canmanage'] = is_siteadmin() || (isset($membership->role) && $membership->role == 'Manager');
-    break;
+        break;
     case 'createcourse_now':
         $categoryid = optional_param('categoryid', 0, PARAM_INT);
         $category = $DB->get_record('course_categories', array('id' => $categoryid));
@@ -80,25 +71,27 @@ switch ($act) {
             if (in_array(\local_eduvidual\locallib::get_orgrole($org->orgid), array('Manager', 'Teacher')) || is_siteadmin()) {
                 // Now check if basement is valid
                 $basement = optional_param('basement', 0, PARAM_INT);
-                if(\local_eduvidual\lib_enrol::is_valid_course_basement('all', $basement)){
+                if (\local_eduvidual\lib_enrol::is_valid_course_basement('all', $basement)) {
                     // Create course here
                     $fullname = optional_param('name', '', PARAM_TEXT);
                     if (strlen($fullname) > 5) {
                         $shortname = "[" . $USER->id . "-" . date('YmdHis') . "] " . strtolower($fullname);
-                        if (strlen($shortname) > 30) $shortname = substr($shortname, 0, 30);
+                        if (strlen($shortname) > 30)
+                            $shortname = substr($shortname, 0, 30);
                         $course = \local_eduvidual\lib_helper::duplicate_course($basement, $fullname, $shortname, $categoryid, 1);
 
                         if (!empty($course->id)) {
                             $context = \context_course::instance($course->id);
                             $role = get_config('local_eduvidual', 'defaultroleteacher');
                             $enroluser = optional_param('setteacher', 0, PARAM_INT);
-                            if (empty($enroluser) || $enroluser == 0) $enroluser = $USER->id;
+                            if (empty($enroluser) || $enroluser == 0)
+                                $enroluser = $USER->id;
                             $reply['enrolments'][] = 'course: user ' . $enroluser . ' roleid ' . $role . ' courseid ' . $course->id;
                             \local_eduvidual\lib_enrol::course_manual_enrolments(array($course->id), array($enroluser), $role);
                             // Set the start date of this course to sep 1st of the school year
                             $course = $DB->get_record('course', array('id' => $course->id));
-                            $course->startdate = (date("m") < 6)?strtotime((date("Y")-1) . '0901000000'):strtotime(date("Y") . '0901000000');
-                            $course->enddate = (date("m") < 6)?strtotime((date("Y")) . '0831000000'):strtotime((date("Y")+1) . '0831000000');
+                            $course->startdate = (date("m") < 6) ? strtotime((date("Y") - 1) . '0901000000') : strtotime(date("Y") . '0901000000');
+                            $course->enddate = (date("m") < 6) ? strtotime((date("Y")) . '0831000000') : strtotime((date("Y") + 1) . '0831000000');
                             $DB->update_record('course', $course);
 
                             $reply['course'] = $course;
@@ -120,7 +113,7 @@ switch ($act) {
         } else {
             $reply['error'] = 'category_does_not_belong_to_org';
         }
-    break;
+        break;
     case 'createcourse_category':
         $categoryid = optional_param('categoryid', 0, PARAM_INT);
         $category = $DB->get_record('course_categories', array('id' => $categoryid));
@@ -132,7 +125,7 @@ switch ($act) {
                 $reply['category'] = $category;
                 $reply['children'] = array();
                 $cs = $DB->get_records('course_categories', array('parent' => $categoryid));
-                foreach($cs AS $c) {
+                foreach ($cs as $c) {
                     $reply['children'][] = $c;
                 }
                 $reply['status'] = 'ok';
@@ -142,7 +135,7 @@ switch ($act) {
         } else {
             $reply['error'] = 'category_does_not_belong_to_org';
         }
-    break;
+        break;
     case 'createcourse_create':
         $categoryid = optional_param('categoryid', 0, PARAM_INT);
         $category = $DB->get_record('course_categories', array('id' => $categoryid));
@@ -157,28 +150,28 @@ switch ($act) {
         } else {
             $reply['error'] = 'category_does_not_belong_to_org';
         }
-    break;
+        break;
     case 'createcourse_loadteacher':
         $orgid = optional_param('orgid', 0, PARAM_INT);
         $search = optional_param('search', '', PARAM_TEXT);
 
-		if (strlen($search) > 3) {
-			$search = "%" . $search . "%";
-		}
-		$reply['users'] = array();
+        if (strlen($search) > 3) {
+            $search = "%" . $search . "%";
+        }
+        $reply['users'] = array();
         $CONCAT = 'CONCAT("[",ou.role,"] ",u.firstname," ",u.lastname)';
-		$users = $DB->get_records_sql('SELECT u.id,u.email,' . $CONCAT . ' AS userfullname FROM {user} AS u,{local_eduvidual_orgid_userid} AS ou WHERE u.id=ou.userid AND ou.orgid=? AND ' . $CONCAT . ' LIKE ?', array($orgid, $search));
+        $users = $DB->get_records_sql('SELECT u.id,u.email,' . $CONCAT . ' AS userfullname FROM {user} AS u,{local_eduvidual_orgid_userid} AS ou WHERE u.id=ou.userid AND ou.orgid=? AND ' . $CONCAT . ' LIKE ?', array($orgid, $search));
         require_once($CFG->dirroot . '/user/profile/lib.php');
-		foreach($users AS $user) {
-			profile_load_data($user);
-			$reply['users'][] = array(
-				"id" => $user->id,
-				"userfullname" => $user->userfullname,
-				"email" => $user->email
-			);
-		}
-		$reply['status'] = 'ok';
-    break;
+        foreach ($users as $user) {
+            profile_load_data($user);
+            $reply['users'][] = array(
+                "id" => $user->id,
+                "userfullname" => $user->userfullname,
+                "email" => $user->email,
+            );
+        }
+        $reply['status'] = 'ok';
+        break;
     case 'user_search':
         if (!in_array(\local_eduvidual\locallib::get_orgrole($org->orgid), array('Manager', 'Teacher')) && !is_siteadmin()) {
             $reply['error'] = 'No_permission';
@@ -190,13 +183,13 @@ switch ($act) {
             $CONCAT = 'CONCAT(u.firstname," ",u.lastname," (",u.email,")")';
             $reply['users'] = array();
             if ($type == 'orgusers') {
-    			$users = $DB->get_records_sql('SELECT u.id,u.email,' . $CONCAT . ' AS userfullname FROM {user} AS u,{local_eduvidual_orgid_userid} AS ou WHERE u.id=ou.userid AND ou.orgid=? AND ' . $CONCAT . ' LIKE ? ORDER BY u.lastname ASC,u.firstname ASC', array($org->orgid, $searchfor));
+                $users = $DB->get_records_sql('SELECT u.id,u.email,' . $CONCAT . ' AS userfullname FROM {user} AS u,{local_eduvidual_orgid_userid} AS ou WHERE u.id=ou.userid AND ou.orgid=? AND ' . $CONCAT . ' LIKE ? ORDER BY u.lastname ASC,u.firstname ASC', array($org->orgid, $searchfor));
             } else {
                 $users = array();
                 $userids = array_keys(get_enrolled_users($context));
-                foreach($userids AS $userid) {
+                foreach ($userids as $userid) {
                     $entry = $DB->get_records_sql('SELECT u.id,u.email,' . $CONCAT . ' AS userfullname FROM {user} AS u,{local_eduvidual_orgid_userid} AS ou WHERE u.id=ou.userid AND ou.orgid=? AND ' . $CONCAT . ' LIKE ? AND ou.userid=? ORDER BY u.lastname ASC,u.firstname ASC', array($org->orgid, $searchfor, $userid));
-                    foreach($entry AS $e) {
+                    foreach ($entry as $e) {
                         $users[$e->id] = $e;
                     }
                 }
@@ -213,17 +206,17 @@ switch ($act) {
                 $defaultrolestudent = get_config('local_eduvidual', 'defaultrolestudent');
                 $defaultroleteacher = get_config('local_eduvidual', 'defaultroleteacher');
                 */
-                foreach($users AS $user) {
-    				$reply['users'][] = array(
-    					"userid" => $user->id,
-    					"name" => $user->userfullname,
-    					"email" => $user->email
-    				);
-    			}
+                foreach ($users as $user) {
+                    $reply['users'][] = array(
+                        "userid" => $user->id,
+                        "name" => $user->userfullname,
+                        "email" => $user->email,
+                    );
+                }
             }
-			$reply['status'] = 'ok';
+            $reply['status'] = 'ok';
         }
-    break;
+        break;
     case 'user_set':
         if (!in_array(\local_eduvidual\locallib::get_orgrole($org->orgid), array('Manager', 'Teacher')) && !is_siteadmin()) {
             $reply['error'] = get_string('access_denied', 'local_eduvidual');
@@ -238,16 +231,24 @@ switch ($act) {
                     $canedit = has_capability('moodle/course:update', $context) || is_siteadmin() || \local_eduvidual\locallib::get('orgrole') == 'Manager';
                     if ($canedit) {
                         $roleid = 0;
-                        switch(optional_param('role', '', PARAM_TEXT)) {
-                            case 'Parent': $roleid = get_config('local_eduvidual', 'defaultroleparent'); break;
-                            case 'Student': $roleid = get_config('local_eduvidual', 'defaultrolestudent'); break;
-                            case 'Teacher': $roleid = get_config('local_eduvidual', 'defaultroleteacher'); break;
-                            case 'remove': $roleid = -1; break;
+                        switch (optional_param('role', '', PARAM_TEXT)) {
+                            case 'Parent':
+                                $roleid = get_config('local_eduvidual', 'defaultroleparent');
+                                break;
+                            case 'Student':
+                                $roleid = get_config('local_eduvidual', 'defaultrolestudent');
+                                break;
+                            case 'Teacher':
+                                $roleid = get_config('local_eduvidual', 'defaultroleteacher');
+                                break;
+                            case 'remove':
+                                $roleid = -1;
+                                break;
                         }
                         if ($roleid > 0 || $roleid == -1) {
                             $userids = optional_param_array('userids', 0, PARAM_INT);
                             $userinorg = array();
-                            foreach($userids AS $userid) {
+                            foreach ($userids as $userid) {
                                 $chk = $DB->get_record('local_eduvidual_orgid_userid', array('userid' => $userid));
                                 if (isset($chk->userid) && $chk->userid == $userid) {
                                     $userinorg[] = $userid;
@@ -256,7 +257,7 @@ switch ($act) {
                             $reply['failures'] = \local_eduvidual\lib_enrol::course_manual_enrolments(array($courseid), $userinorg, $roleid);
                             $reply['updates'] = array(array($courseid), $userinorg, $roleid);
                             $reply['updateduserids'] = $userinorg;
-    			            $reply['status'] = 'ok';
+                            $reply['status'] = 'ok';
                         } else {
                             $reply['error'] = 'Invalid_role';
                         }
@@ -270,5 +271,5 @@ switch ($act) {
                 $reply['error'] = 'No_such_course';
             }
         }
-    break;
+        break;
 }

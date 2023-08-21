@@ -34,6 +34,10 @@ if ($data = $form->get_data()) {
         array('subdirs' => $form->subdirs, 'maxbytes' => $form->maxbytes, 'maxfiles' => $form->maxfiles)
     );
     file_save_draft_area_files(
+        $data->orglogo, $context->id, 'local_eduvidual', 'orglogo', $org->orgid,
+        array('subdirs' => $form->subdirs, 'maxbytes' => $form->maxbytes, 'maxfiles' => 1)
+    );
+    file_save_draft_area_files(
         $data->orgbanner, $context->id, 'local_eduvidual', 'orgbanner', $org->orgid,
         array('subdirs' => $form->subdirs, 'maxbytes' => $form->maxbytes, 'maxfiles' => 1)
     );
@@ -46,18 +50,26 @@ if ($data = $form->get_data()) {
     $DB->update_record('local_eduvidual_org', $org);
     echo "<p class=\"alert alert-success\">" . get_string('store:success', 'local_eduvidual') . "</p>";
 }
+
+
 $entry = new \stdClass;
+$entry->orgid = $org->orgid;
+
 $draftitemid = file_get_submitted_draft_itemid('orgfiles');
 file_prepare_draft_area($draftitemid, $context->id, 'local_eduvidual', 'orgfiles', $org->orgid,
-                        array('subdirs' => $form->subdirs, 'maxbytes' => $form->maxbytes, 'maxfiles' => $form->maxfiles));
-
+    array('subdirs' => $form->subdirs, 'maxbytes' => $form->maxbytes, 'maxfiles' => $form->maxfiles));
 $entry->orgfiles = $draftitemid;
-$draftitemid2 = file_get_submitted_draft_itemid('orgbanner');
-file_prepare_draft_area($draftitemid2, $context->id, 'local_eduvidual', 'orgbanner', $org->orgid,
-                        array('subdirs' => $form->subdirs, 'maxbytes' => $form->maxbytes, 'maxfiles' => 1));
 
-$entry->orgbanner = $draftitemid2;
-$entry->orgid = $org->orgid;
+$draftitemid = file_get_submitted_draft_itemid('orglogo');
+file_prepare_draft_area($draftitemid, $context->id, 'local_eduvidual', 'orglogo', $org->orgid,
+    array('subdirs' => $form->subdirs, 'maxbytes' => $form->maxbytes, 'maxfiles' => 1));
+$entry->orglogo = $draftitemid;
+
+$draftitemid = file_get_submitted_draft_itemid('orgbanner');
+file_prepare_draft_area($draftitemid, $context->id, 'local_eduvidual', 'orgbanner', $org->orgid,
+    array('subdirs' => $form->subdirs, 'maxbytes' => $form->maxbytes, 'maxfiles' => 1));
+$entry->orgbanner = $draftitemid;
+
 $form->set_data($entry);
 $form->display();
 
@@ -75,4 +87,5 @@ if (optional_param('customcssstore', 0, PARAM_INT)) {
     }
 }
 ?>
-<textarea id="local_eduvidual_manage_customcss" data-orgid="<?php echo $org->orgid; ?>" style="width: 100%; min-height: 600px;" onkeyup="require(['local_eduvidual/manager'], function(MANAGER) { MANAGER.customcss(); });"><?php echo $org->customcss; ?></textarea>
+<textarea id="local_eduvidual_manage_customcss" data-orgid="<?php echo $org->orgid; ?>" style="width: 100%; min-height: 600px;"
+          onkeyup="require(['local_eduvidual/manager'], function(MANAGER) { MANAGER.customcss(); });"><?php echo $org->customcss; ?></textarea>

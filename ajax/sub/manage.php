@@ -40,7 +40,7 @@ switch ($act) {
             $cnt = $DB->count_records_sql('SELECT COUNT(id) FROM {local_eduvidual_org_codes} WHERE orgid=? AND code=? AND maturity>UNIX_TIMESTAMP(NOW())', array($org->orgid, $code));
             $reply['cnt'] = $cnt;
             if ($cnt == 0) {
-                $code = (object) array(
+                $code = (object)array(
                     'orgid' => $org->orgid,
                     'userid' => $USER->id,
                     'code' => $code,
@@ -60,7 +60,7 @@ switch ($act) {
         } else {
             $reply['error'] = 'invalid_params';
         }
-    break;
+        break;
     case 'accesscode_revoke':
         $id = optional_param('id', 0, PARAM_INT);
         if ($id > 0) {
@@ -76,7 +76,7 @@ switch ($act) {
         } else {
             $reply['error'] = 'no_accesscode_given';
         }
-    break;
+        break;
     case 'addcategory':
     case 'editcategory':
     case 'removecategory':
@@ -84,7 +84,8 @@ switch ($act) {
         $parentid = optional_param('parentid', 0, PARAM_INT);
         $cats = $DB->get_records_sql('SELECT * FROM {course_categories} WHERE path LIKE ? AND id=?', array('/' . $org->categoryid . '%', $parentid));
         // Take first result as $cat
-        foreach($cats AS $cat) {}
+        foreach ($cats as $cat) {
+        }
         if (isset($cat) && $cat->id == $parentid) {
             // If so, add or remove it
             require_once($CFG->dirroot . '/lib/coursecatlib.php');
@@ -99,7 +100,7 @@ switch ($act) {
                         'name' => $name,
                         'description' => '',
                         'parent' => $parentid,
-                        'visible' => 1
+                        'visible' => 1,
                     );
                     $reply['catdata'] = $data;
                     $catid = \coursecat::create($data);
@@ -134,12 +135,7 @@ switch ($act) {
                 } else {
                     $cat = \coursecat::get($parentid);
                     $reply['removedcat'] = $DB->get_record('course_categories', array('id' => $parentid));
-                    $trashcategory = get_config('local_eduvidual', 'trashcategory');
-                    if (!empty($trashcategory)) {
-                        $cat->delete_move($trashcategory);
-                    } else {
-                        $cat->delete_full();
-                    }
+                    $cat->delete_full();
                     $reply['status'] = 'ok';
                 }
             }
@@ -148,7 +144,7 @@ switch ($act) {
             $reply['cats'] = $cats;
         }
 
-    break;
+        break;
     case 'addparent':
         $orgid = optional_param('orgid', 0, PARAM_INT);
         $studentid = optional_param('studentid', 0, PARAM_INT);
@@ -163,7 +159,7 @@ switch ($act) {
                 $chk_parent = $DB->get_record('local_eduvidual_orgid_userid', array('orgid' => $orgid, 'userid' => $parentid));
                 if ($chk_student->userid != $studentid) {
                     $reply['error'] = 'student_not_member_of_this_org';
-                } elseif($chk_parent->userid != $parentid) {
+                } elseif ($chk_parent->userid != $parentid) {
                     $reply['error'] = 'parent_not_member_of_this_org';
                 } else {
                     $studentcontext = \context_user::instance($studentid);
@@ -180,7 +176,7 @@ switch ($act) {
         } else {
             $reply['error'] = 'missing_data';
         }
-    break;
+        break;
     case 'addparent_filter':
         $orgid = optional_param('orgid', 0, PARAM_INT);
         $studentid = optional_param('studentid', 0, PARAM_INT);
@@ -214,7 +210,7 @@ switch ($act) {
                 $reply['studentcontext'] = $studentcontext->id;
                 $reply['orgid'] = $orgid;
 
-                foreach($entries AS $user) {
+                foreach ($entries as $user) {
                     $hasrole = $DB->get_record('role_assignments', array('userid' => $user->id, 'roleid' => $parentrole, 'contextid' => $studentcontext->id));
                     if (isset($hasrole->id) && $hasrole->id > 0) {
                         $user->isparent = true;
@@ -230,7 +226,7 @@ switch ($act) {
             }
             $reply['status'] = 'ok';
         }
-    break;
+        break;
     case 'adduser_anonymous':
         $maximum = 50; // How many accounts can be created at once.
         $orgid = optional_param('orgid', 0, PARAM_INT);
@@ -238,7 +234,8 @@ switch ($act) {
         $cohorts = optional_param('cohorts', '', PARAM_TEXT);
         $amount = optional_param('amount', 0, PARAM_INT);
 
-        $success = 0; $failed = 0;
+        $success = 0;
+        $failed = 0;
 
         if (\local_eduvidual\locallib::get_orgrole($orgid) == 'Manager' || is_siteadmin()) {
             if ($amount <= $maximum) {
@@ -263,7 +260,7 @@ switch ($act) {
                     $u->calendartype = 'gregorian';
 
                     $u->id = user_create_user($u, false, false);
-					if (!empty($u->id)) {
+                    if (!empty($u->id)) {
                         $u->email = 'a' . $u->id . '@a.eduvidual.at';
                         $u->username = $u->email;
                         user_update_user($u, false);
@@ -276,9 +273,9 @@ switch ($act) {
                         // Trigger event.
                         \core\event\user_created::create_from_userid($u->id)->trigger();
 
-						if (!empty($cohorts)) {
-							\local_eduvidual\lib_enrol::cohorts_add($u->id, $org, $cohorts);
-						}
+                        if (!empty($cohorts)) {
+                            \local_eduvidual\lib_enrol::cohorts_add($u->id, $org, $cohorts);
+                        }
                         $success++;
                     } else {
                         $failed++;
@@ -286,16 +283,18 @@ switch ($act) {
                 }
                 $reply['success'] = $success;
                 $reply['failed'] = $failed;
-                if ($failed == 0) { $reply['status'] = 'ok'; }
+                if ($failed == 0) {
+                    $reply['status'] = 'ok';
+                }
             } else {
                 $reply['error'] = get_string('manage:createuseranonymous:exceededmax:text', 'local_eduvidual', array('maximum' => $maximum));
             }
         } else {
             $reply['error'] = get_string('access_denied', 'local_eduvidual');
         }
-    break;
-	case 'adduser':
-		$secrets = explode(' ', optional_param('secret', '', PARAM_TEXT));
+        break;
+    case 'adduser':
+        $secrets = explode(' ', optional_param('secret', '', PARAM_TEXT));
     case 'setuserrole':
         if (!isset($secrets)) {
             $secrets = optional_param_array('secrets', NULL, PARAM_TEXT);
@@ -306,25 +305,25 @@ switch ($act) {
         $reply['enrolments'] = array();
         $reply['unenrolments'] = array();
 
-        foreach ($secrets AS $secret_) {
+        foreach ($secrets as $secret_) {
             $secret = explode('#', $secret_);
             $secret[0] = trim($secret[0]);
             $secret[1] = trim($secret[1]);
             $chkuser = $DB->get_record('user', array('id' => $secret[0]));
             if (isset($chkuser) && $chkuser->id == $secret[0]) {
                 $dbsecret = \local_eduvidual\locallib::get_user_secret($secret[0]);
-    			if ($dbsecret == $secret[1]) {
-    				$roles = array('Manager', 'Teacher', 'Student', 'Parent', 'remove');
-    				$role = optional_param('role', '', PARAM_TEXT);
+                if ($dbsecret == $secret[1]) {
+                    $roles = array('Manager', 'Teacher', 'Student', 'Parent', 'remove');
+                    $role = optional_param('role', '', PARAM_TEXT);
                     if (in_array($role, $roles)) {
                         $reply = array_merge($reply, \local_eduvidual\lib_enrol::role_set($secret[0], $org, $role));
                         $reply['updated'][] = $secret_;
                     } else {
                         $reply['invalid_role_' . $role] = true;
                     }
-    			} else {
+                } else {
                     $reply['failed'][] = $secret_;
-    			}
+                }
             } else {
                 $reply['failed'][] = $secret_;
             }
@@ -333,7 +332,7 @@ switch ($act) {
         if (count($reply['failed']) == 0) {
             $reply['status'] = 'ok';
         }
-    break;
+        break;
     case 'customcss':
         $org->customcss = optional_param('customcss', '', PARAM_TEXT);
         if ($DB->execute('UPDATE {local_eduvidual_org} SET customcss=? WHERE id=?', array($org->customcss, $org->id))) {
@@ -341,7 +340,7 @@ switch ($act) {
         } else {
             $reply['error'] = 'db_error';
         }
-    break;
+        break;
     case 'force_enrol':
         $courseid = optional_param('courseid', 0, PARAM_INT);
         if ($courseid > 0) {
@@ -354,7 +353,7 @@ switch ($act) {
         } else {
             $reply['error'] = 'no_courseid';
         }
-    break;
+        break;
     case 'maildomain':
         if (is_siteadmin()) {
             $maildomain = strtolower(optional_param('maildomain', '', PARAM_TEXT));
@@ -382,7 +381,7 @@ switch ($act) {
         } else {
             $reply['error'] = 'not_siteadmin';
         }
-    break;
+        break;
     case 'maildomain_apply':
         if (is_siteadmin()) {
             $types = array('maildomain', 'maildomainteacher');
@@ -390,17 +389,18 @@ switch ($act) {
                 'Student' => 0,
                 'Teacher' => 0,
             );
-            foreach ($types AS $type) {
+            foreach ($types as $type) {
                 // Now we look for all users of that domain.
-                if (empty($org->{$type})) continue;
+                if (empty($org->{$type}))
+                    continue;
                 $domains = explode(',', $org->{$type});
                 $role = ($type == 'maildomainteacher') ? 'Teacher' : 'Student';
                 $sql = "SELECT id
                             FROM {user}
                             WHERE email LIKE ?";
-                foreach ($domains AS $domain) {
+                foreach ($domains as $domain) {
                     $users = $DB->get_records_sql($sql, array('%' . $domain));
-                    foreach ($users AS $user) {
+                    foreach ($users as $user) {
                         $hasrole = $DB->get_record('local_eduvidual_orgid_userid', array('orgid' => $org->orgid, 'userid' => $user->id));
                         if (empty($hasrole->id)) {
                             $reply['updated'][$role]++;
@@ -412,7 +412,7 @@ switch ($act) {
         } else {
             $reply['error'] = 'not_siteadmin';
         }
-    break;
+        break;
     case 'override_bigbluebutton':
         $new_serverurl = optional_param('bbb_serverurl', '', PARAM_URL);
         $new_sharedsecret = optional_param('bbb_sharedsecret', '', PARAM_ALPHANUM);
@@ -435,7 +435,7 @@ switch ($act) {
             $DB->insert_record('local_eduvidual_overrides', array('orgid' => $org->orgid, 'field' => 'bigbluebuttonbn_shared_secret', 'value' => $new_sharedsecret));
         }
         $reply['status'] = 'ok';
-    break;
+        break;
     case 'override_rolenames':
         $overrides = json_decode(optional_param('roles', '{}', PARAM_TEXT));
         $sql = "SELECT r.id
@@ -454,10 +454,10 @@ switch ($act) {
                         $rec->value = $override->override;
                         $DB->set_field('local_eduvidual_overrides', 'value', $rec->value, array('orgid' => $org->orgid, 'field' => 'courserole_' . $override->roleid . '_name'));
                     } else {
-                        $override = (object) array(
+                        $override = (object)array(
                             'orgid' => $org->orgid,
                             'field' => 'courserole_' . $override->roleid . '_name',
-                            'value' => $override->override
+                            'value' => $override->override,
                         );
                         $override->id = $DB->insert_record('local_eduvidual_overrides', $override);
                     }
@@ -465,7 +465,7 @@ switch ($act) {
             }
         }
         $reply['status'] = 'ok';
-    break;
+        break;
     case 'setpwforcechange':
         if (!isset($secrets)) {
             $secrets = optional_param_array('secrets', NULL, PARAM_TEXT);
@@ -475,12 +475,12 @@ switch ($act) {
         $reply['updated'] = array();
         $reply['failed'] = array();
 
-        foreach ($secrets AS $secret_) {
+        foreach ($secrets as $secret_) {
             $secret = explode('#', $secret_);
             $chkuser = $DB->get_record('user', array('id' => $secret[0]));
             if (isset($chkuser) && $chkuser->id == $secret[0]) {
                 $dbsecret = \local_eduvidual\locallib::get_user_secret($secret[0]);
-    			if ($dbsecret == $secret[1]) {
+                if ($dbsecret == $secret[1]) {
                     // Secret is ok, check account type.
                     if (in_array($chkuser->auth, $resetfor)) {
                         set_user_preference('auth_forcepasswordchange', true, $chkuser->id);
@@ -488,9 +488,9 @@ switch ($act) {
                     } else {
                         $reply['failed'][] = $secret_ . ': ' . $chkuser->auth;
                     }
-    			} else {
+                } else {
                     $reply['failed'][] = $secret_ . ': wrong secret';
-    			}
+                }
             } else {
                 $reply['failed'][] = $secret_ . ': no such user';
             }
@@ -499,7 +499,7 @@ switch ($act) {
         if (count($reply['failed']) == 0) {
             $reply['status'] = 'ok';
         }
-    break;
+        break;
     case 'setpwreset':
         if (!isset($secrets)) {
             $secrets = optional_param_array('secrets', NULL, PARAM_TEXT);
@@ -509,12 +509,12 @@ switch ($act) {
         $reply['updated'] = array();
         $reply['failed'] = array();
 
-        foreach ($secrets AS $secret_) {
+        foreach ($secrets as $secret_) {
             $secret = explode('#', $secret_);
             $chkuser = $DB->get_record('user', array('id' => $secret[0]));
             if (isset($chkuser) && $chkuser->id == $secret[0]) {
                 $dbsecret = \local_eduvidual\locallib::get_user_secret($secret[0]);
-    			if ($dbsecret == $secret[1]) {
+                if ($dbsecret == $secret[1]) {
                     // Secret is ok, check account type.
                     if (in_array($chkuser->auth, $resetfor)) {
                         update_internal_user_password($chkuser, $secret[1], false);
@@ -522,9 +522,9 @@ switch ($act) {
                     } else {
                         $reply['failed'][] = $secret_ . ': ' . $chkuser->auth;
                     }
-    			} else {
+                } else {
                     $reply['failed'][] = $secret_ . ': wrong secret';
-    			}
+                }
             } else {
                 $reply['failed'][] = $secret_ . ': no such user';
             }
@@ -533,13 +533,13 @@ switch ($act) {
         if (count($reply['failed']) == 0) {
             $reply['status'] = 'ok';
         }
-    break;
-	case 'setuserrole_search':
+        break;
+    case 'setuserrole_search':
         $minimum = 2;
-		$search = optional_param('search', '', PARAM_TEXT);
+        $search = optional_param('search', '', PARAM_TEXT);
         $reply['users'] = array();
-		if (strlen($search) > $minimum) {
-			$search = "%" . $search . "%";
+        if (strlen($search) > $minimum) {
+            $search = "%" . $search . "%";
             $CONCAT = 'CONCAT("[",ou.role,"] ",u.firstname," ",u.lastname)';
             if (false && is_siteadmin()) {
                 $users = $DB->get_records_sql('SELECT u.id,u.email,' . $CONCAT . ' AS userfullname FROM {user} AS u INNER JOIN {local_eduvidual_orgid_userid} AS ou ON u.id=ou.userid WHERE ' . $CONCAT . ' LIKE ? AND u.suspended=0', array($search));
@@ -547,17 +547,17 @@ switch ($act) {
                 $users = $DB->get_records_sql('SELECT u.id,u.email,' . $CONCAT . ' AS userfullname FROM {user} AS u INNER JOIN {local_eduvidual_orgid_userid} AS ou ON u.id=ou.userid WHERE ou.orgid=? AND ' . $CONCAT . ' LIKE ? AND u.suspended=0', array($org->orgid, $search));
             }
             require_once($CFG->dirroot . '/user/profile/lib.php');
-			foreach($users AS $user) {
-				profile_load_data($user);
-				$item = array(
-					"id" => $user->id,
-					"secret" => $user->id . '#' . $user->profile_field_secret,
-					"userfullname" => $user->userfullname,
-					"email" => $user->email
-				);
+            foreach ($users as $user) {
+                profile_load_data($user);
+                $item = array(
+                    "id" => $user->id,
+                    "secret" => $user->id . '#' . $user->profile_field_secret,
+                    "userfullname" => $user->userfullname,
+                    "email" => $user->email,
+                );
                 $reply['users'][] = $item;
-			}
-		} else {
+            }
+        } else {
             $reply['users'][] = array(
                 "id" => 0,
                 "secret" => '#',
@@ -566,6 +566,6 @@ switch ($act) {
             );
         }
 
-		$reply['status'] = 'ok';
-	break;
+        $reply['status'] = 'ok';
+        break;
 }

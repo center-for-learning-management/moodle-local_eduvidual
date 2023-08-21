@@ -42,6 +42,7 @@ class local_eduvidual_manage_user_form extends moodleform {
         $mform->setType('email', PARAM_TEXT);
         //$this->add_action_buttons();
     }
+
     //Custom validation should be added here
     function validation($data, $files) {
         $errors = array();

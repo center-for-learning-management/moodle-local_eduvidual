@@ -39,12 +39,12 @@ redirect($url);
 
 ?><!DOCTYPE html>
 <html>
-    <head>
-        <title><?php echo get_string('logout'); ?></title>
-        <script>
-            //localStorage.removeItem('local_eduvidual_originallocation');
-            top.location.href = "<?php echo $url; ?>";
-        </script>
-    </head>
-    <body></body>
+<head>
+    <title><?php echo get_string('logout'); ?></title>
+    <script>
+        //localStorage.removeItem('local_eduvidual_originallocation');
+        top.location.href = "<?php echo $url; ?>";
+    </script>
+</head>
+<body></body>
 </html>

@@ -21,7 +21,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-if(!defined('MOODLE_INTERNAL')) {
+if (!defined('MOODLE_INTERNAL')) {
     // This script was called directly
     require_once('../../../config.php');
     require_login();
@@ -35,24 +35,26 @@ if (has_capability('moodle/question:viewall', $context)) {
     if (count($questioncategories) > 0) {
         ?>
         <div class="card">
-            <h3><?php echo get_string('preferences:questioncategories', 'local_eduvidual'); ?></h3>
-            <p><?php echo get_string('preferences:questioncategories:description', 'local_eduvidual'); ?></p>
-            <?php
+        <h3><?php echo get_string('preferences:questioncategories', 'local_eduvidual'); ?></h3>
+        <p><?php echo get_string('preferences:questioncategories:description', 'local_eduvidual'); ?></p>
+        <?php
 
-            for ($a = 0; $a < count($questioncategories); $a++) {
-                $cat = $DB->get_record('question_categories', array('id' => $questioncategories[$a]));
-                if (isset($cat->id) && $cat->id > 0) {
-                    $active = $DB->get_record('local_eduvidual_userqcats', array('userid' => $USER->id, 'categoryid' => $questioncategories[$a]));
-                    ?>
-                    <label>
-                        <input type="checkbox" name="questioncategories[]" value="<?php echo $cat->id; ?>"<?php if ($active && $active->categoryid == $cat->id) { echo " checked"; } ?>
-                            onclick="var inp = this; require(['local_eduvidual/teacher'], function(TEACHER) { TEACHER.questioncategories(inp); });" />
-                        <?php echo $cat->name; ?>
-                    </label>
-                    <?php
-                }
+        for ($a = 0; $a < count($questioncategories); $a++) {
+            $cat = $DB->get_record('question_categories', array('id' => $questioncategories[$a]));
+            if (isset($cat->id) && $cat->id > 0) {
+                $active = $DB->get_record('local_eduvidual_userqcats', array('userid' => $USER->id, 'categoryid' => $questioncategories[$a]));
+                ?>
+                <label>
+                    <input type="checkbox" name="questioncategories[]" value="<?php echo $cat->id; ?>"<?php if ($active && $active->categoryid == $cat->id) {
+                        echo " checked";
+                    } ?>
+                           onclick="var inp = this; require(['local_eduvidual/teacher'], function(TEACHER) { TEACHER.questioncategories(inp); });"/>
+                    <?php echo $cat->name; ?>
+                </label>
+                <?php
             }
-            ?>
+        }
+        ?>
         </div><?php
     } // endif count questioncategories > 0
 }

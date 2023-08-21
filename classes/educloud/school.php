@@ -35,9 +35,9 @@ class school {
         global $DB, $USER;
         try {
             $transaction = $DB->start_delegated_transaction();
-            $record = $DB->get_record('local_eduvidual_educloud', [ 'orgid' => $orgid]);
+            $record = $DB->get_record('local_eduvidual_educloud', ['orgid' => $orgid]);
             if (empty($record->id)) {
-                $record = (object) [
+                $record = (object)[
                     'orgid' => $orgid,
                     'permitted' => 0,
                     'permittedby' => 0,
@@ -53,11 +53,12 @@ class school {
             self::sync($orgid);
             $transaction->allow_commit();
             return $record;
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             $transaction->rollback($e);
             return false;
         }
     }
+
     /**
      * Create an org in univention portal and store its ucsurl.
      * @param orgid.
@@ -81,8 +82,8 @@ class school {
             false
         ));
         if (!empty($exists->url)) {
-            $DB->set_field('local_eduvidual_educloud', 'ucsurl', $exists->url, [ 'orgid' => $org->orgid ]);
-            $DB->set_field('local_eduvidual_educloud', 'ucsname', $exists->name, [ 'orgid' => $org->orgid ]);
+            $DB->set_field('local_eduvidual_educloud', 'ucsurl', $exists->url, ['orgid' => $org->orgid]);
+            $DB->set_field('local_eduvidual_educloud', 'ucsname', $exists->name, ['orgid' => $org->orgid]);
             return $exists->url;
         }
 
@@ -103,11 +104,12 @@ class school {
             false
         ));
         if (!empty($created->url)) {
-            $DB->set_field('local_eduvidual_educloud', 'ucsurl', $created->url, [ 'orgid' => $org->orgid ]);
-            $DB->set_field('local_eduvidual_educloud', 'ucsname', $created->name, [ 'orgid' => $org->orgid ]);
+            $DB->set_field('local_eduvidual_educloud', 'ucsurl', $created->url, ['orgid' => $org->orgid]);
+            $DB->set_field('local_eduvidual_educloud', 'ucsname', $created->name, ['orgid' => $org->orgid]);
             return $created->url;
         }
     }
+
     /**
      * Disables the feature for a particular org.
      * @param orgid
@@ -117,7 +119,7 @@ class school {
         global $DB;
         try {
             $transaction = $DB->start_delegated_transaction();
-            $record = $DB->get_record('local_eduvidual_educloud', [ 'orgid' => $orgid]);
+            $record = $DB->get_record('local_eduvidual_educloud', ['orgid' => $orgid]);
             if (!empty($record->id)) {
                 $record->permitted = 0;
                 $record->permittedby = 0;
@@ -126,11 +128,12 @@ class school {
             self::sync($orgid);
             $transaction->allow_commit();
             return $record;
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             $transaction->rollback($e);
             return false;
         }
     }
+
     /**
      * Enables the feature for a particular org.
      * @param orgid
@@ -140,9 +143,9 @@ class school {
         global $DB, $USER;
         try {
             $transaction = $DB->start_delegated_transaction();
-            $record = $DB->get_record('local_eduvidual_educloud', [ 'orgid' => $orgid]);
+            $record = $DB->get_record('local_eduvidual_educloud', ['orgid' => $orgid]);
             if (empty($record->id)) {
-                $record = (object) [
+                $record = (object)[
                     'orgid' => $orgid,
                     'permitted' => time(),
                     'permittedby' => $USER->id,
@@ -158,18 +161,19 @@ class school {
             self::sync($orgid);
             $transaction->allow_commit();
             return $record;
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             $transaction->rollback($e);
             return false;
         }
     }
+
     /**
      * Schedules a sync for all users of an org.
      * @param int orgid
      */
     public static function sync($orgid) {
         global $DB, $OUTPUT;
-        $members = $DB->get_records('local_eduvidual_orgid_userid', [ 'orgid' => $orgid ]);
+        $members = $DB->get_records('local_eduvidual_orgid_userid', ['orgid' => $orgid]);
         foreach ($members as $member) {
             \local_eduvidual\educloud\user::action($member->userid);
         }

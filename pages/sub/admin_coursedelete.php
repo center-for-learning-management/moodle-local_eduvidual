@@ -21,14 +21,15 @@
  */
 
 defined('MOODLE_INTERNAL') || die;
-if (!is_siteadmin()) die;
+if (!is_siteadmin())
+    die;
 
 $from = optional_param('from', 0, PARAM_INT);
 $size = optional_param('size', 50, PARAM_INT);
 $sizes = [];
 $_sizes = [30, 50, 100, 500, 1000];
 foreach ($_sizes as $_size) {
-    $sizes[] = (object) [
+    $sizes[] = (object)[
         'size' => $_size,
         'selected' => ($_size == $size) ? 1 : 0,
     ];
@@ -42,12 +43,12 @@ foreach ($entries as $entry) {
 
 echo $OUTPUT->render_from_template(
     'local_eduvidual/admin_coursedelete',
-    (object) array(
-        'entries'  => $entries,
-        'from'     => $from,
+    (object)array(
+        'entries' => $entries,
+        'from' => $from,
         'nextfrom' => $from + $size,
-        'size'     => $size,
-        'sizes'    => $sizes,
-        'wwwroot'  => $CFG->wwwroot,
+        'size' => $size,
+        'sizes' => $sizes,
+        'wwwroot' => $CFG->wwwroot,
     )
 );

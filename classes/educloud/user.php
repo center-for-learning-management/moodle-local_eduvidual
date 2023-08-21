@@ -48,6 +48,7 @@ class user {
         ]);
         \core\task\manager::queue_adhoc_task($task, true);
     }
+
     /**
      * Create a user in univention portal and store univentionidentifier.
      * @param userorid userid or user object.
@@ -86,9 +87,10 @@ class user {
         } else {
             mtrace("Create failed, output of curl was " . print_r($response, 1));
             mtrace("Properties of user were: " . $_properties);
-            throw new \moodle_exception('educloud:exception:userupdatefailed', 'local_eduvidual', '', [ 'userid' => $user->id ]);
+            throw new \moodle_exception('educloud:exception:userupdatefailed', 'local_eduvidual', '', ['userid' => $user->id]);
         }
     }
+
     /**
      * Deletes a particular user.
      * @param userorid userid or user object.
@@ -115,11 +117,12 @@ class user {
         self::ucs_identifier($user->id, '', true);
         if (!empty($response) && substr($response->detail, 0, 9) != 'No object') {
             mtrace("Delete failed, output of curl was " . print_r($response, 1));
-            throw new \moodle_exception('educloud:exception:userdeletefailed', 'local_eduvidual', '', [ 'userid' => $user->id ]);
+            throw new \moodle_exception('educloud:exception:userdeletefailed', 'local_eduvidual', '', ['userid' => $user->id]);
         } else {
             mtrace("Deleted or user did not exist!");
         }
     }
+
     /**
      * Asks the univention portal for a particular user.
      * @param userid the Moodle userid.
@@ -140,9 +143,10 @@ class user {
         if (!empty($response->name)) {
             return $response;
         } else {
-            return (object) [];
+            return (object)[];
         }
     }
+
     /**
      * Get all orgs for a user, that use educloud.
      * @param userid of that user.
@@ -156,8 +160,9 @@ class user {
                     WHERE ee.orgid = ou.orgid
                         AND ee.permitted > 0
                         AND ou.userid = ?";
-        return $DB->get_records_sql($sql, [ $userid ]);
+        return $DB->get_records_sql($sql, [$userid]);
     }
+
     /**
      * Get the record_uid for univention (=username).
      * @param userid.
@@ -167,6 +172,7 @@ class user {
         $user = \core_user::get_user($userid);
         return $user->username;
     }
+
     /**
      * Get or set the ucs identifier of a userid.
      * @param userid
@@ -191,6 +197,7 @@ class user {
             }
         }
     }
+
     /**
      * Transform Moodle-user profile to an univention user profile.
      * @param userorid object or userid.
@@ -220,7 +227,7 @@ class user {
             if (!empty($org->ucsurl)) {
                 $schools[] = $org->ucsurl;
 
-                $tmp = in_array($org->role, [ 'Manager', 'Teacher']) ? 'teacher' : 'student';
+                $tmp = in_array($org->role, ['Manager', 'Teacher']) ? 'teacher' : 'student';
                 $roleurl = $ucs_roles[$tmp];
                 if (!in_array($roleurl, $roles)) {
                     $roles[] = $roleurl;
@@ -230,19 +237,19 @@ class user {
             }
         }
 
-        $properties = (object) [
-            "name"              => self::ucs_identifier($user->id),
-            "schools"           => $schools,
-            "firstname"         => $user->firstname,
-            "lastname"          => $user->lastname,
-            "disabled"          => false,
-            "expiration_date"   => "2099-12-31",
-            "record_uid"        => self::record_uid($user->id),
-            "roles"             => $roles,
+        $properties = (object)[
+            "name" => self::ucs_identifier($user->id),
+            "schools" => $schools,
+            "firstname" => $user->firstname,
+            "lastname" => $user->lastname,
+            "disabled" => false,
+            "expiration_date" => "2099-12-31",
+            "record_uid" => self::record_uid($user->id),
+            "roles" => $roles,
             //"school_classes"  => {},
-            "source_uid"        => $cfg->sourceid,
-            "ucsschool_roles"   => $ucsschool_roles,
-            "udm_properties"    => (object) [
+            "source_uid" => $cfg->sourceid,
+            "ucsschool_roles" => $ucsschool_roles,
+            "udm_properties" => (object)[
                 "e-mail" => [$user->email],
             ],
             //"password"        => "", // Not set.
@@ -256,7 +263,7 @@ class user {
      * @return array with all roles.
      */
     public static function ucs_roles() {
-        $roles = (array) json_decode(\local_eduvidual\locallib::cache('application', 'educloud_roles'));
+        $roles = (array)json_decode(\local_eduvidual\locallib::cache('application', 'educloud_roles'));
         if (empty($roles)) {
             $response = \local_eduvidual\educloud\lib::curl(
                 '/ucsschool/kelvin/v1/roles/',
@@ -280,6 +287,7 @@ class user {
         }
         return $roles;
     }
+
     /**
      * Update a user in univention portal and store univentionidentifier.
      * @param userorid User object or userid.
@@ -314,7 +322,7 @@ class user {
             mtrace("Update successful");
         } else {
             mtrace("Update failed, output of curl was " . print_r($response, 1));
-            throw new \moodle_exception('educloud:exception:userupdatefailed', 'local_eduvidual', '', [ 'userid' => $user->id ]);
+            throw new \moodle_exception('educloud:exception:userupdatefailed', 'local_eduvidual', '', ['userid' => $user->id]);
         }
     }
 }

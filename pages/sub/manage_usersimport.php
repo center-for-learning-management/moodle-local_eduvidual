@@ -37,13 +37,13 @@ $helper->set_fields(array('id', 'username', 'email', 'firstname', 'lastname', 'p
 if (isset($_FILES['local_eduvidual_manage_usersimport'])) {
     $filetype = strtolower(substr($_FILES['local_eduvidual_manage_usersimport']['name'], strpos($_FILES['local_eduvidual_manage_usersimport']['name'], '.')));
     if ($filetype != '.xlsx') {
-        $url = new \moodle_url('/local/eduvidual/pages/manage.php', [ 'orgid' => $orgid, 'act' => 'users']);
-        throw new \moodle_exception('manage:createuserspreadsheet:import:filetypeerror', 'local_eduvidual', $url, [ 'filetype' => $filetype] );
+        $url = new \moodle_url('/local/eduvidual/pages/manage.php', ['orgid' => $orgid, 'act' => 'users']);
+        throw new \moodle_exception('manage:createuserspreadsheet:import:filetypeerror', 'local_eduvidual', $url, ['filetype' => $filetype]);
     }
 
     $helper->load_file($_FILES['local_eduvidual_manage_usersimport']['tmp_name']);
     $objs = $helper->get_rowobjects();
     $fields = $helper->get_fields();
 
-    echo $OUTPUT->render_from_template('local_eduvidual/manage_usersimport', [ 'orgid' => $orgid, 'users' => $objs]);
+    echo $OUTPUT->render_from_template('local_eduvidual/manage_usersimport', ['orgid' => $orgid, 'users' => $objs]);
 }

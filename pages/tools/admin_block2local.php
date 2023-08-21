@@ -39,7 +39,7 @@ if (!is_siteadmin()) {
     echo $OUTPUT->header();
     echo $OUTPUT->render_from_template('local_eduvidual/alert', array(
         'content' => get_string('access_denied', 'local_eduvidual'),
-        'type' => 'danger'
+        'type' => 'danger',
     ));
     echo $OUTPUT->footer();
     die();
@@ -54,7 +54,7 @@ try {
     $sql = "SELECT userid,background,backgroundcard
                 FROM {local_eduvidual_userextra}";
     $extras = $DB->get_records_sql($sql, array());
-    foreach ($extras AS $extra) {
+    foreach ($extras as $extra) {
         if (!empty($extra->background)) {
             echo "    <li>Setting background $extra->background for User #$extra->userid</li>\n";
             set_user_preference('local_eduvidual_background', $extra->background, $extra->userid);
@@ -65,7 +65,7 @@ try {
         }
     }
 
-} catch(Exception $e) {
+} catch (Exception $e) {
     echo "<li class=\"alert alert-danger\">" . $e->getMessage() . "</li>\n";
 } finally {
     echo "</ul>\n";
@@ -86,7 +86,7 @@ try {
             \local_eduvidual\lib_enrol::cohorts_add($bunch->userid, $org, $bunch->bunch);
         }
     }
-} catch(Exception $e) {
+} catch (Exception $e) {
     echo "<li class=\"alert alert-danger\">" . $e->getMessage() . "</li>\n";
 } finally {
     echo "</ul>\n";

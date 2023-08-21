@@ -27,6 +27,7 @@ defined('MOODLE_INTERNAL') || die;
 
 class lib_enrol {
     private static $backgrounds = array(); // holds possible backgrounds
+
     /**
      * Adds a user to the cohort of an org.
      * @param userid (int) the userid.
@@ -35,21 +36,25 @@ class lib_enrol {
      */
     public static function cohorts_add($userid, &$org, $cohorts) {
         global $DB;
-        if (empty($cohorts)) return;
-        if (empty($org->categoryid)) return;
+        if (empty($cohorts))
+            return;
+        if (empty($org->categoryid))
+            return;
         if (empty($org->categorycontext)) {
             $org->categorycontext = \context_coursecat::instance($org->categoryid);
         }
-        if (empty($org->categorycontext->id)) return;
+        if (empty($org->categorycontext->id))
+            return;
 
         $cohorts = explode(',', $cohorts);
 
-        foreach ($cohorts AS $cohort) {
-            if (empty($cohort)) continue;
+        foreach ($cohorts as $cohort) {
+            if (empty($cohort))
+                continue;
             $cohorto = $DB->get_record('cohort', array('contextid' => $org->categorycontext->id, 'name' => $cohort));
             if (empty($cohorto->id)) {
                 $idnumber = $org->orgid . '_' . hash('crc32', $cohort);
-                $cohorto = (object) array(
+                $cohorto = (object)array(
                     'contextid' => $org->categorycontext->id,
                     'description' => 'Automatically created cohort ' . $cohort,
                     'descriptionformat' => 1,
@@ -63,12 +68,13 @@ class lib_enrol {
             }
             $chk = $DB->get_record('cohort_members', array('cohortid' => $cohorto->id, 'userid' => $userid));
             if (empty($chk->id)) {
-                $DB->insert_record('cohort_members', (object) array('cohortid' => $cohorto->id, 'userid' => $userid, 'timeadded' => time()));
+                $DB->insert_record('cohort_members', (object)array('cohortid' => $cohorto->id, 'userid' => $userid, 'timeadded' => time()));
             }
         }
 
         return true;
     }
+
     /**
      * Remove a user from a cohort of an org.
      * @param userid (int) the userid.
@@ -77,14 +83,17 @@ class lib_enrol {
      */
     public static function cohorts_remove($userid, $org, $cohorts) {
         global $DB;
-        if (empty($cohorts)) return;
-        if (empty($org->categoryid)) return;
+        if (empty($cohorts))
+            return;
+        if (empty($org->categoryid))
+            return;
         $context = \context_coursecat::instance($org->categoryid);
-        if (empty($context->id)) return;
+        if (empty($context->id))
+            return;
 
         $cohorts = explode(',', $cohorts);
 
-        foreach ($cohorts AS $cohort) {
+        foreach ($cohorts as $cohort) {
             $cohort = $DB->get_record('cohort', array('contextid' => $context->id, 'name' => $cohort));
             if (!empty($cohort->id)) {
                 $DB->delete_records('cohort_members', array('cohortid' => $cohort->id, 'userid' => $userid));
@@ -93,6 +102,7 @@ class lib_enrol {
 
         return true;
     }
+
     /**
      * Set users role in a particular organization.
      * @param int userid
@@ -110,14 +120,15 @@ class lib_enrol {
         }
 
         // Remove could be written in various cases.
-        if (strtolower($role) == 'remove') $role = 'remove';
+        if (strtolower($role) == 'remove')
+            $role = 'remove';
 
         // Check if this user exists.
         self::user_exists($userid);
 
         // If org was given by orgid, load object from database.
         if (is_numeric($org)) {
-            $org =  $DB->get_record('local_eduvidual_org', array('orgid' => $org));
+            $org = $DB->get_record('local_eduvidual_org', array('orgid' => $org));
         }
         // We can only proceed if this is a valid org.
         if (!empty($org->orgid)) {
@@ -146,7 +157,7 @@ class lib_enrol {
                 if (!empty($orgcatcontext->id)) {
                     // Remove alle roles that were given in coursecat.
                     $orgroles = array('manager', 'teacher', 'student', 'parent');
-                    foreach ($orgroles AS $orgrole) {
+                    foreach ($orgroles as $orgrole) {
                         $catrole = get_config('local_eduvidual', 'defaultorgrole' . strtolower($orgrole));
                         if (!empty($catrole)) {
                             role_unassign($catrole, $userid, $orgcatcontext->id);
@@ -154,7 +165,7 @@ class lib_enrol {
                     }
                     // Remove user from any cohorts in this orgcategory.
                     $cohorts = $DB->get_records('cohort', array('contextid' => $orgcatcontext->id));
-                    foreach ($cohorts AS $cohort) {
+                    foreach ($cohorts as $cohort) {
                         $DB->delete_records('cohort_members', array('cohortid' => $cohort->id, 'userid' => $userid));
                     }
                 }
@@ -230,14 +241,14 @@ class lib_enrol {
                     WHERE userid=?";
         $hasroles = array_values($DB->get_records_sql($sql, array($userid)));
         $syscontext = \context_system::instance();
-        foreach ($hasroles AS $hasrole) {
+        foreach ($hasroles as $hasrole) {
             $roleid = $globalroles[strtolower($hasrole->role)];
             role_assign($roleid, $userid, $syscontext->id);
             // set globalrole to 0.
             $globalroles[strtolower($hasrole->role)] = 0;
         }
         // globalroles that were not set to 0 will be unassigned.
-        foreach ($globalroles AS $roleid) {
+        foreach ($globalroles as $roleid) {
             if (!empty($roleid)) {
                 role_unassign($roleid, $userid, $syscontext->id);
             }
@@ -250,8 +261,8 @@ class lib_enrol {
      * Get a random background from all available backgrounds
      * @param userid if given will set the random background for this user
      * @return url to random background
-    **/
-    public static function choose_background($userid = 0){
+     **/
+    public static function choose_background($userid = 0) {
         global $CFG;
         if (count(self::$backgrounds) == 0) {
             // We need to load possible backgrounds
@@ -260,7 +271,7 @@ class lib_enrol {
             $files = $fs->get_area_files($context->id, 'local_eduvidual', 'backgrounds_cards', 0);
             self::$backgrounds = array();
             foreach ($files as $file) {
-                if (str_replace('.', '', $file->get_filename()) != ""){
+                if (str_replace('.', '', $file->get_filename()) != "") {
                     self::$backgrounds[] = '' . \moodle_url::make_pluginfile_url($file->get_contextid(), $file->get_component(), $file->get_filearea(), $file->get_itemid(), $file->get_filepath(), $file->get_filename());
                 }
             }
@@ -280,17 +291,21 @@ class lib_enrol {
      * Loads all basements for creation of new courses
      * @param type 'system' (for system-wide basements), 'user' for own courses (requires role trainer) or 'all'
      * @return array containing all courses that matches
-    **/
+     **/
     public static function get_course_basements($type = 'all') {
         global $DB, $USER;
         $courses = array();
         if ($type == 'system' || $type == 'all') {
             $coursebasements = explode(",", get_config('local_eduvidual', 'coursebasements'));
-            foreach($coursebasements AS $cb) {
+            foreach ($coursebasements as $cb) {
+                if (!$cb) {
+                    // hack für local-dev von daniel: das setting "coursebasements" existiert mehr?!?
+                    $cb = 1;
+                }
                 $category = $DB->get_record('course_categories', array('id' => $cb));
                 $courses[$category->name] = array();
                 $cs = $DB->get_records_sql('SELECT * FROM {course} WHERE category=? AND visible=1 ORDER BY fullname ASC', array($cb));
-                foreach($cs AS $c) {
+                foreach ($cs as $c) {
                     $c->imageurl = self::get_course_image($c);
                     $courses[$category->name][] = $c;
                 }
@@ -301,7 +316,7 @@ class lib_enrol {
             $selflbl = get_string('teacher:coursebasements:ofuser', 'local_eduvidual');
             $courses[$selflbl] = array();
             $coursesbyname = array();
-            foreach ($_courses AS $c) {
+            foreach ($_courses as $c) {
                 $context = \context_course::instance($c->id);
                 $canedit = has_capability('moodle/course:update', $context);
                 if ($canedit) {
@@ -311,24 +326,25 @@ class lib_enrol {
             }
             $names = array_keys($coursesbyname);
             asort($names);
-            foreach ($names AS $name) {
+            foreach ($names as $name) {
                 $courses[$selflbl][] = $coursesbyname[$name];
             }
         }
         return $courses;
     }
+
     /**
      * Checks if a given basement is valid
      * @param type system, user or all
      * @param basement courseid to check
      * @return true or false
-    **/
+     **/
     public static function is_valid_course_basement($type, $basement) {
         $basements = self::get_course_basements($type);
         $keys = array_keys($basements);
         $found = false;
-        foreach($keys AS $key) {
-            foreach($basements[$key] AS $b) {
+        foreach ($keys as $key) {
+            foreach ($basements[$key] as $b) {
                 if ($b->id == $basement) {
                     return true;
                 }
@@ -342,12 +358,15 @@ class lib_enrol {
      * @param userids array containing userids or a single userid
      * @param roleid roleid to assign, or -1 if wants to unenrol
      * @return true or false
-    **/
+     **/
     public static function course_manual_enrolments($courseids, $userids, $roleid) {
         global $CFG, $DB, $reply;
-        if (!isset($reply)) $reply = array();
-        if (!is_array($courseids)) $courseids = array($courseids);
-        if (!is_array($userids)) $userids = array($userids);
+        if (!isset($reply))
+            $reply = array();
+        if (!is_array($courseids))
+            $courseids = array($courseids);
+        if (!is_array($userids))
+            $userids = array($userids);
 
         // Check manual enrolment plugin instance is enabled/exist.
         $enrol = enrol_get_plugin('manual');
@@ -356,17 +375,19 @@ class lib_enrol {
         }
         $failures = 0;
         $instances = array();
-        foreach ($courseids AS $courseid) {
+        foreach ($courseids as $courseid) {
             // Check if course exists.
             $course = $DB->get_record('course', array('id' => $courseid), '*', IGNORE_MISSING);
             //$course = get_course($courseid);
-            if (empty($course->id)) continue;
+            if (empty($course->id))
+                continue;
             if (empty($instances[$courseid])) {
                 $instances[$courseid] = self::get_enrol_instance($courseid);
             }
 
-            foreach($userids AS $userid) {
-                if (!self::user_exists($userid)) continue;
+            foreach ($userids as $userid) {
+                if (!self::user_exists($userid))
+                    continue;
                 if ($roleid == -1) {
                     $enrol->unenrol_user($instances[$courseid], $userid);
                 } else {
@@ -386,10 +407,10 @@ class lib_enrol {
         foreach ($course->get_course_overviewfiles() as $file) {
             if (@$file->is_valid_image()) {
                 $imagepath = '/' . $file->get_contextid() .
-                        '/' . $file->get_component() .
-                        '/' . $file->get_filearea() .
-                        $file->get_filepath() .
-                        $file->get_filename();
+                    '/' . $file->get_component() .
+                    '/' . $file->get_filearea() .
+                    $file->get_filepath() .
+                    $file->get_filename();
                 $imageurl = file_encode_url($CFG->wwwroot . '/pluginfile.php', $imagepath, false);
                 // Use the first image found.
                 break;
@@ -397,6 +418,7 @@ class lib_enrol {
         }
         return $imageurl;
     }
+
     /**
      * Get the enrol instance for manual enrolments of a course, or create one.
      * @param courseid
@@ -427,6 +449,7 @@ class lib_enrol {
             return self::get_enrol_instance($courseid);
         }
     }
+
     /**
      * Set the role in the orgcourse based on the orgrole.
      * This method only switches between roles, it does not unenrol!
@@ -436,7 +459,8 @@ class lib_enrol {
     private static function set_orgcourserole($org, $orgrole, $userid) {
         $orgrole = strtolower($orgrole);
         $valid = array('manager', 'teacher', 'student', 'parent');
-        if (!in_array($orgrole, $valid)) return;
+        if (!in_array($orgrole, $valid))
+            return;
         // Enrol into organization course as student or teacher (if it is a manager!!)
         $roles = array(
             'manager' => get_config('local_eduvidual', 'defaultroleteacher'),
@@ -445,19 +469,20 @@ class lib_enrol {
         $roles['student'] = $roles['teacher'];
         $roles['parent'] = $roles['teacher'];
         $orgcourses = array(
-            (object) array('courseid' => $org->courseid, 'context' => \context_course::instance($org->courseid, IGNORE_MISSING)),
-            (object) array('courseid' => $org->supportcourseid, 'context' => \context_course::instance($org->supportcourseid, IGNORE_MISSING)),
+            (object)array('courseid' => $org->courseid, 'context' => \context_course::instance($org->courseid, IGNORE_MISSING)),
+            (object)array('courseid' => $org->supportcourseid, 'context' => \context_course::instance($org->supportcourseid, IGNORE_MISSING)),
         );
         foreach ($orgcourses as $orgcourse) {
             $courseid = $orgcourse->courseid;
             $context = $orgcourse->context;
-            if (empty($context->id)) continue;
+            if (empty($context->id))
+                continue;
             if (is_enrolled($context, $userid)) {
                 // Only switch role
                 $roletoassign = $roles[$orgrole];
                 role_assign($roletoassign, $userid, $context->id);
 
-                foreach ($roles AS $role => $roleid) {
+                foreach ($roles as $role => $roleid) {
                     if ($roleid !== $roletoassign) {
                         role_unassign($roleid, $userid, $context->id);
                     }
@@ -468,6 +493,7 @@ class lib_enrol {
             }
         }
     }
+
     /**
      * Ensure that a user exists.
      * @param userid
@@ -483,7 +509,6 @@ class lib_enrol {
             $DB->delete_records('local_eduvidual_courseshow', array('userid' => $userid));
             $DB->delete_records('local_eduvidual_orgid_userid', array('userid' => $userid));
             $DB->delete_records('local_eduvidual_userqcats', array('userid' => $userid));
-            $DB->delete_records('local_eduvidual_usertoken', array('userid' => $userid));
             return false;
         } else {
             return true;
