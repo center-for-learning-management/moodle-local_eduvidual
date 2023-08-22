@@ -230,30 +230,6 @@ $string['defaultroles:global:inuse'] = 'Role already in use.';
 
 $string['defaultroles:refreshroles'] = 'Re-Assign Roles in course categories';
 
-$string['educloud:accept:button'] = 'Yes, I confirm';
-$string['educloud:accept:text'] = 'This interface synchronises user accounts between eduvidual.at and educloud Austria. Hence, personal data is transferred. By accepting this checkbox you agree on behalf of {$a->orgname} that these data can be transferred.';
-$string['educloud:exception:incompletesitesettings'] = 'Incomplete site settings for eduCloud API';
-$string['educloud:exception:invalidapiresponse'] = 'Invalid response from Univention-Portal';
-$string['educloud:exception:multipleobjectsforidentifier'] = 'Multiple User-Objects have been found for educloud-identifier <strong>{$a->identifier}</strong>';
-$string['educloud:exception:nouseridgiven'] = 'No User-ID was given';
-$string['educloud:exception:onlyadmins'] = 'Sorry, only site-administrators are permitted for this action!';
-$string['educloud:exception:usercreatefailed'] = 'User #{$a->userid} could not be created in univention!';
-$string['educloud:exception:userdeletefailed'] = 'User #{$a->userid} could not be removed from univention!';
-$string['educloud:exception:userupdatefailed'] = 'User #{$a->userid} could not be updated in univention!';
-$string['educloud:exception:userwaserased'] = 'User #{$a->userid} was erased and no data persists  - check manually if it was removed from univention!';
-$string['educloud:settings'] = 'eduCloud Settings';
-$string['educloud:settings:description'] = 'Specify the endpoints for creating / updating user accounts.';
-$string['educloud:settings:apipath'] = 'Endpoint-URL';
-$string['educloud:settings:apipass'] = 'Password';
-$string['educloud:settings:apiuser'] = 'Username';
-$string['educloud:settings:orgroles'] = 'eduCloud-Roles';
-$string['educloud:settings:orgroles:desc'] = 'Specify roles here, that are assigned on the context of the organization that uses educloud to all its users. <strong>Attention: only affects new users / educloud-activations!</strong>';
-$string['educloud:settings:sourceid'] = 'Source-ID';
-$string['educloud:settings:sourceid:desc'] = 'Use this attribute to distinguish different Moodle-Systems. This attribute will be the "source-id" in Univention.';
-$string['educloud:toggle:failed'] = 'Toggling educloud status failed';
-$string['educloud:toggle:success'] = 'Successfully toggled educloud status';
-$string['educloud:wasacceptedby'] = 'The interface was already accepted by <a href="{$a->acceptedbylink}">{$a->acceptedbyuser}</a> on {$a->acceptedbytime}.';
-
 $string['edutube:edutubeauthurl'] = 'eduTube Auth URL';
 $string['edutube:edutubeauthtoken'] = 'eduTube Auth Token';
 $string['edutube:invalid_url'] = 'Invalid URL received ({$a->url}). Redirect to edutube.at not possible.';
@@ -442,7 +418,6 @@ $string['manage:createuserspreadsheet:import:downloadfile'] = 'Users have been u
 $string['manage:createuserspreadsheet:import:filetypeerror'] = 'Sorry, the used filetype ({$a->filetype}) of this spreadsheet is unsupported. Please upload an XLSX-file!';
 $string['manage:createuserspreadsheet:templateurl'] = 'URL template spreadsheet';
 $string['manage:createuserspreadsheet:templateurl:description'] = 'Enter the URL to the template spreadsheet that should be used for creating users using a spreadsheet.';
-// $string['manage:educloud'] = 'eduCloud Austria';
 $string['manage:enrolmeasteacher'] = 'Enrol me as teacher';
 $string['manage:maildomain'] = 'Maildomain';
 $string['manage:maildomain:description'] = 'If this is set users with a mailaddress from this domain are automatically assigned to this organization!';

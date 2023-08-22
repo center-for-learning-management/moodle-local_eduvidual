@@ -53,14 +53,5 @@ class user_updated {
                 $DB->set_field('user', 'username', $user->username, ['id' => $user->id]);
             }
         }
-
-        $userid = $entry->relateduserid;
-        $educloudorgs = \local_eduvidual\educloud\user::get_orgs($userid);
-        if (count($educloudorgs) > 0) {
-            mtrace("Schedule sync with eduCloud for user #$userid");
-            \local_eduvidual\educloud\user::action($userid);
-        } else {
-            mtrace("User #$userid is not in any org that uses educloud");
-        }
     }
 }

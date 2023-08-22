@@ -226,7 +226,6 @@ class lib_enrol {
                     $reply['status'] = 'ok';
                 }
             }
-            \local_eduvidual\educloud\user::action($userid);
         }
 
         // Check for global roles.

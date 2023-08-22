@@ -263,6 +263,7 @@ function xmldb_local_eduvidual_upgrade($oldversion) {
 
     // TODO: tabelle local_eduvidual_usertoken löschen
 
+    // TODO: tabelle local_eduvidual_educloud löschen
 
     return true;
 }
