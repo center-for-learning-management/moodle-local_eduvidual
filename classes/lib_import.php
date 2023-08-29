@@ -75,29 +75,28 @@ class local_eduvidual_lib_import {
 
         // Get fields from first row.
         // ATTENTION: In phpspreadsheet the first cell is 1:1
-        $stop = false;
         $maxcols = 1;
-        while (!$stop) {
-            $value = $sheet->getCellByColumnAndRow($maxcols, 1, false);
+        while (true) {
+            // convert Cell object to string, to get the actual value
+            $value = (string)$sheet->getCellByColumnAndRow($maxcols, 1, false);
             if (!empty($value)) {
                 $colids[$maxcols] = strtolower($value);
                 $maxcols++;
             } else {
-                $stop = true;
+                break;
             }
         }
 
         $row = 2;
-        $stop = false;
 
-        while (empty($stop)) {
+        while (true) {
             // Create object from row-data.
             $foundany = false;
             $obj = new stdClass();
             for ($col = 1; $col < $maxcols; $col++) {
                 if (!empty($colids[$col])) {
-                    // Concat with empty string to force string conversion.
-                    $obj->{$colids[$col]} = "" . $sheet->getCellByColumnAndRow($col, $row, false);
+                    // convert Cell object to string, to get the actual value
+                    $obj->{$colids[$col]} = (string)$sheet->getCellByColumnAndRow($col, $row, false);
                     if (!empty($obj->{$colids[$col]}))
                         $foundany = true;
                 }
@@ -108,7 +107,7 @@ class local_eduvidual_lib_import {
             if ($foundany) {
                 $row++;
             } else {
-                $stop = true;
+                break;
             }
         }
     }
