@@ -416,10 +416,16 @@ class lib_helper {
      * Get the org menu from cache or generate it.
      */
     public static function orgmenus_rendered() {
+        // fix: Schulspezifisches Menü wird nach Logout weiterhin angezeigt
+        // https://github.com/center-for-learning-management/eduvidual-src/issues/1186
+        if (!isloggedin()) {
+            return '';
+        }
+
         $cache = \cache::make('local_eduvidual', 'session');
         $orgmenu = $cache->get('orgmenu');
 
-        if (!empty($orgmenu)) {
+        if (is_string($orgmenu)) {
             return $orgmenu;
         }
 
@@ -427,14 +433,12 @@ class lib_helper {
         if (count($orgmenus) > 0) {
             global $OUTPUT;
             $orgmenu = $OUTPUT->render_from_template('local_eduvidual/orgmenu', array('menuright' => 1, 'orgmenus' => $orgmenus));
-            if (!empty($orgmenu)) {
-                $cache->set('orgmenu', $orgmenu);
-            }
-            return $orgmenu;
         } else {
-            $cache->set('orgmenu', ' ');
-            return ' ';
+            $orgmenu = '';
         }
+
+        $cache->set('orgmenu', $orgmenu);
+        return $orgmenu;
     }
 
     /**
