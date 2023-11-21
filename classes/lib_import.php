@@ -30,8 +30,8 @@ require_once("{$CFG->libdir}/phpspreadsheet/vendor/autoload.php");
  * User Excel import für Schulmanager
  */
 class local_eduvidual_lib_import {
-    var $fields = array();
-    var $rowobjects = array();
+    var $fields = [];
+    var $rowobjects = [];
     var $compiler;
 
     /**
@@ -39,7 +39,7 @@ class local_eduvidual_lib_import {
      **/
     public function set_fields($fields) {
         $this->fields = $fields;
-        $this->rowobjects = array();
+        $this->rowobjects = [];
     }
 
     public function set_compiler($compiler) {
@@ -67,9 +67,11 @@ class local_eduvidual_lib_import {
         $colids = array();
         $this->rowobjects = array();
 
-        //$spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::createReaderForFile($filepath);
-        //$spreadsheet->setReadDataOnly(true);
-        //$spreadsheet->load($filepath);
+         
+        // $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::createReaderForFile($filepath);
+        // $spreadsheet->setReadDataOnly(true);
+        // $spreadsheet->load($filepath); 
+
         $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($filepath);
         $sheet = $spreadsheet->getSheet(0);
 
@@ -97,8 +99,9 @@ class local_eduvidual_lib_import {
                 if (!empty($colids[$col])) {
                     // convert Cell object to string, to get the actual value
                     $obj->{$colids[$col]} = (string)$sheet->getCellByColumnAndRow($col, $row, false);
-                    if (!empty($obj->{$colids[$col]}))
+                    if (!empty($obj->{$colids[$col]})) {
                         $foundany = true;
+                    }
                 }
             }
             if (!empty($obj->role)) {
@@ -117,9 +120,11 @@ class local_eduvidual_lib_import {
      * Returns text-areas as array to be used in a form.
      **/
     public function print_hidden_form() {
-        $form = array();
-        $form[] = '<textarea style="display: none;" name="fields">' . json_encode($this->fields, JSON_NUMERIC_CHECK) . '</textarea>';
-        $form[] = '<textarea style="display: none;" name="rowobjects">' . json_encode($this->rowobjects, JSON_NUMERIC_CHECK) . '</textarea>';
+        $form = [];
+        $form[] = '<textarea style="display: none;" name="fields">' . 
+            json_encode($this->fields, JSON_NUMERIC_CHECK) . '</textarea>';
+        $form[] = '<textarea style="display: none;" name="rowobjects">' . 
+            json_encode($this->rowobjects, JSON_NUMERIC_CHECK) . '</textarea>';
         return "\t\t" . implode("\n\t\t", $form);
     }
 
@@ -147,8 +152,8 @@ class local_eduvidual_lib_import {
      * Creates an XSLX-Sheet to be downloaded.
      **/
     public function download($filename = 'import') {
-        $writer = \Box\Spout\Writer\WriterFactory::create(Type::XLSX); // for XLSX files
-        $writer->openToBrowser($filename . '.xlsx'); // stream data directly to the browser
+        $writer = \Box\Spout\Writer\WriterFactory::create(Type::XLSX); // For XLSX files.
+        $writer->openToBrowser($filename . '.xlsx'); // Stream data directly to the browser.
 
         $row = array();
         for ($fieldid = 0; $fieldid < count($this->fields); $fieldid++) {
@@ -197,14 +202,12 @@ class local_eduvidual_lib_import_compiler_module extends local_eduvidual_lib_imp
     public function compile($module) {
         $payload = new stdClass();
         $payload->processed = false;
-        //$payload->customize = new stdClass();
+        // $payload->customize = new stdClass();
         $payload->defaults = new stdClass();
-        // Common fields
+        // Common fields.
         $payload->defaults->name = $module->name;
         $payload->defaults->intro = $module->description;
-        if (isset($module->ltilaunch)) {
-
-        } elseif (isset($module->url)) {
+        if (isset($module->url)) {
             $payload->defaults->externalurl = $module->url;
             $module->type = 'url';
             $payload->processed = true;
@@ -235,20 +238,23 @@ class local_eduvidual_lib_import_compiler_user extends local_eduvidual_lib_impor
             $obj->id = 0;
         }
         if (empty($obj->firstname)) {
-            $colors = file($CFG->dirroot . '/local/eduvidual/templates/names.colors', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-            $color_key = array_rand($colors, 1);
-            $obj->firstname = $colors[$color_key];
+            $colors = file($CFG->dirroot . '/local/eduvidual/templates/names.colors',
+                FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+            $colorkey = array_rand($colors, 1);
+            $obj->firstname = $colors[$colorkey];
         }
         if (empty($obj->lastname)) {
-            $animals = file($CFG->dirroot . '/local/eduvidual/templates/names.animals', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-            $animal_key = array_rand($animals, 1);
-            $obj->lastname = $animals[$animal_key];
+            $animals = file($CFG->dirroot . '/local/eduvidual/templates/names.animals', 
+                FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+            $animalkey = array_rand($animals, 1);
+            $obj->lastname = $animals[$animalkey];
         }
         $dummydomain = \local_eduvidual\locallib::get_dummydomain();
         if (empty($obj->email)) {
             $pattern = 'e-' . date("Ym") . '-';
             $usernameformat = $pattern . '%1$04d';
-            $lasts = $DB->get_records_sql('SELECT username FROM {user} WHERE username LIKE ? ORDER BY username DESC LIMIT 0,1', array($pattern . '%'));
+            $lasts = $DB->get_records_sql('SELECT username FROM {user} 
+                WHERE username LIKE ? ORDER BY username DESC LIMIT 0,1', array($pattern . '%'));
 
             if ((count($lasts)) > 0) {
                 foreach ($lasts as $last) {
@@ -319,7 +325,7 @@ class local_eduvidual_lib_import_compiler_user extends local_eduvidual_lib_impor
         }
         if ($obj->id > 0 && $payload->processed) {
             $payload->action = get_string('update');
-        } elseif ($payload->processed) {
+        } else if ($payload->processed) {
             $payload->action = get_string('create');
         }
 

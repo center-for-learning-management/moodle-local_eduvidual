@@ -32,7 +32,9 @@ if ($hassiteconfig) {
     $actions = \local_eduvidual\locallib::get_actions('admin');
     $links = "<div class=\"grid-eq-3\">";
     foreach ($actions as $action => $name) {
-        $links .= '<a class="btn" href="' . $CFG->wwwroot . '/local/eduvidual/pages/admin.php?act=' . $action . '">' . get_string($name, 'local_eduvidual') . '</a>';
+        $links .= '<a class="btn" href="' . $CFG->wwwroot . 
+            '/local/eduvidual/pages/admin.php?act=' . $action . '">' . 
+            get_string($name, 'local_eduvidual') . '</a>';
     }
     $links .= "</div>";
     $settings->add(new admin_setting_heading('local_eduvidual_actions', get_string('action', 'local_eduvidual'), $links));
@@ -101,29 +103,38 @@ if ($hassiteconfig) {
         )
     );
 
-    $map_roles = function($roles) {
+    $maproles = function($roles) {
         foreach ($roles as &$role) {
             $role = $role->name ?: $role->shortname;
         }
         return $roles;
     };
 
-    $potentialroles_course = $map_roles($DB->get_records_sql('SELECT r.* FROM {role} AS r, {role_context_levels} AS rcl WHERE r.id=rcl.roleid  AND rcl.contextlevel = ? ORDER BY r.name ASC', array(CONTEXT_COURSE)));
-    $potentialroles_org = $map_roles($DB->get_records_sql('SELECT r.* FROM {role} AS r, {role_context_levels} AS rcl WHERE r.id=rcl.roleid  AND rcl.contextlevel = ?  ORDER BY name ASC', array(CONTEXT_COURSECAT)));
-    $potentialroles_global = $map_roles($DB->get_records_sql('SELECT r.* FROM {role} AS r, {role_context_levels} AS rcl WHERE r.id=rcl.roleid  AND rcl.contextlevel = ?  ORDER BY name ASC', array(CONTEXT_SYSTEM)));
+    $potentialrolescourse = $maproles($DB->get_records_sql('SELECT r.* 
+        FROM {role} r, {role_context_levels} rcl 
+        WHERE r.id=rcl.roleid  AND rcl.contextlevel = ? 
+        ORDER BY r.name ASC', array(CONTEXT_COURSE)));
+    $potentialrolesorg = $maproles($DB->get_records_sql('SELECT r.* 
+        FROM {role} r, {role_context_levels} rcl 
+        WHERE r.id=rcl.roleid  AND rcl.contextlevel = ?  
+        ORDER BY name ASC', array(CONTEXT_COURSECAT)));
+    $potentialrolesglobal = $maproles($DB->get_records_sql('SELECT r.* 
+        FROM {role} r, {role_context_levels} rcl 
+        WHERE r.id=rcl.roleid  AND rcl.contextlevel = ?  
+        ORDER BY name ASC', array(CONTEXT_SYSTEM)));
 
-    $rolestoset_course = array(
+    $rolestosetcourse = array(
         array('roleidentifier' => 'parent'),
         array('roleidentifier' => 'student'),
         array('roleidentifier' => 'teacher'),
     );
-    $rolestoset_org = array(
+    $rolestosetorg = array(
         array('roleidentifier' => 'manager'),
         array('roleidentifier' => 'parent'),
         array('roleidentifier' => 'student'),
         array('roleidentifier' => 'teacher'),
     );
-    $rolestoset_global = array(
+    $rolestosetglobal = array(
         array('roleidentifier' => 'manager'),
         array('roleidentifier' => 'parent'),
         array('roleidentifier' => 'student'),
@@ -135,13 +146,13 @@ if ($hassiteconfig) {
         get_string('defaultroles:course:description', 'local_eduvidual'),
     ));
 
-    foreach ($rolestoset_course as $roletoset) {
+    foreach ($rolestosetcourse as $roletoset) {
         $settings->add(new \admin_setting_configselect(
             'local_eduvidual/defaultrole' . $roletoset['roleidentifier'],
             get_string('defaultroles:course:' . $roletoset['roleidentifier'], 'local_eduvidual'),
             '',
             0,
-            $potentialroles_course
+            $potentialrolescourse
         ));
     }
 
@@ -150,13 +161,13 @@ if ($hassiteconfig) {
         get_string('defaultroles:orgcategory:description', 'local_eduvidual'),
     ));
 
-    foreach ($rolestoset_org as $roletoset) {
+    foreach ($rolestosetorg as $roletoset) {
         $settings->add(new \admin_setting_configselect(
             'local_eduvidual/defaultorgrole' . $roletoset['roleidentifier'],
             get_string('defaultroles:orgcategory:' . $roletoset['roleidentifier'], 'local_eduvidual'),
             '',
             0,
-            $potentialroles_org
+            $potentialrolesorg
         ));
     }
 
@@ -165,13 +176,13 @@ if ($hassiteconfig) {
         get_string('defaultroles:global:description', 'local_eduvidual'),
     ));
 
-    foreach ($rolestoset_global as $roletoset) {
+    foreach ($rolestosetglobal as $roletoset) {
         $settings->add(new \admin_setting_configselect(
             'local_eduvidual/defaultglobalrole' . $roletoset['roleidentifier'],
             get_string('defaultroles:global:' . $roletoset['roleidentifier'], 'local_eduvidual'),
             '',
             0,
-            $potentialroles_global
+            $potentialrolesglobal
         ));
     }
 
@@ -211,12 +222,12 @@ if ($hassiteconfig) {
     ));
 
     $orgcoursebasements = \local_eduvidual\lib_enrol::get_course_basements('system');
-    $orgcoursebasements_options = [];
+    $orgcoursebasementsoptions = [];
 
-    // make a one-dimensional array, two-dimenisonal options-array does not work in moodle 4.1
+    // Make a one-dimensional array, two-dimenisonal options-array does not work in moodle 4.1.
     foreach ($orgcoursebasements as $key => $basements) {
         foreach ($basements as $basement) {
-            $orgcoursebasements_options[$basement->id] = "{$key} => {$basement->fullname}";
+            $orgcoursebasementsoptions[$basement->id] = "{$key} => {$basement->fullname}";
         }
     }
 
@@ -225,7 +236,7 @@ if ($hassiteconfig) {
         get_string('admin:orgcoursebasement:title', 'local_eduvidual'),
         get_string('admin:orgcoursebasement:description', 'local_eduvidual'),
         0,
-        $orgcoursebasements_options
+        $orgcoursebasementsoptions
     ));
 
     $settings->add(new admin_setting_configtext(

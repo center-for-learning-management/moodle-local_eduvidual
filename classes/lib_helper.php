@@ -46,12 +46,12 @@ class lib_helper {
         require_once($CFG->dirroot . '/backup/util/includes/backup_includes.php');
         require_once($CFG->dirroot . '/backup/util/includes/restore_includes.php');
 
-        // Grant a role that allows course duplication in source and target category
+        // Grant a role that allows course duplication in source and target category.
         $basecourse = \get_course($courseid);
         $sourcecontext = \context_course::instance($courseid);
-        //$targetcontext = \context_coursecat::instance($categoryid);
+        // targetcontext = \context_coursecat::instance($categoryid);
 
-        // Create new course
+        // Create new course.
         require_once($CFG->dirroot . '/course/lib.php');
         $coursedata = (object)array(
             'category' => $categoryid,
@@ -61,7 +61,7 @@ class lib_helper {
         );
         $targetcourse = \create_course($coursedata);
 
-        // Import from old course
+        // Import from old course.
         try {
             $backupsettings = array(
                 'activities' => 1,

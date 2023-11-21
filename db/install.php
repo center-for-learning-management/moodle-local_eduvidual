@@ -41,7 +41,8 @@ function xmldb_local_eduvidual_install() {
     $obj->datatype = 'text';
     $obj->shortname = 'secret';
     $obj->name = 'Users Secret';
-    $obj->description = '<p>"Users Secret" is used to enrol a user without name search and also works in conjunction with QR Codes.</p>';
+    $obj->description = '<p>"Users Secret" is used to enrol a user without name search 
+        and also works in conjunction with QR Codes.</p>';
     $obj->descriptionformat = 1;
     $obj->sortorder = 1;
     $obj->required = 1;
@@ -65,13 +66,13 @@ function xmldb_local_eduvidual_install() {
     }
     set_config('fieldid_secret', $id, 'local_eduvidual');
 
-
     $obj = new \stdClass;
     $obj->categoryid = $catid;
     $obj->datatype = 'text';
     $obj->shortname = 'supportflag';
     $obj->name = 'Supportflag';
-    $obj->description = '<p>Use this flag in conjunction with plugin "Auto Group" to automatically group users in support forums.</p>';
+    $obj->description = '<p>Use this flag in conjunction with plugin "Auto Group" 
+        to automatically group users in support forums.</p>';
     $obj->descriptionformat = 1;
     $obj->sortorder = 1;
     $obj->required = 1;
