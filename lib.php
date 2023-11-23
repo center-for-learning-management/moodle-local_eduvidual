@@ -313,6 +313,7 @@ function local_eduvidual_extend_navigation(global_navigation $navigation) {
     if (is_siteadmin()) {
         $custommenu .= 'eduvidual-Administration' . "|/admin/category.php?category=local_eduvidual\n";
     }
+    $custommenu .= "Edutube|/local/eduvidual/pages/redirects/edutube.php\n";
 
     $CFG->custommenuitems = $custommenu . $CFG->custommenuitems;
 }
