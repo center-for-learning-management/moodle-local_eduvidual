@@ -32,8 +32,8 @@ if ($hassiteconfig) {
     $actions = \local_eduvidual\locallib::get_actions('admin');
     $links = "<div class=\"grid-eq-3\">";
     foreach ($actions as $action => $name) {
-        $links .= '<a class="btn" href="' . $CFG->wwwroot . 
-            '/local/eduvidual/pages/admin.php?act=' . $action . '">' . 
+        $links .= '<a class="btn" href="' . $CFG->wwwroot .
+            '/local/eduvidual/pages/admin.php?act=' . $action . '">' .
             get_string($name, 'local_eduvidual') . '</a>';
     }
     $links .= "</div>";
@@ -110,17 +110,17 @@ if ($hassiteconfig) {
         return $roles;
     };
 
-    $potentialrolescourse = $maproles($DB->get_records_sql('SELECT r.* 
-        FROM {role} r, {role_context_levels} rcl 
-        WHERE r.id=rcl.roleid  AND rcl.contextlevel = ? 
+    $potentialrolescourse = $maproles($DB->get_records_sql('SELECT r.*
+        FROM {role} r, {role_context_levels} rcl
+        WHERE r.id=rcl.roleid  AND rcl.contextlevel = ?
         ORDER BY r.name ASC', array(CONTEXT_COURSE)));
-    $potentialrolesorg = $maproles($DB->get_records_sql('SELECT r.* 
-        FROM {role} r, {role_context_levels} rcl 
-        WHERE r.id=rcl.roleid  AND rcl.contextlevel = ?  
+    $potentialrolesorg = $maproles($DB->get_records_sql('SELECT r.*
+        FROM {role} r, {role_context_levels} rcl
+        WHERE r.id=rcl.roleid  AND rcl.contextlevel = ?
         ORDER BY name ASC', array(CONTEXT_COURSECAT)));
-    $potentialrolesglobal = $maproles($DB->get_records_sql('SELECT r.* 
-        FROM {role} r, {role_context_levels} rcl 
-        WHERE r.id=rcl.roleid  AND rcl.contextlevel = ?  
+    $potentialrolesglobal = $maproles($DB->get_records_sql('SELECT r.*
+        FROM {role} r, {role_context_levels} rcl
+        WHERE r.id=rcl.roleid  AND rcl.contextlevel = ?
         ORDER BY name ASC', array(CONTEXT_SYSTEM)));
 
     $rolestosetcourse = array(

@@ -26,7 +26,7 @@ namespace local_eduvidual;
 defined('MOODLE_INTERNAL') || die;
 
 class lib_enrol {
-    private static $backgrounds = array(); // holds possible backgrounds
+    private static $backgrounds = array(); // Holds possible backgrounds.
 
     /**
      * Adds a user to the cohort of an org.
@@ -36,15 +36,21 @@ class lib_enrol {
      */
     public static function cohorts_add($userid, &$org, $cohorts) {
         global $DB;
-        if (empty($cohorts))
+        if (empty($cohorts)){
             return;
-        if (empty($org->categoryid))
+        }
+
+        if (empty($org->categoryid)){
             return;
-        if (empty($org->categorycontext)) {
+        }
+
+        if (empty($org->categorycontext)){
             $org->categorycontext = \context_coursecat::instance($org->categoryid);
         }
-        if (empty($org->categorycontext->id))
+
+        if (empty($org->categorycontext->id)){
             return;
+        }
 
         $cohorts = explode(',', $cohorts);
 
@@ -66,7 +72,8 @@ class lib_enrol {
                 );
                 $cohorto->id = $DB->insert_record('cohort', $cohorto);
             }
-            $chk = $DB->get_record('cohort_members', array('cohortid' => $cohorto->id, 'userid' => $userid));
+            $chk = $DB->get_record('cohort_members',
+                array('cohortid' => $cohorto->id, 'userid' => $userid));
             if (empty($chk->id)) {
                 $DB->insert_record('cohort_members', (object)array('cohortid' => $cohorto->id, 'userid' => $userid, 'timeadded' => time()));
             }
@@ -83,13 +90,18 @@ class lib_enrol {
      */
     public static function cohorts_remove($userid, $org, $cohorts) {
         global $DB;
-        if (empty($cohorts))
+        if (empty($cohorts)){
             return;
-        if (empty($org->categoryid))
+        }
+
+        if (empty($org->categoryid)){
             return;
+        }
+
         $context = \context_coursecat::instance($org->categoryid);
-        if (empty($context->id))
+        if (empty($context->id)){
             return;
+        }
 
         $cohorts = explode(',', $cohorts);
 
@@ -145,14 +157,14 @@ class lib_enrol {
 
             // If we are removing the user, we have to remove a bunch and cohorts as well.
             if ($role == 'remove') {
-                // Remove from orgcourse
+                // Remove from orgcourse.
                 self::course_manual_enrolments(array($org->courseid, $org->supportcourseid), array($userid), -1);
-                // Remove from supportcourse
+                // Remove from supportcourse.
                 if (!empty($org->supportcourseid)) {
                     \local_eduvidual\lib_enrol::course_manual_enrolments(array($org->supportcourseid), array($userid), -1);
                 }
 
-                // Remove from orgcategory
+                // Remove from orgcategory.
                 $orgcatcontext = \context_coursecat::instance($org->categoryid, IGNORE_MISSING);
                 if (!empty($orgcatcontext->id)) {
                     // Remove alle roles that were given in coursecat.
@@ -180,7 +192,7 @@ class lib_enrol {
                 } else {
                     // The user orgrole was added, changed or we are forced to set it again.
 
-                    // Add our eduvidual-membership
+                    // Add our eduvidual-membership.
                     if (!empty($current->id)) {
                         $DB->set_field('local_eduvidual_orgid_userid', 'role', $role, array('orgid' => $org->orgid, 'userid' => $userid));
                     } else {
@@ -188,7 +200,7 @@ class lib_enrol {
                         $DB->insert_record('local_eduvidual_orgid_userid', $data);
                     }
 
-                    // Add user to orgcategory
+                    // Add user to orgcategory.
                     $orgcatcontext = \context_coursecat::instance($org->categoryid, IGNORE_MISSING);
                     if (!empty($orgcatcontext->id)) {
                         $coursecatrolenew = get_config('local_eduvidual', 'defaultorgrole' . strtolower($role));
@@ -197,7 +209,7 @@ class lib_enrol {
                         }
                         // If our old role differs, we should unassign it.
                         if (!empty($current->role)) {
-                            // Check course category context
+                            // Check course category context.
                             $coursecatroleold = get_config('local_eduvidual', 'defaultorgrole' . strtolower($current->role));
 
                             if ($coursecatroleold != $coursecatrolenew) {
@@ -206,7 +218,7 @@ class lib_enrol {
                         }
                     }
 
-                    // Add user to orgcourse
+                    // Add user to orgcourse.
                     self::set_orgcourserole($org, $role, $userid);
 
                     // If we have a support course, add us there too.
@@ -243,10 +255,10 @@ class lib_enrol {
         foreach ($hasroles as $hasrole) {
             $roleid = $globalroles[strtolower($hasrole->role)];
             role_assign($roleid, $userid, $syscontext->id);
-            // set globalrole to 0.
+            // Set globalrole to 0.
             $globalroles[strtolower($hasrole->role)] = 0;
         }
-        // globalroles that were not set to 0 will be unassigned.
+        // Globalroles that were not set to 0 will be unassigned.
         foreach ($globalroles as $roleid) {
             if (!empty($roleid)) {
                 role_unassign($roleid, $userid, $syscontext->id);
@@ -264,7 +276,7 @@ class lib_enrol {
     public static function choose_background($userid = 0) {
         global $CFG;
         if (count(self::$backgrounds) == 0) {
-            // We need to load possible backgrounds
+            // We need to load possible backgrounds.
             $context = \context_system::instance();
             $fs = get_file_storage();
             $files = $fs->get_area_files($context->id, 'local_eduvidual', 'backgrounds_cards', 0);
@@ -298,7 +310,7 @@ class lib_enrol {
             $coursebasements = explode(",", get_config('local_eduvidual', 'coursebasements'));
             foreach ($coursebasements as $cb) {
                 if (!$cb) {
-                    // hack für local-dev von daniel: das setting "coursebasements" existiert mehr?!?
+                    // Hack für local-dev von daniel: das setting "coursebasements" existiert mehr?!?
                     $cb = 1;
                 }
                 $category = $DB->get_record('course_categories', array('id' => $cb));
@@ -477,7 +489,7 @@ class lib_enrol {
             if (empty($context->id))
                 continue;
             if (is_enrolled($context, $userid)) {
-                // Only switch role
+                // Only switch role.
                 $roletoassign = $roles[$orgrole];
                 role_assign($roletoassign, $userid, $context->id);
 
@@ -503,8 +515,8 @@ class lib_enrol {
         $chk = $DB->get_record('user', array('id' => $userid), 'deleted');
         if (!isset($chk->deleted)) {
             return false;
-        } elseif ($chk->deleted == 1) {
-            // Remove this user from any eduvidual-lists
+        } else if ($chk->deleted == 1) {
+            // Remove this user from any eduvidual-lists.
             $DB->delete_records('local_eduvidual_courseshow', array('userid' => $userid));
             $DB->delete_records('local_eduvidual_orgid_userid', array('userid' => $userid));
             $DB->delete_records('local_eduvidual_userqcats', array('userid' => $userid));

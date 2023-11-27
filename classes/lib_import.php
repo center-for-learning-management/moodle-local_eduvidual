@@ -67,19 +67,14 @@ class local_eduvidual_lib_import {
         $colids = array();
         $this->rowobjects = array();
 
-         
-        // $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::createReaderForFile($filepath);
-        // $spreadsheet->setReadDataOnly(true);
-        // $spreadsheet->load($filepath); 
-
         $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($filepath);
         $sheet = $spreadsheet->getSheet(0);
 
         // Get fields from first row.
-        // ATTENTION: In phpspreadsheet the first cell is 1:1
+        // ATTENTION: In phpspreadsheet the first cell is 1:1!
         $maxcols = 1;
         while (true) {
-            // convert Cell object to string, to get the actual value
+            // Convert Cell object to string, to get the actual value.
             $value = (string)$sheet->getCellByColumnAndRow($maxcols, 1, false);
             if (!empty($value)) {
                 $colids[$maxcols] = strtolower($value);
@@ -97,7 +92,7 @@ class local_eduvidual_lib_import {
             $obj = new stdClass();
             for ($col = 1; $col < $maxcols; $col++) {
                 if (!empty($colids[$col])) {
-                    // convert Cell object to string, to get the actual value
+                    // Convert Cell object to string, to get the actual value.
                     $obj->{$colids[$col]} = (string)$sheet->getCellByColumnAndRow($col, $row, false);
                     if (!empty($obj->{$colids[$col]})) {
                         $foundany = true;
@@ -121,9 +116,9 @@ class local_eduvidual_lib_import {
      **/
     public function print_hidden_form() {
         $form = [];
-        $form[] = '<textarea style="display: none;" name="fields">' . 
+        $form[] = '<textarea style="display: none;" name="fields">' .
             json_encode($this->fields, JSON_NUMERIC_CHECK) . '</textarea>';
-        $form[] = '<textarea style="display: none;" name="rowobjects">' . 
+        $form[] = '<textarea style="display: none;" name="rowobjects">' .
             json_encode($this->rowobjects, JSON_NUMERIC_CHECK) . '</textarea>';
         return "\t\t" . implode("\n\t\t", $form);
     }
@@ -244,7 +239,7 @@ class local_eduvidual_lib_import_compiler_user extends local_eduvidual_lib_impor
             $obj->firstname = $colors[$colorkey];
         }
         if (empty($obj->lastname)) {
-            $animals = file($CFG->dirroot . '/local/eduvidual/templates/names.animals', 
+            $animals = file($CFG->dirroot . '/local/eduvidual/templates/names.animals',
                 FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
             $animalkey = array_rand($animals, 1);
             $obj->lastname = $animals[$animalkey];
@@ -253,7 +248,7 @@ class local_eduvidual_lib_import_compiler_user extends local_eduvidual_lib_impor
         if (empty($obj->email)) {
             $pattern = 'e-' . date("Ym") . '-';
             $usernameformat = $pattern . '%1$04d';
-            $lasts = $DB->get_records_sql('SELECT username FROM {user} 
+            $lasts = $DB->get_records_sql('SELECT username FROM {user}
                 WHERE username LIKE ? ORDER BY username DESC LIMIT 0,1', array($pattern . '%'));
 
             if ((count($lasts)) > 0) {

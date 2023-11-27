@@ -66,7 +66,7 @@ class lib_register {
         }
 
         if (empty($org->categoryid)) {
-            // Create a course category for this org
+            // Create a course category for this org.
             $data = (object)[
                 'name' => $org->name,
                 'description' => $org->name,
@@ -102,9 +102,10 @@ class lib_register {
             }
         }
         if (empty($org->courseid)) {
-            // Create an org-course for this org
+            // Create an org-course for this org.
             $orgcoursebasement = get_config('local_eduvidual', 'orgcoursebasement');
-            $course = \local_eduvidual\lib_helper::duplicate_course($orgcoursebasement, 'Digitaler Schulhof (' . $org->orgid . ')', $org->orgid, $org->categoryid, 1);
+            $course = \local_eduvidual\lib_helper::duplicate_course($orgcoursebasement,
+                'Digitaler Schulhof (' . $org->orgid . ')', $org->orgid, $org->categoryid, 1);
             $org->courseid = $course->id;
             $DB->set_field('local_eduvidual_org', 'courseid', $org->courseid, array('orgid' => $org->orgid));
             $course->summary = '<p>Digitaler Schulhof der Schule ' . $org->name . '</p>';
@@ -115,7 +116,9 @@ class lib_register {
             $template = get_config('local_eduvidual', 'supportcourse_template');
             if (!empty($template)) {
                 // Duplicate our template.
-                $supportcourse = \local_eduvidual\lib_helper::duplicate_course($template, 'Helpdesk (' . $org->name . ')', 'helpdesk_' . $org->orgid, $org->categoryid, 1);
+                $supportcourse = \local_eduvidual\lib_helper::duplicate_course($template,
+                    'Helpdesk (' . $org->name . ')', 'helpdesk_' .
+                    $org->orgid, $org->categoryid, 1);
                 if (!empty($supportcourse->id)) {
                     $DB->set_field('local_eduvidual_org', 'supportcourseid', $supportcourse->id, array('orgid' => $org->orgid));
                     // Remove news forum in that course.
@@ -132,7 +135,7 @@ class lib_register {
                     foreach ($forums as $forum) {
                         \local_edusupport\lib::supportforum_enable($forum->id);
                         if ($org->orgid > 500000 && $org->orgid < 600000) {
-                            // School from Salzburg
+                            // School from Salzburg.
                             \local_edusupport\lib::supportforum_setdedicatedsupporter($forum->id, 2098);
                         }
                     }

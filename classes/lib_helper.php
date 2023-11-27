@@ -115,7 +115,7 @@ class lib_helper {
                 $setting = $rc->get_plan()->get_setting($name);
                 if ($setting->get_status() == \backup_setting::NOT_LOCKED) {
                     // Deactivated, caused permission error.
-                    //$setting->set_value($value);
+                    // $setting->set_value($value);
                 }
             }
 
@@ -178,7 +178,8 @@ class lib_helper {
         // First check if the template is valid.
         require_once($CFG->dirroot . '/backup/util/includes/restore_includes.php');
         $fs = \get_file_storage();
-        $files = $fs->get_area_files(\context_course::instance($basementcourseid)->id, 'local_eduvidual', 'coursebackup', 0, '', false);
+        $files = $fs->get_area_files(\context_course::instance($basementcourseid)->id,
+            'local_eduvidual', 'coursebackup', 0, '', false);
         $files = array_values($files);
 
         if (!isset($files[0])) {
@@ -302,7 +303,7 @@ class lib_helper {
             }
 
             if (!$foundmycourses) {
-                // we did not find the my courses node, so we will not modify this navbar!
+                // We did not find the my courses node, so we will not modify this navbar!
                 return;
             }
 
@@ -340,7 +341,7 @@ class lib_helper {
             }
 
             $nodes = array_merge($nodes, $nodesafter);
-            \local_eduvidual\lib_wshelper::$navbar_nodes = $nodes;
+            \local_eduvidual\lib_wshelper::$navbarnodes = $nodes;
             ob_start();
             register_shutdown_function('\local_eduvidual\lib_wshelper::buffer_navbar');
         }
@@ -377,7 +378,7 @@ class lib_helper {
         global $CFG, $DB, $USER;
         $orgmenus = array();
         // Trigger if management-links shall be shawn.
-        $display_managerlink = false;
+        $displaymanagerlink = false;
         $fields = array("name", "url", "target", "roles");
         $memberships = $DB->get_records('local_eduvidual_orgid_userid', array('userid' => $USER->id));
         foreach ($memberships as $membership) {
@@ -389,7 +390,7 @@ class lib_helper {
                     'name' => $org->name,
                     'orgid' => $org->orgid,
                     'url' => $CFG->wwwroot . '/course/index.php?categoryid=' . $org->categoryid,
-                    'urlmanagement' => ($display_managerlink && $membership->role == 'Manager') ?
+                    'urlmanagement' => ($displaymanagerlink && $membership->role == 'Manager') ?
                         $CFG->wwwroot . '/local/eduvidual/pages/manage.php?orgid=' . $org->orgid : '',
                 );
                 foreach ($entries as $entry) {
@@ -416,8 +417,8 @@ class lib_helper {
      * Get the org menu from cache or generate it.
      */
     public static function orgmenus_rendered() {
-        // fix: Schulspezifisches Menü wird nach Logout weiterhin angezeigt
-        // https://github.com/center-for-learning-management/eduvidual-src/issues/1186
+        // Fix: Schulspezifisches Menü wird nach Logout weiterhin angezeigt.
+        // https://github.com/center-for-learning-management/eduvidual-src/issues/1186.
         if (!isloggedin()) {
             return '';
         }
@@ -464,7 +465,8 @@ class lib_helper {
                         $roleid = $field[1];
                         $rec = $DB->get_record('role_names', array('contextid' => $ctx->id, 'roleid' => $roleid));
                         if (!empty($rec->id)) {
-                            $DB->set_field('role_names', 'name', $override->value, array('contextid' => $ctx->id, 'roleid' => $roleid));
+                            $DB->set_field('role_names', 'name', $override->value,
+                            array('contextid' => $ctx->id, 'roleid' => $roleid));
                         } else {
                             $rec = (object)array(
                                 'contextid' => $ctx->id,

@@ -43,8 +43,8 @@ function xmldb_local_eduvidual_upgrade($oldversion) {
             $dbman->add_field($table, $field);
         }
 
-        $users = $DB->get_records_sql("SELECT id,email FROM {user} 
-            WHERE email LIKE '%@doesnotexist.eduvidual.org' 
+        $users = $DB->get_records_sql("SELECT id,email FROM {user}
+            WHERE email LIKE '%@doesnotexist.eduvidual.org'
             OR email LIKE '%@doesnotexist.eduvidual.at'", array());
         foreach ($users as $user) {
             $DB->set_field('user', 'email', 'a' . $user->id . '@a.eduvidual.at', array('id' => $user->id));
@@ -214,59 +214,59 @@ function xmldb_local_eduvidual_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2022102500, 'local', 'eduvidual');
     }
 
-/*
+     /*
      function move_logos_from_css_to_stored_file() {
          global $DB;
-    
+
          $fs = get_file_storage();
-    
+
          $orgs = $DB->get_records_select('local_eduvidual_org', 'customcss LIKE "%.logo%"');
          foreach ($orgs as $org) {
              $logo_already_exists = !!$fs->get_area_files(1, 'local_eduvidual', 'orglogo', $org->orgid, 'itemid', false);
              if ($logo_already_exists) {
                  continue;
              }
-    
+
              if (!preg_match('!\.logo([\s]*|[\s,][^{]+){[^}]+(?<backgroundimage>background(-image)?:[^;}]url\([^;})]+pluginfile.php/1/local_eduvidual/orgfiles/[0-9]+(?<filename>/[^"\');]+)[\'"]?\)[;]?)!ims', $org->customcss, $matches)) {
                  continue;
              }
              $filename = $matches['filename'];
-    
+
              $new_style = str_replace($matches['backgroundimage'], "\n disabled: ".$matches['backgroundimage']." \n", $matches[0]);
              $new_customcss = str_replace($matches[0], $new_style, $org->customcss);
-    
+
              $file = $fs->get_file(1, 'local_eduvidual', 'orgfiles', $org->orgid, dirname($filename), basename($filename));
-    
+
              if ($file) {
                  $fs->create_file_from_storedfile([
                      'filearea' => 'orglogo',
                      'filepath' => '/',
                  ], $file);
              }
-    
+
              $DB->update_record('local_eduvidual_org', ['id' => $org->id, 'customcss' => $new_customcss]);
-    
+
              // var_dump($file);
              // echo $filename;
              // echo $org->customcss;
          }
      }
      move_logos_from_css_to_stored_file();
-*/
+    */
 
-    // set microsoft oauth logo of login button on login page
+    // Set microsoft oauth logo of login button on login page.
     $DB->execute("UPDATE {oauth2_issuer} SET `image` = '/theme/edumaker/pix/microsoft.ico' WHERE (`name` LIKE '%microsoft%')");
 
-    // TODO: tabelle local_eduvidual_org_lic löschen
+    // TODO: tabelle local_eduvidual_org_lic löschen.
 
-    // TODO: tabelle local_eduvidual_terms löschen
+    // TODO: tabelle local_eduvidual_terms löschen.
 
-    // TODO: tabelle local_eduvidual_modules löschen
-    // TODO: tabelle local_eduvidual_modulescat löschen
+    // TODO: tabelle local_eduvidual_modules löschen.
+    // TODO: tabelle local_eduvidual_modulescat löschen.
 
-    // TODO: tabelle local_eduvidual_usertoken löschen
+    // TODO: tabelle local_eduvidual_usertoken löschen.
 
-    // TODO: tabelle local_eduvidual_educloud löschen
+    // TODO: tabelle local_eduvidual_educloud löschen.
 
     return true;
 }

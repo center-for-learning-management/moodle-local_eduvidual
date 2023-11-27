@@ -100,13 +100,13 @@ class provider implements \core_privacy\local\metadata\provider {
                     $markasreadonnotificationdescription = get_string('markasreadonnotificationyes', 'mod_forum');
                     break;
             }
-            writer::export_user_preference('mod_forum', 'markasreadonnotification', $markasreadonnotification, $markasreadonnotificationdescription);
+            writer::export_user_preference('mod_forum', 'markasreadonnotification',
+                $markasreadonnotification, $markasreadonnotificationdescription);
         }
     }
 
+    // @TODO Export user data.
 
-    // @TODO Export user data
-
-    // @TODO Delete user data (only partly - some data is managed by organizations!)
+    // @TODO Delete user data (only partly - some data is managed by organizations!).
 
 }

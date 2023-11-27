@@ -43,15 +43,17 @@ class local_eduvidual_manage_user_createuseranonymous_form extends moodleform {
         $mform->setType('role', PARAM_TEXT);
         $mform->addElement('text', 'bunch', get_string('manage:createuseranonymous:bunch', 'local_eduvidual'));
         $mform->setType('bunch', PARAM_TEXT);
-        $mform->addElement('text', 'amount', get_string('manage:createuseranonymous:amount', 'local_eduvidual'), array('type' => 'number'));
+        $mform->addElement('text', 'amount', get_string('manage:createuseranonymous:amount',
+            'local_eduvidual'), array('type' => 'number'));
         $mform->setType('amount', PARAM_INT);
         $mform->setDefault('amount', '10');
 
-        $mform->addElement('submit', null, get_string('manage:createuseranonymous:send', 'local_eduvidual'));
-        //$this->add_action_buttons();
+        $mform->addElement('submit', null, get_string('manage:createuseranonymous:send',
+            'local_eduvidual'));
+        // $this->add_action_buttons();
     }
 
-    //Custom validation should be added here
+    // Custom validation should be added here.
     function validation($data, $files) {
         $errors = array();
         if ($data['amount'] > 50) {
