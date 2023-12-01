@@ -415,10 +415,10 @@ class lib_helper {
     /**
      * Get the org menu from cache or generate it.
      */
-    public static function orgmenus_rendered() {
+    public static function render_orgmenu() {
         // fix: Schulspezifisches Menü wird nach Logout weiterhin angezeigt
         // https://github.com/center-for-learning-management/eduvidual-src/issues/1186
-        if (!isloggedin()) {
+        if (!(isloggedin() && !isguestuser())) {
             return '';
         }
 
@@ -432,7 +432,7 @@ class lib_helper {
         $orgmenus = self::orgmenus();
         if (count($orgmenus) > 0) {
             global $OUTPUT;
-            $orgmenu = $OUTPUT->render_from_template('local_eduvidual/orgmenu', array('menuright' => 1, 'orgmenus' => $orgmenus));
+            $orgmenu = $OUTPUT->render_from_template('local_eduvidual/orgmenu', array('orgmenus' => $orgmenus));
         } else {
             $orgmenu = '';
         }

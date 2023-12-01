@@ -151,14 +151,17 @@ function local_eduvidual_before_standard_html_head() {
         }
     }
 
-    // Direct JS commands.
-    $PAGE->requires->js('/local/eduvidual/js/direct.js');
+    $orgmenu = \local_eduvidual\lib_helper::render_orgmenu();
 
-    // fastest way to call js is with js_init_code and js_init_call
-    // call eduvidual_init in direct.js
     $data = [
         'isloggedin' => isloggedin() && !isguestuser(),
+        'orgmenu' => $orgmenu,
     ];
+
+    // fastest way is to call js is with js_init_code and js_init_call
+    // js_call_amd ist zeitverzögert!
+    // call eduvidual_init in direct.js
+    $PAGE->requires->js('/local/eduvidual/js/direct.js');
     $PAGE->requires->js_init_code('eduvidual_init(' . json_encode($data) . ');');
 
     $PAGE->requires->js('/local/eduvidual/js/ajax_observer.js');
@@ -208,8 +211,6 @@ function local_eduvidual_before_standard_html_head() {
     );
     $PAGE->requires->js_call_amd("local_eduvidual/jsinjector", "run", array($data));
 
-
-    $RET[] = \local_eduvidual\lib_helper::orgmenus_rendered();
 
     if (strpos($_SERVER["SCRIPT_FILENAME"], '/course/delete.php') > 0) {
         $PAGE->requires->js_call_amd("local_eduvidual/jsinjector", "modifyRedirectUrl", array('coursedelete'));

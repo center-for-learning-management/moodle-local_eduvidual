@@ -6,6 +6,11 @@ function eduvidual_init(data) {
       .addClass('special-startpage-login-box');
   }
 
+  if (data.orgmenu) {
+    $(data.orgmenu).insertBefore('.usermenu-container');
+  }
+
+
   document.querySelectorAll(".nav-item a[href*='/local/eduvidual/pages/redirects/edutube.php']").forEach(function(element) {
     element.setAttribute('target', '_blank');
   });

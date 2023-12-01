@@ -15,37 +15,29 @@
     along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
   }}
 
-{{#js}}
-require(['jquery'], function($) {
-    var html = [
-        '<div class="dropdown local-eduvidual-orgmenu">',
-        '    <a class="dropdown-toggle nav-link" id="drop-down-{{uniqid}}"',
-        '        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"',
-        '        href="#" title="{{#str}} orgmenu, local_eduvidual {{/str}}"',
-        '        aria-controls="drop-down-menu-{{uniqid}}">',
-        '        <i class="icon fa fa-icon fa-sharp fa-light fa-school-flag"></i>',
-        '    </a>',
-        '    <div class="dropdown-menu {{#menuright}} dropdown-menu-right {{/menuright}}" role="menu" id="drop-down-menu-{{uniqid}}" aria-labelledby="drop-down-{{uniqid}}">',
-                {{#orgmenus}}
-                    {{#urlmanagement}}
-        '                <div class="dropdown-item" role="menuitem" style="padding-left: 15px;">',
-        '                    <a href="{{url}}" title="{{name}}‎" style="display: inline-block;">{{name}}‎</a>',
-        '                    <a href="{{urlmanagement}}" style="display: inline; width: 15px;" title="{{#str}} Management, local_eduvidual {{/str}}‎">',
-        '                        <i class="fa fa-icon fa-gear"></i>',
-        '                    ‎</a>',
-        '                </div>',
-                    {{/urlmanagement}}
-                    {{^urlmanagement}}
-        '                <a class="dropdown-item" role="menuitem" href="{{url}}" title="{{name}}‎" style="padding-left: 15px;">{{name}}‎</a>',
-                    {{/urlmanagement}}
-                    {{#entries}}
-        '                <a class="dropdown-item" role="menuitem" href="{{url}}" title="{{name}}‎" style="padding-left: 30px;" target="{{target}}">{{name}}‎</a>',
-                    {{/entries}}
-                {{/orgmenus}}
-        '    </div>',
-        '</div>',
-    ].join("\n");
-
-    $(html).insertBefore('.usermenu-container');
-});
-{{/js}}
+<div class="dropdown local-eduvidual-orgmenu">
+    <a class="dropdown-toggle nav-link" id="drop-down-{{uniqid}}"
+        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+        href="#" title="{{#str}} orgmenu, local_eduvidual {{/str}}"
+        aria-controls="drop-down-menu-{{uniqid}}">
+        <i class="icon fa fa-icon fa-sharp fa-light fa-school-flag"></i>
+    </a>
+    <div class="dropdown-menu dropdown-menu-right" role="menu" id="drop-down-menu-{{uniqid}}" aria-labelledby="drop-down-{{uniqid}}">
+        {{#orgmenus}}
+            {{#urlmanagement}}
+                <div class="dropdown-item" role="menuitem" style="padding-left: 15px;">
+                    <a href="{{url}}" title="{{name}}‎" style="display: inline-block;">{{name}}</a>
+                    <a href="{{urlmanagement}}" style="display: inline; width: 15px;" title="{{#str}} Management, local_eduvidual {{/str}}">
+                        <i class="fa fa-icon fa-gear"></i>
+                    </a>
+                </div>
+            {{/urlmanagement}}
+            {{^urlmanagement}}
+                <a class="dropdown-item" role="menuitem" href="{{url}}" title="{{name}}" style="padding-left: 15px;">{{name}}</a>
+            {{/urlmanagement}}
+            {{#entries}}
+                <a class="dropdown-item" role="menuitem" href="{{url}}" title="{{name}}" style="padding-left: 30px;" target="{{target}}">{{name}}</a>
+            {{/entries}}
+        {{/orgmenus}}
+    </div>
+</div>
