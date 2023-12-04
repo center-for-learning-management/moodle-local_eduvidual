@@ -186,17 +186,6 @@ if ($formsent) {
                             $data->shortname = $shortname;
                             $course = \create_course($data);
 
-                            // Enrol the user.
-                            $enroluser = !empty($enroluser) ? $enroluser : $USER->id;
-                            $context = \context_course::instance($course->id);
-                            $role = get_config('local_eduvidual', 'defaultroleteacher');
-                            $enroluser = optional_param('setteacher', 0, PARAM_INT);
-                            if (empty($enroluser) || $enroluser == 0)
-                                $enroluser = $USER->id;
-
-                            // Enrol user as teacher.
-                            \local_eduvidual\lib_enrol::course_manual_enrolments(array($course->id), array($enroluser), $role);
-
                             $fp = \get_file_packer('application/vnd.moodle.backup');
                             $backuptempdir = \make_backup_temp_directory('template' . $basementcourseid);
                             $files[0]->extract_to_pathname($fp, $backuptempdir);
@@ -259,6 +248,11 @@ if ($formsent) {
 
                                 // Override course settings based on organizational standards.
                                 \local_eduvidual\lib_helper::override_coursesettings($course->id);
+
+                                // Enrol user as teacher.
+                                $role = get_config('local_eduvidual', 'defaultroleteacher');
+                                $enroluser = $USER->id;
+                                \local_eduvidual\lib_enrol::course_manual_enrolments(array($course->id), array($enroluser), $role);
 
                                 $redirect = $CFG->wwwroot . '/course/view.php?id=' . $course->id;
                                 if ($basement == 'restore') {
