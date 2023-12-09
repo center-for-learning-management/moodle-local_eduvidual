@@ -16,36 +16,36 @@ Feature: Resource catalogue menu item is always available
 
   Scenario: Non-logged user is presented with resource catalogue menu item
     When I am on site homepage
-    Then I should see "Resource catalogue" in the ".moremenu" "css_element"
-    But I should not see "Create course" in the ".moremenu" "css_element"
-    But I should not see "My schools" in the ".moremenu" "css_element"
+    Then I should see "Resource catalogue" "link"
+    But I should not see "Create course" "link"
+    But I should not see "My schools" "link"
 
   Scenario: Guest user is presented with resource catalogue menu item
     Given I am on site homepage
     And I press "Resource catalogue"
     Then I should see "You are currently using guest access"
-    And I should see "Resource catalogue" in the ".moremenu" "css_element"
-    But I should not see "Create course" in the ".moremenu" "css_element"
-    But I should not see "My schools" in the ".moremenu" "css_element"
+    And I should see "Resource catalogue" "link"
+    But I should not see "Create course" "link"
+    But I should not see "My schools" "link"
 
   Scenario: Logged in teacher is presented with resource catalogue menu item
     Given I am on site homepage
     And I log in as "teacher1"
-    Then I should see "Resource catalogue" in the ".moremenu" "css_element"
-    And I should see "Create course" in the ".moremenu" "css_element"
-    And I should see "My schools" in the ".moremenu" "css_element"
+    Then I should see "Resource catalogue" "link"
+    And I should see "Create course" "link"
+    And I should see "My schools" "link"
 
   Scenario: Logged in manager is presented with resource catalogue menu item
     Given I am on site homepage
     And I log in as "manager1"
-    Then I should see "Resource catalogue" in the ".moremenu" "css_element"
-    And I should see "Create course" in the ".moremenu" "css_element"
-    And I should see "My schools" in the ".moremenu" "css_element"
+    Then I should see "Resource catalogue" "link"
+    And I should see "Create course"  "link"
+    And I should see "My schools" "link"
 
   Scenario: Logged in student is presented with resource catalogue menu item
     Given I am on site homepage
     And I log in as "student"
-    Then I should see "Resource catalogue" in the ".moremenu" "css_element"
-    And I should see "My schools" in the ".moremenu" "css_element"
-    But I should not see "Create course" in the ".moremenu" "css_element"
+    Then I should see "Resource catalogue" "link"
+    And I should see "My schools" "link"
+    But I should not see "Create course" "link"
     
