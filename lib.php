@@ -470,7 +470,7 @@ function local_eduvidual_pre_user_delete() {
  * @return bool false if the file not found, just send the file otherwise and do not return anything
  */
 function local_eduvidual_pluginfile($course, $cm, $context, $filearea, $args, $forcedownload, array $options = array()) {
-    $areas = array('backgrounds', 'backgrounds_cards', 'globalfiles', 'orgfiles', 'orglogo', 'orgbanner', 'module');
+    $areas = array('backgrounds', 'backgrounds_cards', 'globalfiles', 'orgfiles', 'orglogo', 'module');
     if (in_array($filearea, $areas)) {
         $forcedownload = false;
         $options['embed'] = true;
@@ -501,27 +501,6 @@ function local_eduvidual_pluginfile($course, $cm, $context, $filearea, $args, $f
 
     // Leave this line out if you set the itemid to null in make_pluginfile_url (set $itemid to 0 instead).
     $itemid = array_shift($args); // The first item in the $args array.
-
-    // Use the itemid to retrieve any relevant data records and perform any security checks to see if the
-    // user really does have access to the file in question.
-    /*
-    ** UPDATE: We will not restrict this anymore, otherwise courses with guest access will not show the correct styling!
-    $restrict_to_org = array('orgfiles', 'orgbanner');
-    if (in_array($filearea, $restrict_to_org)) {
-        global $CFG;
-
-        $orgs = \local_eduvidual\locallib::get_organisations('*');
-        $ok = false;
-        foreach($orgs AS $org) {
-            if ($org->orgid == $itemid) {
-                $ok = true;
-            }
-        }
-        if (!$ok) {
-            return false;
-        }
-    }
-    */
 
     // Extract the filename / filepath from the $args array.
     $filename = array_pop($args); // The last item in the $args array.
