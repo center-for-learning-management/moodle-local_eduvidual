@@ -289,32 +289,31 @@ function local_eduvidual_control_view_profile($user, $course = null, $usercontex
 function local_eduvidual_extend_navigation(global_navigation $navigation) {
     global $CFG;
 
-    $highestrole = \local_eduvidual\locallib::get_highest_role();
-    if (empty($highestrole))
-        return;
-
-    // $custommenu = "Eduvidual\n";
-
     $custommenu = '';
+    $highestrole = \local_eduvidual\locallib::get_highest_role();
 
-    $custommenu .= get_string('browse_org', 'local_eduvidual') . "|/local/eduvidual/pages/myorgs.php\n";
+    if ($highestrole) {
+        $custommenu .= get_string('browse_org', 'local_eduvidual') . "|/local/eduvidual/pages/myorgs.php\n";
 
-    if (in_array($highestrole, array('Manager', 'Teacher'))) {
-        $custommenu .= get_string('createcourse:here', 'local_eduvidual') . "|/local/eduvidual/pages/createcourse.php\n";
+        if (in_array($highestrole, array('Manager', 'Teacher'))) {
+            $custommenu .= get_string('createcourse:here', 'local_eduvidual') . "|/local/eduvidual/pages/createcourse.php\n";
+        }
     }
 
     if (class_exists(\block_edupublisher\lib::class)) {
         $custommenu .= get_string('resource_catalogue', 'block_edupublisher') . "|/blocks/edupublisher/pages/search.php\n";
     }
 
-    if (class_exists(\local_edusupport\lib::class) && \local_edusupport\lib::is_supportteam()) {
-        $custommenu .= get_string('issues', 'local_edusupport') . "|/local/edusupport/issues.php\n";
-    }
+    if ($highestrole) {
+        if (class_exists(\local_edusupport\lib::class) && \local_edusupport\lib::is_supportteam()) {
+            $custommenu .= get_string('issues', 'local_edusupport') . "|/local/edusupport/issues.php\n";
+        }
 
-    if (is_siteadmin()) {
-        $custommenu .= 'eduvidual-Administration' . "|/admin/category.php?category=local_eduvidual\n";
+        if (is_siteadmin()) {
+            $custommenu .= 'eduvidual-Administration' . "|/admin/category.php?category=local_eduvidual\n";
+        }
+        $custommenu .= "Edutube|/local/eduvidual/pages/redirects/edutube.php\n";
     }
-    $custommenu .= "Edutube|/local/eduvidual/pages/redirects/edutube.php\n";
 
     $CFG->custommenuitems = $custommenu . $CFG->custommenuitems;
 }
