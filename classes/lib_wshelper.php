@@ -109,12 +109,19 @@ class lib_wshelper {
     private static function buffer_enrol_manual_manage($buffer) {
         global $DB, $USER;
 
-        $buffer = mb_convert_encoding($buffer, 'HTML-ENTITIES', "UTF-8");
         $dom = new \DOMDocument();
-        $dom->loadHTML($buffer, LIBXML_NOWARNING | LIBXML_NOERROR);
 
-        $select = $dom->getElementById('addselect');
-        $options = $select->getElementsByTagName('option');
+        // laden des gasamten htmls geht nicht, weil wenn in den javascript strings html-tags enthalten sind,
+        // dann löscht das der Dom Parser!
+        // $dom->loadHTML($buffer, LIBXML_NOWARNING | LIBXML_NOERROR);
+
+        if (!preg_match('!<select.{0,100}id="addselect".*</select>!imUs', $buffer, $matches)) {
+            throw new \moodle_error('addselect not found');
+        }
+        $select_element_html = $matches[0];
+
+        $dom->loadHTML($select_element_html, LIBXML_NOWARNING | LIBXML_NOERROR);
+        $options = $dom->getElementsByTagName('option');
 
         foreach ($options as $option) {
             $userid = $option->getAttribute('value');
@@ -123,7 +130,14 @@ class lib_wshelper {
             }
         }
 
-        echo $dom->saveHTML();
+        // get the body.innerHTML:
+        // first get the content incl. <body>-Tag
+        $body = $dom->getElementsByTagName('body')->item(0);
+        $body_html = $dom->saveHTML($body);
+        // remove the <body>-Tag
+        $body_html = preg_replace('!</?body>!i', '', $body_html);
+
+        echo str_replace($select_element_html, $body_html, $buffer);
     }
 
     private static function buffer_mod_activequiz_edit($buffer) {
