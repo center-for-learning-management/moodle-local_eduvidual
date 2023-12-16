@@ -1,4 +1,4 @@
-@local @local_eduvidual
+@local @local_eduvidual @javascript
 Feature: Resource catalogue menu item is always available
   In order to make OER available to everyone
   As a guest or not logged user
@@ -22,7 +22,7 @@ Feature: Resource catalogue menu item is always available
 
   Scenario: Guest user is presented with resource catalogue menu item
     Given I am on site homepage
-    And I press "Resource catalogue"
+    And I press "Resource catalogue" "link"
     Then I should see "You are currently using guest access"
     And I should see "Resource catalogue" "link"
     But I should not see "Create course" "link"
