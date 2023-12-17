@@ -14,6 +14,15 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * Behat navigation-related step definition overrides for local eduvidual
+ *
+ * @package    local_eduvidual
+ * @category   test
+ * @copyright  2023 Julia Laßnig, Zentrum für Lernmanagement
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
 // NOTE: no MOODLE_INTERNAL test here, this file may be required by behat before including /config.php.
 // For that reason, we can't even rely on $CFG->admin being available here.
 
@@ -24,7 +33,7 @@ use Behat\Mink\Exception\ElementNotFoundException as ElementNotFoundException;
 use Behat\Mink\Exception\ExpectationException as ExpectationException;
 
 /**
- * Step definitions related to the navigation in local eduvidual
+ * Navigation-related step definition overrides for local eduvidual
  *
  * @package    local_eduvidual
  * @category   test
