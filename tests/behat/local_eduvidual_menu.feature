@@ -12,13 +12,12 @@ Feature: Resource catalogue menu item is always available
       | teacher1 | Teacher   | 1        | teacher1@example.com |
       | student1 | Student   | 1        | student1@example.com |
       | manager1 | Manager   | 1        | manager1@example.com |
-      | traverst | Thomas    | Travers  | traverst@example.com |
 
   Scenario: Non-logged user is presented with resource catalogue menu item
     When I am on site homepage
     Then I should see "Resource catalogue" "link"
     But I should not see "Create course" "link"
-    But I should not see "My schools" "link"
+    And I should not see "My schools" "link"
 
   Scenario: Guest user is presented with resource catalogue menu item
     Given I am on site homepage
@@ -26,7 +25,7 @@ Feature: Resource catalogue menu item is always available
     Then I should see "You are currently using guest access"
     And I should see "Resource catalogue" "link"
     But I should not see "Create course" "link"
-    But I should not see "My schools" "link"
+    And I should not see "My schools" "link"
 
   Scenario: Logged in teacher is presented with resource catalogue menu item
     Given I am on site homepage
