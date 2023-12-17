@@ -300,4 +300,11 @@ if ($hassiteconfig) {
         array('subdirs' => 99, 'maxbytes' => 1024 * 1024, 'maxfiles' => 500),
     ));
 
+    $settings->add(new admin_setting_configtext(
+        'local_eduvidual/eduportal_widget_password',
+        'Eduportal Widget Passwort',
+        'Passwort when Eduportal is connecting to Eduvidual Widgets',
+        '',
+        PARAM_TEXT
+    ));
 }
