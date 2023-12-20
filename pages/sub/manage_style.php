@@ -37,17 +37,6 @@ if ($data = $form->get_data()) {
         $data->orglogo, $context->id, 'local_eduvidual', 'orglogo', $org->orgid,
         array('subdirs' => $form->subdirs, 'maxbytes' => $form->maxbytes, 'maxfiles' => 1)
     );
-    file_save_draft_area_files(
-        $data->orgbanner, $context->id, 'local_eduvidual', 'orgbanner', $org->orgid,
-        array('subdirs' => $form->subdirs, 'maxbytes' => $form->maxbytes, 'maxfiles' => 1)
-    );
-    $files = \local_eduvidual\locallib::list_area_files('orgbanner', $org->orgid, $context);
-    if (count($files) > 0) {
-        $org->banner = str_replace($CFG->wwwroot, '', $files[0]->url);
-    } else {
-        $org->banner = '';
-    }
-    $DB->update_record('local_eduvidual_org', $org);
     echo "<p class=\"alert alert-success\">" . get_string('store:success', 'local_eduvidual') . "</p>";
 }
 
@@ -64,11 +53,6 @@ $draftitemid = file_get_submitted_draft_itemid('orglogo');
 file_prepare_draft_area($draftitemid, $context->id, 'local_eduvidual', 'orglogo', $org->orgid,
     array('subdirs' => $form->subdirs, 'maxbytes' => $form->maxbytes, 'maxfiles' => 1));
 $entry->orglogo = $draftitemid;
-
-$draftitemid = file_get_submitted_draft_itemid('orgbanner');
-file_prepare_draft_area($draftitemid, $context->id, 'local_eduvidual', 'orgbanner', $org->orgid,
-    array('subdirs' => $form->subdirs, 'maxbytes' => $form->maxbytes, 'maxfiles' => 1));
-$entry->orgbanner = $draftitemid;
 
 $form->set_data($entry);
 $form->display();
