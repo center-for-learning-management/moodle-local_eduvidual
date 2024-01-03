@@ -392,17 +392,25 @@ class locallib {
 
     /**
      * Get the highest role of a certain user.
-     * @param userid (optional) if not given will use $USER.
-     * @return highest role as String (Manager, Teacher or Student)
+     * @param int userid (optional) if not given will use $USER.
+     * @return highest role as String ('', Manager, Teacher or Student)
      */
-    public static function get_highest_role($userid = 0) {
+    public static function get_highest_role(int $userid = 0): string {
         global $DB, $USER;
-        if (empty($userid))
-            $userid = $USER->id;
+
+        if (!$userid) {
+            if (isguestuser() || empty($USER->id)) {
+                // no userid provided or not logged in
+                return '';
+            } else {
+                $userid = $USER->id;
+            }
+        }
 
         $highest = self::cache('session', "highestrole-$userid");
-        if (!empty($highest))
+        if ($highest) {
             return $highest;
+        }
 
         $memberships = $DB->get_records('local_eduvidual_orgid_userid', array('userid' => $userid));
         $highest = '';
@@ -424,6 +432,7 @@ class locallib {
                     break;
             }
         }
+
         self::cache('session', "highestrole-$userid", $highest);
         return $highest;
     }
