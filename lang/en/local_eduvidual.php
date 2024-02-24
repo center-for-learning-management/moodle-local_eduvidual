@@ -306,10 +306,10 @@ $string['import:invalid_org'] = 'Not allowed to manage this user account, not in
 $string['import:invalid_username_or_email'] = 'Username or e-Mail already taken by another user, that is not in your organisation';
 $string['import:issiteadmin'] = 'You cannot manage site admins!';
 $string['import:skipped'] = 'skipped';
+$string['import:invalid_secret'] = 'Invalid secret';
 
 $string['invalid_character'] = 'Invalid character';
 $string['invalid_orgcoursebasement'] = 'Invalid Basement selected!';
-$string['invalid_secret'] = 'Invalid Accesscard-ID given!';
 $string['invalid_type'] = 'Invalid Type!';
 $string['missing_permission'] = 'Missing Permission!';
 $string['open'] = 'open';

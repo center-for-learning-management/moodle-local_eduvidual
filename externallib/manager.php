@@ -39,16 +39,18 @@ class local_eduvidual_external_manager extends external_api {
             'cohorts_remove' => new external_value(PARAM_TEXT, 'cohorts_remove'),
             'password' => new external_value(PARAM_TEXT, 'password'),
             'forcechangepassword' => new external_value(PARAM_TEXT, 'forcechangepassword'),
+            'secret' => new external_value(PARAM_TEXT),
         ));
     }
 
-    public static function create_users($orgid, $id, $firstname, $lastname, $email, $role, $cohorts_add, $cohorts_remove, $password, $forcechangepassword) {
+    public static function create_users($orgid, $id, $firstname, $lastname, $email, $role, $cohorts_add, $cohorts_remove, $password, $forcechangepassword, $secret) {
         global $CFG, $DB, $org;
         $params = self::validate_parameters(self::create_users_parameters(), [
             'orgid' => $orgid, 'id' => $id,
             'firstname' => $firstname, 'lastname' => $lastname, 'email' => $email,
             'role' => $role, 'cohorts_add' => $cohorts_add, 'cohorts_remove' => $cohorts_remove,
             'password' => $password, 'forcechangepassword' => $forcechangepassword,
+            'secret' => $secret,
         ]);
 
         $ret = (object)[

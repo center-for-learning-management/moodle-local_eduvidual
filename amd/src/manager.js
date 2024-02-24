@@ -1,3 +1,4 @@
+/* eslint-disable */
 define(['jquery', 'core/ajax', 'core/modal_events', 'core/modal_factory', 'core/notification', 'core/str', 'core/url', 'local_eduvidual/main', 'local_eduvidual/user', 'local_eduvidual/widgets'], function ($, AJAX, ModalEvents, ModalFactory, NOTIFICATION, STR, URL, MAIN, USER, WIDGETS) {
   return {
     addParentFilterRequest: 0,
@@ -206,23 +207,14 @@ define(['jquery', 'core/ajax', 'core/modal_events', 'core/modal_factory', 'core/
     createUsers: function (uniqid, item) {
       if (this.debug > 0) console.log('local_eduvidual/manager::createUsers(uniqid, item)', uniqid, item);
       var MAIN = this;
-      if (typeof (item) === 'undefined') {
+      if (!item) {
         $('.import-btn-' + uniqid).addClass('disabled');
-        var orgid = $('.' + uniqid).attr('data-orgid');
+
         $('.' + uniqid + ' tr.user').each(function () {
           var tr = this;
-          var obj = {
-            'orgid': orgid,
-            'id': $(tr).attr('data-userid'),
-            'tr': this,
-          };
+          var import_data = $(tr).data('import_data');
 
-          ['firstname', 'lastname', 'email', 'role', 'cohorts_add',
-            'cohorts_remove', 'password', 'forcechangepassword'
-          ].forEach(function (key) {
-            obj[key] = $(tr).find('.' + key).html();
-          });
-          MAIN.sync_queue_create.push({'uniqid': uniqid, 'item': obj});
+          MAIN.sync_queue_create.push({'uniqid': uniqid, 'item': {import_data, tr}});
         });
         if (MAIN.sync_queue_create.length > 0) {
           var queueitem = MAIN.sync_queue_create.shift();
@@ -230,13 +222,13 @@ define(['jquery', 'core/ajax', 'core/modal_events', 'core/modal_factory', 'core/
         }
       } else {
         var tr = item.tr;
-        delete (item.tr);
+        var import_data = item.import_data;
         $(tr).css('filter', 'blur(2px)');
         console.debug(item);
 
         AJAX.call([{
           methodname: 'local_eduvidual_manager_create_users',
-          args: item,
+          args: import_data,
           done: function (result) {
             $(tr).css('filter', 'unset');
             if (MAIN.debug > 0) {

@@ -304,10 +304,10 @@ $string['import:invalid_org'] = 'Sie haben keine Berechtigung dieses Nutzerkonto
 $string['import:invalid_username_or_email'] = 'Benutzername oder e-Mail werden bereits von einem anderen Konto verwendet, das Sie nicht verwalten dürfen.';
 $string['import:issiteadmin'] = 'Administratoren/innen können nicht verwaltet werden';
 $string['import:skipped'] = 'ausgelassen';
+$string['import:invalid_secret'] = 'Ungültiger Secret';
 
 $string['invalid_character'] = 'Ungültiges Zeichen';
 $string['invalid_orgcoursebasement'] = 'Ungültige Kursvorlage gewählt!';
-$string['invalid_secret'] = 'Ungültige "Zugangskarten-ID" angegeben!';
 $string['invalid_type'] = 'Ungültiger Typ!';
 $string['missing_permission'] = 'Fehlende Rechte!';
 $string['open'] = 'öffnen';
