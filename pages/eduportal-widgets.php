@@ -182,9 +182,9 @@ function local_eduvidual_widget_timetable($user) {
         $responseData->items[] = [
             'label' => $event->get_name(),
             'detailleft' => userdate($event->get_times()->get_start_time()->getTimestamp(), get_string('strftimedatetimeshort', 'core_langconfig')),
-            'detailright' =>
+            'detailright' => '',
             // ($data ? $data->activitystr . ' · ' : '') .
-                $event->get_course()->get('shortname'),
+            // $event->get_course()->get('shortname'),
             'icon' => 'fa fa-calendar',
             'link' => $url->out(false),
             // , ['view' => 'month', 'course' => 1]),
