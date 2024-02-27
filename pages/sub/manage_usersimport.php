@@ -45,5 +45,19 @@ if (isset($_FILES['local_eduvidual_manage_usersimport'])) {
     $objs = $helper->get_rowobjects();
     $fields = $helper->get_fields();
 
+    // das import_data Objekt für den Webservice befüllen
+    $allowedKeys = [
+        'id',
+        'firstname', 'lastname', 'email', 'role', 'cohorts_add',
+        'cohorts_remove', 'password', 'forcechangepassword',
+        'secret',
+    ];
+    foreach ($objs as $obj) {
+        // nur die allowedKeys in das Objekt übernehmen
+        $import_data = (object)array_intersect_key((array)$obj, array_flip($allowedKeys));
+        $import_data->orgid = $orgid;
+        $obj->import_data = json_encode($import_data);
+    }
+
     echo $OUTPUT->render_from_template('local_eduvidual/manage_usersimport', ['orgid' => $orgid, 'users' => $objs]);
 }

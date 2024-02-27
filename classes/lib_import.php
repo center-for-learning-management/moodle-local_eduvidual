@@ -291,6 +291,17 @@ class local_eduvidual_lib_import_compiler_user extends local_eduvidual_lib_impor
             $payload->action = get_string('import:invalid_role', 'local_eduvidual');
         }
 
+        // Prüfung der "secret" Spalte
+        if ($obj->id) {
+            $secret = \local_eduvidual\locallib::get_user_secret($obj->id);
+            // der secret ist im format "userid#secret", d.h. den ersten Teil vor dem Vergleich löschen
+            $secretProvidedByUser = preg_replace('!^.*#!', '', $obj->secret);
+            if (!$secret || $secret != $secretProvidedByUser) {
+                $payload->processed = false;
+                $payload->action = get_string('import:invalid_secret', 'local_eduvidual');
+            }
+        }
+
         $obj->username = strtolower($obj->username);
         $obj->email = strtolower($obj->email);
 
