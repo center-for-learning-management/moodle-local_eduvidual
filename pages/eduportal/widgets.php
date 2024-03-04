@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__ . '/../../../config.php';
+require_once __DIR__ . '/../../../../config.php';
 
 // if ($_SERVER['PHP_AUTH_PW'] != 'eduvidual') {
 //     throw new \moodle_exception('not allowed (reason: password)');
@@ -167,7 +167,7 @@ class local_eduvidual_eduportal_widget {
     }
 
     static function sso_url(\moodle_url $url) {
-        return new \moodle_url('/local/eduvidual/pages/eduportal-sso.php', ['url' => $url->out_as_local_url(false)]);
+        return new \moodle_url('/local/eduvidual/pages/eduportal/sso.php', ['url' => $url->out_as_local_url(false)]);
     }
 
     static function course_list() {

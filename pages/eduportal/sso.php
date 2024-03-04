@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__ . '/../../../config.php';
+require_once __DIR__ . '/../../../../config.php';
 
 $url = required_param('url', PARAM_URL);
 
@@ -21,7 +21,7 @@ $SESSION->wantsurl = $url->out(false);
 
 $idps = explode("\n", get_config('auth_shibboleth', 'organization_selection'));
 $idpX = explode(",", $idps[0]);
-$idp = rawurlencode(trim($idpX[0]));
+$idp = trim($idpX[0]);
 
 $url = $CFG->wwwroot . '/auth/shibboleth_link/login.php?idp=' . rawurlencode($idp);
 redirect($url);
