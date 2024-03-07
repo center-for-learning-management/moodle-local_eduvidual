@@ -268,6 +268,21 @@ if ($hassiteconfig) {
         PARAM_TEXT
     ));
 
+    $settings->add(new admin_setting_configpasswordunmask(
+        'local_eduvidual/eduportal_widget_password',
+        'Eduportal Widget Passwort',
+        'Passwort when Eduportal is connecting to Eduvidual Widgets',
+        '',
+    ));
+
+    $settings->add(new admin_setting_configtext(
+        'local_eduvidual/clean_old_logs_months',
+        'Logs älter als X Monate löschen',
+        '',
+        '36',
+        PARAM_INT
+    ));
+
     $settings->add(new admin_setting_heading('local_eduvidual_backgrounds_header',
         get_string('admin:backgrounds:title', 'local_eduvidual'),
         '',
@@ -298,13 +313,5 @@ if ($hassiteconfig) {
         'globalfiles',
         0,
         array('subdirs' => 99, 'maxbytes' => 1024 * 1024, 'maxfiles' => 500),
-    ));
-
-    $settings->add(new admin_setting_configtext(
-        'local_eduvidual/eduportal_widget_password',
-        'Eduportal Widget Passwort',
-        'Passwort when Eduportal is connecting to Eduvidual Widgets',
-        '',
-        PARAM_TEXT
     ));
 }
