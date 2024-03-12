@@ -42,4 +42,22 @@ $tasks = array(
         'dayofweek' => '*',
         'month' => '*',
     ),
+    array(
+        'classname' => 'local_eduvidual\task\clean_old_logs',
+        'blocking' => 0,
+        'minute' => 0,
+        'hour' => 3,
+        'day' => '*',
+        'dayofweek' => '*',
+        'month' => '*',
+    ),
+    array(
+        'classname' => 'local_eduvidual\task\clean_old_webservice_tokens',
+        'blocking' => 0,
+        'minute' => 0,
+        'hour' => 3,
+        'day' => '*',
+        'dayofweek' => '*',
+        'month' => '*',
+    ),
 );

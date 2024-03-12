@@ -16,20 +16,34 @@
 
 /**
  * @package    local_eduvidual
- * @copyright  2018 Digital Education Society (http://www.dibig.at),
- *             2020 and ongoing Center for Learning Management (http://www.lernmanagement.at)
+ * @copyright  2021 Center for Learningmanagement (http://www.lernmanagement.at)
  * @author     Robert Schrenk
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+namespace local_eduvidual\task;
+
 defined('MOODLE_INTERNAL') || die;
 
-$plugin->version = 2024030702;
-$plugin->requires = 2019111803;  // Requires Moodle 3.8.3.
-$plugin->component = 'local_eduvidual';
-$plugin->release = '2.9';
-$plugin->maturity = MATURITY_STABLE;
+class clean_old_webservice_tokens extends \core\task\scheduled_task {
+    public function get_name() {
+        // Shown in admin screens.
+        return 'Alte Webservice Tokens löschen';
+    }
 
-$plugin->dependencies = [
-    'local_edusupport' => 2021060200,
-];
+    public function execute() {
+        global $DB;
+
+        $months = 3;
+
+        // Abgelaufene Tokens (prüfung anhand der Gültigkeit) werden gelöscht
+        // X Monate nicht verwendete Tokens werden ebenfalls gelöscht
+        $DB->execute(
+            "DELETE FROM {external_tokens} WHERE
+            (validuntil > 0 AND validuntil < ?) OR
+            (GREATEST(COALESCE(timecreated,0),COALESCE(lastaccess,0)) < ?)",
+            [time(), time() - 60 * 60 * 24 * 30 * $months]);
+
+        echo "Log cleaned successfully\n";
+    }
+}
