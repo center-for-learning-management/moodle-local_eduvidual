@@ -143,7 +143,7 @@ class local_eduvidual_eduportal_widget {
             return;
         }
 
-        if (!$data->viewinguser) {
+        if (empty($data->viewinguser)) {
             static::error_response('no viewinguser given');
         }
 
@@ -246,7 +246,7 @@ class local_eduvidual_eduportal_widget {
 
         if ($isMyself) {
             // only link, if viewing my own timeline
-            $responseData['button'] = [
+            $responseData->button = [
                 'label' => 'Alle anzeigen',
                 'link' => static::sso_url(new \moodle_url('/calendar/view.php'))->out(false),
                 // , ['view' => 'month', 'course' => 1]),
