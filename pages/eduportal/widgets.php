@@ -212,17 +212,12 @@ class local_eduvidual_eduportal_widget {
     static function timeline() {
         global $CFG, $USER;
 
-        $relatedUser = static::get_related_user();
-        $user = $relatedUser ?: $USER;
+        $user = static::get_related_user();
+        if (!$user) {
+            static::html_response('Kein eduvidual.at-Konto verknüpft');
+        }
 
         $isMyself = $user->id == $USER->id;
-
-        if (!$user) {
-            static::json_response([
-                'type' => 'hidden',
-                'errorCode' => 'Person nicht bekannt.',
-            ]);
-        }
 
         require_once($CFG->dirroot . '/calendar/lib.php');
         $events = \core_calendar\local\api::get_action_events_by_timesort(
