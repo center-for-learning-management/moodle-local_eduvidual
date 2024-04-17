@@ -70,11 +70,11 @@ class local_eduvidual_eduportal_widget {
     static function get_related_user() {
         $data = static::get_post_data();
 
-        if (!empty($data->relateduser)) {
-            return static::get_user_from_bpk($data->relateduser);
-        } else {
-            return null;
+        if (empty($data->relateduser)) {
+            static::error_response('relateduser nicht übermittelt');
         }
+
+        return static::get_user_from_bpk($data->relateduser);
     }
 
     static function get_idp_id() {
