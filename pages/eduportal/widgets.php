@@ -70,11 +70,11 @@ class local_eduvidual_eduportal_widget {
     static function get_related_user() {
         $data = static::get_post_data();
 
-        if (!empty($data->relateduser)) {
-            return static::get_user_from_bpk($data->relateduser);
-        } else {
-            return null;
+        if (empty($data->relateduser)) {
+            static::error_response('relateduser nicht übermittelt');
         }
+
+        return static::get_user_from_bpk($data->relateduser);
     }
 
     static function get_idp_id() {
@@ -143,7 +143,7 @@ class local_eduvidual_eduportal_widget {
             return;
         }
 
-        if (!$data->viewinguser) {
+        if (empty($data->viewinguser)) {
             static::error_response('no viewinguser given');
         }
 
@@ -212,17 +212,12 @@ class local_eduvidual_eduportal_widget {
     static function timeline() {
         global $CFG, $USER;
 
-        $relatedUser = static::get_related_user();
-        $user = $relatedUser ?: $USER;
+        $user = static::get_related_user();
+        if (!$user) {
+            static::html_response('Kein eduvidual.at-Konto verknüpft');
+        }
 
         $isMyself = $user->id == $USER->id;
-
-        if (!$user) {
-            static::json_response([
-                'type' => 'hidden',
-                'errorCode' => 'Person nicht bekannt.',
-            ]);
-        }
 
         require_once($CFG->dirroot . '/calendar/lib.php');
         $events = \core_calendar\local\api::get_action_events_by_timesort(
@@ -246,7 +241,7 @@ class local_eduvidual_eduportal_widget {
 
         if ($isMyself) {
             // only link, if viewing my own timeline
-            $responseData['button'] = [
+            $responseData->button = [
                 'label' => 'Alle anzeigen',
                 'link' => static::sso_url(new \moodle_url('/calendar/view.php'))->out(false),
                 // , ['view' => 'month', 'course' => 1]),
