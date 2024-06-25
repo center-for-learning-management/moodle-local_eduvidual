@@ -152,11 +152,11 @@ class local_eduvidual_eduportal_widget {
         if (!$user) {
             $idp = static::get_idp_id();
 
-            static::html_response('Zur Anzeige der Daten ist eine Verknüpfung der Bildungsportal- und Eduvidual-Benutzer notwendig!', [
+            static::html_response(get_string('widgets:connect_users_text', 'local_eduvidual'), [
                 'button' => [
                     // "icon": "fa fa-euro", // all icons of font-awesome free v6.2.1, either fa or image
                     "target" => "_blank",
-                    "label" => "Benutzer verknüpfen",
+                    "label" => get_string('widgets:connect_users_button', 'local_eduvidual'),
                     "link" => $CFG->wwwroot . '/auth/shibboleth_link/login.php?idp=' . rawurlencode($idp),
                 ],
             ]);
@@ -179,14 +179,14 @@ class local_eduvidual_eduportal_widget {
         $courses = enrol_get_my_courses(null, 'ul.timeaccess DESC');
 
         if (!$courses) {
-            static::html_response('Sie sind in keinen Kursen eingeschrieben!');
+            static::html_response(get_string('widgets:course_list:no_courses', 'local_eduvidual'));
         }
 
         $responseData = (object)[
             'type' => 'btnlist',
             'items' => [],
             'button' => [
-                'label' => 'Alle anzeigen',
+                'label' => get_string('widgets:show_all_entries', 'local_eduvidual'),
                 'link' => static::sso_url(new \moodle_url('/my/courses.php'))->out(false),
                 // , ['view' => 'month', 'course' => 1]),
             ],
@@ -214,7 +214,7 @@ class local_eduvidual_eduportal_widget {
 
         $user = static::get_related_user();
         if (!$user) {
-            static::html_response('Kein eduvidual.at-Konto verknüpft');
+            static::html_response(get_string('widgets:user_not_connected', 'local_eduvidual'));
         }
 
         $isMyself = $user->id == $USER->id;
@@ -231,7 +231,7 @@ class local_eduvidual_eduportal_widget {
         );
 
         if (!$events) {
-            static::html_response('Die Zeitleiste enthält keine Einträge!');
+            static::html_response(get_string('widgets:timeline:no_entries', 'local_eduvidual'));
         }
 
         $responseData = (object)[
@@ -242,7 +242,7 @@ class local_eduvidual_eduportal_widget {
         if ($isMyself) {
             // only link, if viewing my own timeline
             $responseData->button = [
-                'label' => 'Alle anzeigen',
+                'label' => get_string('widgets:show_all_entries', 'local_eduvidual'),
                 'link' => static::sso_url(new \moodle_url('/calendar/view.php'))->out(false),
                 // , ['view' => 'month', 'course' => 1]),
             ];

@@ -615,3 +615,10 @@ $string['user:preference:editor:title'] = 'Preferred text-editor';
 $string['user:support:showbox'] = 'Help me!';
 
 $string['your_learning_environment'] = 'your personal learning environment';
+
+$string['widgets:connect_users_text'] = 'Please link your education portal user to your eduvidual.at user to display data!';
+$string['widgets:connect_users_button'] = 'Link users';
+$string['widgets:user_not_connected'] = 'No eduvidual.at account connected';
+$string['widgets:show_all_entries'] = 'Display all';
+$string['widgets:course_list:no_courses'] = 'You are not enrolled in any courses!';
+$string['widgets:timeline:no_entries'] = 'The timeline is empty!';
