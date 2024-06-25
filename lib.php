@@ -29,13 +29,6 @@ function local_eduvidual_after_config() {
 
     \local_eduvidual\locallib::set_xorg_data();
 
-    if ($CFG->autologinguests && $CFG->theme == 'edumaker') {
-        // keine Weiterleitung zu login bei neuem theme, gäste werden automatisch eingeloggt
-    } elseif (!isloggedin() && $_SERVER["SCRIPT_FILENAME"] == $CFG->dirroot . '/index.php') {
-        // Fore redirect to login from frontpage.
-        redirect($CFG->wwwroot . '/login');
-    }
-
     $PAGE->add_body_class('theme-' . $CFG->theme);
     // Check for particular scripts, whose output has to be protected.
     $scripts = array(

@@ -607,3 +607,10 @@ $string['user:preference:editor:title'] = 'Bevorzugter Texteditor';
 $string['user:support:showbox'] = 'Hilfe anfordern!';
 
 $string['your_learning_environment'] = 'deine persönliche Lernplattform';
+
+$string['widgets:connect_users_text'] = 'Zur Anzeige der Daten ist eine Verknüpfung der Bildungsportal- und Eduvidual-Benutzer notwendig!';
+$string['widgets:connect_users_button'] = 'Benutzer verknüpfen';
+$string['widgets:user_not_connected'] = 'Kein eduvidual.at-Konto verknüpft';
+$string['widgets:show_all_entries'] = 'Alle anzeigen';
+$string['widgets:course_list:no_courses'] = 'Sie sind in keinen Kursen eingeschrieben!';
+$string['widgets:timeline:no_entries'] = 'Die Zeitleiste enthält keine Einträge!';
