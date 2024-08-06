@@ -48,7 +48,17 @@ class clean_old_logs extends \core\task\scheduled_task {
 
         $table = $store->get_config_value('dbtable');
 
-        $extdb->execute("DELETE FROM {$table} WHERE timecreated < ?", [time() - 60 * 60 * 24 * 30 * $months]);
+        // delete in batches of 10000 rows
+        $num_rows_to_delete_each = 10000;
+        $timestamp = time() - 60 * 60 * 24 * 30 * $months;
+        $num_rows_to_delete = $extdb->get_field_sql("SELECT COUNT(*) FROM {$table} WHERE timecreated < ?", [$timestamp]);
+
+        for ($i = 0; $i < $num_rows_to_delete; $i+=$num_rows_to_delete_each) {
+            $sql = "DELETE FROM {$table} WHERE timecreated < ? LIMIT {$num_rows_to_delete_each}";
+            echo $sql;
+            $extdb->execute($sql, [$timestamp]);
+        }
+
         echo "Log cleaned successfully\n";
     }
 }
