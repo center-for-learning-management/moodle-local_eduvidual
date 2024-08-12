@@ -558,6 +558,9 @@ class lib_wshelper {
         //return \local_eduvidual\locallib::filter_userlist($result, 'id', 'fullname');
     }
 
+    /**
+     * Entfernt alle Kategorien unter der "System Kategorie", die nicht in den managed_qcats oder der user_qcats sind
+     */
     private static function override_core_external_get_fragment($result, $params) {
         global $DB, $USER;
         if (!empty($params[0]) && $params[0] == 'mod_quiz' && !empty($params[1]) && $params[1] == 'quiz_question_bank') {
@@ -565,38 +568,58 @@ class lib_wshelper {
             $user_qcats = array_keys($DB->get_records('local_eduvidual_userqcats', array('userid' => $USER->id), '', 'categoryid'));
             $orgids = array_keys(\local_eduvidual\locallib::get_organisations('Teacher', false));
 
+            $systemcategoryid = $DB->get_field('question_categories', 'id', array('contextid' => \context_system::instance()->id, 'parent' => 0));
+
             $utf8converted = mb_convert_encoding($result['html'], 'HTML-ENTITIES', "UTF-8");
             $doc = new \DOMDocument();
             $doc->loadHTML($utf8converted, LIBXML_NOWARNING | LIBXML_NOERROR);
 
-            $optgroups = $doc->getElementsByTagName('optgroup');
-            $options = $optgroups->item($optgroups->length - 1)->getElementsByTagName('option');
+            $xpath = new \DOMXPath($doc);
+            $select = $xpath->query('//select[@data-field-name="category"]')->item(0);
+            if (!$select) {
+                throw new \moodle_exception('select not found #48fjkdfs');
+            }
+
+            $options = $select->getElementsByTagName('option');
             $remove = false;
             $removeList = array();
+            $is_system_category = false;
             for ($a = 0; $a < $options->length; $a++) {
-                $label = $options->item($a)->nodeValue;
+                $item = $options->item($a);
+                $label = $item->nodeValue;
                 $label2 = ltrim($label, " \t\n\r\0\x0B\xC2\xA0");
                 $depth = (strlen($label) - strlen($label2)) / 6;
-                if ($depth == 1) { // This is a core category.
-                    $value = explode(',', $options->item($a)->getAttribute('value'));
-                    if (!empty($value[0])) {
-                        $catid = $value[0];
+                $catid = $item->getAttribute('value');
+
+                if ($depth == 0) {
+                    $is_system_category = ($catid == $systemcategoryid);
+                }
+
+                if (!$is_system_category) {
+                    // skip all items, which are not in the system category
+                    continue;
+                }
+
+                if ($depth == 1) { // This is a core (system) category.
+                    if (in_array($catid, $managed_qcats) && in_array($catid, $user_qcats)) {
+                        $remove = false;
+                    } elseif (in_array($label2, $orgids)) {
+                        $remove = false;
+                    } else {
                         $remove = true;
-                        if (in_array($catid, $managed_qcats) && in_array($catid, $user_qcats)) {
-                            $remove = false;
-                        } elseif (in_array($label2, $orgids)) {
-                            $remove = false;
-                        }
                     }
                 }
+
                 if ($remove) {
                     $removeList[] = $options->item($a);
                 }
             }
+
             // Now remove the nodes.
             foreach ($removeList as $option) {
                 $option->parentNode->removeChild($option);
             }
+
             $result['html'] = $doc->saveHTML();
         }
         return $result;
