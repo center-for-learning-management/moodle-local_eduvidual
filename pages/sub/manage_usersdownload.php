@@ -22,10 +22,9 @@
 
 
 require_once('../../../../config.php');
-require_login();
-
 require_once($CFG->libdir . '/adminlib.php');
-require_once($CFG->libdir . '/dataformatlib.php');
+
+require_login();
 
 
 $orgid = required_param('orgid', PARAM_INT);
