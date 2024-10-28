@@ -216,7 +216,9 @@ class lib_helper {
             'contentbankcontent' => true,
             'course_shortname' => $course->shortname,
             'course_fullname' => $course->fullname,
-            'customfields' => true,
+            // https://github.com/center-for-learning-management/eduvidual-src/issues/2210
+            // fix setting "customfields" throws error
+            // 'customfields' => true,
             'overwrite_conf' => true,
             'users' => false,
             'keep_roles_and_enrolments' => false,
@@ -232,23 +234,12 @@ class lib_helper {
             foreach ($settings as $settingname => $value) {
                 $plan = $rc->get_plan();
                 if (!empty($plan)) {
-                    // https://github.com/center-for-learning-management/eduvidual-src/issues/2210
-                    // fix setting "customfields" throws error
-                    try {
-                        $setting = $rc->get_plan()->get_setting($settingname);
-                    } catch (\moodle_exception $e) {
-                        if ($settingname == 'customfields') {
-                            // ignore this error
-                            continue;
-                        } else {
-                            // this should not happen, throw it!
-                            throw $e;
-                        }
-                    }
+                    $setting = $rc->get_plan()->get_setting($settingname);
                     if ($setting->get_status() == \base_setting::NOT_LOCKED) {
                         $rc->get_plan()->get_setting($settingname)->set_value($value);
                     }
                 }
+
             }
             $rc->execute_precheck();
             $rc->execute_plan();
