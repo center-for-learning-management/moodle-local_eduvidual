@@ -232,12 +232,23 @@ class lib_helper {
             foreach ($settings as $settingname => $value) {
                 $plan = $rc->get_plan();
                 if (!empty($plan)) {
-                    $setting = $rc->get_plan()->get_setting($settingname);
+                    // https://github.com/center-for-learning-management/eduvidual-src/issues/2210
+                    // fix setting "customfields" throws error
+                    try {
+                        $setting = $rc->get_plan()->get_setting($settingname);
+                    } catch (\moodle_exception $e) {
+                        if ($settingname == 'customfields') {
+                            // ignore this error
+                            continue;
+                        } else {
+                            // this should not happen, throw it!
+                            throw $e;
+                        }
+                    }
                     if ($setting->get_status() == \base_setting::NOT_LOCKED) {
                         $rc->get_plan()->get_setting($settingname)->set_value($value);
                     }
                 }
-
             }
             $rc->execute_precheck();
             $rc->execute_plan();
