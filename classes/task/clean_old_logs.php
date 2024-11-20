@@ -53,6 +53,7 @@ class clean_old_logs extends \core\task\scheduled_task {
         $timestamp = time() - 60 * 60 * 24 * 30 * $months;
         $num_rows_to_delete = $extdb->get_field_sql("SELECT COUNT(*) FROM {$table} WHERE timecreated < ?", [$timestamp]);
 
+        echo "Lösche {$num_rows_to_delete} Logs älter als {$months} Monate:\n";
         for ($i = 0; $i < $num_rows_to_delete; $i+=$num_rows_to_delete_each) {
             $sql = "DELETE FROM {$table} WHERE timecreated < ? LIMIT {$num_rows_to_delete_each}";
             echo $sql."\n";
