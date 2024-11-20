@@ -55,7 +55,7 @@ class clean_old_logs extends \core\task\scheduled_task {
 
         for ($i = 0; $i < $num_rows_to_delete; $i+=$num_rows_to_delete_each) {
             $sql = "DELETE FROM {$table} WHERE timecreated < ? LIMIT {$num_rows_to_delete_each}";
-            echo $sql;
+            echo $sql."\n";
             $extdb->execute($sql, [$timestamp]);
         }
 
