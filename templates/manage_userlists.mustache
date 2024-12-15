@@ -138,6 +138,18 @@
                         {{#str}} manage:authtype, local_eduvidual {{/str}}
                     </a>
                 </th>
+                <th>
+                    {{#orderby_lastlogin}}
+                        {{#orderasc}} <i class="fa fa-sort-down"></i> {{/orderasc}}
+                        {{^orderasc}} <i class="fa fa-sort-up"></i> {{/orderasc}}
+                    {{/orderby_lastlogin}}
+                    {{^orderby_lastlogin}}
+                        <i class="fa fa-sort"></i>
+                    {{/orderby_lastlogin}}
+                    <a href="{{{pageurl}}}&orderby=lastlogin&orderasc={{switchasc}}">
+                        {{#str}} lastlogin {{/str}}
+                    </a>
+                </th>
                 <th>&nbsp;</th>
             </tr>
         </thead>
@@ -186,6 +198,7 @@
             <td>{{role}}</td>
             <td>{{id}}#{{profile_field_secret}}</td>
             <td>{{auth}}</td>
+            <td>{{lastlogin}}</td>
             <td>
                 <a href="#" style="text-decoration: none; color: unset;"
                     onclick="require(['local_eduvidual/manager'], function(M) { M.editProfile({{orgid}}, {{id}}, { run: function() { top.location.reload(); } }); }); return false;">
