@@ -16,20 +16,22 @@
 
 /**
  * @package    local_eduvidual
- * @copyright  2018 Digital Education Society (http://www.dibig.at),
- *             2020 and ongoing Center for Learning Management (http://www.lernmanagement.at)
+ * @copyright  2019 Digital Education Society (http://www.dibig.at)
  * @author     Robert Schrenk
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die;
 
-$plugin->version = 2024121203;
-$plugin->requires = 2019111803;  // Requires Moodle 3.8.3.
-$plugin->component = 'local_eduvidual';
-$plugin->release = '2.9';
-$plugin->maturity = MATURITY_STABLE;
-
-$plugin->dependencies = [
-    'local_edusupport' => 2021060200,
+$callbacks = [
+    [
+        'hook' => \core\hook\after_config::class,
+        'callback' => [\local_eduvidual\hook_callbacks::class, 'after_config'],
+        'priority' => 500,
+    ],
+    [
+        'hook' => \core\hook\output\before_standard_head_html_generation::class,
+        'callback' => [\local_eduvidual\hook_callbacks::class, 'before_standard_head_html_generation'],
+        'priority' => 500,
+    ],
 ];

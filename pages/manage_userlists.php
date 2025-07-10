@@ -100,6 +100,9 @@ switch ($orderby) {
     case 'secret':
         $orderbysql = "u.id $orderasc";
         break;
+    case 'lastlogin':
+        $orderbysql = "u.lastlogin $orderasc";
+        break;
     case 'lastname':
     default:
         $orderby = 'lastname';
@@ -160,6 +163,7 @@ foreach ($entries as $user) {
     $user->userpicturesmall = $OUTPUT->user_picture($user, array('size' => 50));
     $user->secret_encoded = rawurlencode($user->id . '#' . $user->profile_field_secret);
     $user->displayusername = $user->username;
+    $user->lastlogin = userdate($user->lastlogin, get_string('strftimedatetimeshort', 'langconfig'));
 
     $cnt++;
     if ($cnt == 18) {
