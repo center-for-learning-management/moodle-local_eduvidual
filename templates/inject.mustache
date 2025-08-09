@@ -18,13 +18,15 @@
 {{#courseEditPage}}
     {{! We do not want to see the course shortname field. }}
     {{#js}}
-        {{^issiteadmin}}
-            $('#fitem_id_shortname').css('display', 'none');
-        {{/issiteadmin}}
-        if ($('#fitem_id_shortname #id_shortname').val() == '') {
-            var d = new Date();
-            $('#fitem_id_shortname #id_shortname').val({{userid}} + '-' + Date.now());
-        }
+        require(['jquery'], function($) {
+            {{^issiteadmin}}
+                $('#fitem_id_shortname').css('display', 'none');
+            {{/issiteadmin}}
+            if ($('#fitem_id_shortname #id_shortname').val() == '') {
+                var d = new Date();
+                $('#fitem_id_shortname #id_shortname').val({{userid}} + '-' + Date.now());
+            }
+        });
     {{/js}}
 {{/courseEditPage}}
 
