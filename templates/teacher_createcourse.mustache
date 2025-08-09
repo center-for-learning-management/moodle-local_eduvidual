@@ -15,7 +15,8 @@
     along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 }}
 
-<form id="{{uniqid}}-form" action="{{wwwroot}}/local/eduvidual/pages/createcourse.php" method="POST" enctype="multipart/form-data">
+<form id="{{uniqid}}-form" action="{{wwwroot}}/local/eduvidual/pages/createcourse.php" method="POST" enctype="multipart/form-data"
+    onsubmit="var form = this; require(['jquery'], function($) { console.log(form, $(form)); $(form).find(':submit').prop('disabled', true).addClass('disabled'); form.submit(); }); return false;">
     <input type="hidden" id="{{uniqid}}-formsent" name="formsent" value="1" />
     {{^multipleorgs}}
         <input type="hidden" id="{{uniqid}}-orgid" name="orgid" value="{{orgfirst}}" />
@@ -78,7 +79,7 @@
                 {{/has_subcats1}}
                 {{^has_subcats1}}
                     <input id="{{uniqid}}-subcat1" name="subcat1" size="5" style="width: 100%;"
-                        onkeyup="var i = this; require(['local_eduvidual/main', 'local_eduvidual/teacher'], function(M, TEACHER) { M.watchValue({ target: $(i), run: function() { TEACHER.createCourseSelections('{{uniqid}}'); } }); });"/>
+                        onkeyup="var i = this; require(['jquery', 'local_eduvidual/main', 'local_eduvidual/teacher'], function($, M, TEACHER) { M.watchValue({ target: $(i), run: function() { TEACHER.createCourseSelections('{{uniqid}}'); } }); });"/>
                 {{/has_subcats1}}
             </td>
         </tr>
@@ -105,7 +106,7 @@
                 {{/has_subcats2}}
                 {{^has_subcats2}}
                     <input id="{{uniqid}}-subcat2" name="subcat2" size="5" style="width: 100%;"
-                        onkeyup="var i = this; require(['local_eduvidual/main', 'local_eduvidual/teacher'], function(M, TEACHER) { M.watchValue({ target: $(i), run: function() { TEACHER.createCourseSelections('{{uniqid}}'); } }); });"/>
+                        onkeyup="var i = this; require(['jquery', 'local_eduvidual/main', 'local_eduvidual/teacher'], function($, M, TEACHER) { M.watchValue({ target: $(i), run: function() { TEACHER.createCourseSelections('{{uniqid}}'); } }); });"/>
                 {{/has_subcats2}}
             </td>
         </tr>
@@ -126,7 +127,7 @@
                 {{/has_subcats3}}
                 {{^has_subcats3}}
                     <input id="{{uniqid}}-subcat3" name="subcat3" size="5" style="width: 100%;"
-                        onkeyup="var i = this; require(['local_eduvidual/main', 'local_eduvidual/teacher'], function(M, TEACHER) { M.watchValue({ target: $(i), run: function() { TEACHER.createCourseSelections('{{uniqid}}'); } }); });"/>
+                        onkeyup="var i = this; require(['jquery', 'local_eduvidual/main', 'local_eduvidual/teacher'], function($, M, TEACHER) { M.watchValue({ target: $(i), run: function() { TEACHER.createCourseSelections('{{uniqid}}'); } }); });"/>
                 {{/has_subcats3}}
             </td>
         </tr>
@@ -138,7 +139,7 @@
             <td class="requirement"></td>
             <td>
                 <input id="{{uniqid}}-subcat4" name="subcat4" size="5" style="width: 100%;"
-                    onkeyup="var i = this; require(['local_eduvidual/main', 'local_eduvidual/teacher'], function(M, TEACHER) { M.watchValue({ target: $(i), run: function() { TEACHER.createCourseSelections('{{uniqid}}'); } }); });"/>
+                    onkeyup="var i = this; require(['jquery', 'local_eduvidual/main', 'local_eduvidual/teacher'], function($, M, TEACHER) { M.watchValue({ target: $(i), run: function() { TEACHER.createCourseSelections('{{uniqid}}'); } }); });"/>
             </td>
         </tr>
 
@@ -169,10 +170,9 @@
         </tr>
         <tr class="{{uniqid}}-create">
             <td colspan="3">
-                <a href="#" id="{{uniqid}}-submit" class="btn btn-primary btn-block disabled"
-                    onclick="$(this).addClass('disabled'); require(['jquery'], function($) { $('#{{uniqid}}-form').submit(); }); return false;">
+                <button type="submit" class="btn btn-primary btn-block disabled">
                     {{#str}} create {{/str}}
-                </a>
+                </button>
             </td>
         </tr>
     </table>
