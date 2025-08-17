@@ -502,8 +502,17 @@ class lib_wshelper {
         $sqlfullnamerev = $DB->sql_fullname('u.lastname', 'u.firstname');
         $from = $page * $perpage;
 
+        // add the fields required for the user picture
+        // skip fields which are already in the select
+        $picturefields = array_diff(\core_user\fields::get_picture_fields(), ['id', 'fullname', 'email']);
+        $picturefields = array_map(fn($f) => "u.$f", $picturefields);
+        $picturefields = join(', ', $picturefields);
+        if ($picturefields) {
+            $picturefields = ', ' . $picturefields;
+        }
+
         if (is_siteadmin()) {
-            $sql = "SELECT u.id,$sqlfullname fullname,u.email
+            $sql = "SELECT u.id,$sqlfullname fullname,u.email $picturefields
                         FROM {user} u
                         WHERE deleted=0 AND
                             (
@@ -522,7 +531,7 @@ class lib_wshelper {
                 $myorgs[] = $m->orgid;
             }
             $ownorgs = implode(',', $myorgs);
-            $sql = "SELECT u.id,$sqlfullname fullname,u.email
+            $sql = "SELECT u.id,$sqlfullname fullname,u.email $picturefields
                         FROM {user} u
                         JOIN {local_eduvidual_orgid_userid} ou ON (ou.userid = u.id AND ou.orgid IN ($ownorgs) AND ou.orgid NOT IN ($protectedorgs))
                         WHERE deleted=0 AND
