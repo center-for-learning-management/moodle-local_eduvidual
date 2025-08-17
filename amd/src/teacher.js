@@ -162,9 +162,9 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/templates'
             }
           });
           if (!requirementsfulfilled) {
-            $('#' + uniqid + '-submit').addClass('disabled');
+            $('#' + uniqid + '-form :submit').addClass('disabled').prop('disabled', true);
           } else {
-            $('#' + uniqid + '-submit').removeClass('disabled');
+            $('#' + uniqid + '-form :submit').removeClass('disabled').prop('disabled', false);
           }
         },
         fail: NOTIFICATION.exception
