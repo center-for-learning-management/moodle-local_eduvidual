@@ -26,35 +26,35 @@
 	</ul>
     <ul class="nav nav-tabs mb-3 toggle-controller-{{uniqid}}">
         <li class="nav-item">
-            <a href="#" onclick="var a = this; require(['local_eduvidual/main'], function(M) { M.toggle('{{uniqid}}', a, $(a).attr('data-toggle'));} ); return false;" data-toggle="manageusers" class="nav-link">
+            <a href="#" onclick="var a = this; require(['jquery', 'local_eduvidual/main'], function($, M) { M.toggle('{{uniqid}}', a, $(a).attr('data-toggle'));} ); return false;" data-toggle="manageusers" class="nav-link">
                 {{#str}} manage:users:title, local_eduvidual {{/str}}
             </a>
         </li>
         <li class="nav-item">
-            <a href="#" onclick="var a = this; require(['local_eduvidual/main'], function(M) { M.toggle('{{uniqid}}', a, $(a).attr('data-toggle'));} ); return false;" data-toggle="adduserexcel" class="nav-link">
+            <a href="#" onclick="var a = this; require(['jquery', 'local_eduvidual/main'], function($, M) { M.toggle('{{uniqid}}', a, $(a).attr('data-toggle'));} ); return false;" data-toggle="adduserexcel" class="nav-link">
                 {{#str}} manage:createuserspreadsheet, local_eduvidual {{/str}}
             </a>
         </li>
         <li class="nav-item">
-            <a href="#" onclick="var a = this; require(['local_eduvidual/main'], function(M) { M.toggle('{{uniqid}}', a, $(a).attr('data-toggle'));} ); return false;" data-toggle="addusercode" class="nav-link">
+            <a href="#" onclick="var a = this; require(['jquery', 'local_eduvidual/main'], function($, M) { M.toggle('{{uniqid}}', a, $(a).attr('data-toggle'));} ); return false;" data-toggle="addusercode" class="nav-link">
                 {{#str}} manage:adduser, local_eduvidual {{/str}}
             </a>
         </li>
         <li class="nav-item">
-            <a href="#" onclick="var a = this; require(['local_eduvidual/main'], function(M) { M.toggle('{{uniqid}}', a, $(a).attr('data-toggle'));} ); return false;" data-toggle="adduseranonymous" class="nav-link">
+            <a href="#" onclick="var a = this; require(['jquery', 'local_eduvidual/main'], function($, M) { M.toggle('{{uniqid}}', a, $(a).attr('data-toggle'));} ); return false;" data-toggle="adduseranonymous" class="nav-link">
                 {{#str}} manage:createuseranonymous, local_eduvidual {{/str}}
             </a>
         </li>
         {{!
         <li class="nav-item">
             <a href="#"
-                onclick="var a = this; var inp = $('#local_eduvidual_manage_addparent_studentfilter'); require(['local_eduvidual/main', 'local_eduvidual/manager'], function(M, MG) { MG.addParentFilter('student', inp); M.toggle('{{uniqid} }', a, $(a).attr('data-toggle'));} ); return false;" data-toggle="managementors" class="nav-link">
+                onclick="var a = this; require(['jquery', 'local_eduvidual/main', 'local_eduvidual/manager'], function($, M, MG) { var inp = $('#local_eduvidual_manage_addparent_studentfilter'); MG.addParentFilter('student', inp); M.toggle('{{uniqid} }', a, $(a).attr('data-toggle'));} ); return false;" data-toggle="managementors" class="nav-link">
                 {{#str} } manage:addparent, local_eduvidual {{/str} }
             </a>
         </li>
         }}
         <li class="nav-item">
-            <a href="#" onclick="var a = this; require(['local_eduvidual/main'], function(M) { M.toggle('{{uniqid}}', a, $(a).attr('data-toggle'));} ); return false;" data-toggle="accesscodes" class="nav-link">
+            <a href="#" onclick="var a = this; require(['jquery', 'local_eduvidual/main'], function($, M) { M.toggle('{{uniqid}}', a, $(a).attr('data-toggle'));} ); return false;" data-toggle="accesscodes" class="nav-link">
                 {{#str}} manage:accesscodes, local_eduvidual {{/str}}
             </a>
         </li>

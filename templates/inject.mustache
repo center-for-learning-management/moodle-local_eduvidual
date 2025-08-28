@@ -34,9 +34,11 @@
 {{#signupPage}}
     {{! We do not want the username field on the signup-page. }}
     {{#js}}
-    $('#fitem_id_username label[for="id_username"]').html('{{#str}} email {{/str}}');
-    $('#fitem_id_username #id_username').attr('onkeyup', "document.getElementById('id_email').value = document.getElementById('id_username').value;");
-    $('#fitem_id_email').css('display', 'none');
-    $('form[action*="/login/signup.php"]').attr("onsubmit", "document.getElementById('id_email').value = document.getElementById('id_username').value;");
+        require(['jquery'], function($) {
+            $('#fitem_id_username label[for="id_username"]').html('{{#str}} email {{/str}}');
+            $('#fitem_id_username #id_username').attr('onkeyup', "document.getElementById('id_email').value = document.getElementById('id_username').value;");
+            $('#fitem_id_email').css('display', 'none');
+            $('form[action*="/login/signup.php"]').attr("onsubmit", "document.getElementById('id_email').value = document.getElementById('id_username').value;");
+        });
     {{/js}}
 {{/signupPage}}
