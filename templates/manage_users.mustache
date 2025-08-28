@@ -312,7 +312,9 @@
 {{#js}}
 var tab = '{{tab}}';
 if (tab != '') {
-    var a = $('.toggle-controller-{{uniqid}}').find('[data-toggle="{{tab}}"]');
-    require(['local_eduvidual/main'], function(M) { M.toggle('{{uniqid}}', a, tab);} );
+    require(['jquery', 'local_eduvidual/main'], function($, M) {
+        var a = $('.toggle-controller-{{uniqid}}').find('[data-toggle="{{tab}}"]');
+        M.toggle('{{uniqid}}', a, tab);
+    });
 }
 {{/js}}
