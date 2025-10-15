@@ -76,7 +76,7 @@ if (empty($idpparams['userinfo']['email'])) {
 \auth_shibboleth_link\lib::link_data_store_cache($idpparams);
 
 
-function get_highest_role($memberships) {
+function local_eduvidual_get_highest_role($memberships) {
     $highest = '';
     foreach ($memberships as $membership) {
         switch ($membership->role) {
@@ -107,10 +107,10 @@ if (!empty($idpparams['userinfo']['affiliation']) && isloggedin() && !isguestuse
 
     $wantedOrgs = [];
     foreach ($affiliations as $affiliation) {
-        [$bip_role, $schulkennzahl] = explode('@', trim($affiliation));
+        [$bip_role, $orgid] = explode('@', trim($affiliation));
 
         // sanity checks
-        if (!$bip_role || !$schulkennzahl) {
+        if (!$bip_role || !$orgid) {
             continue;
         }
 
@@ -124,17 +124,22 @@ if (!empty($idpparams['userinfo']['affiliation']) && isloggedin() && !isguestuse
             continue;
         }
 
-        if (empty($wantedOrgs[$schulkennzahl])) {
-            $wantedOrgs[$schulkennzahl] = (object)[
-                'roles' => [],
-                'orgid' => $schulkennzahl,
-            ];
+        $org = \local_eduvidual\locallib::get_org('orgid', $orgid);
+        if (!$org || !$org->authenticated) {
+            // schule nicht gefunden oder nicht registriert
+            continue;
         }
-        $wantedOrgs[$schulkennzahl]->roles[] = $eduvidual_role;
+
+        if (empty($wantedOrgs[$orgid])) {
+            $wantedOrgs[$orgid] = $org;
+            $org->_roles = [];
+        }
+
+        $wantedOrgs[$orgid]->_roles[$eduvidual_role] = $eduvidual_role;
     }
 
     // $wantedOrgs[] = (object)[
-    //     'roles' => ['Teacher'],
+    //     '_roles' => ['Teacher'],
     //     'orgid' => 999999,
     // ];
 
@@ -158,8 +163,8 @@ if (!empty($idpparams['userinfo']['affiliation']) && isloggedin() && !isguestuse
     // Die eduvidual.at Nutzer/innen sollen allen Schulen, die in der Liste angeführt sind zugeordnet werden.
     foreach ($wantedOrgs as $wantedOrg) {
         $org = \local_eduvidual\locallib::get_org('orgid', $wantedOrg->orgid);
-        if (!$org) {
-            // schule nicht gefunden
+        if (!$org || !$org->authenticated) {
+            // schule nicht gefunden oder nicht registriert
             continue;
         }
 
@@ -167,11 +172,11 @@ if (!empty($idpparams['userinfo']['affiliation']) && isloggedin() && !isguestuse
             return $org->orgid == $wantedOrg->orgid;
         });
 
-        $currentHighestRole = get_highest_role($currentRoles);
+        $currentHighestRole = local_eduvidual_get_highest_role($currentRoles);
 
-        $highestRole = get_highest_role(array_merge($currentRoles, array_map(function($role) {
+        $highestRole = local_eduvidual_get_highest_role(array_merge($currentRoles, array_map(function($role) {
             return (object)['role' => $role];
-        }, $wantedOrg->roles)));
+        }, $wantedOrg->_roles)));
 
         if ($currentHighestRole == \local_eduvidual\locallib::ROLE_MANAGER) {
             // if user is manager, keep it
@@ -180,56 +185,5 @@ if (!empty($idpparams['userinfo']['affiliation']) && isloggedin() && !isguestuse
 
         // always reassign
         \local_eduvidual\lib_enrol::role_set($USER->id, $org, $highestRole);
-    }
-}
-
-
-if (false && !empty($idpparams['userinfo']['institution'])) {
-    $role = 'Student';
-    if (!empty($idpparams['userinfo']['appList'])) {
-        $applist = explode('\;', $idpparams['userinfo']['appList']);
-        foreach ($applist as $app) {
-            $approle = explode('@', $app);
-            if (count($approle) > 1 && $approle[1] == 'EVI') {
-                switch ($approle[0]) {
-                    case 'std':
-                        $role = 'Student';
-                        break;
-                    case 'tch':
-                        $role = 'Teacher';
-                        break;
-                    case 'adm':
-                        $role = 'Manager';
-                        break;
-                }
-            }
-        }
-    }
-    $org = $DB->get_record('local_eduvidual_org', array('orgid' => $idpparams['userinfo']['institution']));
-
-    if (!empty($org->id) && !empty($org->authenticated)) {
-        $membership = $DB->get_record('local_eduvidual_orgid_userid', array('orgid' => $idpparams['userinfo']['institution'], 'userid' => $USER->id));
-        if (empty($membership->role)) {
-            \local_eduvidual\lib_enrol::role_set($USER->id, $org, $role);
-        } else {
-            switch ($membership->role) {
-                // Manager cannot get better - keep...
-                case 'Teacher':
-                    if (in_array($role, array('Manager'))) {
-                        \local_eduvidual\lib_enrol::role_set($USER->id, $org, $role);
-                    }
-                    break;
-                case 'Student':
-                case 'Parent':
-                    if (in_array($role, array('Manager', 'Teacher'))) {
-                        \local_eduvidual\lib_enrol::role_set($USER->id, $org, $role);
-                    }
-                    break;
-            }
-        }
-        // 3.) If there is a department create a cohort for that department
-        if (!empty($idpparams['userinfo']['department'])) {
-            \local_eduvidual\lib_enrol::cohorts_add($USER->id, $org, $idpparams['userinfo']['department']);
-        }
     }
 }
