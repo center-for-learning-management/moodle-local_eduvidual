@@ -28,7 +28,7 @@ require_login();
 require_once($CFG->libdir . '/adminlib.php');
 
 $orgid = required_param('orgid', PARAM_INT);
-$org = $DB->get_record('local_eduvidual_org', array('orgid' => $orgid));
+$org = $DB->get_record('local_eduvidual_org', array('orgid' => $orgid), '*', MUST_EXIST);
 $context = \context_coursecat::instance($org->categoryid);
 
 require_capability('local/eduvidual:canmanage', $context);

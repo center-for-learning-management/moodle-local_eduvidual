@@ -17,21 +17,16 @@
 
 
 <div class="local_eduvidual manage_bunch">
-    <div class="hide-on-print" style="text-align: right; margin-bottom: 10px;">
-        <div style="display: inline;">
-            <a href="#" onclick="window.print();" class="btn btn-primary">
-                <i class="fa fa-print"></i>
-                {{#str}} print, local_eduvidual {{/str}}
-            </a>
+    {{#format_cards}}
+        <div class="hide-on-print" style="text-align: right; margin-bottom: 10px;">
+            <div style="display: inline;">
+                <a href="#" onclick="window.print();" class="btn btn-primary">
+                    <i class="fa fa-print"></i>
+                    {{#str}} print, local_eduvidual {{/str}}
+                </a>
+            </div>
         </div>
-        <div style="display: inline;">
-            <a href="#" class="btn btn-primary"
-                 onclick="require(['local_eduvidual/manager'], function(M) { M.exportUserPopup('{{orgid}}', '{{exportuserids}}'); }); return false;">
-                <i class="fa fa-download"></i>
-                {{#str}} export, local_eduvidual {{/str}}
-            </a>
-        </div>
-    </div>
+    {{/format_cards}}
 
     <form action="" method="get">
         <input type="hidden" name="orgid" value="{{orgid}}" />
@@ -61,155 +56,34 @@
         </div>
     </form>
 
-    {{#format_list}}
-    <table class="generaltable">
-        <thead>
-            <tr>
-                <th width="50">{{#str}} pictureofuser {{/str}}</th>
-                <th>
-                    <a href="{{{pageurl}}}&orderby=lastname&orderasc={{switchasc}}">
-                        {{#orderby_lastname}}
-                            {{#orderasc}} <i class="fa fa-sort-down"></i> {{/orderasc}}
-                            {{^orderasc}} <i class="fa fa-sort-up"></i> {{/orderasc}}
-                        {{/orderby_lastname}}
-                        {{^orderby_lastname}}
-                            <i class="fa fa-sort"></i>
-                        {{/orderby_lastname}}
-                        {{#str}} lastname {{/str}}
+    {{#format_cards}}
+        {{#users}}
+            <div class="item" style="display: inline-block; background-image: url({{wwwroot}}/{{backgroundcard}})">
+                <div class="name">
+                    <div class="firstname">{{firstname}}</div>
+                    <div class="lastname">{{lastname}}</div>
+                </div>
+                <div class="username">
+                    <a href="#" style="text-decoration: none; color: unset;"
+                        onclick="require(['local_eduvidual/manager'], function(M) { M.editProfile({{orgid}}, {{id}}, { run: function() { top.location.reload(); } }); }); return false;">
+                        {{username}}
                     </a>
-                </th>
-                <th>
-                    {{#orderby_firstname}}
-                        {{#orderasc}} <i class="fa fa-sort-down"></i> {{/orderasc}}
-                        {{^orderasc}} <i class="fa fa-sort-up"></i> {{/orderasc}}
-                    {{/orderby_firstname}}
-                    {{^orderby_firstname}}
-                        <i class="fa fa-sort"></i>
-                    {{/orderby_firstname}}
-                    <a href="{{{pageurl}}}&orderby=firstname&orderasc={{switchasc}}">
-                        {{#str}} firstname {{/str}}
-                    </a>
-                </th>
-                <th>
-                    {{#orderby_email}}
-                        {{#orderasc}} <i class="fa fa-sort-down"></i> {{/orderasc}}
-                        {{^orderasc}} <i class="fa fa-sort-up"></i> {{/orderasc}}
-                    {{/orderby_email}}
-                    {{^orderby_email}}
-                        <i class="fa fa-sort"></i>
-                    {{/orderby_email}}
-                    <a href="{{{pageurl}}}&orderby=email&orderasc={{switchasc}}">
-                        {{#str}} email {{/str}}
-                    </a>
-                </th>
-                <th>
-                    {{#orderby_role}}
-                        {{#orderasc}} <i class="fa fa-sort-down"></i> {{/orderasc}}
-                        {{^orderasc}} <i class="fa fa-sort-up"></i> {{/orderasc}}
-                    {{/orderby_role}}
-                    {{^orderby_role}}
-                        <i class="fa fa-sort"></i>
-                    {{/orderby_role}}
-                    <a href="{{{pageurl}}}&orderby=role&orderasc={{switchasc}}">
-                        {{#str}} role {{/str}}
-                    </a>
-                </th>
-                <th>
-                    {{#orderby_secret}}
-                        {{#orderasc}} <i class="fa fa-sort-down"></i> {{/orderasc}}
-                        {{^orderasc}} <i class="fa fa-sort-up"></i> {{/orderasc}}
-                    {{/orderby_secret}}
-                    {{^orderby_secret}}
-                        <i class="fa fa-sort"></i>
-                    {{/orderby_secret}}
-                    <a href="{{{pageurl}}}&orderby=secret&orderasc={{switchasc}}">
-                        {{#str}} secret, local_eduvidual {{/str}}
-                    </a>
-                </th>
-                <th>
-                    {{#orderby_authtype}}
-                        {{#orderasc}} <i class="fa fa-sort-down"></i> {{/orderasc}}
-                        {{^orderasc}} <i class="fa fa-sort-up"></i> {{/orderasc}}
-                    {{/orderby_authtype}}
-                    {{^orderby_authtype}}
-                        <i class="fa fa-sort"></i>
-                    {{/orderby_authtype}}
-                    <a href="{{{pageurl}}}&orderby=authtype&orderasc={{switchasc}}">
-                        {{#str}} manage:authtype, local_eduvidual {{/str}}
-                    </a>
-                </th>
-                <th>
-                    {{#orderby_lastlogin}}
-                        {{#orderasc}} <i class="fa fa-sort-down"></i> {{/orderasc}}
-                        {{^orderasc}} <i class="fa fa-sort-up"></i> {{/orderasc}}
-                    {{/orderby_lastlogin}}
-                    {{^orderby_lastlogin}}
-                        <i class="fa fa-sort"></i>
-                    {{/orderby_lastlogin}}
-                    <a href="{{{pageurl}}}&orderby=lastlogin&orderasc={{switchasc}}">
-                        {{#str}} lastlogin {{/str}}
-                    </a>
-                </th>
-                <th>&nbsp;</th>
-            </tr>
-        </thead>
-        <tbody>
-    {{/format_list}}
-
-    {{#users}}
-        {{#format_cards}}
-        <div class="item" style="display: inline-block; background-image: url({{wwwroot}}/{{backgroundcard}})">
-            <div class="name">
-                <div class="firstname">{{firstname}}</div>
-                <div class="lastname">{{lastname}}</div>
+                </div>
+                <div class="contact">{{email}}</div>
+                <div class="header">{{#str}} Accesscard, local_eduvidual {{/str}}</div>
+                <div class="avatar">
+                    {{{userpicture}}}
+                </div>
+                <div class="secret" style="display: flex; align-items: flex-end; justify-content: flex-end;">
+                    <span class="uid">{{id}}</span>
+                    <span class="hash">#</span>
+                    <span class="tan">{{profile_field_secret}}</span>
+                </div>
+                <div class="roles">{{role}}</div>
             </div>
-            <div class="username">
-                <a href="#" style="text-decoration: none; color: unset;"
-                    onclick="require(['local_eduvidual/manager'], function(M) { M.editProfile({{orgid}}, {{id}}, { run: function() { top.location.reload(); } }); }); return false;">
-                    {{displayusername}}
-                </a>
-            </div>
-            <div class="contact">{{email}}</div>
-            <div class="header">{{#str}} Accesscard, local_eduvidual {{/str}}</div>
-            <div class="avatar">
-                {{{userpicture}}}
-            </div>
-            <div class="secret" style="display: flex; align-items: flex-end; justify-content: flex-end;">
-                <span class="uid">{{id}}</span>
-                <span class="hash">#</span>
-                <span class="tan">{{profile_field_secret}}</span>
-            </div>
-            <div class="roles">{{role}}</div>
-        </div>
-        {{#pagebreakafter}}
-        <div class="page-break">&nbsp;</div>
-        {{/pagebreakafter}}
-        {{/format_cards}}
-        {{#format_list}}
-        <tr>
-            <td>{{{userpicturesmall}}}</td>
-            <td>{{lastname}}</td>
-            <td>{{firstname}}</td>
-            <td>
-                <a href="mailto:{{email}}">
-                    {{email}}
-                </a>
-            </td>
-            <td>{{role}}</td>
-            <td>{{id}}#{{profile_field_secret}}</td>
-            <td>{{auth}}</td>
-            <td>{{lastlogin}}</td>
-            <td>
-                <a href="#" style="text-decoration: none; color: unset;"
-                    onclick="require(['local_eduvidual/manager'], function(M) { M.editProfile({{orgid}}, {{id}}, { run: function() { top.location.reload(); } }); }); return false;">
-                    <i class="fa fa-edit"></i>
-                </a>
-            </td>
-        </tr>
-        {{/format_list}}
-    {{/users}}
-    {{#format_list}}
-        </tbody>
-    </table>
-    {{/format_list}}
+            {{#pagebreakafter}}
+            <div class="page-break">&nbsp;</div>
+            {{/pagebreakafter}}
+        {{/users}}
+    {{/format_cards}}
 </div>

@@ -330,38 +330,6 @@ define(['jquery', 'core/ajax', 'core/modal_events', 'core/modal_factory', 'core/
         }
       ).fail(NOTIFICATION.exception);
     },
-    exportUserPopup: function (orgid, userids) {
-      if (this.debug > 0) console.log('local_eduvidual/manager:exportUserPopup(orgid, userids)', orgid, userids);
-      AJAX.call([{
-        methodname: 'local_eduvidual_manager_user_exportform',
-        args: {orgid: orgid, userids: userids},
-        done: function (formhtml) {
-          ModalFactory.create({
-            title: STR.get_string('export', 'local_eduvidual'),
-            type: ModalFactory.types.SAVE_CANCEL,
-            body: formhtml,
-          }).done(function (modal) {
-            var root = modal.getRoot();
-            //console.log(root, ModalEvents);
-            root.on(ModalEvents.save, function (e) {
-              e.preventDefault();
-              modal.hide();
-              $(root).find('form').submit();
-              $(root).remove();
-            });
-            STR.get_strings([
-              {'key': 'export', component: 'local_eduvidual'},
-            ]).done(function (s) {
-              $(root).find('.modal-footer button[data-action="save"]').html(s[0]);
-            });
-            $(root).find('button[type="submit"]').remove();
-
-            modal.show();
-          });
-        },
-        fail: NOTIFICATION.exception
-      }]);
-    },
     forceEnrol: function (courseid) {
       require(['local_eduvidual/main'], function (MAIN) {
         MAIN.connect({module: 'manage', act: 'force_enrol', courseid: courseid}, {});

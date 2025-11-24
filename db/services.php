@@ -41,14 +41,6 @@ $functions = array(
         'type' => 'write',
         'ajax' => 1,
     ),
-    'local_eduvidual_manager_user_exportform' => array(
-        'classname' => 'local_eduvidual_external_manager',
-        'methodname' => 'user_exportform',
-        'classpath' => 'local/eduvidual/externallib/manager.php',
-        'description' => 'Retrieve a HTML form to export a list of users.',
-        'type' => 'read',
-        'ajax' => 1,
-    ),
     'local_eduvidual_manager_user_form' => array(
         'classname' => 'local_eduvidual_external_manager',
         'methodname' => 'user_form',

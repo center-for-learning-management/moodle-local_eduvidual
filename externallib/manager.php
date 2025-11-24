@@ -187,36 +187,6 @@ class local_eduvidual_external_manager extends external_api {
     }
 
 
-    public static function user_exportform_parameters() {
-        return new external_function_parameters(array(
-            'orgid' => new external_value(PARAM_INT, 'orgid'),
-            'userids' => new external_value(PARAM_TEXT, 'userids'),
-        ));
-    }
-
-    public static function user_exportform($orgid, $userids) {
-        global $CFG, $DB, $OUTPUT, $PAGE;
-        $params = self::validate_parameters(self::user_exportform_parameters(), array('orgid' => $orgid, 'userids' => $userids));
-
-        if (!\local_eduvidual\locallib::get_orgrole($params['orgid']) == 'Manager' && !is_siteadmin()) {
-            return "";
-        }
-        $org = $DB->get_record('local_eduvidual_org', array('orgid' => $params['orgid']));
-        $context = context_coursecat::instance($org->categoryid);
-        $PAGE->set_context($context);
-
-        return str_replace('method="get"', 'method="post"', $OUTPUT->download_dataformat_selector(
-            get_string('userbulkdownload', 'admin'),
-            $CFG->wwwroot . '/local/eduvidual/pages/sub/manage_usersdownload.php',
-            'dataformat',
-            array('orgid' => $params['orgid'], 'userids' => $params['userids'])
-        ));
-    }
-
-    public static function user_exportform_returns() {
-        return new external_value(PARAM_RAW, 'Returns the form as html.');
-    }
-
     public static function user_form_parameters() {
         return new external_function_parameters(array(
             'orgid' => new external_value(PARAM_INT, 'orgid'),
