@@ -145,7 +145,7 @@ $table = new class($orgid, $cohort) extends local_table_sql\table_sql {
     function col_userpic($row) {
         global $OUTPUT;
 
-        return $OUTPUT->user_picture($row, array('size' => 200));
+        return $OUTPUT->user_picture($row, array('size' => 50));
     }
 
     function col_email($row) {
