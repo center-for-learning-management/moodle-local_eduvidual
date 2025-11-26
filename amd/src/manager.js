@@ -272,64 +272,6 @@ define(['jquery', 'core/ajax', 'core/modal_events', 'core/modal_factory', 'core/
         });
       });
     },
-    editProfile: function (orgid, userid, callback) {
-      STR.get_strings([
-        {'key': 'profile', component: 'core'},
-      ]).done(function (s) {
-          var method = 'local_eduvidual_manager_user_form';
-          var data = {orgid: orgid, userid: userid};
-          //console.log('Sending to ', method, data);
-          //MAIN.spinnerGrid(true);
-          AJAX.call([{
-            methodname: method,
-            args: data,
-            done: function (formhtml) {
-              //console.log(formhtml);
-              ModalFactory.create({
-                type: ModalFactory.types.SAVE_CANCEL,
-                title: s[0],
-                body: formhtml,
-              }).then(function (modal) {
-                var root = modal.getRoot();
-                //console.log(root, ModalEvents);
-                root.on(ModalEvents.save, function (e) {
-                  e.preventDefault();
-                  var method = 'local_eduvidual_manager_user_update';
-                  var data = {
-                    'orgid': orgid,
-                    'userid': userid,
-                    'firstname': $(root).find('[name="firstname"]').val(),
-                    'lastname': $(root).find('[name="lastname"]').val(),
-                    'email': $(root).find('[name="email"]').val(),
-                  };
-                  //console.log('SAVING', data);
-                  AJAX.call([{
-                    methodname: method,
-                    args: data,
-                    done: function (result) {
-                      console.log('saved', result);
-                      if (typeof result.success !== 'undefined' && result.success == 1) {
-                        modal.hide();
-                        if (typeof callback !== 'undefined' && typeof callback.run !== 'undefined') {
-                          callback.run();
-                        }
-                      }
-                      if (typeof result.message !== 'undefined') {
-                        NOTIFICATION.alert(result.subject, result.message);
-                      }
-                    },
-                    fail: NOTIFICATION.exception
-                  }]);
-                });
-                //MAIN.spinnerGrid(false);
-                modal.show();
-              });
-            },
-            fail: NOTIFICATION.exception
-          }]);
-        }
-      ).fail(NOTIFICATION.exception);
-    },
     forceEnrol: function (courseid) {
       require(['local_eduvidual/main'], function (MAIN) {
         MAIN.connect({module: 'manage', act: 'force_enrol', courseid: courseid}, {});

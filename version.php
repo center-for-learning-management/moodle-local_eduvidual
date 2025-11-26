@@ -24,7 +24,7 @@
 
 defined('MOODLE_INTERNAL') || die;
 
-$plugin->version = 2025112400;
+$plugin->version = 2025112600;
 $plugin->requires = 2019111803;  // Requires Moodle 3.8.3.
 $plugin->component = 'local_eduvidual';
 $plugin->release = '2.9';
@@ -32,5 +32,5 @@ $plugin->maturity = MATURITY_STABLE;
 
 $plugin->dependencies = [
     'local_edusupport' => 2021060200,
-    'local_table_sql' => 2025112400,
+    'local_table_sql' => 2025112600,
 ];

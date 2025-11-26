@@ -53,9 +53,9 @@ if (!in_array(\local_eduvidual\locallib::get_orgrole($orgid), $allow) && !is_sit
 $PAGE->navbar->add(get_string('Management', 'local_eduvidual'), new moodle_url('/local/eduvidual/pages/manage.php', array('orgid' => $orgid)));
 $PAGE->navbar->add(get_string('manage:userlist', 'local_eduvidual', $org), $PAGE->url);
 
-$table = new class($orgid, $cohort) extends local_table_sql\table_sql {
+$table = new class($orgid, $cohort) extends local_table_sql\table_sql_form {
     function __construct(private int $orgid, private string $cohort) {
-        parent::__construct([$orgid]);
+        parent::__construct([$orgid, $cohort]);
     }
 
     function define_table_configs() {
@@ -122,7 +122,6 @@ $table = new class($orgid, $cohort) extends local_table_sql\table_sql {
                 'secret' => get_string('secret', 'local_eduvidual'),
                 'auth' => get_string('manage:authtype', 'local_eduvidual'),
                 'lastlogin' => get_string('lastlogin'),
-                'action' => '',
             ];
         }
 
@@ -135,11 +134,37 @@ $table = new class($orgid, $cohort) extends local_table_sql\table_sql {
         }
         $this->set_column_options('lastlogin', data_type: static::PARAM_TIMESTAMP);
         $this->set_column_options('secret', no_sorting: true, no_filter: true);
-        if (isset($cols['action'])) {
-            $this->set_column_options('action', no_sorting: true, no_filter: true);
-        }
 
         $this->is_downloadable(true, 'users_' . date("Ymd-His"));
+
+        $this->set_sql_table('user');
+        $this->add_form_action(new class extends \local_table_sql\table_sql_subform {
+            function definition() {
+                $mform = $this->_form;
+
+                $mform->addElement('text', 'firstname', get_string('firstname'));
+                $mform->setType('firstname', PARAM_TEXT);
+                $mform->addElement('text', 'lastname', get_string('lastname'));
+                $mform->setType('lastname', PARAM_TEXT);
+                $mform->addElement('text', 'email', get_string('email'));
+                $mform->setType('email', PARAM_TEXT);
+            }
+
+            //Custom validation should be added here
+            function validation($data, $files) {
+                $errors = array();
+                if (strlen($data['firstname']) < 2) {
+                    $errors['firstname'] = get_string('manage:profile:tooshort', 'local_eduvidual', array('fieldname' => get_string('firstname'), 'minchars' => '2'));
+                }
+                if (strlen($data['lastname']) < 2) {
+                    $errors['lastname'] = get_string('manage:profile:tooshort', 'local_eduvidual', array('fieldname' => get_string('lastname'), 'minchars' => '2'));
+                }
+                if (!validate_email($data['email'])) {
+                    $errors['email'] = get_string('manage:profile:invalidmail', 'local_eduvidual');
+                }
+                return $errors;
+            }
+        });
     }
 
     function col_userpic($row) {
@@ -159,17 +184,6 @@ $table = new class($orgid, $cohort) extends local_table_sql\table_sql {
     function col_secret($row) {
         $this->profile_load_data($row);
         return $row->id . '#' . $row->profile_field_secret;
-    }
-
-    function col_action($row) {
-        ob_start();
-        ?>
-        <a href="#" style="text-decoration: none; color: unset;"
-           onclick="require(['local_eduvidual/manager'], function(M) { M.editProfile(<?= $this->orgid ?>,<?= $row->id ?>, { run: function() { table_sql_reload(); } }); }); return false;">
-            <i class="fa fa-edit"></i>
-        </a>
-        <?php
-        return ob_get_clean();
     }
 
     function col_password() {
@@ -213,6 +227,21 @@ $table = new class($orgid, $cohort) extends local_table_sql\table_sql {
             $row->profile_loaded = true;
         }
     }
+
+    function store_row(object $data): void {
+        global $DB;
+
+        parent::store_row($data);
+
+        // Benutzername sollte immer gleich e-Mail-Adresse sein.
+        $other_user = $DB->get_record_sql(
+            "SELECT id FROM {user} WHERE id<>? AND (username=? OR email=?)",
+            [$data->id, $data->email, $data->email]
+        );
+        if (!$other_user) {
+            $DB->set_field('user', 'username', $data->email, ['id' => $data->id]);
+        }
+    }
 };
 
 echo $OUTPUT->header();
@@ -245,9 +274,7 @@ foreach ($formats as &$f) {
 }
 
 if ($format == 'cards') {
-    $table->setup();
-    $table->query_db(999999);
-    $users = $table->rawdata;
+    $users = $table->get_all_rows();
     $cnt = 0;
 
     foreach ($users as $user) {

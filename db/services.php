@@ -41,22 +41,6 @@ $functions = array(
         'type' => 'write',
         'ajax' => 1,
     ),
-    'local_eduvidual_manager_user_form' => array(
-        'classname' => 'local_eduvidual_external_manager',
-        'methodname' => 'user_form',
-        'classpath' => 'local/eduvidual/externallib/manager.php',
-        'description' => 'Retrieve a HTML form to update user profile data.',
-        'type' => 'read',
-        'ajax' => 1,
-    ),
-    'local_eduvidual_manager_user_update' => array(
-        'classname' => 'local_eduvidual_external_manager',
-        'methodname' => 'user_update',
-        'classpath' => 'local/eduvidual/externallib/manager.php',
-        'description' => 'Update user profile data.',
-        'type' => 'write',
-        'ajax' => 1,
-    ),
     'local_eduvidual_teacher_createcourse_selections' => array(
         'classname' => 'local_eduvidual_external_teacher',
         'methodname' => 'createcourse_selections',

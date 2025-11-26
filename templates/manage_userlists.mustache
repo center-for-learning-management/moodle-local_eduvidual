@@ -64,10 +64,7 @@
                     <div class="lastname">{{lastname}}</div>
                 </div>
                 <div class="username">
-                    <a href="#" style="text-decoration: none; color: unset;"
-                        onclick="require(['local_eduvidual/manager'], function(M) { M.editProfile({{orgid}}, {{id}}, { run: function() { top.location.reload(); } }); }); return false;">
-                        {{username}}
-                    </a>
+                    {{username}}
                 </div>
                 <div class="contact">{{email}}</div>
                 <div class="header">{{#str}} Accesscard, local_eduvidual {{/str}}</div>
