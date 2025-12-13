@@ -3,7 +3,6 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'loc
     debug: false,
     dashboardEnhanceInfo: {},
     run: function (data) {
-      console.log('local_eduvidual/jsinjector:run(data)', data);
       STR.get_strings([{key: 'Accesscard', component: 'local_eduvidual'}]).then(function (s) {
         $('.usermenu .dropdown a[href$="/user/preferences.php"]').after(
           $('<a>').attr('href', URL.relativeUrl('local/eduvidual/pages/accesscard.php'))
@@ -15,7 +14,7 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'loc
           ])
         );
       });
-      $("a[href*='/login/logout.php?sesskey']").attr('href', URL.relativeUrl('/local/eduvidual/pages/redirects/logout.php'));
+
       this.fakeBreadCrumb();
     },
     /**
