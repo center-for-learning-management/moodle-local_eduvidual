@@ -155,7 +155,7 @@ class lib_wshelper {
 
         $managed_qcats = explode(",", get_config('local_eduvidual', 'questioncategories'));
         $user_qcats = array_keys($DB->get_records('local_eduvidual_userqcats', array('userid' => $USER->id), '', 'categoryid'));
-        $orgids = array_keys(\local_eduvidual\locallib::get_organisations('Teacher', false));
+        $orgids = array_keys(\local_eduvidual\locallib::get_organisations(locallib::ROLE_TEACHER, false));
         $strstart = '<section id="region-main"';
         $strend = '</section>';
         $posstart = strpos($buffer, $strstart);
@@ -575,7 +575,7 @@ class lib_wshelper {
         if (!empty($params[0]) && $params[0] == 'mod_quiz' && !empty($params[1]) && $params[1] == 'quiz_question_bank') {
             $managed_qcats = explode(",", get_config('local_eduvidual', 'questioncategories'));
             $user_qcats = array_keys($DB->get_records('local_eduvidual_userqcats', array('userid' => $USER->id), '', 'categoryid'));
-            $orgids = array_keys(\local_eduvidual\locallib::get_organisations('Teacher', false));
+            $orgids = array_keys(\local_eduvidual\locallib::get_organisations(locallib::ROLE_TEACHER, false));
 
             $systemcategoryid = $DB->get_field('question_categories', 'id', array('contextid' => \context_system::instance()->id, 'parent' => 0));
 
@@ -675,7 +675,7 @@ class lib_wshelper {
 
         $managed_qcats = explode(",", get_config('local_eduvidual', 'questioncategories'));
         $user_qcats = array_keys($DB->get_records('local_eduvidual_userqcats', array('userid' => $USER->id), '', 'categoryid'));
-        $orgids = array_keys(\local_eduvidual\locallib::get_organisations('Teacher', false));
+        $orgids = array_keys(\local_eduvidual\locallib::get_organisations(locallib::ROLE_TEACHER, false));
 
         $strstart = '<optgroup label="' . get_string('coresystem') . '">';
         $strend = '</optgroup>';

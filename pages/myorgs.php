@@ -62,7 +62,7 @@ $memberships = array_values($DB->get_records_sql($sql, $params));
 
 foreach ($memberships as &$membership) {
     $membership->isfavorite = ($membership->orgid == $favorgid);
-    $membership->canmanage = is_siteadmin() || in_array($membership->role, array('Manager'));
+    $membership->canmanage = is_siteadmin() || in_array($membership->role, array(\local_eduvidual\locallib::ROLE_MANAGER));
     if ($membership->canmanage) {
         if (empty($managersactions)) {
             $_actions = \local_eduvidual\locallib::get_actions('manage', true);

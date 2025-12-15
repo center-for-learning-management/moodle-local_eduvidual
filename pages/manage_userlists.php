@@ -67,16 +67,16 @@ $table = new class($orgid, $cohort) extends local_table_sql\table_sql_form {
                 $role = '';
                 break;
             case '___allparents':
-                $role = 'Parent';
+                $role = \local_eduvidual\locallib::ROLE_PARENT;
                 break;
             case '___allstudents':
-                $role = 'Student';
+                $role = \local_eduvidual\locallib::ROLE_STUDENT;
                 break;
             case '___allteachers':
-                $role = 'Teacher';
+                $role = \local_eduvidual\locallib::ROLE_TEACHER;
                 break;
             case '___allmanagers':
-                $role = 'Manager';
+                $role = \local_eduvidual\locallib::ROLE_MANAGER;
                 break;
             default:
                 $where .= ' AND u.id IN (SELECT userid FROM {cohort_members} WHERE cohortid=?)';

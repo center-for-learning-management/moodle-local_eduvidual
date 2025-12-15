@@ -34,10 +34,10 @@ class local_eduvidual_manage_user_createuseranonymous_form extends moodleform {
         $mform->addElement('hidden', 'act', 'users');
         $mform->setType('act', PARAM_TEXT);
         $options = array(
-            'Parent' => get_string('role:Parent', 'local_eduvidual'),
-            'Student' => get_string('role:Student', 'local_eduvidual'),
-            'Teacher' => get_string('role:Teacher', 'local_eduvidual'),
-            'Manager' => get_string('role:Manager', 'local_eduvidual'),
+            \local_eduvidual\locallib::ROLE_PARENT => get_string('role:Parent', 'local_eduvidual'),
+            \local_eduvidual\locallib::ROLE_STUDENT => get_string('role:Student', 'local_eduvidual'),
+            \local_eduvidual\locallib::ROLE_TEACHER => get_string('role:Teacher', 'local_eduvidual'),
+            \local_eduvidual\locallib::ROLE_MANAGER => get_string('role:Manager', 'local_eduvidual'),
         );
         $mform->addElement('select', 'role', get_string('manage:createuseranonymous:role', 'local_eduvidual'), $options);
         $mform->setType('role', PARAM_TEXT);

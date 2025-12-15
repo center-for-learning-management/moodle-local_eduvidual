@@ -142,7 +142,7 @@ foreach ($orgs AS $org) {
         $managers = array();
         $others = array();
         foreach ($members AS $member) {
-            if ($member->role == 'Manager') $managers[] = $member->userid;
+            if ($member->role == \local_eduvidual\locallib::ROLE_MANAGER) $managers[] = $member->userid;
             else $others[] = $member->userid;
         }
         foreach ($forums AS $forum) {
@@ -194,7 +194,7 @@ foreach ($orgs as $org) {
         $managers = array();
         $others = array();
         foreach ($members as $member) {
-            if ($member->role == 'Manager')
+            if ($member->role == \local_eduvidual\locallib::ROLE_MANAGER)
                 $managers[] = $member->userid;
             else $others[] = $member->userid;
         }
@@ -238,7 +238,7 @@ foreach ($orgs as $org) {
             $managers = array();
             $others = array();
             foreach ($members as $member) {
-                if ($member->role == 'Manager')
+                if ($member->role == \local_eduvidual\locallib::ROLE_MANAGER)
                     $managers[] = $member->userid;
                 else $others[] = $member->userid;
             }

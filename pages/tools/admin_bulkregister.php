@@ -82,7 +82,7 @@ if (!empty($orgids) && !empty($manageruserid)) {
 
             if (!empty($org->courseid)) {
                 $msgs[] = "=> Setting up roles<br />";
-                \local_eduvidual\lib_enrol::role_set($manageruserid, $org, 'Manager');
+                \local_eduvidual\lib_enrol::role_set($manageruserid, $org, \local_eduvidual\locallib::ROLE_MANAGER);
 
                 $org->authenticated = time();
                 $org->authtan = '';

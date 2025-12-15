@@ -134,9 +134,9 @@ class lib_enrol {
         if (!empty($org->orgid)) {
             // Get our current role.
             $current = $DB->get_record('local_eduvidual_orgid_userid', array('orgid' => $org->orgid, 'userid' => $userid));
-            if (!empty($current->role) && $current->role == 'Manager' && $role != 'Manager') {
+            if (!empty($current->role) && $current->role == locallib::ROLE_MANAGER && $role != locallib::ROLE_MANAGER) {
                 // We are currently Manager but should be degraded. Ensure, we are not the last manager of this org!
-                $allmanagers = $DB->get_records('local_eduvidual_orgid_userid', array('orgid' => $org->orgid, 'role' => 'Manager'));
+                $allmanagers = $DB->get_records('local_eduvidual_orgid_userid', array('orgid' => $org->orgid, 'role' => locallib::ROLE_MANAGER));
                 if (count($allmanagers) == 1) {
                     $reply['error_last_manager'] = 1;
                     return $reply;
@@ -211,9 +211,9 @@ class lib_enrol {
 
                     // If we have a support course, add us there too.
                     if (!empty($org->supportcourseid)) {
-                        $assignrole = ($role == 'Manager') ? get_config('local_eduvidual', 'defaultroleteacher') : get_config('local_eduvidual', 'defaultrolestudent');
+                        $assignrole = ($role == locallib::ROLE_MANAGER) ? get_config('local_eduvidual', 'defaultroleteacher') : get_config('local_eduvidual', 'defaultrolestudent');
                         \local_eduvidual\lib_enrol::course_manual_enrolments(array($org->supportcourseid), array($userid), $assignrole);
-                        if ($role == 'Manager') {
+                        if ($role == locallib::ROLE_MANAGER) {
                             $forums = $DB->get_records('local_edusupport', array('courseid' => $org->supportcourseid));
                             foreach ($forums as $forum) {
                                 $chk = $DB->get_record('forum_subscriptions', array('userid' => $userid, 'forum' => $forum->id));

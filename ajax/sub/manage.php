@@ -34,7 +34,7 @@ switch ($act) {
         $code = optional_param('code', '', PARAM_TEXT);
         $maturity = optional_param('maturity', '2000-01-01 12:00:00', PARAM_TEXT);
         $role = optional_param('role', '', PARAM_TEXT);
-        $roles = array('Student', 'Teacher', 'Manager', 'Parent');
+        $roles = array(\local_eduvidual\locallib::ROLE_STUDENT, \local_eduvidual\locallib::ROLE_TEACHER, \local_eduvidual\locallib::ROLE_MANAGER, \local_eduvidual\locallib::ROLE_PARENT);
         $maturity = strtotime($maturity);
         if (!empty($code) && $maturity > time() && in_array($role, $roles)) {
             $cnt = $DB->count_records_sql('SELECT COUNT(id) FROM {local_eduvidual_org_codes} WHERE orgid=? AND code=? AND maturity>UNIX_TIMESTAMP(NOW())', array($org->orgid, $code));
@@ -152,7 +152,7 @@ switch ($act) {
 
         if ($orgid > 0 && $studentid > 0 && $parentid > 0) {
             $chk = $DB->get_record('local_eduvidual_orgid_userid', array('orgid' => $orgid, 'userid' => $USER->id));
-            if (!is_siteadmin() && $chk->role != 'Manager') {
+            if (!is_siteadmin() && $chk->role != \local_eduvidual\locallib::ROLE_MANAGER) {
                 $reply['error'] = 'not_member_of_this_org';
             } else {
                 $chk_student = $DB->get_record('local_eduvidual_orgid_userid', array('orgid' => $orgid, 'userid' => $studentid));
@@ -181,7 +181,7 @@ switch ($act) {
         $orgid = optional_param('orgid', 0, PARAM_INT);
         $studentid = optional_param('studentid', 0, PARAM_INT);
         $chk = $DB->get_record('local_eduvidual_orgid_userid', array('orgid' => $orgid, 'userid' => $USER->id));
-        if (!is_siteadmin() && $chk->role != 'Manager') {
+        if (!is_siteadmin() && $chk->role != \local_eduvidual\locallib::ROLE_MANAGER) {
             $reply['error'] = 'not_member_of_this_org';
         } else {
             $filter = '%' . str_replace('*', '%', optional_param('filter', 'zzzzzz', PARAM_TEXT)) . '%';
@@ -237,7 +237,7 @@ switch ($act) {
         $success = 0;
         $failed = 0;
 
-        if (\local_eduvidual\locallib::get_orgrole($orgid) == 'Manager' || is_siteadmin()) {
+        if (\local_eduvidual\locallib::get_orgrole($orgid) == \local_eduvidual\locallib::ROLE_MANAGER || is_siteadmin()) {
             if ($amount <= $maximum) {
                 require_once($CFG->dirroot . '/user/lib.php');
                 $colors = file($CFG->dirroot . '/local/eduvidual/templates/names.colors', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
@@ -313,7 +313,7 @@ switch ($act) {
             if (isset($chkuser) && $chkuser->id == $secret[0]) {
                 $dbsecret = \local_eduvidual\locallib::get_user_secret($secret[0]);
                 if ($dbsecret == $secret[1]) {
-                    $roles = array('Manager', 'Teacher', 'Student', 'Parent', 'remove');
+                    $roles = array(\local_eduvidual\locallib::ROLE_MANAGER, \local_eduvidual\locallib::ROLE_TEACHER, \local_eduvidual\locallib::ROLE_STUDENT, \local_eduvidual\locallib::ROLE_PARENT, 'remove');
                     $role = optional_param('role', '', PARAM_TEXT);
                     if (in_array($role, $roles)) {
                         $reply = array_merge($reply, \local_eduvidual\lib_enrol::role_set($secret[0], $org, $role));
@@ -344,7 +344,7 @@ switch ($act) {
     case 'force_enrol':
         $courseid = optional_param('courseid', 0, PARAM_INT);
         if ($courseid > 0) {
-            if (!empty($org->orgid) && (\local_eduvidual\locallib::get_orgrole($org->orgid) == 'Manager' || is_siteadmin())) {
+            if (!empty($org->orgid) && (\local_eduvidual\locallib::get_orgrole($org->orgid) == \local_eduvidual\locallib::ROLE_MANAGER || is_siteadmin())) {
                 \local_eduvidual\lib_enrol::course_manual_enrolments(array($courseid), array($USER->id), get_config('local_eduvidual', 'defaultroleteacher'));
                 $reply['status'] = 'ok';
             } else {
@@ -386,15 +386,15 @@ switch ($act) {
         if (is_siteadmin()) {
             $types = array('maildomain', 'maildomainteacher');
             $reply['updated'] = array(
-                'Student' => 0,
-                'Teacher' => 0,
+                \local_eduvidual\locallib::ROLE_STUDENT => 0,
+                \local_eduvidual\locallib::ROLE_TEACHER => 0,
             );
             foreach ($types as $type) {
                 // Now we look for all users of that domain.
                 if (empty($org->{$type}))
                     continue;
                 $domains = explode(',', $org->{$type});
-                $role = ($type == 'maildomainteacher') ? 'Teacher' : 'Student';
+                $role = ($type == 'maildomainteacher') ? \local_eduvidual\locallib::ROLE_TEACHER : \local_eduvidual\locallib::ROLE_STUDENT;
                 $sql = "SELECT id
                             FROM {user}
                             WHERE email LIKE ?";

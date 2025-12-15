@@ -59,12 +59,12 @@ class login {
             foreach ($chkorgs as $chkorg) {
                 $member = $DB->get_record('local_eduvidual_orgid_userid', array('orgid' => $chkorg->orgid, 'userid' => $user->id));
                 if (!isset($member->role) || empty($member->role)) {
-                    $setrole = (strpos($chkorg->maildomainteacher, $maildomain) !== false) ? 'Teacher' : 'Student';
+                    $setrole = (strpos($chkorg->maildomainteacher, $maildomain) !== false) ? \local_eduvidual\locallib::ROLE_TEACHER : \local_eduvidual\locallib::ROLE_STUDENT;
                     if (!isset($reply['enrolments'])) {
                         $reply['enrolments'] = array();
                     }
-                    if ($member->role == 'Manager')
-                        $setrole = 'Manager';
+                    if ($member->role == \local_eduvidual\locallib::ROLE_MANAGER)
+                        $setrole = \local_eduvidual\locallib::ROLE_MANAGER;
                     if ($debug)
                         error_log('Set role from maildomain ' . $maildomain . ': ' . $setrole . ' on user ' . $user->id . ' for org ' . $chkorg->orgid);
                     $reply['enrolments'][] = \local_eduvidual\lib_enrol::role_set($user->id, $chkorg, $setrole);

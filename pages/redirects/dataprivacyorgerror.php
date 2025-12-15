@@ -43,7 +43,7 @@ $orgs = array_values(\local_eduvidual\locallib::get_organisations('*', false));
 $sql = "SELECT u.*
             FROM {user} u, {local_eduvidual_orgid_userid} ou
             WHERE ou.userid = u.id
-                AND ou.role = 'Manager'
+                AND ou.role = '" . \local_eduvidual\locallib::ROLE_MANAGER . "'
                 AND ou.orgid = :orgid";
 
 foreach ($orgs as &$org) {
