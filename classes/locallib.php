@@ -315,7 +315,7 @@ class locallib {
         } elseif ($role == '*') {
             return $DB->get_records_sql('SELECT o.orgid,o.* FROM {local_eduvidual_org} AS o,{local_eduvidual_orgid_userid} AS ou WHERE o.orgid=ou.orgid AND ou.userid=? GROUP BY o.orgid ORDER BY o.orgid ASC', array($USER->id));
         } else {
-            return $DB->get_records_sql('SELECT o.orgid,o.* FROM {local_eduvidual_org} AS o,{local_eduvidual_orgid_userid} AS ou WHERE o.orgid=ou.orgid AND ou.userid=? AND (ou.role=? OR ou.role=?) GROUP BY o.orgid ORDER BY o.orgid ASC', array($USER->id, 'Manager', $role));
+            return $DB->get_records_sql('SELECT o.orgid,o.* FROM {local_eduvidual_org} AS o,{local_eduvidual_orgid_userid} AS ou WHERE o.orgid=ou.orgid AND ou.userid=? AND (ou.role=? OR ou.role=?) GROUP BY o.orgid ORDER BY o.orgid ASC', array($USER->id, static::ROLE_MANAGER, $role));
         }
     }
 
@@ -413,23 +413,16 @@ class locallib {
         }
 
         $memberships = $DB->get_records('local_eduvidual_orgid_userid', array('userid' => $userid));
+        $priority = [
+            static::ROLE_STUDENT => 1,
+            static::ROLE_PARENT => 2,
+            static::ROLE_TEACHER => 3,
+            static::ROLE_MANAGER => 4,
+        ];
         $highest = '';
         foreach ($memberships as $membership) {
-            switch ($membership->role) {
-                case static::ROLE_PARENT:
-                case static::ROLE_STUDENT:
-                    if (empty($highest)) {
-                        $highest = $membership->role;
-                    }
-                    break;
-                case static::ROLE_TEACHER:
-                    if (empty($highest) || $highest == static::ROLE_STUDENT) {
-                        $highest = $membership->role;
-                    }
-                    break;
-                case static::ROLE_MANAGER:
-                    $highest = $membership->role;
-                    break;
+            if (($priority[$membership->role] ?? 0) > ($priority[$highest] ?? 0)) {
+                $highest = $membership->role;
             }
         }
 
@@ -611,7 +604,7 @@ class locallib {
                 $ismanager = self::cache('session', "ismanager");
             }
             if (empty($ismanager)) {
-                $chk = $DB->get_records('local_eduvidual_orgid_userid', array('role' => 'Manager', 'userid' => $USER->id));
+                $chk = $DB->get_records('local_eduvidual_orgid_userid', array('role' => static::ROLE_MANAGER, 'userid' => $USER->id));
                 $ismanager = self::cache('session', "ismanager-$USER->id", count($chk) > 0);
             }
             return $ismanager;
@@ -624,7 +617,7 @@ class locallib {
                 $org = self::get_org_by_categoryid($categoryid);
                 if (empty($org->orgid))
                     return false;
-                $chk = $DB->get_record('local_eduvidual_orgid_userid', array('orgid' => $org->orgid, 'role' => 'Manager', 'userid' => $USER->id));
+                $chk = $DB->get_record('local_eduvidual_orgid_userid', array('orgid' => $org->orgid, 'role' => static::ROLE_MANAGER, 'userid' => $USER->id));
                 $ismanager = self::cache('session', "ismanager-$USER->id-$categoryid", !empty($chk->orgid));
             }
             return $ismanager;
