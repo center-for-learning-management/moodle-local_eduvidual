@@ -66,9 +66,6 @@ switch ($act) {
     case 'users':
         $title = get_string('manage:users', 'local_eduvidual');
         break;
-    case 'webuntis':
-        $title = get_string('manage:webuntis', 'local_eduvidual');
-        break;
     default:
         $title = get_string('Management', 'local_eduvidual');
 }

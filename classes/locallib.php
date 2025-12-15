@@ -171,9 +171,6 @@ class locallib {
                 $actions['style'] = 'manage:style';
                 $actions['subcats'] = 'manage:subcats:title';
                 $actions['users'] = 'manage:users';
-                if (get_config('local_webuntis', 'version') >= 2021121500) {
-                    $actions['webuntis'] = 'manage:webuntis';
-                }
                 if (is_siteadmin()) {
                     $actions['stats'] = 'manage:stats';
                 }
