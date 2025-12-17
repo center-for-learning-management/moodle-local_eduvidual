@@ -54,7 +54,7 @@ if (empty($authurl) || empty($authtoken)) {
                             orgid LIKE '_______'
                             OR
                             orgid LIKE '322__'
-                        ) AND role IN ('Student', 'Teacher', 'Manager')";
+                        ) AND role IN ('" . \local_eduvidual\locallib::ROLE_STUDENT . "', '" . \local_eduvidual\locallib::ROLE_TEACHER . "', '" . \local_eduvidual\locallib::ROLE_MANAGER . "')";
         $memberships = $DB->get_records_sql($sql, array($USER->id));
         if (count($memberships) == 0) {
             echo $OUTPUT->header();

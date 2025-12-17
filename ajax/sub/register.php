@@ -131,7 +131,7 @@ if (isloggedin() && !isguestuser()) {
                     $reply["categoryid"] = $org->categoryid;
                     $reply["ccourseid"] = $org->courseid;
                     $reply["supportcourseid"] = $org->supportcourseid;
-                    $reply['roleset'] = \local_eduvidual\lib_enrol::role_set($USER->id, $org, 'Manager');
+                    $reply['roleset'] = \local_eduvidual\lib_enrol::role_set($USER->id, $org, \local_eduvidual\locallib::ROLE_MANAGER);
 
                     if (!empty($org->courseid)) {
                         $messagehtml = $OUTPUT->render_from_template(

@@ -50,7 +50,7 @@ function local_eduvidual_extend_navigation(global_navigation $navigation) {
     if ($highestrole) {
         $custommenu .= get_string('browse_org', 'local_eduvidual') . "|/local/eduvidual/pages/myorgs.php\n";
 
-        if (in_array($highestrole, array('Manager', 'Teacher'))) {
+        if (in_array($highestrole, array(\local_eduvidual\locallib::ROLE_MANAGER, \local_eduvidual\locallib::ROLE_TEACHER))) {
             $custommenu .= get_string('createcourse:here', 'local_eduvidual') . "|/local/eduvidual/pages/createcourse.php\n";
         }
     }
@@ -79,7 +79,7 @@ function local_eduvidual_extend_navigation(global_navigation $navigation) {
 function local_eduvidual_extend_navigation_category_settings($nav, $context) {
     global $DB;
     $org = \local_eduvidual\locallib::get_org_by_context($context->id);
-    if (!empty($org->orgid) && (\local_eduvidual\locallib::get_orgrole($org->orgid) == 'Manager' || is_siteadmin())) {
+    if (!empty($org->orgid) && (\local_eduvidual\locallib::get_orgrole($org->orgid) == \local_eduvidual\locallib::ROLE_MANAGER || is_siteadmin())) {
         $label = get_string('Management', 'local_eduvidual');
         $link = new moodle_url('/local/eduvidual/pages/manage.php', array('orgid' => $org->orgid));
         $icon = new pix_icon('/t/gears', '', '');

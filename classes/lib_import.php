@@ -286,7 +286,7 @@ class local_eduvidual_lib_import_compiler_user extends local_eduvidual_lib_impor
         }
 
         // Revoke processed flag if required information is missing!
-        if (!in_array($obj->role, array('Manager', 'Teacher', 'Student', 'Parent', 'Remove'))) {
+        if (!in_array($obj->role, array(locallib::ROLE_MANAGER, locallib::ROLE_TEACHER, locallib::ROLE_STUDENT, locallib::ROLE_PARENT, 'Remove'))) {
             $payload->processed = false;
             $payload->action = get_string('import:invalid_role', 'local_eduvidual');
         }

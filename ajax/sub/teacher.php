@@ -60,7 +60,7 @@ switch ($act) {
         $reply['basements'] = \local_eduvidual\lib_enrol::get_course_basements('all');
         $orgid = optional_param('orgid', 0, PARAM_INT);
         $membership = $DB->get_record('local_eduvidual_orgid_userid', array('orgid' => $orgid, 'userid' => $USER->id));
-        $reply['canmanage'] = is_siteadmin() || (isset($membership->role) && $membership->role == 'Manager');
+        $reply['canmanage'] = is_siteadmin() || (isset($membership->role) && $membership->role == \local_eduvidual\locallib::ROLE_MANAGER);
         break;
     case 'createcourse_now':
         $categoryid = optional_param('categoryid', 0, PARAM_INT);
@@ -68,7 +68,7 @@ switch ($act) {
         $path = explode("/", $category->path);
         $reply['msgs'] = array();
         if ($path[1] == $org->categoryid) {
-            if (in_array(\local_eduvidual\locallib::get_orgrole($org->orgid), array('Manager', 'Teacher')) || is_siteadmin()) {
+            if (in_array(\local_eduvidual\locallib::get_orgrole($org->orgid), array(\local_eduvidual\locallib::ROLE_MANAGER, \local_eduvidual\locallib::ROLE_TEACHER)) || is_siteadmin()) {
                 // Now check if basement is valid
                 $basement = optional_param('basement', 0, PARAM_INT);
                 if (\local_eduvidual\lib_enrol::is_valid_course_basement('all', $basement)) {
@@ -119,7 +119,7 @@ switch ($act) {
         $category = $DB->get_record('course_categories', array('id' => $categoryid));
         $path = explode("/", $category->path);
         if ($path[1] == $org->categoryid) {
-            if (in_array(\local_eduvidual\locallib::get_orgrole($org->orgid), array('Manager', 'Teacher')) || is_siteadmin()) {
+            if (in_array(\local_eduvidual\locallib::get_orgrole($org->orgid), array(\local_eduvidual\locallib::ROLE_MANAGER, \local_eduvidual\locallib::ROLE_TEACHER)) || is_siteadmin()) {
                 $parent = $DB->get_record('course_categories', array('id' => $category->parent));
                 $reply['parent'] = $parent;
                 $reply['category'] = $category;
@@ -141,7 +141,7 @@ switch ($act) {
         $category = $DB->get_record('course_categories', array('id' => $categoryid));
         $path = explode("/", $category->path);
         if ($path[1] == $org->categoryid) {
-            if (in_array(\local_eduvidual\locallib::get_orgrole($org->orgid), array('Manager', 'Teacher')) || is_siteadmin()) {
+            if (in_array(\local_eduvidual\locallib::get_orgrole($org->orgid), array(\local_eduvidual\locallib::ROLE_MANAGER, \local_eduvidual\locallib::ROLE_TEACHER)) || is_siteadmin()) {
                 // You can savely create the course here
                 $reply['status'] = 'ok';
             } else {
@@ -173,7 +173,7 @@ switch ($act) {
         $reply['status'] = 'ok';
         break;
     case 'user_search':
-        if (!in_array(\local_eduvidual\locallib::get_orgrole($org->orgid), array('Manager', 'Teacher')) && !is_siteadmin()) {
+        if (!in_array(\local_eduvidual\locallib::get_orgrole($org->orgid), array(\local_eduvidual\locallib::ROLE_MANAGER, \local_eduvidual\locallib::ROLE_TEACHER)) && !is_siteadmin()) {
             $reply['error'] = 'No_permission';
         } else {
             $courseid = optional_param('courseid', 0, PARAM_INT);
@@ -218,7 +218,7 @@ switch ($act) {
         }
         break;
     case 'user_set':
-        if (!in_array(\local_eduvidual\locallib::get_orgrole($org->orgid), array('Manager', 'Teacher')) && !is_siteadmin()) {
+        if (!in_array(\local_eduvidual\locallib::get_orgrole($org->orgid), array(\local_eduvidual\locallib::ROLE_MANAGER, \local_eduvidual\locallib::ROLE_TEACHER)) && !is_siteadmin()) {
             $reply['error'] = get_string('access_denied', 'local_eduvidual');
         } else {
             $courseid = optional_param('courseid', 0, PARAM_INT);
@@ -228,7 +228,7 @@ switch ($act) {
                 $path = explode('/', $category->path);
                 if ($path[1] == $org->categoryid) {
                     $context = \context_course::instance($course->id);
-                    $canedit = has_capability('moodle/course:update', $context) || is_siteadmin() || \local_eduvidual\locallib::get('orgrole') == 'Manager';
+                    $canedit = has_capability('moodle/course:update', $context) || is_siteadmin() || \local_eduvidual\locallib::get('orgrole') == \local_eduvidual\locallib::ROLE_MANAGER;
                     if ($canedit) {
                         $roleid = 0;
                         switch (optional_param('role', '', PARAM_TEXT)) {

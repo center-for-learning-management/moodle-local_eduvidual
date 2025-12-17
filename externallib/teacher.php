@@ -41,7 +41,7 @@ class local_eduvidual_external_teacher extends external_api {
         global $CFG, $DB;
         $params = self::validate_parameters(self::createcourse_selections_parameters(), array('orgid' => $orgid, 'subcat1' => $subcat1, 'subcat2' => $subcat2, 'subcat3' => $subcat3));
 
-        $orgas = \local_eduvidual\locallib::get_organisations('Teacher');
+        $orgas = \local_eduvidual\locallib::get_organisations(\local_eduvidual\locallib::ROLE_TEACHER);
         $org = \local_eduvidual\locallib::get_organisations_check($orgas, $params['orgid']);
 
         $seltree = array(

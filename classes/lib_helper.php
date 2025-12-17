@@ -391,7 +391,7 @@ class lib_helper {
                     'name' => $org->name,
                     'orgid' => $org->orgid,
                     'url' => $CFG->wwwroot . '/course/index.php?categoryid=' . $org->categoryid,
-                    'urlmanagement' => ($display_managerlink && $membership->role == 'Manager') ?
+                    'urlmanagement' => ($display_managerlink && $membership->role == locallib::ROLE_MANAGER) ?
                         $CFG->wwwroot . '/local/eduvidual/pages/manage.php?orgid=' . $org->orgid : '',
                 );
                 foreach ($entries as $entry) {

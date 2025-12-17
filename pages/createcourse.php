@@ -46,7 +46,7 @@ $PAGE->set_title(get_string('teacher:createcourse', 'local_eduvidual'));
 $PAGE->set_heading(get_string('teacher:createcourse', 'local_eduvidual'));
 
 $formsent = optional_param('formsent', 0, PARAM_INT);
-$orgs = \local_eduvidual\locallib::get_organisations('Teacher');
+$orgs = \local_eduvidual\locallib::get_organisations(\local_eduvidual\locallib::ROLE_TEACHER);
 
 $orgid = optional_param('orgid', 0, PARAM_INT);
 $subcat1 = optional_param('subcat1', '', PARAM_TEXT);
@@ -329,7 +329,7 @@ if (count($msg) > 0) {
             'has_subcats1' => empty($subcats1) ? 0 : 1,
             'has_subcats2' => empty($subcats2) ? 0 : 1,
             'has_subcats3' => empty($subcats3) ? 0 : 1,
-            'ismanager' => (\local_eduvidual\locallib::get_highest_role() == 'Manager') ? 1 : 0,
+            'ismanager' => (\local_eduvidual\locallib::get_highest_role() == \local_eduvidual\locallib::ROLE_MANAGER) ? 1 : 0,
             'multipleorgs' => (count($_orgs) > 1),
             'orgs' => $_orgs,
             'orgfirst' => $_orgs[0]->orgid,

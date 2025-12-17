@@ -49,7 +49,7 @@ if ($id == 0) {
             $shown = $DB->get_record('local_eduvidual_courseshow', array('userid' => $USER->id, 'courseid' => $course->id));
             $url = $CFG->wwwroot . "/course/view.php?id=" . $course->id;
             $context = context_course::instance($course->id);
-            $canviewinvisible = has_capability('moodle/course:update', $context) || is_siteadmin() || \local_eduvidual\locallib::get('orgrole') == 'Manager';
+            $canviewinvisible = has_capability('moodle/course:update', $context) || is_siteadmin() || \local_eduvidual\locallib::get('orgrole') == \local_eduvidual\locallib::ROLE_MANAGER;
             if (true || \local_eduvidual\locallib::$isapp) {
                 $url = $CFG->wwwroot . "/local/eduvidual/pages/courses.php?id=" . $course->id;
             }
