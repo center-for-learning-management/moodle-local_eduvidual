@@ -53,14 +53,14 @@ if (!in_array(\local_eduvidual\locallib::get_orgrole($orgid), $allow) && !is_sit
 $PAGE->navbar->add(get_string('Management', 'local_eduvidual'), new moodle_url('/local/eduvidual/pages/manage.php', array('orgid' => $orgid)));
 $PAGE->navbar->add(get_string('manage:userlist', 'local_eduvidual', $org), $PAGE->url);
 
-$table = new class($orgid, $cohort) extends local_table_sql\table_sql_form {
-    function __construct(private int $orgid, private string $cohort) {
-        parent::__construct([$orgid, $cohort]);
+$table = new class($org, $cohort) extends local_table_sql\table_sql_form {
+    function __construct(private object $org, private string $cohort) {
+        parent::__construct([$org->orgid, $cohort]);
     }
 
     function define_table_configs() {
         $where = '';
-        $params = [$this->orgid];
+        $params = [$this->org->orgid];
 
         switch ($this->cohort) {
             case '___all':
@@ -194,31 +194,18 @@ $table = new class($orgid, $cohort) extends local_table_sql\table_sql_form {
         return 0;
     }
 
-    /**
-     * TODO: die Logik dieser Funktion überprüfen / optimieren.
-     */
     function col_cohorts_add($row) {
         global $DB;
-        static $org;
 
-        if (!$org) {
-            $org = $DB->get_record('local_eduvidual_org', array('orgid' => $this->orgid));
-            $context = \context_coursecat::instance($org->categoryid);
-        }
-
-        if (!empty($context->id)) {
-            $sql = "SELECT c.id,c.name
-                FROM {cohort} c, {cohort_members} cm
-                WHERE c.id=cm.cohortid
-                    AND cm.userid=?
-                    AND c.contextid=?";
-            $cohorts = $DB->get_records_sql($sql, array($row->id, $context->id));
-            $cohorts_ = array();
-            foreach ($cohorts as $cohort) {
-                $cohorts_[] = $cohort->name;
-            }
-            return implode(',', $cohorts_);
-        }
+        $context = \context_coursecat::instance($this->org->categoryid);
+        $cohorts = $DB->get_records_sql_menu("
+            SELECT c.id, c.name
+            FROM {cohort} c
+            JOIN {cohort_members} cm ON c.id = cm.cohortid
+            WHERE cm.userid = ?
+                AND c.contextid = ?
+        ", [$row->id, $context->id]);
+        return implode(',', $cohorts);
     }
 
     function profile_load_data(object $row) {
