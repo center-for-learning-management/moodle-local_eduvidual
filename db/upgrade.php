@@ -212,6 +212,30 @@ function xmldb_local_eduvidual_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2022102500, 'local', 'eduvidual');
     }
 
+    if ($oldversion < 2026051301) {
+        $table = new xmldb_table('local_eduvidual_bip_user');
+        if (!$dbman->table_exists($table)) {
+            $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+            $table->add_field('bpkbf', XMLDB_TYPE_CHAR, '100', null, XMLDB_NOTNULL, null, null);
+            $table->add_field('orgid', XMLDB_TYPE_INTEGER, '20', null, XMLDB_NOTNULL, null, null);
+            $table->add_field('role', XMLDB_TYPE_CHAR, '10', null, XMLDB_NOTNULL, null, 'std');
+            $table->add_field('firstname', XMLDB_TYPE_CHAR, '100', null, null, null, null);
+            $table->add_field('middlename', XMLDB_TYPE_CHAR, '100', null, null, null, null);
+            $table->add_field('lastname', XMLDB_TYPE_CHAR, '100', null, null, null, null);
+            $table->add_field('email', XMLDB_TYPE_CHAR, '250', null, null, null, null);
+            $table->add_field('dateofbirth', XMLDB_TYPE_CHAR, '10', null, null, null, null);
+            $table->add_field('timechanged', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+            $table->add_field('timeimported', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+
+            $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
+            $table->add_index('bpkbf_orgid_role', XMLDB_INDEX_UNIQUE, ['bpkbf', 'orgid', 'role']);
+            $table->add_index('orgid', XMLDB_INDEX_NOTUNIQUE, ['orgid']);
+
+            $dbman->create_table($table);
+        }
+        upgrade_plugin_savepoint(true, 2026051301, 'local', 'eduvidual');
+    }
+
 
     // function move_logos_from_css_to_stored_file() {
     //     global $DB;

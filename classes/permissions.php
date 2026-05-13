@@ -16,21 +16,25 @@
 
 /**
  * @package    local_eduvidual
- * @copyright  2018 Digital Education Society (http://www.dibig.at),
- *             2020 and ongoing Center for Learning Management (http://www.lernmanagement.at)
- * @author     Robert Schrenk
+ * @copyright  2026 Center for Learning Management (www.lernmanagement.at)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+namespace local_eduvidual;
+
 defined('MOODLE_INTERNAL') || die;
 
-$plugin->version = 2026051301;
-$plugin->requires = 2019111803;  // Requires Moodle 3.8.3.
-$plugin->component = 'local_eduvidual';
-$plugin->release = '2.9';
-$plugin->maturity = MATURITY_STABLE;
-
-$plugin->dependencies = [
-    'local_edusupport' => 2021060200,
-    'local_table_sql' => 2025112600,
-];
+class permissions {
+    /**
+     * Verlangt eine bestimmte Rolle in der Org. Site-Admins immer ok.
+     */
+    public static function require_role(int $orgid, string $role): void {
+        if (is_siteadmin()) {
+            return;
+        }
+        if (locallib::get_orgrole($orgid) === $role) {
+            return;
+        }
+        throw new \moodle_exception('user_missing_role_in_org', 'local_eduvidual', '', $orgid);
+    }
+}

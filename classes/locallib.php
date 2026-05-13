@@ -35,6 +35,7 @@ class locallib {
     const ROLE_PARENT = 'Parent';
     const ROLE_TEACHER = 'Teacher';
     const ROLE_MANAGER = 'Manager';
+    const ROLE_REMOVE = 'remove';
 
     /**
      * Method used as getter and setter for caches.

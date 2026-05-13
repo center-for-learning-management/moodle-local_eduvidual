@@ -283,6 +283,24 @@ if ($hassiteconfig) {
         PARAM_INT
     ));
 
+    $settings->add(new admin_setting_configselect(
+        'local_eduvidual/bip_host',
+        get_string('settings:bip_host', 'local_eduvidual'),
+        get_string('settings:bip_host:desc', 'local_eduvidual'),
+        'https://www.bildung.gv.at',
+        [
+            'https://www.bildung.gv.at' => 'www.bildung.gv.at (Produktion)',
+            'https://q.bildung.gv.at' => 'q.bildung.gv.at (Q / Testumgebung)',
+        ],
+    ));
+
+    $settings->add(new admin_setting_configpasswordunmask(
+        'local_eduvidual/bip_basicauth',
+        get_string('settings:bip_basicauth', 'local_eduvidual'),
+        get_string('settings:bip_basicauth:desc', 'local_eduvidual'),
+        '',
+    ));
+
     $settings->add(new admin_setting_heading('local_eduvidual_backgrounds_header',
         get_string('admin:backgrounds:title', 'local_eduvidual'),
         '',
