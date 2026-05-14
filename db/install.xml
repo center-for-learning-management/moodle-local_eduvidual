@@ -180,7 +180,7 @@
       </KEYS>
       <INDEXES>
         <INDEX NAME="bpkbf_orgid_role" UNIQUE="true" FIELDS="bpkbf, orgid, role"/>
-        <INDEX NAME="orgid" UNIQUE="false" FIELDS="orgid"/>
+        <INDEX NAME="orgid_bpkbf" UNIQUE="false" FIELDS="orgid, bpkbf"/>
       </INDEXES>
     </TABLE>
   </TABLES>

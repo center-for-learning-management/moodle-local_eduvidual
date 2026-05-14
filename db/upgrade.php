@@ -236,6 +236,22 @@ function xmldb_local_eduvidual_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2026051301, 'local', 'eduvidual');
     }
 
+    if ($oldversion < 2026051400) {
+        $table = new xmldb_table('local_eduvidual_bip_user');
+
+        $oldindex = new xmldb_index('orgid', XMLDB_INDEX_NOTUNIQUE, ['orgid']);
+        if ($dbman->index_exists($table, $oldindex)) {
+            $dbman->drop_index($table, $oldindex);
+        }
+
+        $newindex = new xmldb_index('orgid_bpkbf', XMLDB_INDEX_NOTUNIQUE, ['orgid', 'bpkbf']);
+        if (!$dbman->index_exists($table, $newindex)) {
+            $dbman->add_index($table, $newindex);
+        }
+
+        upgrade_plugin_savepoint(true, 2026051400, 'local', 'eduvidual');
+    }
+
 
     // function move_logos_from_css_to_stored_file() {
     //     global $DB;
