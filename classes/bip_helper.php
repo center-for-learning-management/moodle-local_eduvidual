@@ -310,7 +310,10 @@ class bip_helper {
      * local_eduvidual_bip_user. Pro Aufruf eine Seite via readuserdata_v3.
      *
      * BIPs next_cursor wird in bip_userimport_cursor persistiert; der nächste Cron-Lauf
-     * macht von dort aus weiter. Löschungen kommen alle inline aus der BIP-Antwort
+     * macht von dort aus weiter. Auf der letzten Sweep-Seite liefert BIP has_more=false
+     * mit gültigem next_cursor; erst ein Folge-Request darauf liefert next_cursor=''.
+     * In diesem Fall behalten wir den bisherigen Cursor, damit der nächste Lauf wieder
+     * als Delta von dort fortsetzt. Löschungen kommen alle inline aus der BIP-Antwort
      * (deleted=1 oder leere orgs-Liste). Ein separater Stale-Cleanup ist nicht nötig,
      * weil BIP abgemeldete User mit reduziertem orgs und gesetztem unassigned_orgs im
      * Delta mitliefert. Manueller Voll-Resync bei Bedarf: bip_userimport_cursor leeren.
@@ -484,11 +487,16 @@ class bip_helper {
         $hasmore = !empty($jsondata->meta->has_more);
         $nextcursor = (string)($jsondata->meta->next_cursor ?? '');
 
-        if ($execute) {
+        // BIP liefert auf der letzten Seite des Sweeps noch einen gültigen Cursor mit
+        // (has_more=false, next_cursor=lastToken). Erst ein Folge-Request mit diesem Token
+        // antwortet mit next_cursor=''. In dem Fall nicht überschreiben, damit der nächste
+        // Lauf wieder als Delta vom bisherigen Cursor fortsetzt.
+        if ($execute && $nextcursor) {
             set_config('bip_userimport_cursor', $nextcursor, 'local_eduvidual');
         }
 
         $status = $hasmore ? 'weiter beim nächsten Lauf' : 'Sweep abgeschlossen';
-        mtrace("BIP-User-Import ({$status}): {$countinsert} angelegt, {$countupdate} aktualisiert, {$countdelete} gelöscht, cursor='{$nextcursor}'");
+        $cursorinfo = "next_cursor='{$nextcursor}'" . ($nextcursor ? '' : " (keep old cursor)");
+        mtrace("BIP-User-Import ({$status}): {$countinsert} angelegt, {$countupdate} aktualisiert, {$countdelete} gelöscht, {$cursorinfo}");
     }
 }
