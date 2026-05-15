@@ -452,6 +452,10 @@ $string['manage:user_bunches:format:list'] = 'List';
 $string['manage:userlist'] = 'List of Users';
 $string['manage:userlist:orgid'] = 'Users of {$a->orgid}';
 $string['manage:userlist:name'] = 'Users of {$a->name}';
+$string['manage:userlist:linked'] = "Linked to\nBildungsportal";
+$string['manage:userlist:linked:yes'] = 'Account linked to BIP';
+$string['manage:userlist:linked:no'] = 'Account not linked to BIP';
+$string['manage:userlist:linked:note'] = 'This account is linked to BIP. First and last name are taken from BIP and cannot be changed here.';
 
 $string['manage:users:description'] = 'To change the role of a certain user just select the user from the search box and choose the role. You can also <a href="{$a->wwwroot}/local/eduvidual/pages/manage_userlists.php?orgid={$a->orgid}&cohort=___all" target="_blank">print / export all users of your organization</a>.';
 $string['manage:users:entersecrets'] = 'Enter Accesscard-ID(s)';

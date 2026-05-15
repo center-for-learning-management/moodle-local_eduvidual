@@ -90,7 +90,8 @@ $table = new class($org, $cohort) extends local_table_sql\table_sql_form {
         }
 
         $this->set_sql_query("
-            SELECT u.*, ou.role
+            SELECT u.*, ou.role,
+                (SELECT COUNT(*) FROM {auth_shibboleth_link} ash WHERE ash.userid=u.id) AS linked
             FROM {user} u
             JOIN {local_eduvidual_orgid_userid} ou ON u.id=ou.userid AND ou.orgid=?
             WHERE deleted=0 $where
@@ -105,6 +106,7 @@ $table = new class($org, $cohort) extends local_table_sql\table_sql_form {
                 'firstname' => 'firstname',
                 'lastname' => 'lastname',
                 'role' => 'role',
+                'linked' => 'linked',
                 'lastlogin' => 'lastlogin',
                 'cohorts_add' => 'cohorts_add',
                 'cohorts_remove' => 'cohorts_remove',
@@ -119,6 +121,7 @@ $table = new class($org, $cohort) extends local_table_sql\table_sql_form {
                 'firstname' => get_string('firstname'),
                 'email' => get_string('email'),
                 'role' => get_string('role'),
+                'linked' => get_string('manage:userlist:linked', 'local_eduvidual'),
                 'secret' => get_string('secret', 'local_eduvidual'),
                 'auth' => get_string('manage:authtype', 'local_eduvidual'),
                 'lastlogin' => get_string('lastlogin'),
@@ -134,6 +137,7 @@ $table = new class($org, $cohort) extends local_table_sql\table_sql_form {
         }
         $this->set_column_options('lastlogin', data_type: static::PARAM_TIMESTAMP);
         $this->set_column_options('secret', no_sorting: true, no_filter: true);
+        $this->set_column_options('linked', no_filter: true);
 
         $this->is_downloadable(true, 'users_' . date("Ymd-His"));
 
@@ -148,6 +152,17 @@ $table = new class($org, $cohort) extends local_table_sql\table_sql_form {
                 $mform->setType('lastname', PARAM_TEXT);
                 $mform->addElement('text', 'email', get_string('email'));
                 $mform->setType('email', PARAM_TEXT);
+            }
+
+            function set_data($default_values) {
+                // Bei verknüpften Konten kommen Vor-/Nachname aus dem IdP - der Manager
+                // darf sie nicht überschreiben. Hinweis als statischer Text einblenden.
+                if (!empty($default_values->linked)) {
+                    $this->_form->hardFreeze(['firstname', 'lastname']);
+                    $this->_form->addElement('static', 'linkednote', '',
+                        get_string('manage:userlist:linked:note', 'local_eduvidual'));
+                }
+                parent::set_data($default_values);
             }
 
             //Custom validation should be added here
@@ -165,6 +180,18 @@ $table = new class($org, $cohort) extends local_table_sql\table_sql_form {
                 return $errors;
             }
         });
+    }
+
+    function col_linked($row) {
+        if ($this->is_downloading()) {
+            return !empty($row->linked) ? 1 : 0;
+        }
+        if (!empty($row->linked)) {
+            return '<i class="fa fa-check text-success" aria-hidden="true" title="' .
+                s(get_string('manage:userlist:linked:yes', 'local_eduvidual')) . '"></i>';
+        }
+        return '<i class="fa fa-times text-danger" aria-hidden="true" title="' .
+            s(get_string('manage:userlist:linked:no', 'local_eduvidual')) . '"></i>';
     }
 
     function col_userpic($row) {
@@ -217,6 +244,13 @@ $table = new class($org, $cohort) extends local_table_sql\table_sql_form {
 
     function store_row(object $data): void {
         global $DB;
+
+        // Bei verknüpften Konten Vor-/Nachname raus aus dem Update, selbst wenn jemand
+        // das hardFreeze im Formular umgangen hat - update_record schreibt dann diese
+        // Spalten nicht.
+        if ($DB->record_exists('auth_shibboleth_link', ['userid' => $data->id])) {
+            unset($data->firstname, $data->lastname);
+        }
 
         parent::store_row($data);
 

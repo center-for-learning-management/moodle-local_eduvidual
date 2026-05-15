@@ -120,8 +120,13 @@ class local_eduvidual_external_manager extends external_api {
                 $ret->status = -1;
                 $ret->message = 'no user object';
             } else {
-                $user->firstname = $obj->firstname;
-                $user->lastname = $obj->lastname;
+                // Bei verknüpften Konten (auth_shibboleth_link) bleibt der Name aus dem
+                // IdP maßgeblich - per Excel-Upload darf er nicht überschrieben werden.
+                $islinked = $DB->record_exists('auth_shibboleth_link', ['userid' => $user->id]);
+                if (!$islinked) {
+                    $user->firstname = $obj->firstname;
+                    $user->lastname = $obj->lastname;
+                }
                 $user->email = $obj->email;
                 $local_auth_methods = ['manual', 'email'];
                 if (in_array($user->auth, $local_auth_methods)) {
