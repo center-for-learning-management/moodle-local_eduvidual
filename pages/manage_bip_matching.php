@@ -26,23 +26,20 @@
 require_once('../../../config.php');
 require_login();
 
-$CFG->errorreporting = 0;
-$CFG->debug = 0;
-
 $orgid = required_param('orgid', PARAM_INT);
 
 $org = $DB->get_record('local_eduvidual_org', ['orgid' => $orgid], '*', MUST_EXIST);
 $context = \context_coursecat::instance($org->categoryid);
 $PAGE->set_context($context);
 
-$PAGE->set_url(new \moodle_url('/local/eduvidual/pages/bip_matching.php', ['orgid' => $orgid]));
-$PAGE->set_title(get_string('bip_matching:title', 'local_eduvidual', $org));
-$PAGE->set_heading(get_string('bip_matching:title', 'local_eduvidual', $org));
+$PAGE->set_url(new \moodle_url('/local/eduvidual/pages/manage_bip_matching.php', ['orgid' => $orgid]));
+$PAGE->set_title(get_string('manage:bipmatching', 'local_eduvidual'));
+$PAGE->set_heading(get_string('manage:bipmatching', 'local_eduvidual'));
 
-\local_eduvidual\permissions::require_role($orgid, \local_eduvidual\locallib::ROLE_MANAGER);
+require_capability('local/eduvidual:canmanage', $context);
 
 $PAGE->navbar->add(get_string('Management', 'local_eduvidual'), new moodle_url('/local/eduvidual/pages/manage.php', ['orgid' => $orgid]));
-$PAGE->navbar->add(get_string('bip_matching:title', 'local_eduvidual', $org), $PAGE->url);
+$PAGE->navbar->add(get_string('manage:bipmatching', 'local_eduvidual'), $PAGE->url);
 
 // Default-IDP für neue Verknüpfungen: ersten Eintrag aus der organization_selection-Config nehmen
 // (siehe auth/shibboleth_link/auth.php::loginpage_idp_list()).
@@ -341,6 +338,9 @@ $table = new class($org, $defaultidp) extends local_table_sql\table_sql_form {
 };
 
 echo $OUTPUT->header();
+
+\local_eduvidual\output::print_manage_menu($orgid, 'users');
+\local_eduvidual\output::print_manage_users_tabs($orgid, 'bipmatching');
 
 $table->out();
 

@@ -39,7 +39,16 @@ $PAGE->set_title(get_string('manage:userlist', 'local_eduvidual', $org));
 $PAGE->set_heading(get_string('manage:userlist', 'local_eduvidual', $org));
 $PAGE->requires->css('/local/eduvidual/style/manage_bunch.css');
 
-require_capability('local/eduvidual:canmanage', $context);
+// Only allow a certain user group access to this script
+$allow = array("Manager");
+if (!in_array(\local_eduvidual\locallib::get_orgrole($orgid), $allow) && !is_siteadmin()) {
+    echo $OUTPUT->header();
+    ?>
+    <p class="alert alert-danger"><?php get_string('access_denied', 'local_eduvidual'); ?></p>
+    <?php
+    echo $OUTPUT->footer();
+    exit;
+}
 
 $PAGE->navbar->add(get_string('Management', 'local_eduvidual'), new moodle_url('/local/eduvidual/pages/manage.php', array('orgid' => $orgid)));
 $PAGE->navbar->add(get_string('manage:userlist', 'local_eduvidual', $org), $PAGE->url);
@@ -258,8 +267,24 @@ $table = new class($org, $cohort) extends local_table_sql\table_sql_form {
 
 echo $OUTPUT->header();
 
-\local_eduvidual\output::print_manage_menu($orgid, 'users');
-\local_eduvidual\output::print_manage_users_tabs($orgid, 'list');
+$actions = \local_eduvidual\locallib::get_actions('manage');
+$oactions = [];
+foreach ($actions as $key => $action) {
+    $oactions[] = [
+        'action' => $action,
+        'key' => $key,
+        'localized' => get_string($action, 'local_eduvidual'),
+        'selected' => ($key == 'users'),
+        'url' => new \moodle_url('/local/eduvidual/pages/manage.php', ['orgid' => $orgid, 'act' => $key]),
+    ];
+}
+echo $OUTPUT->render_from_template('local_eduvidual/manage_overview', ['actions' => $oactions]);
+echo $OUTPUT->render_from_template('local_eduvidual/manage_users_tabs', [
+    'orgid' => $orgid,
+    'wwwroot' => $CFG->wwwroot,
+    'links_only' => true,
+    'tab_userlist_active' => true,
+]);
 
 $cohorts = [];
 $cohorts[] = (object)array('id' => '___all', 'name' => get_string('manage:bunch:all', 'local_eduvidual'));
