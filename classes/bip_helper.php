@@ -298,11 +298,130 @@ class bip_helper {
     /**
      * Importiert Schulen aus BIP in local_eduvidual_org.
      * - Neue Schulen: vollständig anlegen (authenticated bleibt 0 = noch nicht registriert).
+     *   Nicht-echte Schulen (genuine=0) werden hier übersprungen.
      * - Nicht registrierte Schulen (authenticated = 0): alle Felder updaten inkl. Name.
      * - Registrierte Schulen (authenticated > 0, TAN bestätigt): nur Adresse, Telefon und
      *   offizielle Mailadresse updaten. Der Schulname wird nicht überschrieben.
+     *
+     * Achtung: org->name wird bei der Registrierung in course_categories (categoryid),
+     * course.summary (courseid, "Digitaler Schulhof") und course.fullname (supportcourseid,
+     * "Helpdesk") kopiert - eine spätere Namens-Synchronisierung müsste diese Stellen mitziehen.
      */
     public static function importSchools(bool $execute = false): void {
+        global $DB;
+
+        if (!$execute) {
+            mtrace('*** DRY-RUN: keine Änderungen in DB, nur Ausgabe der geplanten Aktionen ***');
+        }
+
+        $bipschulen = static::callBipIface('local_eduportal_iface_readorgdata');
+        if (!is_array($bipschulen)) {
+            throw new \moodle_exception('bip:schulennotarray', 'local_eduvidual', '', gettype($bipschulen));
+        }
+
+        $existingorgs = array_column($DB->get_records('local_eduvidual_org'), null, 'orgid');
+        $countinsert = 0;
+        $countupdate = 0;
+
+        foreach ($bipschulen as $bipSchule) {
+            $bipSchule = (object)array_map(fn($v) => is_string($v) ? trim($v) : $v, (array)$bipSchule);
+            if (!$bipSchule->orgid) {
+                continue;
+            }
+            if (!trim($bipSchule->phone ?? '', '0/ ')) {
+                $bipSchule->phone = '';
+            }
+            if (empty($bipSchule->officialname)) {
+                continue;
+            }
+
+            if (!isset($existingorgs[$bipSchule->orgid])) {
+                // Nicht-echte Schulen werden nicht neu angelegt, bestehende Datensätze
+                // dürfen aber weiter upgedated werden (z.B. Adresse).
+                if (empty($bipSchule->genuine)) {
+                    mtrace("Schule {$bipSchule->orgid} übersprungen: nicht echt (genuine=0) und nicht vorhanden");
+                    continue;
+                }
+                // Neue Schule anlegen - noch nicht vollständig registriert (categoryid bleibt 0).
+                $new = (object)[
+                    'orgid' => (int)$bipSchule->orgid,
+                    'name' => mb_substr($bipSchule->officialname, 0, 250),
+                    'mail' => $bipSchule->email ?? '',
+                    'phone' => $bipSchule->phone ?? '',
+                    'street' => $bipSchule->street ?? '',
+                    'zip' => $bipSchule->zip ?? '',
+                    'city' => $bipSchule->city ?? '',
+                    'customcss' => '',
+                    'banner' => '',
+                    // subcats1/2/3 sind in der Tabelle NOT NULL ohne Default - analog zu
+                    // lib_register::create_neworg() leer initialisieren.
+                    'subcats1' => get_string('createcourse:subcat1:defaults', 'local_eduvidual'),
+                    'subcats2' => '',
+                    'subcats3' => '',
+                ];
+                mtrace("insert org: {$new->orgid} - {$new->name}");
+                if ($execute) {
+                    $DB->insert_record('local_eduvidual_org', $new);
+                }
+                $countinsert++;
+                continue;
+            }
+
+            $existing = $existingorgs[$bipSchule->orgid];
+            $isregistered = !empty($existing->authenticated);
+
+            $data = [];
+            if (!empty($bipSchule->email)) {
+                $data['mail'] = $bipSchule->email;
+            }
+            if (!empty($bipSchule->phone)) {
+                $data['phone'] = $bipSchule->phone;
+            }
+            if (!empty($bipSchule->street)) {
+                $data['street'] = $bipSchule->street;
+            }
+            if (!empty($bipSchule->zip)) {
+                $data['zip'] = $bipSchule->zip;
+            }
+            if (!empty($bipSchule->city)) {
+                $data['city'] = $bipSchule->city;
+            }
+            // Name nur bei noch nicht registrierten Schulen aktualisieren.
+            if (!$isregistered && !empty($bipSchule->officialname)) {
+                $data['name'] = mb_substr($bipSchule->officialname, 0, 250);
+            }
+
+            if (!$data) {
+                continue;
+            }
+
+            $alt = (array)$existing;
+            $diff = [];
+            foreach ($data as $key => $value) {
+                $altvalue = $alt[$key] ?? null;
+                if (is_string($altvalue)) {
+                    $altvalue = mb_substr($altvalue, 0, 250);
+                }
+                if (is_string($value)) {
+                    $value = mb_substr($value, 0, 250);
+                }
+                if ((string)$altvalue !== (string)$value) {
+                    $diff[$key] = ['alt' => $altvalue, 'neu' => $value];
+                }
+            }
+
+            if ($diff) {
+                mtrace("update org: {$bipSchule->orgid} - " . json_encode($diff));
+                $updatedata = (object)$data;
+                $updatedata->id = $existing->id;
+                if ($execute) {
+                    $DB->update_record('local_eduvidual_org', $updatedata);
+                }
+                $countupdate++;
+            }
+        }
+
+        mtrace(count($bipschulen) . ' Schulen aus BIP gelesen, ' . $countinsert . ' neu angelegt, ' . $countupdate . ' aktualisiert');
     }
 
     /**
