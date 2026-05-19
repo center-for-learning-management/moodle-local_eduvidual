@@ -130,6 +130,16 @@ $table = new class($org, $cohort) extends local_table_sql\table_sql_form {
         $this->set_column_options('secret', no_sorting: true, no_filter: true);
         $this->set_column_options('linked', no_filter: true);
 
+        if (isset($cols['cohorts_add'])) {
+            $this->set_column_options('cohorts_add', no_sorting: true, no_filter: true);
+        }
+        if (isset($cols['cohorts_remove'])) {
+            $this->set_column_options('cohorts_remove', no_sorting: true, no_filter: true);
+        }
+        if (isset($cols['forcechangepassword'])) {
+            $this->set_column_options('forcechangepassword', no_sorting: true, no_filter: true);
+        }
+
         $this->is_downloadable(true, 'users_' . date("Ymd-His"));
 
         $this->set_sql_table('user');
