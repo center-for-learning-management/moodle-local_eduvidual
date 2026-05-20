@@ -34,6 +34,6 @@ class bip_import_users extends \core\task\scheduled_task {
     }
 
     public function execute() {
-        \local_eduvidual\bip_helper::importUsers(true);
+        \local_eduvidual\bip_helper::import_users(true);
     }
 }

@@ -19,4 +19,4 @@ if (!$execute) {
     cli_writeln('About to import BIP school data into local_eduvidual_org.');
 }
 
-\local_eduvidual\bip_helper::importSchools($execute);
+\local_eduvidual\bip_helper::import_schools($execute);

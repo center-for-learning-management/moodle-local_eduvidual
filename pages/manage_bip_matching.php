@@ -208,9 +208,15 @@ $table = new class($org, $defaultidp) extends local_table_sql\table_sql_form {
 
         $this->is_downloadable(true, 'bip_matching_' . $this->org->orgid . '_' . date('Ymd-His'));
 
-        // Löschen-Button für Moodle-User. Wird in get_row_actions() pro Zeile disabled,
-        // wenn der User bereits einen BIP-Match hat (bipuserid ist NULL und kein Orphan-Link).
-        $this->add_row_action(type: 'delete', id: 'delete');
+        // Custom-Confirm "Von der Schule entfernen: {firstname} {lastname}?" statt der generischen
+        // Meldung. Platzhalter werden client-seitig in deleteRow aus row.original ersetzt.
+        // lib_enrol::role_set mit ROLE_REMOVE räumt Enrolments, Cohorts und orgid_userid auf
+        // (siehe delete_row() unten).
+        $this->add_row_action(
+            type: 'delete',
+            id: 'delete',
+            confirm_message: get_string('manage:userlist:remove:confirm', 'local_eduvidual'),
+        );
 
         $table = $this;
         $this->add_form_action(new class($table) extends \local_table_sql\table_sql_subform {
@@ -252,20 +258,6 @@ $table = new class($org, $defaultidp) extends local_table_sql\table_sql_form {
      * via lib_enrol::role_set($userid, $org, 'remove') aufgeräumt.
      */
     function delete_row(object $row) {
-        global $DB;
-
-        // Sicherheitsnetz: nur User dieser Org dürfen entfernt werden.
-        if (!$DB->record_exists('local_eduvidual_orgid_userid', [
-            'orgid' => $this->org->orgid,
-            'userid' => $row->id,
-            'role' => \local_eduvidual\locallib::ROLE_STUDENT,
-        ])) {
-            throw new \moodle_exception('user_not_in_org', 'local_eduvidual', '', (object)[
-                'userid' => $row->id,
-                'orgid' => $this->org->orgid,
-            ]);
-        }
-
         \local_eduvidual\lib_enrol::role_set($row->id, $this->org, \local_eduvidual\locallib::ROLE_REMOVE);
     }
 

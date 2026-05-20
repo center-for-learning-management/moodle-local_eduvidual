@@ -77,12 +77,12 @@ class bip_helper {
         return $jsondata;
     }
 
-    private static function buildBipUrl(string $iface): string {
+    private static function build_bip_url(string $iface): string {
         $host = get_config('local_eduvidual', 'bip_host') ?: 'https://www.bildung.gv.at';
         return rtrim($host, '/') . '/local/eduportal/webservice/server.php/' . $iface;
     }
 
-    private static function getBipHeaders(): array {
+    private static function get_bip_headers(): array {
         $basicauth = get_config('local_eduvidual', 'bip_basicauth');
         if (!$basicauth) {
             throw new \moodle_exception('bip:missingbasicauth', 'local_eduvidual');
@@ -90,8 +90,8 @@ class bip_helper {
         return ['Authorization' => 'Basic ' . base64_encode($basicauth)];
     }
 
-    public static function callBipIface(string $iface, array $params = []): mixed {
-        return static::do_curl(static::buildBipUrl($iface), static::getBipHeaders(), $params ?: null);
+    public static function call_bip_iface(string $iface, array $params = []): mixed {
+        return static::do_curl(static::build_bip_url($iface), static::get_bip_headers(), $params ?: null);
     }
 
     /**
@@ -99,15 +99,15 @@ class bip_helper {
      * Liefert das vollständige Antwortobjekt (->result und ->meta), damit der Aufrufer
      * Pagination zwischen Cron-Läufen persistieren kann.
      */
-    public static function callBipIfaceOnePage(string $iface, array $params = [], string $cursor = ''): object {
+    public static function call_bip_iface_one_page(string $iface, array $params = [], string $cursor = ''): object {
         if ($cursor !== '') {
             $params['cursor'] = $cursor;
         }
-        return static::do_curl_full(static::buildBipUrl($iface), static::getBipHeaders(), $params ?: null);
+        return static::do_curl_full(static::build_bip_url($iface), static::get_bip_headers(), $params ?: null);
     }
 
-    public static function readOrgData(array $orgids): array {
-        return static::callBipIface('local_eduportal_iface_readorgdata', ['orgids' => join(',', $orgids)]);
+    public static function read_org_data(array $orgids): array {
+        return static::call_bip_iface('local_eduportal_iface_readorgdata', ['orgids' => join(',', $orgids)]);
     }
 
     /**
@@ -124,7 +124,7 @@ class bip_helper {
      * - Es wird nur gematcht, wenn weder der Moodle-User noch der bpkbf bereits einen
      *   auth_shibboleth_link-Eintrag haben
      */
-    public static function matchUsers(bool $execute = false): void {
+    public static function match_users(bool $execute = false): void {
         global $DB;
 
         if (!$execute) {
@@ -151,7 +151,7 @@ class bip_helper {
         // Namensgleichheit als mehrdeutig erkannt wird.
         $bipindex = [];
         foreach ($DB->get_records('local_eduvidual_bip_user') as $bu) {
-            $key = static::makeMatchKey($bu->orgid, $bu->role, $bu->firstname, $bu->lastname);
+            $key = static::make_match_key($bu->orgid, $bu->role, $bu->firstname, $bu->lastname);
             if (!$key) {
                 continue;
             }
@@ -169,11 +169,11 @@ class bip_helper {
 
         $moodleindex = [];
         foreach ($candidates as $c) {
-            $biprole = static::moodleRoleToBipRole($c->role);
+            $biprole = static::moodle_role_to_bip_role($c->role);
             if (!$biprole) {
                 continue;
             }
-            $key = static::makeMatchKey($c->orgid, $biprole, $c->firstname, $c->lastname);
+            $key = static::make_match_key($c->orgid, $biprole, $c->firstname, $c->lastname);
             if (!$key) {
                 continue;
             }
@@ -269,7 +269,7 @@ class bip_helper {
      * Match-Key aus (orgid, BIP-Rollencode, erstes Vornamen-Wort, Nachname). Liefert null,
      * wenn nicht genügend Daten für einen sinnvollen Vergleich vorhanden sind.
      */
-    private static function makeMatchKey($orgid, ?string $role, ?string $firstname, ?string $lastname): ?string {
+    private static function make_match_key($orgid, ?string $role, ?string $firstname, ?string $lastname): ?string {
         if (!$role || !$firstname || !$lastname) {
             return null;
         }
@@ -285,7 +285,7 @@ class bip_helper {
      * Mappt eine Moodle-eduvidual-Rolle auf den BIP-Rollencode.
      * Liefert null, wenn keine Entsprechung definiert ist.
      */
-    private static function moodleRoleToBipRole(?string $moodlerole): ?string {
+    private static function moodle_role_to_bip_role(?string $moodlerole): ?string {
         return match ($moodlerole) {
             \local_eduvidual\locallib::ROLE_STUDENT => 'std',
             \local_eduvidual\locallib::ROLE_TEACHER => 'tch',
@@ -307,14 +307,14 @@ class bip_helper {
      * course.summary (courseid, "Digitaler Schulhof") und course.fullname (supportcourseid,
      * "Helpdesk") kopiert - eine spätere Namens-Synchronisierung müsste diese Stellen mitziehen.
      */
-    public static function importSchools(bool $execute = false): void {
+    public static function import_schools(bool $execute = false): void {
         global $DB;
 
         if (!$execute) {
             mtrace('*** DRY-RUN: keine Änderungen in DB, nur Ausgabe der geplanten Aktionen ***');
         }
 
-        $bipschulen = static::callBipIface('local_eduportal_iface_readorgdata');
+        $bipschulen = static::call_bip_iface('local_eduportal_iface_readorgdata');
         if (!is_array($bipschulen)) {
             throw new \moodle_exception('bip:schulennotarray', 'local_eduvidual', '', gettype($bipschulen));
         }
@@ -439,7 +439,7 @@ class bip_helper {
      *
      * Nur Orgs mit authenticated>0 werden abgefragt.
      */
-    public static function importUsers(bool $execute = false): void {
+    public static function import_users(bool $execute = false): void {
         global $DB;
 
         if (!$execute) {
@@ -462,8 +462,9 @@ class bip_helper {
         $countinsert = 0;
         $countupdate = 0;
         $countdelete = 0;
+        $countuseredit = 0;
 
-        $jsondata = static::callBipIfaceOnePage('local_eduportal_iface_readuserdata_v3', [
+        $jsondata = static::call_bip_iface_one_page('local_eduportal_iface_readuserdata_v3', [
             'orgids' => join(',', $orgids),
             'usertypes' => 'std',
             'limitnum' => 25000,
@@ -601,6 +602,15 @@ class bip_helper {
                 }
                 $countdelete++;
             }
+
+            // Verknüpften Moodle-User (via auth_shibboleth_link) mit BIP-Stammdaten aktualisieren.
+            // Damit pflegt der Import auch firstname/lastname im mdl_user-Datensatz nach.
+            // 1:1-Annahme (bpkbf -> userid) wird von allen Schreibern in auth_shibboleth_link
+            // konsequent enforced, daher get_field statt get_records.
+            $userid = $DB->get_field('auth_shibboleth_link', 'userid', ['idpusername' => $bipuser->bpkbf]);
+            if ($userid && static::update_linked_moodle_user($bipuser, (int)$userid, $execute)) {
+                $countuseredit++;
+            }
         }
 
         $hasmore = !empty($jsondata->meta->has_more);
@@ -616,6 +626,41 @@ class bip_helper {
 
         $status = $hasmore ? 'weiter beim nächsten Lauf' : 'Sweep abgeschlossen';
         $cursorinfo = "next_cursor='{$nextcursor}'" . ($nextcursor ? '' : " (keep old cursor)");
-        mtrace("BIP-User-Import ({$status}): {$countinsert} angelegt, {$countupdate} aktualisiert, {$countdelete} gelöscht, {$cursorinfo}");
+        mtrace("BIP-User-Import ({$status}): {$countinsert} angelegt, {$countupdate} aktualisiert, {$countdelete} gelöscht, {$countuseredit} Moodle-User aktualisiert, {$cursorinfo}");
+    }
+
+    /**
+     * Aktualisiert firstname/middlename/lastname im mdl_user-Datensatz des per
+     * auth_shibboleth_link mit diesem bpkbf verknüpften Moodle-Users.
+     *
+     * Rückgabe: true wenn tatsächlich ein Feld geändert wurde (für Statistik).
+     */
+    private static function update_linked_moodle_user(object $bipuser, int $userid, bool $execute): bool {
+        global $DB;
+
+        $user = $DB->get_record('user', ['id' => $userid, 'deleted' => 0]);
+        if (!$user) {
+            return false;
+        }
+
+        $update = [];
+        foreach (['firstname', 'middlename', 'lastname'] as $field) {
+            $newval = $bipuser->{$field} ?? '';
+            if ($newval !== '' && $user->{$field} !== $newval) {
+                $update[$field] = $newval;
+            }
+        }
+
+        if (!$update) {
+            return false;
+        }
+
+        mtrace("  aktualisiert Moodle-User userid={$user->id} (bpkbf={$bipuser->bpkbf}): " . json_encode($update));
+        if ($execute) {
+            $update['id'] = $user->id;
+            $DB->update_record('user', (object)$update);
+        }
+
+        return true;
     }
 }

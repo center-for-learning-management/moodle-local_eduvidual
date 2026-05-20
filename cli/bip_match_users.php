@@ -19,4 +19,4 @@ if (!$execute) {
     cli_writeln('About to create auth_shibboleth_link entries for matched BIP <-> Moodle users.');
 }
 
-\local_eduvidual\bip_helper::matchUsers($execute);
+\local_eduvidual\bip_helper::match_users($execute);

@@ -75,7 +75,7 @@ $PAGE->set_heading($org->name . ': ' . $title);
 
 $orgurl = new \moodle_url('/course/index.php', array('categoryid' => $org->categoryid));
 $PAGE->navbar->add($org->name, $orgurl);
-$manageurl = new \moodle_url('/local/eduvidual/pages/manage.php', array('orgid' => $orgid));
+$manageurl = new \moodle_url('/local/eduvidual/pages/manage_userlist.php', array('orgid' => $orgid));
 $PAGE->navbar->add(get_string('Management', 'local_eduvidual'), $manageurl);
 
 if (!empty($act)) {

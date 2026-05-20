@@ -20,4 +20,4 @@ if (!$execute) {
     cli_writeln('About to import BIP user data into local_eduvidual_bip_user.');
 }
 
-\local_eduvidual\bip_helper::importUsers($execute);
+\local_eduvidual\bip_helper::import_users($execute);

@@ -33,6 +33,6 @@ class bip_import_schools extends \core\task\scheduled_task {
     }
 
     public function execute() {
-        \local_eduvidual\bip_helper::importSchools(true);
+        \local_eduvidual\bip_helper::import_schools(true);
     }
 }

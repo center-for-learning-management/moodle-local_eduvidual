@@ -34,6 +34,6 @@ class bip_match_users extends \core\task\scheduled_task {
     }
 
     public function execute() {
-        \local_eduvidual\bip_helper::matchUsers(true);
+        \local_eduvidual\bip_helper::match_users(true);
     }
 }

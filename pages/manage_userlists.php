@@ -80,9 +80,10 @@ $table = new class($org, $cohort) extends local_table_sql\table_sql_form {
             $params[] = $role;
         }
 
+        $linkedsql = "CASE WHEN EXISTS(SELECT 1 FROM {auth_shibboleth_link} ash WHERE ash.userid=u.id) THEN 1 ELSE 0 END";
         $this->set_sql_query("
             SELECT u.*, ou.role,
-                (SELECT COUNT(*) FROM {auth_shibboleth_link} ash WHERE ash.userid=u.id) AS linked
+                ($linkedsql) AS linked
             FROM {user} u
             JOIN {local_eduvidual_orgid_userid} ou ON u.id=ou.userid AND ou.orgid=?
             WHERE deleted=0 $where
@@ -128,7 +129,13 @@ $table = new class($org, $cohort) extends local_table_sql\table_sql_form {
         }
         $this->set_column_options('lastlogin', data_type: static::PARAM_TIMESTAMP);
         $this->set_column_options('secret', no_sorting: true, no_filter: true);
-        $this->set_column_options('linked', no_filter: true);
+        $this->set_column_options('linked',
+            sql_column: 'linked',
+            select_options: [
+                '1' => get_string('manage:userlist:linked:yes', 'local_eduvidual'),
+                '0' => get_string('manage:userlist:linked:no', 'local_eduvidual'),
+            ],
+        );
 
         if (isset($cols['cohorts_add'])) {
             $this->set_column_options('cohorts_add', no_sorting: true, no_filter: true);
