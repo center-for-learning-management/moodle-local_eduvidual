@@ -122,12 +122,6 @@ function local_eduvidual_extend_navigation_user_settings($nav, $user, $context, 
     if (!isguestuser($user)) {
         $node = $nav->add_node(navigation_node::create(get_string('pluginname', 'local_eduvidual')));
 
-        $is_on = get_user_preferences('local_experience_level', 0) == 1;
-
-        $node->add(get_string('advanced_options', 'local_experience') . ': ' . get_string($is_on ? 'on' : 'off', 'mnet'), new moodle_url('/local/experience/pages/advanced_options.php'));
-
-        //print_r($nav);die();
-        //$nav->add(get_string('test'), new moodle_url('/local/eduvidual/pages/preferendes.php'));
         $node->add(get_string('preferences:selectbg:title', 'local_eduvidual'), new moodle_url('/local/eduvidual/pages/preferences.php', array('act' => 'backgrounds', 'userid' => $user->id)));
         $sysctx = \context_system::instance();
         if (has_capability('moodle/question:viewall', $sysctx, $user)) {
