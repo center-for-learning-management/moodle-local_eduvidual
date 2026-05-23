@@ -16,7 +16,7 @@
 }}
 
 
-<div class="ui-eduvidual__ local_eduvidual_manage_user-wrapper">
+<div id="local_eduvidual_manage_users_wrapper" class="ui-eduvidual__ local_eduvidual_manage_user-wrapper" data-orgid="{{orgid}}">
 {{#tab_manageusers_active}}
     <div class="card" style="padding: 12px;">
         <h3>{{#str}} manage:users:title, local_eduvidual {{/str}}</h3>
@@ -99,7 +99,7 @@
                     <option value="Manager">{{#str}} role:Manager, local_eduvidual {{/str}}</option>
                 </select>
                 <label for="local_eduvidual_manage_adduser">{{#str}} manage:users:entersecrets, local_eduvidual {{/str}}</label>
-                <input type="text" id="local_eduvidual_manage_adduser" data-orgid="{{orgid}}" class="form-control"
+                <input type="text" id="local_eduvidual_manage_adduser" class="form-control"
                     placeholder="{{#str}} manage:users:entersecrets, local_eduvidual {{/str}}"/>
                 <input type="button" value="{{#str}} manage:adduser, local_eduvidual {{/str}}" class="btn btn-primary btn-block"
                     onclick="require(['local_eduvidual/manager'], function(MANAGER) { MANAGER.addUser(); });"/>

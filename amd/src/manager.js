@@ -6,6 +6,7 @@ define(['jquery', 'core/ajax', 'core/modal_events', 'core/modal_factory', 'core/
     debug: 1,
     sync_queue_create: [],
 
+    // Deprecated: addparent UI was removed from the templates, these functions are no longer invoked.
     addParentFilter: function (type, inp) {
       console.log('local_eduvidual/main:addParentFilter(type, inp)', type, inp);
       this.addParentFilterRequest++
@@ -26,9 +27,11 @@ define(['jquery', 'core/ajax', 'core/modal_events', 'core/modal_factory', 'core/
         MAIN.connect({module: 'manage', act: 'addparent_filter', orgid: orgid, filter: $(inp).val(), studentid: studentid}, {signalItem: inp, appendItem: select, type: type, request: addParentFilterRequest});
       });
     },
+    // Deprecated: addparent UI was removed from the templates, these functions are no longer invoked.
     addParentSelectStudent: function () {
       this.addParentFilter('parent', $('#local_eduvidual_manage_addparent_parentfilter'));
     },
+    // Deprecated: addparent UI was removed from the templates, these functions are no longer invoked.
     addParent: function (inp) {
       var orgid = $('#local_eduvidual_manage_addparent_studentfilter').attr('data-orgid');
       var studentid = $('#local_eduvidual_manage_addparent_student').val();
@@ -44,7 +47,7 @@ define(['jquery', 'core/ajax', 'core/modal_events', 'core/modal_factory', 'core/
         secret = $('#local_eduvidual_manage_adduser').val();
       }
       var role = $('#local_eduvidual_manage_adduser_role').val();
-      var orgid = $('#local_eduvidual_manage_adduser').attr('data-orgid');
+      var orgid = $('#local_eduvidual_manage_users_wrapper').attr('data-orgid');
       require(['local_eduvidual/main'], function (MAIN) {
         MAIN.connect({module: 'manage', act: 'adduser', orgid: orgid, role: role, secret: secret}, {signalItem: $('#local_eduvidual_manage_adduser')});
       });
@@ -192,7 +195,7 @@ define(['jquery', 'core/ajax', 'core/modal_events', 'core/modal_factory', 'core/
     },
     createAccesscode: function () {
       var code = $('#local_eduvidual_manage_accesscode_code').val();
-      var orgid = +$('#local_eduvidual_manage_adduser').attr('data-orgid');
+      var orgid = +$('#local_eduvidual_manage_users_wrapper').attr('data-orgid');
       var maturity = $('#local_eduvidual_manage_accesscode_maturity').val();
       var role = $('#local_eduvidual_manage_accesscode_role').val();
       require(['local_eduvidual/main'], function (MAIN) {
@@ -341,7 +344,7 @@ define(['jquery', 'core/ajax', 'core/modal_events', 'core/modal_factory', 'core/
      * Reset the password of users.
      */
     setpwforcechange: function () {
-      var orgid = $('#local_eduvidual_manage_adduser').attr('data-orgid');
+      var orgid = $('#local_eduvidual_manage_users_wrapper').attr('data-orgid');
       var role = $('#local_eduvidual_manage_setuserrole_role').val();
       var secrets = [];
       $('#local_eduvidual_manage_setuserrole_user option:selected:not([value=""])').each(function () {
@@ -356,7 +359,7 @@ define(['jquery', 'core/ajax', 'core/modal_events', 'core/modal_factory', 'core/
      * Reset the password of users.
      */
     setpwreset: function () {
-      var orgid = $('#local_eduvidual_manage_adduser').attr('data-orgid');
+      var orgid = $('#local_eduvidual_manage_users_wrapper').attr('data-orgid');
       var role = $('#local_eduvidual_manage_setuserrole_role').val();
       var secrets = [];
       $('#local_eduvidual_manage_setuserrole_user option:selected:not([value=""])').each(function () {
@@ -368,7 +371,7 @@ define(['jquery', 'core/ajax', 'core/modal_events', 'core/modal_factory', 'core/
       });
     },
     setuserrole: function () {
-      var orgid = $('#local_eduvidual_manage_adduser').attr('data-orgid');
+      var orgid = $('#local_eduvidual_manage_users_wrapper').attr('data-orgid');
       var role = $('#local_eduvidual_manage_setuserrole_role').val();
       var secrets = [];
       $('#local_eduvidual_manage_setuserrole_user option:selected:not([value=""])').each(function () {
@@ -381,7 +384,7 @@ define(['jquery', 'core/ajax', 'core/modal_events', 'core/modal_factory', 'core/
       });
     },
     setuserrole_search: function (marksuccess, markfailed) {
-      var orgid = $('#local_eduvidual_manage_adduser').attr('data-orgid');
+      var orgid = $('#local_eduvidual_manage_users_wrapper').attr('data-orgid');
       var search = $('#local_eduvidual_manage_setuserrole_search').val();
       if (search.length < 2) {
         return;
@@ -537,7 +540,7 @@ define(['jquery', 'core/ajax', 'core/modal_events', 'core/modal_factory', 'core/
       }
     },
     revokeAccesscode: function (id) {
-      var orgid = +$('#local_eduvidual_manage_adduser').attr('data-orgid');
+      var orgid = +$('#local_eduvidual_manage_users_wrapper').attr('data-orgid');
       require(['local_eduvidual/main'], function (MAIN) {
         MAIN.connect({module: 'manage', act: 'accesscode_revoke', orgid: orgid, id: id}, {});
       });
