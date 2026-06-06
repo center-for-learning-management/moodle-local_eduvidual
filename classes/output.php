@@ -23,6 +23,16 @@
 namespace local_eduvidual;
 
 class output {
+    /**
+     * mtrace nur im CLI-/Cron-Kontext - im Web-Kontext (z.B. Login-Hook) würde
+     * mtrace den Output direkt echoen.
+     */
+    public static function mtrace(string $message): void {
+        if (defined('CLI_SCRIPT') && CLI_SCRIPT) {
+            mtrace($message);
+        }
+    }
+
     public static function print_manage_menu(int $orgid, string $active_act = ''): void {
         global $OUTPUT;
         $actions = locallib::get_actions('manage');

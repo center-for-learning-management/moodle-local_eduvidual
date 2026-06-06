@@ -27,12 +27,12 @@ defined('MOODLE_INTERNAL') || die;
 /**
  * Importiert Schulen aus BIP (bildung.gv.at) in local_eduvidual_org.
  */
-class bip_import_schools extends \core\task\scheduled_task {
+class bip_import_orgs extends \core\task\scheduled_task {
     public function get_name() {
-        return get_string('bip_import_schools:title', 'local_eduvidual');
+        return get_string('bip_import_orgs:title', 'local_eduvidual');
     }
 
     public function execute() {
-        \local_eduvidual\bip_helper::import_schools(true);
+        \local_eduvidual\bip_helper::import_orgs(true);
     }
 }

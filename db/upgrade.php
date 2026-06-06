@@ -252,6 +252,31 @@ function xmldb_local_eduvidual_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2026051400, 'local', 'eduvidual');
     }
 
+    if ($oldversion < 2026060600) {
+        $table = new xmldb_table('local_eduvidual_org');
+
+        $fields = [
+            new xmldb_field('biporg', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, '0', 'orgsize'),
+            new xmldb_field('bipgenuine', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, '0', 'biporg'),
+            new xmldb_field('bipoperational', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, '0', 'bipgenuine'),
+        ];
+        foreach ($fields as $field) {
+            if (!$dbman->field_exists($table, $field)) {
+                $dbman->add_field($table, $field);
+            }
+        }
+
+        upgrade_plugin_savepoint(true, 2026060600, 'local', 'eduvidual');
+    }
+
+    if ($oldversion < 2026060601) {
+        // Voll-Resync des BIP-User-Imports erzwingen: der bisherige Delta-Cursor kennt nur
+        // std-Änderungen, ab jetzt werden alle usertypes geladen.
+        unset_config('bip_userimport_cursor', 'local_eduvidual');
+
+        upgrade_plugin_savepoint(true, 2026060601, 'local', 'eduvidual');
+    }
+
 
     // function move_logos_from_css_to_stored_file() {
     //     global $DB;

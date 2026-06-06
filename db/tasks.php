@@ -61,7 +61,7 @@ $tasks = array(
         'month' => '*',
     ),
     array(
-        'classname' => 'local_eduvidual\task\bip_import_schools',
+        'classname' => 'local_eduvidual\task\bip_import_orgs',
         'blocking' => 0,
         'minute' => 30,
         'hour' => 4,

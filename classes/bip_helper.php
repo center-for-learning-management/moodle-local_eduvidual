@@ -111,6 +111,22 @@ class bip_helper {
     }
 
     /**
+     * Prüft, ob die Schule aktuell in BIP existiert. Das biporg-Flag in local_eduvidual_org
+     * wird von import_orgs() gepflegt - kein Live-Call zu BIP nötig.
+     */
+    public static function is_bip_org(int $orgid): bool {
+        $org = \local_eduvidual\locallib::get_org('orgid', $orgid);
+        return !empty($org->biporg);
+
+        // ALT: nicht 6-stellige orgids (Projektgruppen, Ressourcenkatalog, Spielwiese) stammen nie aus BIP.
+        /*
+        if (strlen((string)$orgid) != 6) {
+            return false;
+        }
+        */
+    }
+
+    /**
      * Matcht BIP-User mit Moodle-Usern über Org + Name + Rolle und legt fehlende
      * auth_shibboleth_link-Einträge an. Beschränkt auf registrierte Orgs (authenticated > 0)
      * und role=std/Student auf beiden Seiten.
@@ -296,18 +312,134 @@ class bip_helper {
     }
 
     /**
+     * Mappt einen BIP-Rollencode auf die eduvidual-Rolle (Gegenrichtung zu
+     * moodle_role_to_bip_role). Liefert null für unbekannte Rollen.
+     */
+    public static function bip_role_to_moodle_role(string $biprole): ?string {
+        return match ($biprole) {
+            'adm', 'alr', 'dir', 'emp', 'tch', 'sqm', 'sqb' => \local_eduvidual\locallib::ROLE_TEACHER,
+            'lgn' => \local_eduvidual\locallib::ROLE_PARENT,
+            'std' => \local_eduvidual\locallib::ROLE_STUDENT,
+            default => null,
+        };
+    }
+
+    /**
+     * Ordnet den User der Org zu - mit der höchsten Rolle aus bestehenden + neuen Rollen.
+     * Gemeinsame Regeln für Login-Hook und BIP-Import: nur registrierte Orgs
+     * (authenticated > 0), bestehende Manager bleiben unangetastet.
+     *
+     * Liefert die gesetzte Rolle bzw. null, wenn nichts zu tun ist. Mit $execute=false
+     * wird nur gerechnet, nicht geschrieben.
+     */
+    public static function assign_user_org(int $userid, int $orgid, array $newroles, bool $execute = true): ?string {
+        global $DB;
+
+        $org = \local_eduvidual\locallib::get_org('orgid', $orgid);
+        if (empty($org->orgid) || !$org->authenticated) {
+            // Schule nicht gefunden oder nicht registriert.
+            return null;
+        }
+
+        $currentroles = $DB->get_fieldset_select('local_eduvidual_orgid_userid', 'role', 'userid = ? AND orgid = ?', [$userid, $orgid]);
+        if (\local_eduvidual\locallib::find_highest_role($currentroles) == \local_eduvidual\locallib::ROLE_MANAGER) {
+            // Manager bleiben Manager.
+            return null;
+        }
+
+        $highest = \local_eduvidual\locallib::find_highest_role(array_merge($currentroles, $newroles));
+        if (!$highest) {
+            return null;
+        }
+
+        \local_eduvidual\output::mtrace('  ' . ($execute ? 'ordnet zu' : 'würde zuordnen') . ": userid={$userid} -> orgid={$orgid}, role={$highest}");
+        if ($execute) {
+            \local_eduvidual\lib_enrol::role_set($userid, $org, $highest);
+        }
+
+        return $highest;
+    }
+
+    /**
+     * Trägt den User aus der Org aus - aber nur, wenn die Schule eine BIP-Schule ist.
+     * Mitgliedschaften bei Nicht-BIP-Orgs (Projektgruppen, Ressourcenkatalog, Spielwiese, ...)
+     * bleiben unangetastet, weil BIP sie nie bestätigen kann.
+     *
+     * Liefert true, wenn ausgetragen wurde (bzw. bei $execute=false: würde).
+     */
+    public static function unassign_user_org(int $userid, int $orgid, bool $execute = true): bool {
+        if (!static::is_bip_org($orgid)) {
+            return false;
+        }
+
+        \local_eduvidual\output::mtrace('  ' . ($execute ? 'trägt aus' : 'würde austragen') . ": userid={$userid} -> orgid={$orgid}");
+        if ($execute) {
+            $org = \local_eduvidual\locallib::get_org('orgid', $orgid);
+            \local_eduvidual\lib_enrol::role_set($userid, $org, 'remove');
+        }
+
+        return true;
+    }
+
+    /**
+     * Voll-Abgleich der Schulzuordnungen eines Users gegen die gewünschte Liste aus BIP
+     * (orgid => [BIP-Rollencodes]): trägt bei allen gewünschten Orgs ein und aus allen
+     * anderen aus. Unbekannte Rollencodes und nicht registrierte Orgs werden ignoriert -
+     * aus solchen Orgs wird also auch ausgetragen. Die weiteren Regeln stecken in den
+     * Primitiven (assign_user_org/unassign_user_org): Manager bleiben Manager, ausgetragen
+     * wird nur aus BIP-Orgs.
+     *
+     * Nur für Quellen verwenden, die ALLE Zugehörigkeiten des Users über alle Rollen
+     * abbilden (Login-affiliation, readuserdata mit allen usertypes) - sonst würden
+     * Mitgliedschaften gelöscht, die die Quelle gar nicht sehen kann.
+     */
+    public static function sync_user_orgs(int $userid, array $wantedbiproles, bool $execute = true): void {
+        global $DB;
+
+        $wantedroles = [];
+        foreach ($wantedbiproles as $orgid => $biproles) {
+            $roles = array_filter(array_map(fn($r) => static::bip_role_to_moodle_role((string)$r), (array)$biproles));
+            if (!$roles) {
+                continue;
+            }
+
+            $org = \local_eduvidual\locallib::get_org('orgid', (int)$orgid);
+            if (empty($org->orgid) || !$org->authenticated) {
+                // schule nicht gefunden oder nicht registriert
+                continue;
+            }
+
+            $wantedroles[(int)$orgid] = array_values(array_unique($roles));
+        }
+
+        $myorgids = $DB->get_fieldset_select('local_eduvidual_orgid_userid', 'DISTINCT orgid', 'userid = ?', [$userid]);
+        foreach ($myorgids as $myorgid) {
+            if (!isset($wantedroles[(int)$myorgid])) {
+                static::unassign_user_org($userid, (int)$myorgid, $execute);
+            }
+        }
+
+        foreach ($wantedroles as $orgid => $roles) {
+            static::assign_user_org($userid, $orgid, $roles, $execute);
+        }
+    }
+
+    /**
      * Importiert Schulen aus BIP in local_eduvidual_org.
      * - Neue Schulen: vollständig anlegen (authenticated bleibt 0 = noch nicht registriert).
      *   Nicht-echte Schulen (genuine=0) werden hier übersprungen.
      * - Nicht registrierte Schulen (authenticated = 0): alle Felder updaten inkl. Name.
      * - Registrierte Schulen (authenticated > 0, TAN bestätigt): nur Adresse, Telefon und
      *   offizielle Mailadresse updaten. Der Schulname wird nicht überschrieben.
+     * - Setzt zusätzlich biporg/bipgenuine/bipoperational: biporg=1 markiert, dass die Schule
+     *   aktuell in BIP existiert (Basis für is_bip_org()); Orgs, die nicht mehr in der
+     *   BIP-Antwort vorkommen, werden auf biporg=0 zurückgesetzt.
      *
      * Achtung: org->name wird bei der Registrierung in course_categories (categoryid),
      * course.summary (courseid, "Digitaler Schulhof") und course.fullname (supportcourseid,
      * "Helpdesk") kopiert - eine spätere Namens-Synchronisierung müsste diese Stellen mitziehen.
      */
-    public static function import_schools(bool $execute = false): void {
+    public static function import_orgs(bool $execute = false): void {
         global $DB;
 
         if (!$execute) {
@@ -322,12 +454,15 @@ class bip_helper {
         $existingorgs = array_column($DB->get_records('local_eduvidual_org'), null, 'orgid');
         $countinsert = 0;
         $countupdate = 0;
+        $countunflag = 0;
+        $seenorgids = [];
 
         foreach ($bipschulen as $bipSchule) {
             $bipSchule = (object)array_map(fn($v) => is_string($v) ? trim($v) : $v, (array)$bipSchule);
             if (!$bipSchule->orgid) {
                 continue;
             }
+            $seenorgids[] = (int)$bipSchule->orgid;
             if (!trim($bipSchule->phone ?? '', '0/ ')) {
                 $bipSchule->phone = '';
             }
@@ -358,6 +493,9 @@ class bip_helper {
                     'subcats1' => get_string('createcourse:subcat1:defaults', 'local_eduvidual'),
                     'subcats2' => '',
                     'subcats3' => '',
+                    'biporg' => 1,
+                    'bipgenuine' => (int)!empty($bipSchule->genuine),
+                    'bipoperational' => (int)!empty($bipSchule->operational),
                 ];
                 mtrace("insert org: {$new->orgid} - {$new->name}");
                 if ($execute) {
@@ -391,9 +529,10 @@ class bip_helper {
                 $data['name'] = mb_substr($bipSchule->officialname, 0, 250);
             }
 
-            if (!$data) {
-                continue;
-            }
+            // BIP-Flags immer mitführen - der Diff unten schreibt nur bei Änderung.
+            $data['biporg'] = 1;
+            $data['bipgenuine'] = (int)!empty($bipSchule->genuine);
+            $data['bipoperational'] = (int)!empty($bipSchule->operational);
 
             $alt = (array)$existing;
             $diff = [];
@@ -421,12 +560,33 @@ class bip_helper {
             }
         }
 
-        mtrace(count($bipschulen) . ' Schulen aus BIP gelesen, ' . $countinsert . ' neu angelegt, ' . $countupdate . ' aktualisiert');
+        // Orgs, die noch als BIP-Schule markiert sind, aber nicht mehr in der BIP-Antwort
+        // vorkommen: biporg=0 setzen, damit is_bip_org() sie nicht mehr als BIP-Schule wertet.
+        if ($seenorgids) {
+            [$insql, $inparams] = $DB->get_in_or_equal($seenorgids, SQL_PARAMS_QM, 'param', false);
+            $gone = $DB->get_records_select('local_eduvidual_org', "biporg = 1 AND orgid {$insql}", $inparams, '', 'id, orgid, name');
+            foreach ($gone as $g) {
+                mtrace("Schule nicht mehr in BIP, setze biporg=0: {$g->orgid} - {$g->name}");
+                if ($execute) {
+                    $DB->update_record('local_eduvidual_org', (object)[
+                        'id' => $g->id,
+                        'biporg' => 0,
+                        'bipgenuine' => 0,
+                        'bipoperational' => 0,
+                    ]);
+                }
+                $countunflag++;
+            }
+        }
+
+        mtrace(count($bipschulen) . ' Schulen aus BIP gelesen, ' . $countinsert . ' neu angelegt, ' . $countupdate . ' aktualisiert, ' . $countunflag . ' nicht mehr in BIP');
     }
 
     /**
-     * Importiert BIP-Userdaten (vorerst nur Schüler:innen, role=std) in die Tabelle
-     * local_eduvidual_bip_user. Pro Aufruf eine Seite via readuserdata_v3.
+     * Importiert BIP-Userdaten in die Tabelle local_eduvidual_bip_user (gespiegelt werden
+     * vorerst nur Schüler:innen, role=std). Geladen werden aber ALLE usertypes, damit der
+     * Org-Sync (sync_user_orgs) pro User das vollständige Userobjekt über alle
+     * Rollen sieht. Pro Aufruf eine Seite via readuserdata_v3.
      *
      * BIPs next_cursor wird in bip_userimport_cursor persistiert; der nächste Cron-Lauf
      * macht von dort aus weiter. Auf der letzten Sweep-Seite liefert BIP has_more=false
@@ -457,6 +617,7 @@ class bip_helper {
 
         $cursor = (string)(get_config('local_eduvidual', 'bip_userimport_cursor') ?: '');
         mtrace("BIP-User-Import: starte mit cursor='{$cursor}'");
+        mtrace('Namen-Update und Org-Sync der verknüpften Moodle-User: vorerst deaktiviert, nur Dry-Run-Ausgabe ("würde ...").');
 
         $now = time();
         $countinsert = 0;
@@ -466,7 +627,8 @@ class bip_helper {
 
         $jsondata = static::call_bip_iface_one_page('local_eduportal_iface_readuserdata_v3', [
             'orgids' => join(',', $orgids),
-            'usertypes' => 'std',
+            // Leer = alle für den Zugang freigeschalteten usertypes (std, tch, lgn, dir, ...).
+            // 'usertypes' => '',
             'limitnum' => 25000,
         ], $cursor);
 
@@ -494,6 +656,42 @@ class bip_helper {
                 $purgereason = 'BIP: orgs leer';
             }
 
+            // Verknüpften Moodle-User (via auth_shibboleth_link) mit BIP-Stammdaten aktualisieren
+            // und Schulzuordnungen per Voll-Abgleich syncen: BIP liefert im Delta immer das
+            // komplette Userobjekt mit allen aktuellen Orgs über alle usertypes - "Org fehlt in
+            // orgs" ist damit ein verlässliches Lösch-Signal, unassigned_orgs muss nicht separat
+            // ausgewertet werden. Bei Purge trägt die leere orgs-Liste aus allen BIP-Orgs aus.
+            // 1:1-Annahme (bpkbf -> userid) wird von allen Schreibern in auth_shibboleth_link
+            // konsequent enforced, daher get_field statt get_records.
+            $userid = $DB->get_field('auth_shibboleth_link', 'userid', ['idpusername' => $bipuser->bpkbf]);
+            if ($userid) {
+                // Namen-Update vorerst nur im Dry-Run ("false &&").
+                if ($purgereason === null && static::update_linked_moodle_user($bipuser, (int)$userid, false && $execute)) {
+                    $countuseredit++;
+                }
+
+                $hasstd = false;
+                $wantedbiproles = [];
+                foreach (($bipuser->orgs ?? []) as $org) {
+                    if (empty($org->orgid)) {
+                        continue;
+                    }
+                    $roles = (array)($org->roles ?? []);
+                    $wantedbiproles[(int)$org->orgid] = $roles;
+                    $hasstd = $hasstd || in_array('std', $roles);
+                }
+                foreach ((array)($bipuser->unassigned_orgs ?? []) as $org) {
+                    $hasstd = $hasstd || ($org->role ?? '') == 'std';
+                }
+
+                // Vorerst nur User syncen, die laut BIP Schüler:in sind oder gerade waren -
+                // reine Lehrer-/Eltern-User bleiben dem Login-Hook überlassen. Und nur im
+                // Dry-Run ("false &&"), bis sich der Sync in den Cron-Logs bewährt hat.
+                if ($hasstd) {
+                    static::sync_user_orgs((int)$userid, $wantedbiproles, false && $execute);
+                }
+            }
+
             $existingforuser = $DB->get_records('local_eduvidual_bip_user', ['bpkbf' => $bipuser->bpkbf]);
             $existingkeyed = [];
             foreach ($existingforuser as $r) {
@@ -512,16 +710,21 @@ class bip_helper {
                 continue;
             }
 
-            // Pflichtfelder pro aktiver User (nur wenn nicht gelöscht). Test auf Key-Existenz -
-            // bei fehlendem Key Exception. Leere Werte sind erlaubt; sie werden im DB-Datensatz übernommen.
-            foreach (['firstname', 'middlename', 'lastname', 'dateofbirth', 'emails'] as $field) {
-                if (!property_exists($bipuser, $field)) {
-                    mtrace("FEHLER: Pflichtfeld '{$field}' fehlt - vollständiger BIP-User:");
-                    mtrace(var_export($bipuser, true));
-                    throw new \moodle_exception('bip:userfieldmissing', 'local_eduvidual', '', (object)[
-                        'field' => $field,
-                        'bpkbf' => $bipuser->bpkbf ?? 'unknown',
-                    ]);
+            // Pflichtfelder nur für Schüler:innen prüfen - andere usertypes liefern je nach
+            // BIP-Attributfreischaltung nicht alle Felder und werden auch nicht gespiegelt.
+            // Test auf Key-Existenz - bei fehlendem Key Exception. Leere Werte sind erlaubt;
+            // sie werden im DB-Datensatz übernommen.
+            $isstd = !empty(array_filter($bipuser->orgs, fn($o) => in_array('std', (array)($o->roles ?? []))));
+            if ($isstd) {
+                foreach (['firstname', 'middlename', 'lastname', 'dateofbirth', 'emails'] as $field) {
+                    if (!property_exists($bipuser, $field)) {
+                        mtrace("FEHLER: Pflichtfeld '{$field}' fehlt - vollständiger BIP-User:");
+                        mtrace(var_export($bipuser, true));
+                        throw new \moodle_exception('bip:userfieldmissing', 'local_eduvidual', '', (object)[
+                            'field' => $field,
+                            'bpkbf' => $bipuser->bpkbf ?? 'unknown',
+                        ]);
+                    }
                 }
             }
 
@@ -603,14 +806,6 @@ class bip_helper {
                 $countdelete++;
             }
 
-            // Verknüpften Moodle-User (via auth_shibboleth_link) mit BIP-Stammdaten aktualisieren.
-            // Damit pflegt der Import auch firstname/lastname im mdl_user-Datensatz nach.
-            // 1:1-Annahme (bpkbf -> userid) wird von allen Schreibern in auth_shibboleth_link
-            // konsequent enforced, daher get_field statt get_records.
-            $userid = $DB->get_field('auth_shibboleth_link', 'userid', ['idpusername' => $bipuser->bpkbf]);
-            if ($userid && static::update_linked_moodle_user($bipuser, (int)$userid, $execute)) {
-                $countuseredit++;
-            }
         }
 
         $hasmore = !empty($jsondata->meta->has_more);
@@ -655,7 +850,7 @@ class bip_helper {
             return false;
         }
 
-        mtrace("  aktualisiert Moodle-User userid={$user->id} (bpkbf={$bipuser->bpkbf}): " . json_encode($update));
+        mtrace('  ' . ($execute ? 'aktualisiert' : 'würde aktualisieren') . ": Moodle-User userid={$user->id} (bpkbf={$bipuser->bpkbf}): " . json_encode($update));
         if ($execute) {
             $update['id'] = $user->id;
             $DB->update_record('user', (object)$update);
