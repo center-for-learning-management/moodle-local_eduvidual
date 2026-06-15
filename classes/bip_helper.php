@@ -166,7 +166,9 @@ class bip_helper {
         // std/tch/dir/lgn nie miteinander. Auch bereits verlinkte sind drin, damit
         // Namensgleichheit als mehrdeutig erkannt wird.
         $bipindex = [];
+        $totalbipusers = 0;
         foreach ($DB->get_records('local_eduvidual_bip_user') as $bu) {
+            $totalbipusers++;
             $key = static::make_match_key($bu->orgid, $bu->role, $bu->firstname, $bu->lastname);
             if (!$key) {
                 continue;
@@ -198,27 +200,32 @@ class bip_helper {
 
         // Soll-Zustand berechnen: gleiche Logik wie früher, aber Ergebnis landet in $desired
         // statt direkt in der DB. AUTOMATCH-Lock zählt nicht - die Links sind ja re-evaluierbar.
-        $desired = [];           // "userid|bpkbf" => [c, bu]
-        $useridtaken = [];       // verhindert doppel-Match desselben userid in diesem Lauf
-        $bpkbftaken = [];
-        $ambiguous = 0;
-        $skipped_locked = 0;
+        // Erst pro Key die eindeutigen Treffer sammeln, danach über den GANZEN Lauf prüfen,
+        // dass jeder bpkbf und jeder userid nur ein einziges Mal vorkommt.
+        // Jeder Moodle-Key fällt in genau einen Bucket - die Summe ergibt count($moodleindex).
+        $matched = [];           // Liste von [c, bu] - ein eindeutiger Treffer pro Key
+        $ambiguousmoodle = 0;    // >1 Moodle-User mit gleichem Namen in Org+Rolle
+        $ambiguousbip = 0;       // Moodle-User passt auf >1 BIP-User
+        $nobipmatch = 0;         // kein BIP-User mit gleichem Key
+        $skipped_locked = 0;     // bpkbf oder userid via MANUAL/LOGIN gesperrt
 
         foreach ($moodleindex as $key => $matchedusers) {
             if (count($matchedusers) > 1) {
-                $ambiguous++;
+                $ambiguousmoodle++;
+                $c = $matchedusers[0];
                 $list = join(', ', array_map(fn($u) => "{$u->firstname} {$u->lastname} (userid={$u->userid})", $matchedusers));
-                mtrace("ambiguous moodle user for key '{$key}': {$list}");
+                mtrace("MEHRDEUTIG, kein Match: in Org {$c->orgid} (Rolle {$c->role}) gibt es mehrere Moodle-User mit gleichem Namen: {$list}");
                 continue;
             }
             if (empty($bipindex[$key])) {
+                $nobipmatch++;
                 continue;
             }
             if (count($bipindex[$key]) > 1) {
-                $ambiguous++;
+                $ambiguousbip++;
                 $c = $matchedusers[0];
                 $list = join(', ', array_map(fn($b) => "{$b->firstname} {$b->lastname} (bpkbf={$b->bpkbf})", $bipindex[$key]));
-                mtrace("ambiguous bip user for key '{$key}' (moodle: {$c->firstname} {$c->lastname} userid={$c->userid}): {$list}");
+                mtrace("MEHRDEUTIG, kein Match: Moodle-User {$c->firstname} {$c->lastname} (userid={$c->userid}) in Org {$c->orgid} (Rolle {$c->role}) passt auf mehrere BIP-User: {$list}");
                 continue;
             }
             $c = $matchedusers[0];
@@ -228,12 +235,33 @@ class bip_helper {
                 $skipped_locked++;
                 continue;
             }
-            if (isset($useridtaken[$c->userid]) || isset($bpkbftaken[$bu->bpkbf])) {
+            $matched[] = [$c, $bu];
+        }
+
+        // Kollisionen über den ganzen Lauf zählen: derselbe bpkbf kann über mehrere Orgs
+        // auf mehrere gleichnamige Moodle-User passen (und umgekehrt). In dem Fall ist NICHT
+        // eindeutig, welcher User gemeint ist - also gar nicht verlinken statt den ersten zu nehmen.
+        $bpkbfcount = [];
+        $useridcount = [];
+        foreach ($matched as [$c, $bu]) {
+            $bpkbfcount[$bu->bpkbf] = ($bpkbfcount[$bu->bpkbf] ?? 0) + 1;
+            $useridcount[$c->userid] = ($useridcount[$c->userid] ?? 0) + 1;
+        }
+
+        $crosscollision = 0;     // bpkbf bzw. userid über mehrere Orgs nicht eindeutig
+        $desired = [];           // "userid|bpkbf" => [c, bu]
+        foreach ($matched as [$c, $bu]) {
+            if ($bpkbfcount[$bu->bpkbf] > 1) {
+                $crosscollision++;
+                mtrace("MEHRDEUTIG, kein Match: BIP-User (bpkbf={$bu->bpkbf}) passt auf mehrere gleichnamige Moodle-User in verschiedenen Orgs - u.a. {$c->firstname} {$c->lastname} (userid={$c->userid}, Org {$c->orgid})");
+                continue;
+            }
+            if ($useridcount[$c->userid] > 1) {
+                $crosscollision++;
+                mtrace("MEHRDEUTIG, kein Match: Moodle-User {$c->firstname} {$c->lastname} (userid={$c->userid}) passt über mehrere Orgs auf mehrere BIP-User");
                 continue;
             }
             $desired["{$c->userid}|{$bu->bpkbf}"] = [$c, $bu];
-            $useridtaken[$c->userid] = true;
-            $bpkbftaken[$bu->bpkbf] = true;
         }
 
         // Diff anwenden: nur tatsächliche Änderungen schreiben.
@@ -247,7 +275,7 @@ class bip_helper {
                 $countkeep++;
                 continue;
             }
-            static::mtrace("entferne AUTOMATCH (Match nicht mehr eindeutig): userid={$rec->userid} <-> bpkbf={$rec->idpusername}", execute: $execute);
+            static::mtrace("AUTOMATCH entfernt (Match nicht mehr eindeutig): userid={$rec->userid} <-> bpkbf={$rec->idpusername}", execute: $execute);
             if ($execute) {
                 $DB->delete_records('auth_shibboleth_link', ['id' => $rec->id]);
             }
@@ -258,7 +286,7 @@ class bip_helper {
             if (isset($existing[$compositekey])) {
                 continue;
             }
-            static::mtrace("match: moodle [{$c->firstname} {$c->lastname}] (userid={$c->userid}) <-> bip [{$bu->firstname} {$bu->lastname}] (bpkbf={$bu->bpkbf})", execute: $execute);
+            static::mtrace("AUTOMATCH neu: Moodle {$c->firstname} {$c->lastname} (userid={$c->userid}, Org {$c->orgid}) <-> BIP {$bu->firstname} {$bu->lastname} (bpkbf={$bu->bpkbf})", execute: $execute);
             if ($execute) {
                 $DB->insert_record('auth_shibboleth_link', (object)[
                     'idp' => $defaultidp,
@@ -276,7 +304,18 @@ class bip_helper {
             $countinsert++;
         }
 
-        static::mtrace("BIP-User-Match: {$countinsert} neu, {$countdelete} entfernt, {$countkeep} unverändert, {$ambiguous} mehrdeutig, {$skipped_locked} übersprungen (MANUAL/LOGIN-Lock)", execute: $execute);
+        $matchedtotal = count($desired);
+        $totalcandidates = count($candidates);
+        $totalkeys = count($moodleindex);
+        static::mtrace("BIP-User-Match fertig:", execute: $execute);
+        static::mtrace("  Eingang: {$totalbipusers} BIP-User, {$totalcandidates} Moodle-Kandidaten (Studierende in registrierten Orgs) -> {$totalkeys} eindeutige Match-Keys (orgid|rolle|vorname|nachname)", execute: $execute);
+        static::mtrace("  Eindeutig gematcht (gesamt): {$matchedtotal} - davon {$countinsert} neu verlinkt, {$countkeep} unverändert", execute: $execute);
+        static::mtrace("  Verlinkung entfernt (nicht mehr eindeutig): {$countdelete}", execute: $execute);
+        static::mtrace("  Kein BIP-Gegenstück mit gleichem Key: {$nobipmatch}", execute: $execute);
+        static::mtrace("  Mehrdeutig - mehrere Moodle-User gleichen Namens: {$ambiguousmoodle}", execute: $execute);
+        static::mtrace("  Mehrdeutig - Moodle-User passt auf mehrere BIP-User: {$ambiguousbip}", execute: $execute);
+        static::mtrace("  Mehrdeutig - bpkbf/userid über mehrere Orgs nicht eindeutig: {$crosscollision}", execute: $execute);
+        static::mtrace("  Gesperrt (MANUAL/LOGIN, nicht angefasst): {$skipped_locked}", execute: $execute);
     }
 
     /**
