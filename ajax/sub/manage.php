@@ -88,7 +88,6 @@ switch ($act) {
         }
         if (isset($cat) && $cat->id == $parentid) {
             // If so, add or remove it
-            require_once($CFG->dirroot . '/lib/coursecatlib.php');
             if ($act == 'addcategory') {
                 $name = optional_param('name', '', PARAM_TEXT);
                 if (empty($name) || strlen($name) < 3) {
@@ -103,7 +102,8 @@ switch ($act) {
                         'visible' => 1,
                     );
                     $reply['catdata'] = $data;
-                    $catid = \coursecat::create($data);
+                    $category = \core_course_category::create($data);
+                    $catid = $category->id;
                     $reply['catid'] = $catid;
                     if ($catid > 0) {
                         $reply['status'] = 'ok';
@@ -120,7 +120,7 @@ switch ($act) {
                     } elseif (strlen($name) > 255) {
                         $reply['error'] = 'name_too_long';
                     } else {
-                        $cat = \coursecat::get($parentid);
+                        $cat = \core_course_category::get($parentid);
                         $reply['editedcat'] = $DB->get_record('course_categories', array('id' => $parentid));
                         $data = $cat->get_db_record();
                         $data->name = $name;
@@ -133,7 +133,7 @@ switch ($act) {
                 if ($parentid == $org->categoryid) {
                     $reply['error'] = 'root_category_can_not_be_touched';
                 } else {
-                    $cat = \coursecat::get($parentid);
+                    $cat = \core_course_category::get($parentid);
                     $reply['removedcat'] = $DB->get_record('course_categories', array('id' => $parentid));
                     $cat->delete_full();
                     $reply['status'] = 'ok';
