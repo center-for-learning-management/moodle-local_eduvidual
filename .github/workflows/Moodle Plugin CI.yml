@@ -344,6 +344,22 @@ jobs:
             exit $eslint_exit
           fi
 
+      - name: Stylelint --fix
+        run: |
+          cd ${{ github.workspace }}/moodle
+          set +e
+          ./node_modules/.bin/stylelint --fix "public/**/*.scss"
+          stylelint_exit=$?
+          set -e
+
+          if [ -n "$(git status --porcelain public/)" ]; then
+            echo "Stylelint --fix modified files; ignoring its exit code ($stylelint_exit)."
+            exit 0
+          else
+            echo "Stylelint --fix made no changes; propagating its exit code ($stylelint_exit)."
+            exit $stylelint_exit
+          fi
+
       # Copy the fixed files from the Moodle installation back to the plugin folder
       - name: Copy changes to repository
         run: |
