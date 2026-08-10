@@ -541,7 +541,7 @@ class locallib {
         if (empty($orgids)) {
             $orgids = [0];
         }
-        list($insql, $inparams) = $DB->get_in_or_equal($orgids);
+        [$insql, $inparams] = $DB->get_in_or_equal($orgids);
         $sql = "SELECT DISTINCT(userid)
                     FROM {local_eduvidual_orgid_userid}
                     WHERE userid=?
