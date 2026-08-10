@@ -15,7 +15,6 @@
         <exclude name="CyclomaticComplexity"/>
         <exclude name="ExitExpression"/>
     </rule>
-    </rule>
     <rule ref="rulesets/cleancode.xml/BooleanArgumentFlag"/>
 
     <!-- Loosen a threshold instead of disabling outright -->
