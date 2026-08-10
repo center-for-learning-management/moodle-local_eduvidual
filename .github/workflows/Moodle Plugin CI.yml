@@ -100,14 +100,27 @@ jobs:
 
       - name: PHP Mess Detector
         if: ${{ !cancelled() }}
-        run: moodle-plugin-ci phpmd
+        run: |
+          rulesfile="$(pwd)/plugin/.github/moodle-ci/phpmd-exclusions.xml"
+          if [ -f "$rulesfile" ]; then
+            echo "Using custom phpmd ruleset: $rulesfile"
+            moodle-plugin-ci phpmd --rules="$rulesfile"
+          else
+            echo "No custom phpmd ruleset found, using default moodle ruleset."
+            moodle-plugin-ci phpmd
+          fi
 
       - name: Moodle Code Checker
         if: ${{ !cancelled() }}
-        run: >
-          moodle-plugin-ci phpcs
-          --standard="$(pwd)/.github/moodle-ci/phpcs-exclusions.xml"
-          --max-warnings 0
+        run: |
+          standardfile="$(pwd)/plugin/.github/moodle-ci/phpcs-exclusions.xml"
+          if [ -f "$standardfile" ]; then
+            echo "Using custom phpcs standard: $standardfile"
+            moodle-plugin-ci phpcs --standard="$standardfile" --max-warnings 0
+          else
+            echo "No custom phpcs standard found, using default moodle standard."
+            moodle-plugin-ci phpcs --max-warnings 0
+          fi
 
       - name: Moodle PHPDoc Checker
         if: ${{ !cancelled() }}
@@ -201,9 +214,15 @@ jobs:
       # --- Fixers ---
       - name: Moodle Code Beautifier and Fixer
         if: ${{ !cancelled() }}
-        run: >
-          moodle-plugin-ci phpcbf
-          --standard="$(pwd)/.github/moodle-ci/phpcs-exclusions.xml"
+        run: |
+          standardfile="$(pwd)/plugin/.github/moodle-ci/phpcs-exclusions.xml"
+          if [ -f "$standardfile" ]; then
+            echo "Using custom phpcs standard: $standardfile"
+            moodle-plugin-ci phpcbf --standard="$standardfile"
+          else
+            echo "No custom phpcs standard found, using default moodle standard."
+            moodle-plugin-ci phpcbf
+          fi
 
       - name: ESLint --fix
         continue-on-error: true   # <-- add this
