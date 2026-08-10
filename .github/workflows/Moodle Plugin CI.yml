@@ -80,7 +80,9 @@ jobs:
             while IFS= read -r line || [ -n "$line" ]; do
               trimmed="$(echo "$line" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
               [ -z "$trimmed" ] && continue
-              case "$trimmed" in //*) continue ;; esac
+              case "$trimmed" in
+                '<?php'*|'#'*|'//'*) continue ;;
+              esac
               echo "Adding config: $trimmed"
               moodle-plugin-ci add-config "$trimmed"
             done < "$configfile"
