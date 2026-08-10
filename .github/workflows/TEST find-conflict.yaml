@@ -1,0 +1,17 @@
+name: Check for Merge Conflicts
+
+on: [push, pull_request]
+
+jobs:
+  find-conflicts:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+
+      - name: Find merge conflict markers
+        uses: olivernybroe/action-conflict-finder@v4.1
+        with:
+          # Optional: Exclude specific directories or files
+          exclude_dir: ".github" 
+          excludes: "*.lock,*.md"

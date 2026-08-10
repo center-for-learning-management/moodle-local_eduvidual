@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ruleset name="PluginPHPCSExclusions">
+    <!--
+        Plugin-specific PHPCS exceptions.
+
+        This file EXTENDS the standard Moodle ruleset - it does not replace it.
+        Add exceptions below as needed and document WHY each one exists.
+
+        HOW TO USE THIS FILE
+        =====================
+        Because moodle-plugin-ci passes the "standard" option as moodle
+        explicitly on the phpcs command line, a plain phpcs.xml dropped in
+        the plugin root is NOT picked up automatically. This file must be
+        referenced explicitly from the CI workflow's phpcs step.
+
+        See README.md in this same folder for the exact workflow snippet
+        to add.
+
+        WHAT YOU CAN DO HERE
+        =====================
+        1) Disable a sniff completely (project-wide):
+
+            <rule ref="Generic.Files.LineLength">
+                <severity>0</severity>
+            </rule>
+
+        2) Disable a sniff only for specific files/paths:
+
+            <rule ref="Squiz.Arrays.ArrayBracketSpacing">
+                <exclude-pattern>*/classes/legacy/*</exclude-pattern>
+            </rule>
+
+        3) Adjust a sniff's settings instead of disabling it entirely
+           (e.g. allow longer lines instead of turning the check off):
+
+            <rule ref="Generic.Files.LineLength">
+                <properties>
+                    <property name="lineLimit" value="160"/>
+                    <property name="absoluteLineLimit" value="180"/>
+                </properties>
+            </rule>
+
+        4) Exclude whole directories from ALL checks (e.g. vendored/third-party
+           code bundled with the plugin):
+
+            <exclude-pattern>*/thirdparty/*</exclude-pattern>
+            <exclude-pattern>*/vendor/*</exclude-pattern>
+
+        5) Allow both "elseif" and "else if" (Moodle's style guide normally
+           requires "else if" - this disables that specific check so both
+           spellings pass):
+
+            <rule ref="moodle.ControlStructures.ElseIfDeclaration">
+                <severity>0</severity>
+            </rule>
+
+           Note: this sniff has no automatic fixer in PHP_CodeSniffer, so
+           phpcbf will never rewrite "elseif" <-> "else if" either way -
+           disabling it here is the only way to stop it being reported.
+
+        6) Space before the opening curly brace of control structures
+           (if/foreach/while/...), e.g. "if (...) {" vs "if (...){".
+           Two ways to do this - pick ONE, don't enable both:
+
+           6a) Disable ONLY the space-before-brace check, keep every other
+               check this sniff does (space after keyword, space after the
+               closing parenthesis, newline rules, etc.):
+
+            <rule ref="Squiz.ControlStructures.ControlSignature.SpaceBeforeCurlyBrace">
+                <severity>0</severity>
+            </rule>
+
+           6b) Disable the ENTIRE ControlSignature sniff, including all the
+               other checks it does. Broader than 6a - only use this if you
+               want to stop enforcing all of that, not just the brace space:
+
+            <rule ref="Squiz.ControlStructures.ControlSignature">
+                <severity>0</severity>
+            </rule>
+
+           Note: unlike the elseif sniff above, this one DOES have an
+           automatic fixer - "moodle-plugin-ci phpcbf" will happily add the
+           missing space for you. Consider running phpcbf instead of
+           disabling this, unless the team has deliberately decided both
+           styles should be allowed.
+
+        TIP: The exact sniff code for any violation is shown in parentheses
+        at the end of each line in the CI output, e.g.:
+            (Generic.Files.LineLength) or (Squiz.Arrays.ArrayBracketSpacing)
+
+        For one-off exceptions in a single spot, prefer inline suppression
+        in the code itself instead of editing this file:
+            // phpcs:ignore Generic.Files.LineLength
+        or for a block:
+            // phpcs:disable Squiz.Arrays.ArrayBracketSpacing
+            ...
+            // phpcs:enable Squiz.Arrays.ArrayBracketSpacing
+    -->
+
+    <!-- Base ruleset, do not remove. -->
+    <rule ref="moodle"/>
+
+    <!-- ============================================================ -->
+    <!-- Add plugin specific exceptions below this line. -->
+    <!-- ============================================================ -->
+
+</ruleset>
