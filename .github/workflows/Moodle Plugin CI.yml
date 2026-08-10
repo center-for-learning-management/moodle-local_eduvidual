@@ -244,6 +244,13 @@ jobs:
           path: plugin
           persist-credentials: false
 
+      - name: Configure git identity
+        run: |
+          cd plugin
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          echo "BASE_SHA=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
+
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
@@ -316,6 +323,8 @@ jobs:
           MOODLE_BRANCH: MOODLE_502_STABLE
 
       # --- Fixers ---
+      # Each fixer commits its own changes (if any) immediately, so the resulting
+      # PR contains separate, individually cherry-pickable commits per tool.
       - name: Moodle Code Beautifier and Fixer
         if: ${{ !cancelled() }}
         run: |
@@ -328,7 +337,16 @@ jobs:
             moodle-plugin-ci phpcbf
           fi
 
+          cd plugin
+          git add -A
+          if git diff --cached --quiet; then
+            echo "phpcbf made no changes, skipping commit."
+          else
+            git commit -m "phpcbf: automated code style fixes"
+          fi
+
       - name: ESLint --fix
+        if: ${{ !cancelled() }}
         run: |
           cd ${{ github.workspace }}/moodle
           set +e
@@ -336,15 +354,25 @@ jobs:
           eslint_exit=$?
           set -e
 
-          if [ -n "$(git status --porcelain public/)" ]; then
-            echo "ESLint --fix modified files; ignoring its exit code ($eslint_exit)."
-            exit 0
-          else
+          if [ -z "$(git status --porcelain public/)" ]; then
             echo "ESLint --fix made no changes; propagating its exit code ($eslint_exit)."
             exit $eslint_exit
           fi
+          echo "ESLint --fix modified files; ignoring its exit code ($eslint_exit)."
+
+          plugindir="$(echo "${GITHUB_REPOSITORY}" | cut -d/ -f2 | sed 's/^moodle-//' | tr _ /)"
+          rsync -av "${{ github.workspace }}/moodle/public/${plugindir}/." "${{ github.workspace }}/plugin/." --exclude='.git'
+
+          cd ${{ github.workspace }}/plugin
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No plugin-relevant ESLint changes, skipping commit."
+          else
+            git commit -m "eslint --fix: automated JS lint fixes"
+          fi
 
       - name: Stylelint --fix
+        if: ${{ !cancelled() }}
         run: |
           cd ${{ github.workspace }}/moodle
           set +e
@@ -352,31 +380,33 @@ jobs:
           stylelint_exit=$?
           set -e
 
-          if [ -n "$(git status --porcelain public/)" ]; then
-            echo "Stylelint --fix modified files; ignoring its exit code ($stylelint_exit)."
-            exit 0
-          else
+          if [ -z "$(git status --porcelain public/)" ]; then
             echo "Stylelint --fix made no changes; propagating its exit code ($stylelint_exit)."
             exit $stylelint_exit
           fi
+          echo "Stylelint --fix modified files; ignoring its exit code ($stylelint_exit)."
 
-      # Copy the fixed files from the Moodle installation back to the plugin folder
-      - name: Copy changes to repository
-        run: |
-          echo "Copying changed files from ${{ github.workspace }}/moodle/public/$(echo "${GITHUB_REPOSITORY}" | cut -d/ -f2 | sed 's/^moodle-//' | tr _ /)/. to ${{ github.workspace }}/plugin/."
-          rsync -av "${{ github.workspace }}/moodle/public/$(echo "${GITHUB_REPOSITORY}" | cut -d/ -f2 | sed 's/^moodle-//' | tr _ /)/." "${{ github.workspace }}/plugin/." --exclude='.git'
+          plugindir="$(echo "${GITHUB_REPOSITORY}" | cut -d/ -f2 | sed 's/^moodle-//' | tr _ /)"
+          rsync -av "${{ github.workspace }}/moodle/public/${plugindir}/." "${{ github.workspace }}/plugin/." --exclude='.git'
 
-      # Detect if any files were modified by the fixers
+          cd ${{ github.workspace }}/plugin
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No plugin-relevant Stylelint changes, skipping commit."
+          else
+            git commit -m "stylelint --fix: automated SCSS lint fixes"
+          fi
+
+      # Detect if any of the fixers above produced commits
       - name: Check for changes
         id: check
         run: |
           cd plugin
-          git add -A
-          if git diff --cached --quiet; then
+          if [ "$(git rev-parse HEAD)" = "$BASE_SHA" ]; then
             echo "changes=false" >> "$GITHUB_OUTPUT"
           else
             echo "changes=true" >> "$GITHUB_OUTPUT"
-            git diff --cached --name-only > ../changed_files.txt
+            git diff --name-only "$BASE_SHA" HEAD > ../changed_files.txt
             echo "Modified files:"
             cat ../changed_files.txt
           fi
