@@ -7,13 +7,21 @@
     <!-- Base moodle-plugin-ci rules -->
     <rule ref="rulesets/codesize.xml"/>
     <rule ref="rulesets/unusedcode.xml"/>
+        <!-- exclude some UnusedLocalVariable example
+            <rule ref="rulesets/unusedcode.xml/UnusedLocalVariable">
+                <exclude-pattern>*/pages/tools/admin_tests.php</exclude-pattern>
+            </rule>
+        -->
     <rule ref="rulesets/naming.xml">
         <exclude name="ShortVariable"/>
     </rule>
     <rule ref="rulesets/design.xml">
-        <!-- e.g. this legacy plugin has some big switch statements we accept -->
-        <exclude name="CyclomaticComplexity"/>
-        <exclude name="ExitExpression"/>
+        <!-- e.g. this legacy plugin has some big switch statements we accept
+            <exclude name="CyclomaticComplexity"/>
+         -->
+        <!--  The function header_status() contains an exit expression.
+            <exclude name="ExitExpression"/>
+         -->
     </rule>
     <rule ref="rulesets/cleancode.xml/BooleanArgumentFlag"/>
 
