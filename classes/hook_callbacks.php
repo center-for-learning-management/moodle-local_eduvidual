@@ -56,7 +56,7 @@ class hook_callbacks {
         }
 
         // Protect core question bank from being exported.
-        if (!is_siteadmin() && strpos($_SERVER["SCRIPT_FILENAME"], '/question/export.php') > 0) {
+        if (strpos($_SERVER["SCRIPT_FILENAME"], '/question/export.php') > 0 && !is_siteadmin()) {
             $category = optional_param('category', 0, PARAM_RAW);
             if (!empty($category)) {
                 $category = explode(',', $category);
