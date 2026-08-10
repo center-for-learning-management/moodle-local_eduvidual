@@ -1,3 +1,8 @@
+# Plugin dependencies
+
+You can add plugin dependencies via github/moodle-ci/dependencies 
+see [`.github/moodle-ci/dependencies-dist`](./dependencies-dist) 
+
 # Plugin-specific Configuration
 
 if the plugin requires specific $CFG array settings, you can add them to 

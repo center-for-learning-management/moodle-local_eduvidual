@@ -1,5 +1,14 @@
 name: Moodle Plugin CI
-on: [push]
+on:
+  push:
+  workflow_dispatch:
+    inputs:
+      dependencies_override:
+        description: >
+          Override plugin dependencies for this run (one per line: "owner/repo [BRANCH]"
+          or "CLONE_URL [BRANCH]"). Leave empty to use .github/moodle-ci/dependencies as-is.
+        required: false
+        type: string
 
 permissions:
   contents: write          # required to create a branch and PR
@@ -43,7 +52,6 @@ jobs:
         with:
           path: plugin
           persist-credentials: false
-          
 
 
       - name: Setup PHP ${{ matrix.php }}
@@ -64,6 +72,54 @@ jobs:
           echo "$(cd ci/vendor/bin; pwd)" >> "$GITHUB_PATH"
           sudo locale-gen en_AU.UTF-8
           echo "NVM_DIR=$HOME/.nvm" >> "$GITHUB_ENV"
+
+      - name: Add plugin dependencies
+        env:
+          DEPENDENCIES_OVERRIDE: ${{ github.event.inputs.dependencies_override }}
+        run: |
+          depsfile="./plugin/.github/moodle-ci/dependencies"
+
+          if [ -n "$DEPENDENCIES_OVERRIDE" ]; then
+            echo "Using workflow_dispatch dependencies_override input."
+            deps_source="$(mktemp)"
+            printf '%s\n' "$DEPENDENCIES_OVERRIDE" > "$deps_source"
+          elif [ -f "$depsfile" ]; then
+            echo "Using dependencies file: $depsfile"
+            deps_source="$depsfile"
+          else
+            echo "No $depsfile found and no override given, skipping."
+            deps_source=""
+          fi
+
+          if [ -n "$deps_source" ]; then
+            while IFS= read -r line || [ -n "$line" ]; do
+              trimmed="$(echo "$line" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
+              [ -z "$trimmed" ] && continue
+              case "$trimmed" in
+                '#'*) continue ;;
+              esac
+
+              spec="$(echo "$trimmed" | awk '{print $1}')"
+              branch="$(echo "$trimmed" | awk '{print $2}')"
+
+              args=()
+              if [ -n "$branch" ]; then
+                args+=(--branch "$branch")
+              fi
+
+              case "$spec" in
+                *://*|*.git|git@*)
+                  args+=(--clone "$spec")
+                  ;;
+                *)
+                  args+=("$spec")
+                  ;;
+              esac
+
+              echo "Running: moodle-plugin-ci add-plugin ${args[*]}"
+              moodle-plugin-ci add-plugin "${args[@]}"
+            done < "$deps_source"
+          fi
 
       - name: Install moodle-plugin-ci
         run: moodle-plugin-ci install --plugin ./plugin --db-host=127.0.0.1 # DevSkim: ignore DS162092
@@ -205,6 +261,54 @@ jobs:
           sudo locale-gen en_AU.UTF-8
           echo "NVM_DIR=$HOME/.nvm" >> "$GITHUB_ENV"
 
+      - name: Add plugin dependencies
+        env:
+          DEPENDENCIES_OVERRIDE: ${{ github.event.inputs.dependencies_override }}
+        run: |
+          depsfile="./plugin/.github/moodle-ci/dependencies"
+
+          if [ -n "$DEPENDENCIES_OVERRIDE" ]; then
+            echo "Using workflow_dispatch dependencies_override input."
+            deps_source="$(mktemp)"
+            printf '%s\n' "$DEPENDENCIES_OVERRIDE" > "$deps_source"
+          elif [ -f "$depsfile" ]; then
+            echo "Using dependencies file: $depsfile"
+            deps_source="$depsfile"
+          else
+            echo "No $depsfile found and no override given, skipping."
+            deps_source=""
+          fi
+
+          if [ -n "$deps_source" ]; then
+            while IFS= read -r line || [ -n "$line" ]; do
+              trimmed="$(echo "$line" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
+              [ -z "$trimmed" ] && continue
+              case "$trimmed" in
+                '#'*) continue ;;
+              esac
+
+              spec="$(echo "$trimmed" | awk '{print $1}')"
+              branch="$(echo "$trimmed" | awk '{print $2}')"
+
+              args=()
+              if [ -n "$branch" ]; then
+                args+=(--branch "$branch")
+              fi
+
+              case "$spec" in
+                *://*|*.git|git@*)
+                  args+=(--clone "$spec")
+                  ;;
+                *)
+                  args+=("$spec")
+                  ;;
+              esac
+
+              echo "Running: moodle-plugin-ci add-plugin ${args[*]}"
+              moodle-plugin-ci add-plugin "${args[@]}"
+            done < "$deps_source"
+          fi
+
       - name: Install moodle-plugin-ci
         run: moodle-plugin-ci install --plugin ./plugin --db-host=127.0.0.1 # DevSkim: ignore DS162092
         env:
@@ -225,10 +329,20 @@ jobs:
           fi
 
       - name: ESLint --fix
-        continue-on-error: true   # <-- add this
         run: |
           cd ${{ github.workspace }}/moodle
+          set +e
           ./node_modules/.bin/eslint --fix public/
+          eslint_exit=$?
+          set -e
+
+          if [ -n "$(git status --porcelain public/)" ]; then
+            echo "ESLint --fix modified files; ignoring its exit code ($eslint_exit)."
+            exit 0
+          else
+            echo "ESLint --fix made no changes; propagating its exit code ($eslint_exit)."
+            exit $eslint_exit
+          fi
 
       # Copy the fixed files from the Moodle installation back to the plugin folder
       - name: Copy changes to repository
