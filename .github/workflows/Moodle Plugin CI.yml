@@ -1,6 +1,9 @@
 name: Moodle Plugin CI
 on:
   push:
+    branches-ignore:
+      - moodle-ci-fixes**
+
   workflow_dispatch:
     inputs:
       dependencies_override:
