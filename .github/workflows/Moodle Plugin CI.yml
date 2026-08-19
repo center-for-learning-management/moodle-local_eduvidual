@@ -48,7 +48,7 @@ jobs:
 
     steps:
       - name: Check out repository code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           path: plugin
           persist-credentials: false
@@ -239,7 +239,7 @@ jobs:
 
     steps:
       - name: Check out repository code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           path: plugin
           persist-credentials: false
