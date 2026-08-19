@@ -61,7 +61,7 @@ jobs:
 
       - name: Upload Psalm SARIF results
         if: ${{ !cancelled() }}
-        uses: github/codeql-action/upload-sarif@v3
+        uses: github/codeql-action/upload-sarif@v4
         with:
           sarif_file: plugin/results.sarif
           category: psalm
