@@ -151,6 +151,8 @@ $table = new class($org, $cohort) extends local_table_sql\table_sql_form {
 
         $this->set_sql_table('user');
         $this->add_form_action(new class extends \local_table_sql\table_sql_subform {
+            private int $userid = 0;
+
             function definition() {
                 $mform = $this->_form;
 
@@ -163,6 +165,9 @@ $table = new class($org, $cohort) extends local_table_sql\table_sql_form {
             }
 
             function set_data($default_values) {
+                // ID merken, damit validation() den eigenen Datensatz bei der E-Mail-Prüfung ausnehmen kann.
+                $this->userid = (int)($default_values->id ?? 0);
+
                 // Bei verknüpften Konten kommen Vor-/Nachname aus dem IdP - der Manager
                 // darf sie nicht überschreiben. Hinweis als statischer Text einblenden.
                 if (!empty($default_values->linked)) {
@@ -175,6 +180,8 @@ $table = new class($org, $cohort) extends local_table_sql\table_sql_form {
 
             //Custom validation should be added here
             function validation($data, $files) {
+                global $CFG, $DB;
+
                 $errors = array();
                 if (strlen($data['firstname']) < 2) {
                     $errors['firstname'] = get_string('manage:profile:tooshort', 'local_eduvidual', array('fieldname' => get_string('firstname'), 'minchars' => '2'));
@@ -184,6 +191,12 @@ $table = new class($org, $cohort) extends local_table_sql\table_sql_form {
                 }
                 if (!validate_email($data['email'])) {
                     $errors['email'] = get_string('manage:profile:invalidmail', 'local_eduvidual');
+                } elseif ($DB->record_exists_select('user',
+                    "id <> :id AND mnethostid = :mnethostid AND (LOWER(email) = :email OR username = :username)",
+                    ['id' => $this->userid, 'mnethostid' => $CFG->mnet_localhost_id,
+                     'email' => \core_text::strtolower($data['email']), 'username' => \core_text::strtolower($data['email'])])) {
+                    // E-Mail-Adressen müssen in eduvidual eindeutig sein (username = email, siehe store_row()).
+                    $errors['email'] = get_string('emailexists');
                 }
                 return $errors;
             }
