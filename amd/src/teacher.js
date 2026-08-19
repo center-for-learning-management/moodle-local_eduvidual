@@ -1,13 +1,15 @@
-define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/templates', 'core/url', 'local_eduvidual/main', 'local_eduvidual/user'], function ($, AJAX, NOTIFICATION, STR, TEMPLATES, URL, MAIN, USER) {
+define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/templates', 'core/url', 'local_eduvidual/main', 'local_eduvidual/user'], function($, AJAX, NOTIFICATION, STR, TEMPLATES, URL, MAIN, USER) {
   return {
     /**
      * Perform an action on a course
+     * @param courseid
+     * @param selectmenu
      **/
-    courseAction: function (courseid, selectmenu) {
+    courseAction: function(courseid, selectmenu) {
       console.log('TEACHER.courseAction(courseid, selectmenu)', courseid, selectmenu);
       var choice = $(selectmenu).val();
       $(selectmenu).val('');
-      require(['local_eduvidual/main'], function (MAIN) {
+      require(['local_eduvidual/main'], function(MAIN) {
         switch (choice) {
           case 'enrol':
             MAIN.navigate(URL.fileUrl('/local/eduvidual/pages/courses.php', '') + '?act=enrol&id=' + courseid);
@@ -24,7 +26,7 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/templates'
         }
       });
     },
-    courseRemove: function (courseid, confirm) {
+    courseRemove: function(courseid, confirm) {
       if (typeof confirm === 'undefined' || !confirm) {
         var TEACHER = this;
         STR.get_strings([
@@ -32,22 +34,23 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/templates'
           {'key': 'courseremove:text', component: 'local_eduvidual'},
           {'key': 'yes'},
           {'key': 'no'}
-        ]).done(function (s) {
-            NOTIFICATION.confirm(s[0], s[1], s[2], s[3], function () {
+        ]).done(function(s) {
+            NOTIFICATION.confirm(s[0], s[1], s[2], s[3], function() {
               TEACHER.courseRemove(courseid, true);
             });
           }
         ).fail(NOTIFICATION.exception);
       } else {
-        require(['local_eduvidual/main'], function (MAIN) {
+        require(['local_eduvidual/main'], function(MAIN) {
           MAIN.connect({module: 'teacher', act: 'course_remove', courseid: courseid}, {});
         });
       }
     },
     /**
      * Load possible selection-options to create a course.
+     * @param uniqid
      **/
-    createCourseSelections: function (uniqid) {
+    createCourseSelections: function(uniqid) {
       var TEACHER = this;
       var orgid = +$('#' + uniqid + '-orgid').val();
       var subcat1 = $('#' + uniqid + '-subcat1').val();
@@ -57,14 +60,14 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/templates'
       var method = 'local_eduvidual_teacher_createcourse_selections';
       var data = {orgid: orgid, subcat1: subcat1, subcat2: subcat2, subcat3: subcat3};
       console.log('Sending to ', method, data);
-      require(['local_eduvidual/main'], function (MAIN) {
+      require(['local_eduvidual/main'], function(MAIN) {
         MAIN.spinnerGrid(true);
       });
       AJAX.call([{
         methodname: method,
         args: data,
-        done: function (result) {
-          require(['local_eduvidual/main'], function (MAIN) {
+        done: function(result) {
+          require(['local_eduvidual/main'], function(MAIN) {
             MAIN.spinnerGrid(false);
           });
           try {
@@ -77,10 +80,10 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/templates'
             $('.' + uniqid + '-subcats' + a + 'lbl').html(result['subcats' + a + 'lbl']);
           }
           var trs = [1, 2, 3, 4];
-          var requiredtrs = {1: true, 2: false, 3: false, 4: false};
-          var hiddentrs = {1: false, 2: false, 3: false, 4: false};
+          var requiredtrs = {"1": true, "2": false, "3": false, "4": false};
+          var hiddentrs = {"1": false, "2": false, "3": false, "4": false};
 
-          Object.keys(trs).forEach(function (i) {
+          Object.keys(trs).forEach(function(i) {
             var key = trs[i];
             var keys = 'subcat' + key;
             var keym = 'subcats' + key;
@@ -90,9 +93,15 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/templates'
               $('#' + uniqid + '-form .' + uniqid + '-' + keyl).html('').closest('tr').css('display', 'none');
               hiddentrs[key] = true;
             } else {
-              if (key <= 2) requiredtrs[key] = true;
-              if (key == 3 && hiddentrs[2]) requiredtrs[key] = true;
-              if (key == 4 && hiddentrs[2] && hiddentrs[3]) requiredtrs[key] = true;
+              if (key <= 2) {
+ requiredtrs[key] = true;
+}
+              if (key == 3 && hiddentrs[2]) {
+ requiredtrs[key] = true;
+}
+              if (key == 4 && hiddentrs[2] && hiddentrs[3]) {
+ requiredtrs[key] = true;
+}
               $('#' + uniqid + '-form .' + uniqid + '-' + keyl).html(result[keyl]).closest('tr').css('display', '');
               if (typeof result[keym] !== 'undefined') {
                 // Show select or input.
@@ -115,7 +124,7 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/templates'
                     .attr('value', '')
                     .html('---')
                   );
-                  Object.keys(result[keym]).forEach(function (index) {
+                  Object.keys(result[keym]).forEach(function(index) {
                     var opt = $('<option>')
                       .attr('value', result[keym][index])
                       .html(result[keym][index]);
@@ -142,7 +151,7 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/templates'
           });
           // Do the coloring of our table.
           var trigger = false;
-          $('#' + uniqid + '-form table.generaltable tr').each(function (i, e) {
+          $('#' + uniqid + '-form table.generaltable tr').each(function(i, e) {
             if ($(e).css('display') != 'none') {
               trigger = !trigger;
               $(e).css('background-color', (trigger) ? 'rgba(0,0,0,0.05)' : '#ffffff');
@@ -151,7 +160,7 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/templates'
 
           var requirementsfulfilled = true;
           // Decide if button is enabled and flag required fields.
-          Object.keys(requiredtrs).forEach(function (key) {
+          Object.keys(requiredtrs).forEach(function(key) {
             $('#' + uniqid + '-form .' + uniqid + '-subcat' + key + ' td.requirement').html('');
             if (requiredtrs[key]) {
               console.log('Check ', key, $('#' + uniqid + '-form #' + uniqid + '-subcat' + key).val());
@@ -174,17 +183,17 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/templates'
      * Append the "required"-icon to a html element.
      * @param e the html element to append to.
      */
-    createCourseSelectionsRequired: function (e) {
+    createCourseSelectionsRequired: function(e) {
       TEMPLATES
         .render('local_eduvidual/teacher_createcourse_required', {})
-        .then(function (html, js) {
+        .then(function(html, js) {
           $(e).html('');
           TEMPLATES.appendNodeContents($(e), html, js);
-        }).fail(function (ex) {
+        }).fail(function(ex) {
 
       });
     },
-    createModule: function () {
+    createModule: function() {
       var orgid = +$('#local_eduvidual_teacher_createmodule').attr('data-orgid');
       var courseid = +$('#local_eduvidual_teacher_createmodule').attr('data-courseid');
       var sectionid = +$('#local_eduvidual_teacher_createmodule').attr('data-sectionid');
@@ -200,62 +209,69 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/templates'
           form[param] = $('#' + id).val();
         }
       }
-      form['course'] = courseid;
-      form['section'] = sectionid;
-      require(['local_eduvidual/main'], function (MAIN) {
+      form.course = courseid;
+      form.section = sectionid;
+      require(['local_eduvidual/main'], function(MAIN) {
         MAIN.connect({module: 'teacher', act: 'createmodule_create', orgid: orgid, moduleid: moduleid, formdata: JSON.stringify(form)}, {section: sectionid});
       });
     },
     /**
      * Searches for modules provided by edupublisher
+     * @param uniqid
      **/
-    createModuleSearch: function (uniqid) {
+    createModuleSearch: function(uniqid) {
       var data = {};
-      $('#' + uniqid + '-createmoduleform').serializeArray().map(function (x) {
+      $('#' + uniqid + '-createmoduleform').serializeArray().map(function(x) {
         data[x.name] = x.value;
       });
       data.module = 'teacher';
       data.act = 'createmodule_search';
       console.log(data);
-      require(['local_eduvidual/main'], function (MAIN) {
+      require(['local_eduvidual/main'], function(MAIN) {
         MAIN.connect(data, {uniqid: uniqid, sectionid: data.sectionid, courseid: data.courseid});
       });
     },
-    loadCategory: function (categoryid) {
-      if (this.debug > 0) console.log('TEACHER.loadCategory(categoryid)', categoryid);
+    loadCategory: function(categoryid) {
+      if (this.debug > 0) {
+ console.log('TEACHER.loadCategory(categoryid)', categoryid);
+}
       var orgid = $('#local_eduvidual_teacher_createmodule').attr('data-orgid');
-      require(['local_eduvidual/main'], function (MAIN) {
+      require(['local_eduvidual/main'], function(MAIN) {
         MAIN.connect({module: 'teacher', act: 'createmodule_category', orgid: orgid, categoryid: categoryid});
       });
     },
-    loadCourseCategory: function (categoryid, orgid) {
+    loadCourseCategory: function(categoryid, orgid) {
       if (typeof orgid === 'undefined') {
         orgid = +$('#local_eduvidual_teacher_createcourse').attr('data-orgid');
       }
-      require(['local_eduvidual/main'], function (MAIN) {
+      require(['local_eduvidual/main'], function(MAIN) {
         MAIN.connect({module: 'teacher', act: 'createcourse_category', orgid: orgid, categoryid: categoryid});
       });
     },
-    loadCourseForm: function (step) {
+    loadCourseForm: function(step) {
       console.log('TEACHER.loadCourseForm(step)', step);
-      if (typeof step === 'undefined') step = 0;
+      if (typeof step === 'undefined') {
+ step = 0;
+}
       var categoryid = +$('.ul-eduvidual-courses').attr('data-categoryid');
       var orgid = +$('.ul-eduvidual-courses').attr('data-orgid');
       // Maybe we can skip step 0
-      if (orgid > 0 && categoryid > 0 && step == 0) step = 1;
+      if (orgid > 0 && categoryid > 0 && step == 0) {
+ step = 1;
+}
 
       switch (step) {
         case 0:
-          // select org and category
+          // Select org and category
           break;
         case 1:
           var container = $('.ul-eduvidual-courses').empty();
           // Controlgroup with back and create button
           var controlgroup = $('<div>')
-            //.addClass('form-inline felement')
+            // .addClass('form-inline felement')
             .addClass('grid-eq-2')
             .css('text-align', 'center');
-          //.attr('data-fieldtype', 'group');
+          // .attr('data-fieldtype', 'group');
           container.append(controlgroup);
 
           STR.get_strings([
@@ -266,9 +282,9 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/templates'
             {'key': 'createcourse:nameinfo', component: 'local_eduvidual'},
             {'key': 'createcourse:setteacher', component: 'local_eduvidual'},
             {'key': 'filter', component: 'core'},
-          ]).done(function (s) {
+          ]).done(function(s) {
               // Always add the back-button
-              var divback = $('<div>');//.addClass('form-group fitem');
+              var divback = $('<div>');// .addClass('form-group fitem');
               var aback = $('<a>')
                 .addClass('ui-btn btn btn-_secondary')
                 .attr('onclick', 'require(["local_eduvidual/user"], function(USER) { USER.loadCategory(' + (+$('.ul-eduvidual-courses').attr('data-categoryid')) + '); });')
@@ -285,9 +301,9 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/templates'
               controlgroup.append([divback, btnstore]);
 
               var formgroup = $('<div>')
-                //.addClass('form-inline felement')
+                // .addClass('form-inline felement')
                 .addClass('grid-eq-2');
-              //.attr('data-fieldtype', 'group');
+              // .attr('data-fieldtype', 'group');
               container.append(formgroup);
 
               var divleft = $('<div>');
@@ -323,28 +339,28 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/templates'
           var base = +$('.local_eduvidual_teacher_createcourse_basement').val();
           var name = $('.local_eduvidual_teacher_createcourse_name').val();
           var setteacher = +$('.local_eduvidual_teacher_createcourse_setteacher select').val();
-          require(['local_eduvidual/main'], function (MAIN) {
+          require(['local_eduvidual/main'], function(MAIN) {
             MAIN.connect({module: 'teacher', act: 'createcourse_now', orgid: orgid, categoryid: categoryid, basement: base, name: name, setteacher: setteacher}, {signalItem: {}});
           });
           break;
       }
     },
-    loadCourseTeacher: function (orgid, inp) {
+    loadCourseTeacher: function(orgid, inp) {
       var search = $(inp).val();
-      require(['local_eduvidual/main'], function (MAIN) {
+      require(['local_eduvidual/main'], function(MAIN) {
         MAIN.connect({module: 'teacher', act: 'createcourse_loadteacher', orgid: orgid, search: search}, {signalItem: {}});
       });
     },
-    questioncategories: function (sender) {
+    questioncategories: function(sender) {
       var questioncategories = [];
-      $.each($("input[name='questioncategories[]']:checked"), function () {
+      $.each($("input[name='questioncategories[]']:checked"), function() {
         questioncategories.push(+$(this).val());
       });
-      require(['local_eduvidual/main'], function (MAIN) {
+      require(['local_eduvidual/main'], function(MAIN) {
         MAIN.connect({module: 'user', act: 'questioncategories', questioncategories: questioncategories}, {signalItem: $(sender).parent()});
       });
     },
-    result: function (o) {
+    result: function(o) {
       var TEACHER = this;
       if (o.data.act == 'course_hideshow') {
         if (o.result.status == 'ok') {
@@ -371,7 +387,7 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/templates'
           STR.get_strings([
             {'key': 'back', component: 'local_eduvidual'},
             {'key': 'createcourse:here', component: 'local_eduvidual'},
-          ]).done(function (s) {
+          ]).done(function(s) {
               // Controlgroup with back and create button
               var controlgroup = $('<div>')
                 .addClass('form-inline felement')
@@ -400,7 +416,7 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/templates'
             .addClass('ui-listview ui-listview-inset ui-corner-all ui-shadow');
 
           /*
-          var li = $('<li>').addClass('ui-li-has-count ui-first-child');
+          Var li = $('<li>').addClass('ui-li-has-count ui-first-child');
           var an = $('<a>').attr('href', '#').attr('onclick', 'local_eduvidual_TEACHER.loadCourseForm(' + o.result.category.id + ');').addClass('ui-btn btn');
           var h3 = $('<h3>').html(local_eduvidual_LANG['js:createcourse:here']);
           an.append([h3, p]);
@@ -433,7 +449,7 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/templates'
       if (o.data.act == 'createcourse_now' && o.result.status == 'ok') {
         // Reload category list
         // Surely this is local_eduvidual_USER, not local_eduvidual_TEACHER !!
-        require(['local_eduvidual/user'], function (USER) {
+        require(['local_eduvidual/user'], function(USER) {
           USER.loadCategory(o.data.categoryid, o.data.orgid);
         });
       }
@@ -472,15 +488,15 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/templates'
         this.user_search("#local_eduvidual_courses_courseusers_search", "courseusers", 0);
       }
     },
-    user_search: function (sender, type, initialsearch) {
+    user_search: function(sender, type, initialsearch) {
       var orgid = +$('#local_eduvidual_courses').attr('data-orgid');
       var courseid = +$('#local_eduvidual_courses').attr('data-courseid');
       var searchfor = $(sender).val();
-      require(['local_eduvidual/main'], function (MAIN) {
+      require(['local_eduvidual/main'], function(MAIN) {
         MAIN.connect({module: 'teacher', act: 'user_search', orgid: orgid, courseid: courseid, type: type, searchfor: searchfor}, {sender: sender, initialsearch: initialsearch});
       });
     },
-    user_set: function (sender, type) {
+    user_set: function(sender, type) {
       var selectmenu, role;
       var userids = [];
       if (type == 'enrol') {
@@ -490,15 +506,17 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/templates'
         selectmenu = $('#local_eduvidual_courses_courseusers');
         role = 'remove';
       }
-      if (typeof selectmenu === 'undefined') return;
+      if (typeof selectmenu === 'undefined') {
+ return;
+}
 
       var orgid = +$('#local_eduvidual_courses').attr('data-orgid');
       var courseid = +$('#local_eduvidual_courses').attr('data-courseid');
       var userids = [];
-      $(selectmenu).find('option:selected:not([value=""])').each(function () {
+      $(selectmenu).find('option:selected:not([value=""])').each(function() {
         userids.push(+$(this).val());
       });
-      require(['local_eduvidual/main'], function (MAIN) {
+      require(['local_eduvidual/main'], function(MAIN) {
         MAIN.connect({module: 'teacher', act: 'user_set', orgid: orgid, courseid: courseid, role: role, userids: userids}, {signalItem: $(sender)});
       });
     },

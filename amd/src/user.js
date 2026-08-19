@@ -1,18 +1,18 @@
 define(
   ['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'local_eduvidual/main', 'local_eduvidual/manager', 'local_eduvidual/teacher', 'core/modal_factory', 'core/modal_events'],
-  function ($, AJAX, NOTIFICATION, STR, URL, MAIN, MANAGER, TEACHER, ModalFactory, ModalEvents) {
+  function($, AJAX, NOTIFICATION, STR, URL, MAIN, MANAGER, TEACHER, ModalFactory, ModalEvents) {
     return {
       /**
        * Allows a user to enrol to an organization using a specific access code.
        **/
-      accesscode: function () {
+      accesscode: function() {
         var orgid = +$('#local_eduvidual_user_accesscode_orgid').val();
         var code = $('#local_eduvidual_user_accesscode_code').val();
-        require(['local_eduvidual/main'], function (MAIN) {
+        require(['local_eduvidual/main'], function(MAIN) {
           MAIN.connect({module: 'user', act: 'accesscode', orgid: orgid, code: code}, {signalItem: $('#local_eduvidual_user_accesscode_btn')});
         });
       },
-      actionCategories: function (sender) {
+      actionCategories: function(sender) {
         var categoryid = +$('.ul-eduvidual-courses').attr('data-categoryid');
         var orgid = +$('.ul-eduvidual-courses').attr('data-orgid');
         switch ($(sender).val()) {
@@ -36,20 +36,20 @@ define(
        * Sets the default org for the current user
        * @param orgid orgid to set
        **/
-      defaultorg: function (orgid) {
-        require(['local_eduvidual/main'], function (MAIN) {
+      defaultorg: function(orgid) {
+        require(['local_eduvidual/main'], function(MAIN) {
           MAIN.connect({module: 'user', act: 'defaultorg', orgid: +orgid}, {signalItem: $('#local_eduvidual_user_defaultorg')});
         });
       },
-      loadCategory: function (categoryid, orgid) {
+      loadCategory: function(categoryid, orgid) {
         if (typeof orgid === 'undefined') {
           orgid = +$('.ul-eduvidual-courses').attr('data-orgid');
         }
-        require(['local_eduvidual/main'], function (MAIN) {
+        require(['local_eduvidual/main'], function(MAIN) {
           MAIN.connect({module: 'user', act: 'categories', orgid: orgid, categoryid: categoryid}, {});
         });
       },
-      triggerShowHidden: function (setto) {
+      triggerShowHidden: function(setto) {
         console.log('USER.triggerShowHidden(setto)', setto);
         if (typeof setto === 'undefined') {
           $('#local_eduvidual_user_courselist').toggleClass('showhidden');
@@ -60,9 +60,9 @@ define(
         }
 
       },
-      placeSubmenu: function () {
+      placeSubmenu: function() {
         var h = 0;
-        $('.local_eduvidual_submenu_wrapper').each(function () {
+        $('.local_eduvidual_submenu_wrapper').each(function() {
           if ($(this).height() > 0) {
             h = $(this).height();
           }
@@ -70,33 +70,33 @@ define(
         console.log('USER.placeSubmenu(), h is ', h);
         $('.local_eduvidual_submenu_wrapper').css('margin-top', (h / -2) + 'px');
       },
-      setEditor: function (sel) {
-        require(['local_eduvidual/main'], function (MAIN) {
+      setEditor: function(sel) {
+        require(['local_eduvidual/main'], function(MAIN) {
           MAIN.connect({module: 'user', act: 'seteditor', editor: $(sel).val()}, {signalItem: $(sel)});
         });
       },
-      setLandingPage: function (url) {
+      setLandingPage: function(url) {
         if (typeof url === 'undefined') {
           STR.get_strings([
             {'key': 'user:landingpage:title', component: 'local_eduvidual'},
             {'key': 'user:landingpage:description', component: 'local_eduvidual'},
             {'key': 'ok', component: 'core'},
             {'key': 'cancel', component: 'core'},
-          ]).done(function (s) {
-              NOTIFICATION.confirm(s[0], s[1], s[2], s[3], function () {
-                require(['local_eduvidual/user'], function (USER) {
+          ]).done(function(s) {
+              NOTIFICATION.confirm(s[0], s[1], s[2], s[3], function() {
+                require(['local_eduvidual/user'], function(USER) {
                   USER.setLandingPage(top.location.href);
                 });
               });
             }
           ).fail(NOTIFICATION.exception);
         } else {
-          require(['local_eduvidual/main'], function (MAIN) {
+          require(['local_eduvidual/main'], function(MAIN) {
             MAIN.connect({module: 'user', act: 'landingpage_set', url: url}, {signalItem: $('#local_eduvidual_setlandingpage')});
           });
         }
       },
-      showModuleInfo: function (a) {
+      showModuleInfo: function(a) {
         var title = $(a).children('h3').html();
         var description = $(a).children('p').html();
         var url = $(a).attr('data-url');
@@ -105,9 +105,9 @@ define(
           STR.get_strings([
             {'key': 'open', component: 'local_eduvidual'},
             {'key': 'close', component: 'local_eduvidual'},
-          ]).done(function (s) {
-              NOTIFICATION.confirm(title, description, s[0], s[1], function () {
-                require(['local_eduvidual/main'], function (MAIN) {
+          ]).done(function(s) {
+              NOTIFICATION.confirm(title, description, s[0], s[1], function() {
+                require(['local_eduvidual/main'], function(MAIN) {
                   MAIN.navigate(url);
                 });
               });
@@ -117,7 +117,7 @@ define(
           NOTIFICATION.alert(title, description);
         }
       },
-      toggleSubmenu: function (setto) {
+      toggleSubmenu: function(setto) {
         if (typeof setto !== 'undefined') {
           if (setto) {
             $('.local_eduvidual_submenu_wrapper').addClass('opened');
@@ -128,15 +128,15 @@ define(
           $('.local_eduvidual_submenu_wrapper').toggleClass('opened');
         }
       },
-      setHidden: function (sender) {
+      setHidden: function(sender) {
         var li = $(sender).parent();
         var courseid = +li.attr('data-courseid');
         var state = li.hasClass('inactive');
-        require(['local_eduvidual/main'], function (MAIN) {
+        require(['local_eduvidual/main'], function(MAIN) {
           MAIN.connect({module: 'user', act: 'courselist_sethidden', courseid: courseid, setto: (state) ? 0 : 1}, {li: li});
         });
       },
-      result: function (o) {
+      result: function(o) {
         if (o.data.act == 'accesscode') {
           if (o.result.status == 'ok') {
             top.location.href = URL.fileUrl("/local/eduvidual/pages/myorgs.php", "") + '?orgid=' + o.result.orgid;
@@ -154,10 +154,10 @@ define(
             $('.ul-eduvidual-courses').attr('data-categoryid', o.data.categoryid);
             // Controlgroup with back and create button
             var controlgroup = $('<div>')
-              //.addClass('form-inline felement')
+              // .addClass('form-inline felement')
               .addClass('grid-eq-2')
               .css('text-align', 'center');
-            //.attr('data-fieldtype', 'group');
+            // .attr('data-fieldtype', 'group');
             container.append(controlgroup);
 
             STR.get_strings([
@@ -167,12 +167,12 @@ define(
               {'key': 'createcategory:here', component: 'local_eduvidual'},
               {'key': 'createcategory:rename', component: 'local_eduvidual'},
               {'key': 'createcategory:remove', component: 'local_eduvidual'},
-            ]).done(function (s) {
+            ]).done(function(s) {
                 // Always add the back-button
-                var divback = $('<div>');//.addClass('form-group fitem');
+                var divback = $('<div>');// .addClass('form-group fitem');
                 var aback = $('<a>').addClass('ui-btn btn btn-_secondary').attr('onclick', 'history.go(-1);').html(s[0]);
                 if (typeof o.result.parent !== 'undefined' && o.result.parent.id > 0) {
-                  aback.attr('onclick', 'require(["local_eduvidual/user"], function(USER) { USER.loadCategory(' + o.result.parent.id + '); });').html(o.result.parent.name);  // local_eduvidual_LANG['js:back']
+                  aback.attr('onclick', 'require(["local_eduvidual/user"], function(USER) { USER.loadCategory(' + o.result.parent.id + '); });').html(o.result.parent.name); // Local_eduvidual_LANG['js:back']
                 }
                 aback.html('<img src="/pix/t/left.svg" alt=""> ' + aback.html());
                 divback.append(aback);
@@ -209,7 +209,7 @@ define(
                 .addClass('ui-listview ui-listview-inset ui-corner-all ui-shadow');
               for (var a = 0; a < o.result.categories.length; a++) {
                 var category = o.result.categories[a];
-                //console.log(category)
+                // Console.log(category)
                 var li = $('<li>');
                 if (a == 0) {
                   li.addClass('ui-first-child');
@@ -234,7 +234,7 @@ define(
               var ul = $('<ul>').attr('data-role', 'listview').attr('data-inset', 'true').addClass('ui-listview ui-listview-inset ui-corner-all ui-shadow');
               for (var a = 0; a < o.result.courses.length; a++) {
                 var course = o.result.courses[a];
-                //console.log(course)
+                // Console.log(course)
                 var li = $('<li>');
                 if (course.visible == 0) {
                   li.addClass('local_eduvidual_inactive');
@@ -277,7 +277,7 @@ define(
               console.log('This is the login page in app-mode - going to my courses');
               o.payload.urltogo = URL.fileUrl("/local/eduvidual/pages/courses.php", "");
             }
-            require(["local_eduvidual/main"], function (MAIN) {
+            require(["local_eduvidual/main"], function(MAIN) {
               MAIN.resume(o.payload.urltogo, o.result.userid);
             });
           } else {
@@ -285,25 +285,25 @@ define(
           }
         }
       },
-      showShibboleth: function () {
+      showShibboleth: function() {
         var url = URL.fileUrl("/auth/shibboleth_link", "login.php?embed=1");
         console.log('popPage ', url);
-        //MAIN.spinnerGrid(true);
+        // MAIN.spinnerGrid(true);
         $.get(url)
-          .done(function (body) {
+          .done(function(body) {
             console.log('Got body ', body);
             ModalFactory.create({
               title: 'edu.IDAM',
-              //type: ModalFactory.types.OK,
+              // Type: ModalFactory.types.OK,
               body: body,
-              //footer: 'footer',
-            }).done(function (modal) {
-              //MAIN.spinnerGrid(false);
+              // Footer: 'footer',
+            }).done(function(modal) {
+              // MAIN.spinnerGrid(false);
               console.log('Created modal');
               modal.show();
             });
           })
-          .fail(function (err) {
+          .fail(function(err) {
             console.err('Error', err);
           });
       },

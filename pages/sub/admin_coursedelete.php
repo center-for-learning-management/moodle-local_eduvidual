@@ -21,8 +21,9 @@
  */
 
 defined('MOODLE_INTERNAL') || die;
-if (!is_siteadmin())
+if (!is_siteadmin()) {
     die;
+}
 
 $from = optional_param('from', 0, PARAM_INT);
 $size = optional_param('size', 50, PARAM_INT);
@@ -43,12 +44,12 @@ foreach ($entries as $entry) {
 
 echo $OUTPUT->render_from_template(
     'local_eduvidual/admin_coursedelete',
-    (object)array(
+    (object)[
         'entries' => $entries,
         'from' => $from,
         'nextfrom' => $from + $size,
         'size' => $size,
         'sizes' => $sizes,
         'wwwroot' => $CFG->wwwroot,
-    )
+    ]
 );

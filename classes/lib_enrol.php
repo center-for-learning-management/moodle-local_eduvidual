@@ -26,7 +26,7 @@ namespace local_eduvidual;
 defined('MOODLE_INTERNAL') || die;
 
 class lib_enrol {
-    private static $backgrounds = array(); // holds possible backgrounds
+    private static $backgrounds = []; // holds possible backgrounds
 
     /**
      * Adds a user to the cohort of an org.
@@ -36,25 +36,29 @@ class lib_enrol {
      */
     public static function cohorts_add($userid, &$org, $cohorts) {
         global $DB;
-        if (empty($cohorts))
+        if (empty($cohorts)) {
             return;
-        if (empty($org->categoryid))
+        }
+        if (empty($org->categoryid)) {
             return;
+        }
         if (empty($org->categorycontext)) {
             $org->categorycontext = \context_coursecat::instance($org->categoryid);
         }
-        if (empty($org->categorycontext->id))
+        if (empty($org->categorycontext->id)) {
             return;
+        }
 
         $cohorts = explode(',', $cohorts);
 
         foreach ($cohorts as $cohort) {
-            if (empty($cohort))
+            if (empty($cohort)) {
                 continue;
-            $cohorto = $DB->get_record('cohort', array('contextid' => $org->categorycontext->id, 'name' => $cohort));
+            }
+            $cohorto = $DB->get_record('cohort', ['contextid' => $org->categorycontext->id, 'name' => $cohort]);
             if (empty($cohorto->id)) {
                 $idnumber = $org->orgid . '_' . hash('crc32', $cohort);
-                $cohorto = (object)array(
+                $cohorto = (object)[
                     'contextid' => $org->categorycontext->id,
                     'description' => 'Automatically created cohort ' . $cohort,
                     'descriptionformat' => 1,
@@ -63,12 +67,12 @@ class lib_enrol {
                     'timecreated' => time(),
                     'timemodified' => time(),
                     'visible' => 1,
-                );
+                ];
                 $cohorto->id = $DB->insert_record('cohort', $cohorto);
             }
-            $chk = $DB->get_record('cohort_members', array('cohortid' => $cohorto->id, 'userid' => $userid));
+            $chk = $DB->get_record('cohort_members', ['cohortid' => $cohorto->id, 'userid' => $userid]);
             if (empty($chk->id)) {
-                $DB->insert_record('cohort_members', (object)array('cohortid' => $cohorto->id, 'userid' => $userid, 'timeadded' => time()));
+                $DB->insert_record('cohort_members', (object)['cohortid' => $cohorto->id, 'userid' => $userid, 'timeadded' => time()]);
             }
         }
 
@@ -83,20 +87,23 @@ class lib_enrol {
      */
     public static function cohorts_remove($userid, $org, $cohorts) {
         global $DB;
-        if (empty($cohorts))
+        if (empty($cohorts)) {
             return;
-        if (empty($org->categoryid))
+        }
+        if (empty($org->categoryid)) {
             return;
+        }
         $context = \context_coursecat::instance($org->categoryid);
-        if (empty($context->id))
+        if (empty($context->id)) {
             return;
+        }
 
         $cohorts = explode(',', $cohorts);
 
         foreach ($cohorts as $cohort) {
-            $cohort = $DB->get_record('cohort', array('contextid' => $context->id, 'name' => $cohort));
+            $cohort = $DB->get_record('cohort', ['contextid' => $context->id, 'name' => $cohort]);
             if (!empty($cohort->id)) {
-                $DB->delete_records('cohort_members', array('cohortid' => $cohort->id, 'userid' => $userid));
+                $DB->delete_records('cohort_members', ['cohortid' => $cohort->id, 'userid' => $userid]);
             }
         }
 
@@ -113,30 +120,31 @@ class lib_enrol {
     public static function role_set($userid, $org, $role, $force = false) {
         global $CFG, $DB, $PAGE, $USER;
         $enrol = false;
-        $reply = array();
+        $reply = [];
 
         if ($USER->id == $userid) {
-            $PAGE->requires->js_call_amd("local_eduvidual/jsinjector", "clearSessionStorage", array());
+            $PAGE->requires->js_call_amd("local_eduvidual/jsinjector", "clearSessionStorage", []);
         }
 
         // Remove could be written in various cases.
-        if (strtolower($role) == 'remove')
+        if (strtolower($role) == 'remove') {
             $role = 'remove';
+        }
 
         // Check if this user exists.
         self::user_exists($userid);
 
         // If org was given by orgid, load object from database.
         if (is_numeric($org)) {
-            $org = $DB->get_record('local_eduvidual_org', array('orgid' => $org));
+            $org = $DB->get_record('local_eduvidual_org', ['orgid' => $org]);
         }
         // We can only proceed if this is a valid org.
         if (!empty($org->orgid)) {
             // Get our current role.
-            $current = $DB->get_record('local_eduvidual_orgid_userid', array('orgid' => $org->orgid, 'userid' => $userid));
+            $current = $DB->get_record('local_eduvidual_orgid_userid', ['orgid' => $org->orgid, 'userid' => $userid]);
             if (!empty($current->role) && $current->role == locallib::ROLE_MANAGER && $role != locallib::ROLE_MANAGER) {
                 // We are currently Manager but should be degraded. Ensure, we are not the last manager of this org!
-                $allmanagers = $DB->get_records('local_eduvidual_orgid_userid', array('orgid' => $org->orgid, 'role' => locallib::ROLE_MANAGER));
+                $allmanagers = $DB->get_records('local_eduvidual_orgid_userid', ['orgid' => $org->orgid, 'role' => locallib::ROLE_MANAGER]);
                 if (count($allmanagers) == 1) {
                     $reply['error_last_manager'] = 1;
                     return $reply;
@@ -146,17 +154,17 @@ class lib_enrol {
             // If we are removing the user, we have to remove a bunch and cohorts as well.
             if ($role == 'remove') {
                 // Remove from orgcourse
-                self::course_manual_enrolments(array($org->courseid, $org->supportcourseid), array($userid), -1);
+                self::course_manual_enrolments([$org->courseid, $org->supportcourseid], [$userid], -1);
                 // Remove from supportcourse
                 if (!empty($org->supportcourseid)) {
-                    \local_eduvidual\lib_enrol::course_manual_enrolments(array($org->supportcourseid), array($userid), -1);
+                    self::course_manual_enrolments([$org->supportcourseid], [$userid], -1);
                 }
 
                 // Remove from orgcategory
                 $orgcatcontext = \context_coursecat::instance($org->categoryid, IGNORE_MISSING);
                 if (!empty($orgcatcontext->id)) {
                     // Remove alle roles that were given in coursecat.
-                    $orgroles = array('manager', 'teacher', 'student', 'parent');
+                    $orgroles = ['manager', 'teacher', 'student', 'parent'];
                     foreach ($orgroles as $orgrole) {
                         $catrole = get_config('local_eduvidual', 'defaultorgrole' . strtolower($orgrole));
                         if (!empty($catrole)) {
@@ -164,14 +172,14 @@ class lib_enrol {
                         }
                     }
                     // Remove user from any cohorts in this orgcategory.
-                    $cohorts = $DB->get_records('cohort', array('contextid' => $orgcatcontext->id));
+                    $cohorts = $DB->get_records('cohort', ['contextid' => $orgcatcontext->id]);
                     foreach ($cohorts as $cohort) {
-                        $DB->delete_records('cohort_members', array('cohortid' => $cohort->id, 'userid' => $userid));
+                        $DB->delete_records('cohort_members', ['cohortid' => $cohort->id, 'userid' => $userid]);
                     }
                 }
 
                 // Now remove our eduvidual-membership.
-                $DB->delete_records('local_eduvidual_orgid_userid', array('orgid' => $org->orgid, 'userid' => $userid));
+                $DB->delete_records('local_eduvidual_orgid_userid', ['orgid' => $org->orgid, 'userid' => $userid]);
             } else {
                 // Set our roles in this org.
                 if (!empty($current->orgid) && $current->role == $role && !$force) {
@@ -182,9 +190,9 @@ class lib_enrol {
 
                     // Add our eduvidual-membership
                     if (!empty($current->id)) {
-                        $DB->set_field('local_eduvidual_orgid_userid', 'role', $role, array('orgid' => $org->orgid, 'userid' => $userid));
+                        $DB->set_field('local_eduvidual_orgid_userid', 'role', $role, ['orgid' => $org->orgid, 'userid' => $userid]);
                     } else {
-                        $data = array('orgid' => $org->orgid, 'userid' => $userid, 'role' => $role);
+                        $data = ['orgid' => $org->orgid, 'userid' => $userid, 'role' => $role];
                         $DB->insert_record('local_eduvidual_orgid_userid', $data);
                     }
 
@@ -212,13 +220,13 @@ class lib_enrol {
                     // If we have a support course, add us there too.
                     if (!empty($org->supportcourseid)) {
                         $assignrole = ($role == locallib::ROLE_MANAGER) ? get_config('local_eduvidual', 'defaultroleteacher') : get_config('local_eduvidual', 'defaultrolestudent');
-                        \local_eduvidual\lib_enrol::course_manual_enrolments(array($org->supportcourseid), array($userid), $assignrole);
+                        self::course_manual_enrolments([$org->supportcourseid], [$userid], $assignrole);
                         if ($role == locallib::ROLE_MANAGER) {
-                            $forums = $DB->get_records('local_edusupport', array('courseid' => $org->supportcourseid));
+                            $forums = $DB->get_records('local_edusupport', ['courseid' => $org->supportcourseid]);
                             foreach ($forums as $forum) {
-                                $chk = $DB->get_record('forum_subscriptions', array('userid' => $userid, 'forum' => $forum->id));
+                                $chk = $DB->get_record('forum_subscriptions', ['userid' => $userid, 'forum' => $forum->id]);
                                 if (empty($chk->id)) {
-                                    $DB->insert_record('forum_subscriptions', array('userid' => $userid, 'forum' => $forum->id));
+                                    $DB->insert_record('forum_subscriptions', ['userid' => $userid, 'forum' => $forum->id]);
                                 }
                             }
                         }
@@ -229,16 +237,16 @@ class lib_enrol {
         }
 
         // Check for global roles.
-        $globalroles = array(
+        $globalroles = [
             'manager' => get_config('local_eduvidual', 'defaultglobalrolemanager'),
             'teacher' => get_config('local_eduvidual', 'defaultglobalroleteacher'),
             'student' => get_config('local_eduvidual', 'defaultglobalrolestudent'),
             'parent' => get_config('local_eduvidual', 'defaultglobalroleparent'),
-        );
+        ];
         $sql = "SELECT DISTINCT(role) AS role
                     FROM {local_eduvidual_orgid_userid}
                     WHERE userid=?";
-        $hasroles = array_values($DB->get_records_sql($sql, array($userid)));
+        $hasroles = array_values($DB->get_records_sql($sql, [$userid]));
         $syscontext = \context_system::instance();
         foreach ($hasroles as $hasrole) {
             $roleid = $globalroles[strtolower($hasrole->role)];
@@ -268,7 +276,7 @@ class lib_enrol {
             $context = \context_system::instance();
             $fs = get_file_storage();
             $files = $fs->get_area_files($context->id, 'local_eduvidual', 'backgrounds_cards', 0);
-            self::$backgrounds = array();
+            self::$backgrounds = [];
             foreach ($files as $file) {
                 if (str_replace('.', '', $file->get_filename()) != "") {
                     self::$backgrounds[] = '' . \moodle_url::make_pluginfile_url($file->get_contextid(), $file->get_component(), $file->get_filearea(), $file->get_itemid(), $file->get_filepath(), $file->get_filename());
@@ -293,7 +301,7 @@ class lib_enrol {
      **/
     public static function get_course_basements($type = 'all') {
         global $DB, $USER;
-        $courses = array();
+        $courses = [];
         if ($type == 'system' || $type == 'all') {
             $coursebasements = explode(",", get_config('local_eduvidual', 'coursebasements'));
             foreach ($coursebasements as $cb) {
@@ -301,9 +309,9 @@ class lib_enrol {
                     // hack für local-dev von daniel: das setting "coursebasements" existiert mehr?!?
                     $cb = 1;
                 }
-                $category = $DB->get_record('course_categories', array('id' => $cb));
-                $courses[$category->name] = array();
-                $cs = $DB->get_records_sql('SELECT * FROM {course} WHERE category=? AND visible=1 ORDER BY fullname ASC', array($cb));
+                $category = $DB->get_record('course_categories', ['id' => $cb]);
+                $courses[$category->name] = [];
+                $cs = $DB->get_records_sql('SELECT * FROM {course} WHERE category=? AND visible=1 ORDER BY fullname ASC', [$cb]);
                 foreach ($cs as $c) {
                     $c->imageurl = self::get_course_image($c);
                     $courses[$category->name][] = $c;
@@ -313,8 +321,8 @@ class lib_enrol {
         if ($type == 'user' || $type == 'all') {
             $_courses = enrol_get_all_users_courses($USER->id, true);
             $selflbl = get_string('teacher:coursebasements:ofuser', 'local_eduvidual');
-            $courses[$selflbl] = array();
-            $coursesbyname = array();
+            $courses[$selflbl] = [];
+            $coursesbyname = [];
             foreach ($_courses as $c) {
                 $context = \context_course::instance($c->id);
                 $canedit = has_capability('moodle/course:update', $context);
@@ -360,12 +368,15 @@ class lib_enrol {
      **/
     public static function course_manual_enrolments($courseids, $userids, $roleid) {
         global $CFG, $DB, $reply;
-        if (!isset($reply))
-            $reply = array();
-        if (!is_array($courseids))
-            $courseids = array($courseids);
-        if (!is_array($userids))
-            $userids = array($userids);
+        if (!isset($reply)) {
+            $reply = [];
+        }
+        if (!is_array($courseids)) {
+            $courseids = [$courseids];
+        }
+        if (!is_array($userids)) {
+            $userids = [$userids];
+        }
 
         // Check manual enrolment plugin instance is enabled/exist.
         $enrol = enrol_get_plugin('manual');
@@ -373,26 +384,27 @@ class lib_enrol {
             throw new \moodle_exception('manualpluginnotinstalled', 'enrol_manual');
         }
         $failures = 0;
-        $instances = array();
+        $instances = [];
         foreach ($courseids as $courseid) {
             // Check if course exists.
-            $course = $DB->get_record('course', array('id' => $courseid), '*', IGNORE_MISSING);
-            //$course = get_course($courseid);
-            if (empty($course->id))
+            $course = $DB->get_record('course', ['id' => $courseid], '*', IGNORE_MISSING);
+            // $course = get_course($courseid);
+            if (empty($course->id)) {
                 continue;
+            }
             if (empty($instances[$courseid])) {
                 $instances[$courseid] = self::get_enrol_instance($courseid);
             }
 
             foreach ($userids as $userid) {
-                if (!self::user_exists($userid))
+                if (!self::user_exists($userid)) {
                     continue;
+                }
                 if ($roleid == -1) {
                     $enrol->unenrol_user($instances[$courseid], $userid);
                 } else {
                     $enrol->enrol_user($instances[$courseid], $userid, $roleid, time(), 0, ENROL_USER_ACTIVE);
                 }
-
             }
         }
         return ($failures == 0);
@@ -435,7 +447,7 @@ class lib_enrol {
             if ($courseenrolinstance->enrol == "manual") {
                 if ($courseenrolinstance->status == 1) {
                     // It is inactive - we have to activate it!
-                    $data = (object)array('status' => 0);
+                    $data = (object)['status' => 0];
                     $enrol->update_instance($courseenrolinstance, $data);
                     $courseenrolinstance->status = $data->status;
                 }
@@ -457,25 +469,27 @@ class lib_enrol {
      */
     private static function set_orgcourserole($org, $orgrole, $userid) {
         $orgrole = strtolower($orgrole);
-        $valid = array('manager', 'teacher', 'student', 'parent');
-        if (!in_array($orgrole, $valid))
+        $valid = ['manager', 'teacher', 'student', 'parent'];
+        if (!in_array($orgrole, $valid)) {
             return;
+        }
         // Enrol into organization course as student or teacher (if it is a manager!!)
-        $roles = array(
+        $roles = [
             'manager' => get_config('local_eduvidual', 'defaultroleteacher'),
             'teacher' => get_config('local_eduvidual', 'defaultrolestudent'),
-        );
+        ];
         $roles['student'] = $roles['teacher'];
         $roles['parent'] = $roles['teacher'];
-        $orgcourses = array(
-            (object)array('courseid' => $org->courseid, 'context' => \context_course::instance($org->courseid, IGNORE_MISSING)),
-            (object)array('courseid' => $org->supportcourseid, 'context' => \context_course::instance($org->supportcourseid, IGNORE_MISSING)),
-        );
+        $orgcourses = [
+            (object)['courseid' => $org->courseid, 'context' => \context_course::instance($org->courseid, IGNORE_MISSING)],
+            (object)['courseid' => $org->supportcourseid, 'context' => \context_course::instance($org->supportcourseid, IGNORE_MISSING)],
+        ];
         foreach ($orgcourses as $orgcourse) {
             $courseid = $orgcourse->courseid;
             $context = $orgcourse->context;
-            if (empty($context->id))
+            if (empty($context->id)) {
                 continue;
+            }
             if (is_enrolled($context, $userid)) {
                 // Only switch role
                 $roletoassign = $roles[$orgrole];
@@ -488,7 +502,7 @@ class lib_enrol {
                 }
             } else {
                 // Enrol user with the required role.
-                self::course_manual_enrolments(array($courseid), array($userid), $roles[$orgrole]);
+                self::course_manual_enrolments([$courseid], [$userid], $roles[$orgrole]);
             }
         }
     }
@@ -500,19 +514,17 @@ class lib_enrol {
      */
     public static function user_exists($userid) {
         global $DB;
-        $chk = $DB->get_record('user', array('id' => $userid), 'deleted');
+        $chk = $DB->get_record('user', ['id' => $userid], 'deleted');
         if (!isset($chk->deleted)) {
             return false;
         } elseif ($chk->deleted == 1) {
             // Remove this user from any eduvidual-lists
-            $DB->delete_records('local_eduvidual_courseshow', array('userid' => $userid));
-            $DB->delete_records('local_eduvidual_orgid_userid', array('userid' => $userid));
-            $DB->delete_records('local_eduvidual_userqcats', array('userid' => $userid));
+            $DB->delete_records('local_eduvidual_courseshow', ['userid' => $userid]);
+            $DB->delete_records('local_eduvidual_orgid_userid', ['userid' => $userid]);
+            $DB->delete_records('local_eduvidual_userqcats', ['userid' => $userid]);
             return false;
         } else {
             return true;
         }
     }
-
-
 }

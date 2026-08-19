@@ -24,7 +24,7 @@
 defined('MOODLE_INTERNAL') || die;
 
 $orgid = required_param('orgid', PARAM_INT);
-$org = $DB->get_record('local_eduvidual_org', array('orgid' => $orgid));
+$org = $DB->get_record('local_eduvidual_org', ['orgid' => $orgid]);
 $context = \context_coursecat::instance($org->categoryid);
 require_capability('local/eduvidual:canmanage', $context);
 
@@ -34,19 +34,19 @@ switch ($act) {
         $code = optional_param('code', '', PARAM_TEXT);
         $maturity = optional_param('maturity', '2000-01-01 12:00:00', PARAM_TEXT);
         $role = optional_param('role', '', PARAM_TEXT);
-        $roles = array(\local_eduvidual\locallib::ROLE_STUDENT, \local_eduvidual\locallib::ROLE_TEACHER, \local_eduvidual\locallib::ROLE_MANAGER, \local_eduvidual\locallib::ROLE_PARENT);
+        $roles = [\local_eduvidual\locallib::ROLE_STUDENT, \local_eduvidual\locallib::ROLE_TEACHER, \local_eduvidual\locallib::ROLE_MANAGER, \local_eduvidual\locallib::ROLE_PARENT];
         $maturity = strtotime($maturity);
         if (!empty($code) && $maturity > time() && in_array($role, $roles)) {
-            $cnt = $DB->count_records_sql('SELECT COUNT(id) FROM {local_eduvidual_org_codes} WHERE orgid=? AND code=? AND maturity>UNIX_TIMESTAMP(NOW())', array($org->orgid, $code));
+            $cnt = $DB->count_records_sql('SELECT COUNT(id) FROM {local_eduvidual_org_codes} WHERE orgid=? AND code=? AND maturity>UNIX_TIMESTAMP(NOW())', [$org->orgid, $code]);
             $reply['cnt'] = $cnt;
             if ($cnt == 0) {
-                $code = (object)array(
+                $code = (object)[
                     'orgid' => $org->orgid,
                     'userid' => $USER->id,
                     'code' => $code,
                     'role' => $role,
                     'maturity' => $maturity,
-                );
+                ];
                 $code->id = $DB->insert_record('local_eduvidual_org_codes', $code, true);
                 $reply['code'] = $code;
                 if ($code->id > 0) {
@@ -65,7 +65,7 @@ switch ($act) {
         $id = optional_param('id', 0, PARAM_INT);
         if ($id > 0) {
             // Check if this code belongs to the correct org
-            $code = $DB->get_record('local_eduvidual_org_codes', array('id' => $id, 'orgid' => $org->orgid));
+            $code = $DB->get_record('local_eduvidual_org_codes', ['id' => $id, 'orgid' => $org->orgid]);
             if (!empty($code->id) && $code->id == $id) {
                 $code->maturity = time();
                 $DB->update_record('local_eduvidual_org_codes', $code);
@@ -82,7 +82,7 @@ switch ($act) {
     case 'removecategory':
         // Check if this category really belongs to the given org
         $parentid = optional_param('parentid', 0, PARAM_INT);
-        $cats = $DB->get_records_sql('SELECT * FROM {course_categories} WHERE path LIKE ? AND id=?', array('/' . $org->categoryid . '%', $parentid));
+        $cats = $DB->get_records_sql('SELECT * FROM {course_categories} WHERE path LIKE ? AND id=?', ['/' . $org->categoryid . '%', $parentid]);
         // Take first result as $cat
         foreach ($cats as $cat) {
         }
@@ -96,12 +96,12 @@ switch ($act) {
                 } elseif (strlen($name) > 255) {
                     $reply['error'] = 'name_too_long';
                 } else {
-                    $data = array(
+                    $data = [
                         'name' => $name,
                         'description' => '',
                         'parent' => $parentid,
                         'visible' => 1,
-                    );
+                    ];
                     $reply['catdata'] = $data;
                     $catid = \coursecat::create($data);
                     $reply['catid'] = $catid;
@@ -121,7 +121,7 @@ switch ($act) {
                         $reply['error'] = 'name_too_long';
                     } else {
                         $cat = \coursecat::get($parentid);
-                        $reply['editedcat'] = $DB->get_record('course_categories', array('id' => $parentid));
+                        $reply['editedcat'] = $DB->get_record('course_categories', ['id' => $parentid]);
                         $data = $cat->get_db_record();
                         $data->name = $name;
                         $cat->update($data);
@@ -134,7 +134,7 @@ switch ($act) {
                     $reply['error'] = 'root_category_can_not_be_touched';
                 } else {
                     $cat = \coursecat::get($parentid);
-                    $reply['removedcat'] = $DB->get_record('course_categories', array('id' => $parentid));
+                    $reply['removedcat'] = $DB->get_record('course_categories', ['id' => $parentid]);
                     $cat->delete_full();
                     $reply['status'] = 'ok';
                 }
@@ -151,12 +151,12 @@ switch ($act) {
         $parentid = optional_param('parentid', 0, PARAM_INT);
 
         if ($orgid > 0 && $studentid > 0 && $parentid > 0) {
-            $chk = $DB->get_record('local_eduvidual_orgid_userid', array('orgid' => $orgid, 'userid' => $USER->id));
+            $chk = $DB->get_record('local_eduvidual_orgid_userid', ['orgid' => $orgid, 'userid' => $USER->id]);
             if (!is_siteadmin() && $chk->role != \local_eduvidual\locallib::ROLE_MANAGER) {
                 $reply['error'] = 'not_member_of_this_org';
             } else {
-                $chk_student = $DB->get_record('local_eduvidual_orgid_userid', array('orgid' => $orgid, 'userid' => $studentid));
-                $chk_parent = $DB->get_record('local_eduvidual_orgid_userid', array('orgid' => $orgid, 'userid' => $parentid));
+                $chk_student = $DB->get_record('local_eduvidual_orgid_userid', ['orgid' => $orgid, 'userid' => $studentid]);
+                $chk_parent = $DB->get_record('local_eduvidual_orgid_userid', ['orgid' => $orgid, 'userid' => $parentid]);
                 if ($chk_student->userid != $studentid) {
                     $reply['error'] = 'student_not_member_of_this_org';
                 } elseif ($chk_parent->userid != $parentid) {
@@ -164,13 +164,12 @@ switch ($act) {
                 } else {
                     $studentcontext = \context_user::instance($studentid);
                     $parentrole = get_config('local_eduvidual', 'defaultroleparent');
-                    $hasrole = $DB->get_record('role_assignments', array('userid' => $parentid, 'roleid' => $parentrole, 'contextid' => $studentcontext->id));
+                    $hasrole = $DB->get_record('role_assignments', ['userid' => $parentid, 'roleid' => $parentrole, 'contextid' => $studentcontext->id]);
                     if (isset($hasrole->id) && $hasrole->id > 0) {
                         role_unassign($parentrole, $parentid, $studentcontext->id);
                     } else {
                         role_assign($parentrole, $parentid, $studentcontext->id);
                     }
-
                 }
             }
         } else {
@@ -180,7 +179,7 @@ switch ($act) {
     case 'addparent_filter':
         $orgid = optional_param('orgid', 0, PARAM_INT);
         $studentid = optional_param('studentid', 0, PARAM_INT);
-        $chk = $DB->get_record('local_eduvidual_orgid_userid', array('orgid' => $orgid, 'userid' => $USER->id));
+        $chk = $DB->get_record('local_eduvidual_orgid_userid', ['orgid' => $orgid, 'userid' => $USER->id]);
         if (!is_siteadmin() && $chk->role != \local_eduvidual\locallib::ROLE_MANAGER) {
             $reply['error'] = 'not_member_of_this_org';
         } else {
@@ -199,11 +198,11 @@ switch ($act) {
                             )
                             ORDER BY u1.lastname ASC,
                                 u1.firstname ASC";
-            $entries = $DB->get_records_sql($sql, array($orgid, $filter, $filter, $filter, $filter));
-            $reply['users'] = array();
+            $entries = $DB->get_records_sql($sql, [$orgid, $filter, $filter, $filter, $filter]);
+            $reply['users'] = [];
             if ($studentid > 0) {
-                $parents = array();
-                $users = array();
+                $parents = [];
+                $users = [];
                 $studentcontext = \context_user::instance($studentid);
                 $parentrole = get_config('local_eduvidual', 'defaultroleparent');
                 $reply['parentrole'] = $parentrole;
@@ -211,7 +210,7 @@ switch ($act) {
                 $reply['orgid'] = $orgid;
 
                 foreach ($entries as $user) {
-                    $hasrole = $DB->get_record('role_assignments', array('userid' => $user->id, 'roleid' => $parentrole, 'contextid' => $studentcontext->id));
+                    $hasrole = $DB->get_record('role_assignments', ['userid' => $user->id, 'roleid' => $parentrole, 'contextid' => $studentcontext->id]);
                     if (isset($hasrole->id) && $hasrole->id > 0) {
                         $user->isparent = true;
                         $parents[] = $user;
@@ -242,7 +241,7 @@ switch ($act) {
                 require_once($CFG->dirroot . '/user/lib.php');
                 $colors = file($CFG->dirroot . '/local/eduvidual/templates/names.colors', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
                 $animals = file($CFG->dirroot . '/local/eduvidual/templates/names.animals', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-                $domain = str_replace(array('https://', 'http://', 'www.'), '', $CFG->wwwroot);
+                $domain = str_replace(['https://', 'http://', 'www.'], '', $CFG->wwwroot);
 
                 for ($a = 0; $a < $amount; $a++) {
                     $color_key = array_rand($colors, 1);
@@ -265,7 +264,7 @@ switch ($act) {
                         $u->username = $u->email;
                         user_update_user($u, false);
                         $u->secret = \local_eduvidual\locallib::get_user_secret($u->id);
-                        $user = $DB->get_record('user', array('id' => $u->id));
+                        $user = $DB->get_record('user', ['id' => $u->id]);
                         update_internal_user_password($user, $u->secret, false);
 
                         \local_eduvidual\lib_enrol::role_set($u->id, $orgid, $role);
@@ -287,7 +286,7 @@ switch ($act) {
                     $reply['status'] = 'ok';
                 }
             } else {
-                $reply['error'] = get_string('manage:createuseranonymous:exceededmax:text', 'local_eduvidual', array('maximum' => $maximum));
+                $reply['error'] = get_string('manage:createuseranonymous:exceededmax:text', 'local_eduvidual', ['maximum' => $maximum]);
             }
         } else {
             $reply['error'] = get_string('access_denied', 'local_eduvidual');
@@ -297,23 +296,23 @@ switch ($act) {
         $secrets = explode(' ', optional_param('secret', '', PARAM_TEXT));
     case 'setuserrole':
         if (!isset($secrets)) {
-            $secrets = optional_param_array('secrets', NULL, PARAM_TEXT);
+            $secrets = optional_param_array('secrets', null, PARAM_TEXT);
         }
         $reply['org'] = $org;
-        $reply['updated'] = array();
-        $reply['failed'] = array();
-        $reply['enrolments'] = array();
-        $reply['unenrolments'] = array();
+        $reply['updated'] = [];
+        $reply['failed'] = [];
+        $reply['enrolments'] = [];
+        $reply['unenrolments'] = [];
 
         foreach ($secrets as $secret_) {
             $secret = explode('#', $secret_);
             $secret[0] = trim($secret[0]);
             $secret[1] = trim($secret[1]);
-            $chkuser = $DB->get_record('user', array('id' => $secret[0]));
+            $chkuser = $DB->get_record('user', ['id' => $secret[0]]);
             if (isset($chkuser) && $chkuser->id == $secret[0]) {
                 $dbsecret = \local_eduvidual\locallib::get_user_secret($secret[0]);
                 if ($dbsecret == $secret[1]) {
-                    $roles = array(\local_eduvidual\locallib::ROLE_MANAGER, \local_eduvidual\locallib::ROLE_TEACHER, \local_eduvidual\locallib::ROLE_STUDENT, \local_eduvidual\locallib::ROLE_PARENT, 'remove');
+                    $roles = [\local_eduvidual\locallib::ROLE_MANAGER, \local_eduvidual\locallib::ROLE_TEACHER, \local_eduvidual\locallib::ROLE_STUDENT, \local_eduvidual\locallib::ROLE_PARENT, 'remove'];
                     $role = optional_param('role', '', PARAM_TEXT);
                     if (in_array($role, $roles)) {
                         $reply = array_merge($reply, \local_eduvidual\lib_enrol::role_set($secret[0], $org, $role));
@@ -335,7 +334,7 @@ switch ($act) {
         break;
     case 'customcss':
         $org->customcss = optional_param('customcss', '', PARAM_TEXT);
-        if ($DB->execute('UPDATE {local_eduvidual_org} SET customcss=? WHERE id=?', array($org->customcss, $org->id))) {
+        if ($DB->execute('UPDATE {local_eduvidual_org} SET customcss=? WHERE id=?', [$org->customcss, $org->id])) {
             $reply['status'] = 'ok';
         } else {
             $reply['error'] = 'db_error';
@@ -345,7 +344,7 @@ switch ($act) {
         $courseid = optional_param('courseid', 0, PARAM_INT);
         if ($courseid > 0) {
             if (!empty($org->orgid) && (\local_eduvidual\locallib::get_orgrole($org->orgid) == \local_eduvidual\locallib::ROLE_MANAGER || is_siteadmin())) {
-                \local_eduvidual\lib_enrol::course_manual_enrolments(array($courseid), array($USER->id), get_config('local_eduvidual', 'defaultroleteacher'));
+                \local_eduvidual\lib_enrol::course_manual_enrolments([$courseid], [$USER->id], get_config('local_eduvidual', 'defaultroleteacher'));
                 $reply['status'] = 'ok';
             } else {
                 $reply['error'] = get_string('access_denied', 'local_eduvidual');
@@ -373,7 +372,6 @@ switch ($act) {
                     } else {
                         $reply['error'] = 'invalid_character';
                     }
-
                 } else {
                     $reply['error'] = 'start_with_at';
                 }
@@ -384,24 +382,25 @@ switch ($act) {
         break;
     case 'maildomain_apply':
         if (is_siteadmin()) {
-            $types = array('maildomain', 'maildomainteacher');
-            $reply['updated'] = array(
+            $types = ['maildomain', 'maildomainteacher'];
+            $reply['updated'] = [
                 \local_eduvidual\locallib::ROLE_STUDENT => 0,
                 \local_eduvidual\locallib::ROLE_TEACHER => 0,
-            );
+            ];
             foreach ($types as $type) {
                 // Now we look for all users of that domain.
-                if (empty($org->{$type}))
+                if (empty($org->{$type})) {
                     continue;
+                }
                 $domains = explode(',', $org->{$type});
                 $role = ($type == 'maildomainteacher') ? \local_eduvidual\locallib::ROLE_TEACHER : \local_eduvidual\locallib::ROLE_STUDENT;
                 $sql = "SELECT id
                             FROM {user}
                             WHERE email LIKE ?";
                 foreach ($domains as $domain) {
-                    $users = $DB->get_records_sql($sql, array('%' . $domain));
+                    $users = $DB->get_records_sql($sql, ['%' . $domain]);
                     foreach ($users as $user) {
-                        $hasrole = $DB->get_record('local_eduvidual_orgid_userid', array('orgid' => $org->orgid, 'userid' => $user->id));
+                        $hasrole = $DB->get_record('local_eduvidual_orgid_userid', ['orgid' => $org->orgid, 'userid' => $user->id]);
                         if (empty($hasrole->id)) {
                             $reply['updated'][$role]++;
                             \local_eduvidual\lib_enrol::role_set($user->id, $org, $role);
@@ -417,22 +416,22 @@ switch ($act) {
         $new_serverurl = optional_param('bbb_serverurl', '', PARAM_URL);
         $new_sharedsecret = optional_param('bbb_sharedsecret', '', PARAM_ALPHANUM);
 
-        $bbb_serverurl = $DB->get_record('local_eduvidual_overrides', array('orgid' => $org->orgid, 'field' => 'bigbluebuttonbn_server_url'));
+        $bbb_serverurl = $DB->get_record('local_eduvidual_overrides', ['orgid' => $org->orgid, 'field' => 'bigbluebuttonbn_server_url']);
         if (!empty($bbb_serverurl->id)) {
             $reply['setfieldurl'] = $new_serverurl;
-            $DB->set_field('local_eduvidual_overrides', 'value', $new_serverurl, array('orgid' => $org->orgid, 'field' => 'bigbluebuttonbn_server_url'));
+            $DB->set_field('local_eduvidual_overrides', 'value', $new_serverurl, ['orgid' => $org->orgid, 'field' => 'bigbluebuttonbn_server_url']);
         } else {
             $reply['insertfieldurl'] = $new_serverurl;
-            $DB->insert_record('local_eduvidual_overrides', array('orgid' => $org->orgid, 'field' => 'bigbluebuttonbn_server_url', 'value' => $new_serverurl));
+            $DB->insert_record('local_eduvidual_overrides', ['orgid' => $org->orgid, 'field' => 'bigbluebuttonbn_server_url', 'value' => $new_serverurl]);
         }
 
-        $bbb_sharedsecret = $DB->get_record('local_eduvidual_overrides', array('orgid' => $org->orgid, 'field' => 'bigbluebuttonbn_shared_secret'));
+        $bbb_sharedsecret = $DB->get_record('local_eduvidual_overrides', ['orgid' => $org->orgid, 'field' => 'bigbluebuttonbn_shared_secret']);
         if (!empty($bbb_sharedsecret->id)) {
             $reply['setfieldsecret'] = $new_sharedsecret;
-            $DB->set_field('local_eduvidual_overrides', 'value', $new_sharedsecret, array('orgid' => $org->orgid, 'field' => 'bigbluebuttonbn_shared_secret'));
+            $DB->set_field('local_eduvidual_overrides', 'value', $new_sharedsecret, ['orgid' => $org->orgid, 'field' => 'bigbluebuttonbn_shared_secret']);
         } else {
             $reply['insertfieldsecret'] = $new_sharedsecret;
-            $DB->insert_record('local_eduvidual_overrides', array('orgid' => $org->orgid, 'field' => 'bigbluebuttonbn_shared_secret', 'value' => $new_sharedsecret));
+            $DB->insert_record('local_eduvidual_overrides', ['orgid' => $org->orgid, 'field' => 'bigbluebuttonbn_shared_secret', 'value' => $new_sharedsecret]);
         }
         $reply['status'] = 'ok';
         break;
@@ -443,22 +442,22 @@ switch ($act) {
                     WHERE r.id=rcl.roleid
                         AND rcl.contextlevel = ?
                     ORDER BY r.name ASC";
-        $allowedroles = array_keys($DB->get_records_sql($sql, array(CONTEXT_COURSE)));
+        $allowedroles = array_keys($DB->get_records_sql($sql, [CONTEXT_COURSE]));
         foreach ($overrides as $override) {
             if (!empty($override->roleid) && in_array($override->roleid, $allowedroles)) {
                 if (empty($override->override)) {
-                    $DB->delete_records('local_eduvidual_overrides', array('orgid' => $org->orgid, 'field' => 'courserole_' . $override->roleid . '_name'));
+                    $DB->delete_records('local_eduvidual_overrides', ['orgid' => $org->orgid, 'field' => 'courserole_' . $override->roleid . '_name']);
                 } else {
-                    $rec = $DB->get_record('local_eduvidual_overrides', array('orgid' => $org->orgid, 'field' => 'courserole_' . $override->roleid . '_name'));
+                    $rec = $DB->get_record('local_eduvidual_overrides', ['orgid' => $org->orgid, 'field' => 'courserole_' . $override->roleid . '_name']);
                     if (!empty($rec->id)) {
                         $rec->value = $override->override;
-                        $DB->set_field('local_eduvidual_overrides', 'value', $rec->value, array('orgid' => $org->orgid, 'field' => 'courserole_' . $override->roleid . '_name'));
+                        $DB->set_field('local_eduvidual_overrides', 'value', $rec->value, ['orgid' => $org->orgid, 'field' => 'courserole_' . $override->roleid . '_name']);
                     } else {
-                        $override = (object)array(
+                        $override = (object)[
                             'orgid' => $org->orgid,
                             'field' => 'courserole_' . $override->roleid . '_name',
                             'value' => $override->override,
-                        );
+                        ];
                         $override->id = $DB->insert_record('local_eduvidual_overrides', $override);
                     }
                 }
@@ -468,16 +467,16 @@ switch ($act) {
         break;
     case 'setpwforcechange':
         if (!isset($secrets)) {
-            $secrets = optional_param_array('secrets', NULL, PARAM_TEXT);
+            $secrets = optional_param_array('secrets', null, PARAM_TEXT);
         }
-        $resetfor = array("manual", "email");
+        $resetfor = ["manual", "email"];
         $reply['org'] = $org;
-        $reply['updated'] = array();
-        $reply['failed'] = array();
+        $reply['updated'] = [];
+        $reply['failed'] = [];
 
         foreach ($secrets as $secret_) {
             $secret = explode('#', $secret_);
-            $chkuser = $DB->get_record('user', array('id' => $secret[0]));
+            $chkuser = $DB->get_record('user', ['id' => $secret[0]]);
             if (isset($chkuser) && $chkuser->id == $secret[0]) {
                 $dbsecret = \local_eduvidual\locallib::get_user_secret($secret[0]);
                 if ($dbsecret == $secret[1]) {
@@ -502,16 +501,16 @@ switch ($act) {
         break;
     case 'setpwreset':
         if (!isset($secrets)) {
-            $secrets = optional_param_array('secrets', NULL, PARAM_TEXT);
+            $secrets = optional_param_array('secrets', null, PARAM_TEXT);
         }
-        $resetfor = array("manual", "email");
+        $resetfor = ["manual", "email"];
         $reply['org'] = $org;
-        $reply['updated'] = array();
-        $reply['failed'] = array();
+        $reply['updated'] = [];
+        $reply['failed'] = [];
 
         foreach ($secrets as $secret_) {
             $secret = explode('#', $secret_);
-            $chkuser = $DB->get_record('user', array('id' => $secret[0]));
+            $chkuser = $DB->get_record('user', ['id' => $secret[0]]);
             if (isset($chkuser) && $chkuser->id == $secret[0]) {
                 $dbsecret = \local_eduvidual\locallib::get_user_secret($secret[0]);
                 if ($dbsecret == $secret[1]) {
@@ -537,33 +536,33 @@ switch ($act) {
     case 'setuserrole_search':
         $minimum = 2;
         $search = optional_param('search', '', PARAM_TEXT);
-        $reply['users'] = array();
+        $reply['users'] = [];
         if (strlen($search) > $minimum) {
             $search = "%" . $search . "%";
             $CONCAT = 'CONCAT("[",ou.role,"] ",u.firstname," ",u.lastname)';
             if (false && is_siteadmin()) {
-                $users = $DB->get_records_sql('SELECT u.id,u.email,' . $CONCAT . ' AS userfullname FROM {user} AS u INNER JOIN {local_eduvidual_orgid_userid} AS ou ON u.id=ou.userid WHERE ' . $CONCAT . ' LIKE ? AND u.suspended=0', array($search));
+                $users = $DB->get_records_sql('SELECT u.id,u.email,' . $CONCAT . ' AS userfullname FROM {user} AS u INNER JOIN {local_eduvidual_orgid_userid} AS ou ON u.id=ou.userid WHERE ' . $CONCAT . ' LIKE ? AND u.suspended=0', [$search]);
             } else {
-                $users = $DB->get_records_sql('SELECT u.id,u.email,' . $CONCAT . ' AS userfullname FROM {user} AS u INNER JOIN {local_eduvidual_orgid_userid} AS ou ON u.id=ou.userid WHERE ou.orgid=? AND ' . $CONCAT . ' LIKE ? AND u.suspended=0', array($org->orgid, $search));
+                $users = $DB->get_records_sql('SELECT u.id,u.email,' . $CONCAT . ' AS userfullname FROM {user} AS u INNER JOIN {local_eduvidual_orgid_userid} AS ou ON u.id=ou.userid WHERE ou.orgid=? AND ' . $CONCAT . ' LIKE ? AND u.suspended=0', [$org->orgid, $search]);
             }
             require_once($CFG->dirroot . '/user/profile/lib.php');
             foreach ($users as $user) {
                 profile_load_data($user);
-                $item = array(
+                $item = [
                     "id" => $user->id,
                     "secret" => $user->id . '#' . $user->profile_field_secret,
                     "userfullname" => $user->userfullname,
                     "email" => $user->email,
-                );
+                ];
                 $reply['users'][] = $item;
             }
         } else {
-            $reply['users'][] = array(
+            $reply['users'][] = [
                 "id" => 0,
                 "secret" => '#',
                 "userfullname" => get_string('minimum_x_chars', 'local_eduvidual', $minimum),
                 "email" => '',
-            );
+            ];
         }
 
         $reply['status'] = 'ok';

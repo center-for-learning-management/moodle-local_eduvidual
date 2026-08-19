@@ -30,17 +30,17 @@ $orgid = optional_param('orgid', 0, PARAM_INT);
 $cohort = optional_param('cohort', '___all', PARAM_TEXT);
 $format = optional_param('format', 'list', PARAM_ALPHANUM);
 
-$org = $DB->get_record('local_eduvidual_org', array('orgid' => $orgid), '*', MUST_EXIST);
+$org = $DB->get_record('local_eduvidual_org', ['orgid' => $orgid], '*', MUST_EXIST);
 $context = \context_coursecat::instance($org->categoryid);
 $PAGE->set_context($context);
 
-$PAGE->set_url(new \moodle_url('/local/eduvidual/pages/manage_userlists.php', array('orgid' => $orgid, 'cohort' => $cohort, 'format' => $format)));
+$PAGE->set_url(new \moodle_url('/local/eduvidual/pages/manage_userlists.php', ['orgid' => $orgid, 'cohort' => $cohort, 'format' => $format]));
 $PAGE->set_title(get_string('manage:userlist', 'local_eduvidual', $org));
 $PAGE->set_heading(get_string('manage:userlist', 'local_eduvidual', $org));
 $PAGE->requires->css('/local/eduvidual/style/manage_bunch.css');
 
 // Only allow a certain user group access to this script
-$allow = array("Manager");
+$allow = ["Manager"];
 if (!in_array(\local_eduvidual\locallib::get_orgrole($orgid), $allow) && !is_siteadmin()) {
     echo $OUTPUT->header();
     ?>
@@ -50,10 +50,10 @@ if (!in_array(\local_eduvidual\locallib::get_orgrole($orgid), $allow) && !is_sit
     exit;
 }
 
-$PAGE->navbar->add(get_string('Management', 'local_eduvidual'), new moodle_url('/local/eduvidual/pages/manage.php', array('orgid' => $orgid)));
+$PAGE->navbar->add(get_string('Management', 'local_eduvidual'), new moodle_url('/local/eduvidual/pages/manage.php', ['orgid' => $orgid]));
 $PAGE->navbar->add(get_string('manage:userlist', 'local_eduvidual', $org), $PAGE->url);
 
-$table = new class($orgid, $cohort) extends local_table_sql\table_sql_form {
+$table = new class ($orgid, $cohort) extends local_table_sql\table_sql_form {
     function __construct(private int $orgid, private string $cohort) {
         parent::__construct([$orgid, $cohort]);
     }
@@ -97,7 +97,7 @@ $table = new class($orgid, $cohort) extends local_table_sql\table_sql_form {
         ", $params);
 
         if ($this->is_downloading()) {
-            $cols = array(
+            $cols = [
                 'id' => 'id',
                 'auth' => 'auth',
                 'username' => 'username',
@@ -111,7 +111,7 @@ $table = new class($orgid, $cohort) extends local_table_sql\table_sql_form {
                 'secret' => 'secret',
                 'password' => 'password',
                 'forcechangepassword' => 'forcechangepassword',
-            );
+            ];
         } else {
             $cols = [
                 'userpic' => get_string('pictureofuser'),
@@ -150,14 +150,14 @@ $table = new class($orgid, $cohort) extends local_table_sql\table_sql_form {
                 $mform->setType('email', PARAM_TEXT);
             }
 
-            //Custom validation should be added here
+            // Custom validation should be added here
             function validation($data, $files) {
-                $errors = array();
+                $errors = [];
                 if (strlen($data['firstname']) < 2) {
-                    $errors['firstname'] = get_string('manage:profile:tooshort', 'local_eduvidual', array('fieldname' => get_string('firstname'), 'minchars' => '2'));
+                    $errors['firstname'] = get_string('manage:profile:tooshort', 'local_eduvidual', ['fieldname' => get_string('firstname'), 'minchars' => '2']);
                 }
                 if (strlen($data['lastname']) < 2) {
-                    $errors['lastname'] = get_string('manage:profile:tooshort', 'local_eduvidual', array('fieldname' => get_string('lastname'), 'minchars' => '2'));
+                    $errors['lastname'] = get_string('manage:profile:tooshort', 'local_eduvidual', ['fieldname' => get_string('lastname'), 'minchars' => '2']);
                 }
                 if (!validate_email($data['email'])) {
                     $errors['email'] = get_string('manage:profile:invalidmail', 'local_eduvidual');
@@ -170,7 +170,7 @@ $table = new class($orgid, $cohort) extends local_table_sql\table_sql_form {
     function col_userpic($row) {
         global $OUTPUT;
 
-        return $OUTPUT->user_picture($row, array('size' => 50));
+        return $OUTPUT->user_picture($row, ['size' => 50]);
     }
 
     function col_email($row) {
@@ -202,7 +202,7 @@ $table = new class($orgid, $cohort) extends local_table_sql\table_sql_form {
         static $org;
 
         if (!$org) {
-            $org = $DB->get_record('local_eduvidual_org', array('orgid' => $this->orgid));
+            $org = $DB->get_record('local_eduvidual_org', ['orgid' => $this->orgid]);
             $context = \context_coursecat::instance($org->categoryid);
         }
 
@@ -212,8 +212,8 @@ $table = new class($orgid, $cohort) extends local_table_sql\table_sql_form {
                 WHERE c.id=cm.cohortid
                     AND cm.userid=?
                     AND c.contextid=?";
-            $cohorts = $DB->get_records_sql($sql, array($row->id, $context->id));
-            $cohorts_ = array();
+            $cohorts = $DB->get_records_sql($sql, [$row->id, $context->id]);
+            $cohorts_ = [];
             foreach ($cohorts as $cohort) {
                 $cohorts_[] = $cohort->name;
             }
@@ -247,15 +247,15 @@ $table = new class($orgid, $cohort) extends local_table_sql\table_sql_form {
 echo $OUTPUT->header();
 
 $cohorts = [];
-$cohorts[] = (object)array('id' => '___all', 'name' => get_string('manage:bunch:all', 'local_eduvidual'));
-$cohorts[] = (object)array('id' => '___allparents', 'name' => get_string('manage:bunch:allparents', 'local_eduvidual'));
-$cohorts[] = (object)array('id' => '___allstudents', 'name' => get_string('manage:bunch:allstudents', 'local_eduvidual'));
-$cohorts[] = (object)array('id' => '___allteachers', 'name' => get_string('manage:bunch:allteachers', 'local_eduvidual'));
-$cohorts[] = (object)array('id' => '___allmanagers', 'name' => get_string('manage:bunch:allmanagers', 'local_eduvidual'));
+$cohorts[] = (object)['id' => '___all', 'name' => get_string('manage:bunch:all', 'local_eduvidual')];
+$cohorts[] = (object)['id' => '___allparents', 'name' => get_string('manage:bunch:allparents', 'local_eduvidual')];
+$cohorts[] = (object)['id' => '___allstudents', 'name' => get_string('manage:bunch:allstudents', 'local_eduvidual')];
+$cohorts[] = (object)['id' => '___allteachers', 'name' => get_string('manage:bunch:allteachers', 'local_eduvidual')];
+$cohorts[] = (object)['id' => '___allmanagers', 'name' => get_string('manage:bunch:allmanagers', 'local_eduvidual')];
 
-$other_cohorts = array_values($DB->get_records_sql("SELECT id,name FROM {cohort} WHERE contextid=? ORDER BY name ASC", array($context->id)));
+$other_cohorts = array_values($DB->get_records_sql("SELECT id,name FROM {cohort} WHERE contextid=? ORDER BY name ASC", [$context->id]));
 if ($other_cohorts) {
-    $cohorts[] = (object)array('id' => '', 'name' => '--------------------------------');
+    $cohorts[] = (object)['id' => '', 'name' => '--------------------------------'];
     $cohorts = array_merge($cohorts, $other_cohorts);
 }
 
@@ -265,10 +265,10 @@ foreach ($cohorts as $c) {
 
 require_once($CFG->dirroot . '/user/profile/lib.php');
 
-$formats = array(
-    (object)array('format' => 'cards', 'name' => get_string('manage:user_bunches:format:cards', 'local_eduvidual')),
-    (object)array('format' => 'list', 'name' => get_string('manage:user_bunches:format:list', 'local_eduvidual')),
-);
+$formats = [
+    (object)['format' => 'cards', 'name' => get_string('manage:user_bunches:format:cards', 'local_eduvidual')],
+    (object)['format' => 'list', 'name' => get_string('manage:user_bunches:format:list', 'local_eduvidual')],
+];
 foreach ($formats as &$f) {
     $f->selected = ($format == $f->format);
 }
@@ -284,7 +284,7 @@ if ($format == 'cards') {
         if (empty($user->backgroundcard)) {
             $user->backgroundcard = \local_eduvidual\lib_enrol::choose_background($user->id);
         }
-        $user->userpicture = $OUTPUT->user_picture($user, array('size' => 200));
+        $user->userpicture = $OUTPUT->user_picture($user, ['size' => 200]);
 
         $cnt++;
         if ($cnt == 18) {
@@ -296,14 +296,14 @@ if ($format == 'cards') {
     $users = [];
 }
 
-echo $OUTPUT->render_from_template('local_eduvidual/manage_userlists', array(
+echo $OUTPUT->render_from_template('local_eduvidual/manage_userlists', [
     'cohorts' => $cohorts,
     'format_cards' => ($format == 'cards'),
     'formats' => $formats,
     'orgid' => $orgid,
     'users' => array_values($users),
     'wwwroot' => $CFG->wwwroot,
-));
+]);
 
 if ($format == 'list') {
     $table->out();

@@ -27,8 +27,9 @@ defined('MOODLE_INTERNAL') || die();
  * It receives all profile data from the Shibboleth-Login and managers enrolments to organisations.
  */
 
-if (empty($idpparams['userinfo']['username']))
+if (empty($idpparams['userinfo']['username'])) {
     return;
+}
 
 global $DB, $USER;
 
@@ -46,20 +47,20 @@ if ($idpparams['userinfo']['firstname'] && $idpparams['userinfo']['lastname'] &&
 // If data is missing - fill with random data and store back to cache.
 // TODO: für was wird das noch benötigt?!?
 if (empty($idpparams['userinfo']['firstname'])) {
-    $colors = file($CFG->dirroot.'/local/eduvidual/templates/names.colors', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    $colors = file($CFG->dirroot . '/local/eduvidual/templates/names.colors', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
     $color_key = array_rand($colors, 1);
     $idpparams['userinfo']['firstname'] = $colors[$color_key];
 }
 if (empty($idpparams['userinfo']['lastname'])) {
-    $animals = file($CFG->dirroot.'/local/eduvidual/templates/names.animals', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    $animals = file($CFG->dirroot . '/local/eduvidual/templates/names.animals', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
     $animal_key = array_rand($animals, 1);
     $idpparams['userinfo']['lastname'] = $animals[$animal_key];
 }
 if (empty($idpparams['userinfo']['email'])) {
     $dummydomain = \local_eduvidual\locallib::get_dummydomain();
-    $pattern = 'e-'.date("Ym").'-';
-    $usernameformat = $pattern.'%1$04d';
-    $lasts = $DB->get_records_sql('SELECT username FROM {user} WHERE username LIKE ? ORDER BY username DESC LIMIT 0,1', array($pattern.'%'));
+    $pattern = 'e-' . date("Ym") . '-';
+    $usernameformat = $pattern . '%1$04d';
+    $lasts = $DB->get_records_sql('SELECT username FROM {user} WHERE username LIKE ? ORDER BY username DESC LIMIT 0,1', [$pattern . '%']);
     if ((count($lasts)) > 0) {
         foreach ($lasts as $last) {
             $usernumber = intval(str_replace($pattern, '', $last->username)) + 1;
@@ -69,7 +70,7 @@ if (empty($idpparams['userinfo']['email'])) {
     }
 
     $fictiveusername = sprintf($usernameformat, $usernumber++);
-    $idpparams['userinfo']['email'] = $fictiveusername.$dummydomain;
+    $idpparams['userinfo']['email'] = $fictiveusername . $dummydomain;
 }
 
 
@@ -103,7 +104,7 @@ function local_eduvidual_get_highest_role($memberships) {
 // schulzugehörigkeit updaten
 if (!empty($idpparams['userinfo']['affiliation']) && isloggedin() && !isguestuser()) {
     $affiliations = explode(';', $idpparams['userinfo']['affiliation']);
-    $myorgs = $DB->get_records('local_eduvidual_orgid_userid', array('userid' => $USER->id));
+    $myorgs = $DB->get_records('local_eduvidual_orgid_userid', ['userid' => $USER->id]);
 
     $wantedOrgs = [];
     foreach ($affiliations as $affiliation) {

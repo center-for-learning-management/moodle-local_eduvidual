@@ -28,7 +28,7 @@ require_login();
 require_once($CFG->libdir . '/adminlib.php');
 
 $orgid = required_param('orgid', PARAM_INT);
-$org = $DB->get_record('local_eduvidual_org', array('orgid' => $orgid), '*', MUST_EXIST);
+$org = $DB->get_record('local_eduvidual_org', ['orgid' => $orgid], '*', MUST_EXIST);
 $context = \context_coursecat::instance($org->categoryid);
 
 require_capability('local/eduvidual:canmanage', $context);
@@ -36,7 +36,7 @@ require_capability('local/eduvidual:canmanage', $context);
 $act = optional_param('act', 'users', PARAM_TEXT);
 
 $PAGE->set_context($context);
-$PAGE->set_url('/local/eduvidual/pages/manage.php', array('act' => $act, 'orgid' => $orgid));
+$PAGE->set_url('/local/eduvidual/pages/manage.php', ['act' => $act, 'orgid' => $orgid]);
 $PAGE->set_title(get_string('Management', 'local_eduvidual'));
 $PAGE->set_heading(get_string('Management', 'local_eduvidual'));
 
@@ -73,9 +73,9 @@ switch ($act) {
 $PAGE->set_title($org->name . ': ' . $title);
 $PAGE->set_heading($org->name . ': ' . $title);
 
-$orgurl = new \moodle_url('/course/index.php', array('categoryid' => $org->categoryid));
+$orgurl = new \moodle_url('/course/index.php', ['categoryid' => $org->categoryid]);
 $PAGE->navbar->add($org->name, $orgurl);
-$manageurl = new \moodle_url('/local/eduvidual/pages/manage.php', array('orgid' => $orgid));
+$manageurl = new \moodle_url('/local/eduvidual/pages/manage.php', ['orgid' => $orgid]);
 $PAGE->navbar->add(get_string('Management', 'local_eduvidual'), $manageurl);
 
 if (!empty($act)) {
@@ -91,18 +91,18 @@ $includefile = $CFG->dirroot . '/local/eduvidual/pages/sub/manage_' . $act . '.p
 \local_eduvidual\locallib::print_act_selector($actions, $act);
 */
 
-$oactions = array();
+$oactions = [];
 
 foreach ($actions as $key => $action) {
-    $oactions[] = array(
+    $oactions[] = [
         'action' => $action,
         'key' => $key,
         'localized' => get_string($action, 'local_eduvidual'),
         'selected' => ($key == $act),
-        'url' => new \moodle_url('/local/eduvidual/pages/manage.php', array('orgid' => $orgid, 'act' => $key)),
-    );
+        'url' => new \moodle_url('/local/eduvidual/pages/manage.php', ['orgid' => $orgid, 'act' => $key]),
+    ];
 }
-echo $OUTPUT->render_from_template('local_eduvidual/manage_overview', array('actions' => $oactions));
+echo $OUTPUT->render_from_template('local_eduvidual/manage_overview', ['actions' => $oactions]);
 
 if (!empty($act) && in_array($act, $subpages) && file_exists($includefile)) {
     include($includefile);

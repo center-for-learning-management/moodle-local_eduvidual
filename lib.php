@@ -50,7 +50,7 @@ function local_eduvidual_extend_navigation(global_navigation $navigation) {
     if ($highestrole) {
         $custommenu .= get_string('browse_org', 'local_eduvidual') . "|/local/eduvidual/pages/myorgs.php\n";
 
-        if (in_array($highestrole, array(\local_eduvidual\locallib::ROLE_MANAGER, \local_eduvidual\locallib::ROLE_TEACHER))) {
+        if (in_array($highestrole, [\local_eduvidual\locallib::ROLE_MANAGER, \local_eduvidual\locallib::ROLE_TEACHER])) {
             $custommenu .= get_string('createcourse:here', 'local_eduvidual') . "|/local/eduvidual/pages/createcourse.php\n";
         }
     }
@@ -81,7 +81,7 @@ function local_eduvidual_extend_navigation_category_settings($nav, $context) {
     $org = \local_eduvidual\locallib::get_org_by_context($context->id);
     if (!empty($org->orgid) && (\local_eduvidual\locallib::get_orgrole($org->orgid) == \local_eduvidual\locallib::ROLE_MANAGER || is_siteadmin())) {
         $label = get_string('Management', 'local_eduvidual');
-        $link = new moodle_url('/local/eduvidual/pages/manage.php', array('orgid' => $org->orgid));
+        $link = new moodle_url('/local/eduvidual/pages/manage.php', ['orgid' => $org->orgid]);
         $icon = new pix_icon('/t/gears', '', '');
         $nodecreatecourse = $nav->add($label, $link, navigation_node::NODETYPE_LEAF, $label, 'eduvidualmanagement', $icon);
         $nodecreatecourse->showinflatnavigation = true;
@@ -95,11 +95,11 @@ function local_eduvidual_extend_navigation_course($nav, $course, $context) {
     global $DB, $USER;
     $coursecontext = \context_course::instance($course->id);
     if (has_capability('moodle/course:delete', $coursecontext)) {
-        //$node = $nav->find('courseadmin', null);   // 'courseadmin' is the menu key
+        // $node = $nav->find('courseadmin', null);   // 'courseadmin' is the menu key
         $nav->add(get_string('deletecourse'), new moodle_url('/course/delete.php?id=' . $course->id));
     }
     if (\local_eduvidual\locallib::is_manager($course->category)) {
-        $nav->add(get_string('manage:enrolmeasteacher', 'local_eduvidual'), new \moodle_url('/local/eduvidual/pages/redirects/forceenrol.php', array('courseid' => $course->id)));
+        $nav->add(get_string('manage:enrolmeasteacher', 'local_eduvidual'), new \moodle_url('/local/eduvidual/pages/redirects/forceenrol.php', ['courseid' => $course->id]));
     }
     if ($otherusers = $nav->find('otherusers', global_navigation::TYPE_SETTING)) {
         $otherusers->remove();
@@ -126,17 +126,16 @@ function local_eduvidual_extend_navigation_user_settings($nav, $user, $context, 
 
         $node->add(get_string('advanced_options', 'local_experience') . ': ' . get_string($is_on ? 'on' : 'off', 'mnet'), new moodle_url('/local/experience/pages/advanced_options.php'));
 
-        //print_r($nav);die();
-        //$nav->add(get_string('test'), new moodle_url('/local/eduvidual/pages/preferendes.php'));
-        $node->add(get_string('preferences:selectbg:title', 'local_eduvidual'), new moodle_url('/local/eduvidual/pages/preferences.php', array('act' => 'backgrounds', 'userid' => $user->id)));
+        // print_r($nav);die();
+        // $nav->add(get_string('test'), new moodle_url('/local/eduvidual/pages/preferendes.php'));
+        $node->add(get_string('preferences:selectbg:title', 'local_eduvidual'), new moodle_url('/local/eduvidual/pages/preferences.php', ['act' => 'backgrounds', 'userid' => $user->id]));
         $sysctx = \context_system::instance();
         if (has_capability('moodle/question:viewall', $sysctx, $user)) {
-            $node->add(get_string('preferences:questioncategories', 'local_eduvidual'), new moodle_url('/local/eduvidual/pages/preferences.php', array('act' => 'qcats', 'userid' => $user->id)));
+            $node->add(get_string('preferences:questioncategories', 'local_eduvidual'), new moodle_url('/local/eduvidual/pages/preferences.php', ['act' => 'qcats', 'userid' => $user->id]));
         }
 
         $node->add(get_string('user:merge_accounts', 'local_eduvidual'), new moodle_url('/local/eduvidual/pages/user_merge.php'));
     }
-
 }
 
 /**
@@ -152,14 +151,14 @@ function local_eduvidual_myprofile_navigation($tree, $user, $iscurrentuser, $cou
         $memberships = \local_eduvidual\locallib::get_user_memberships($user->id);
         foreach ($memberships as $membership) {
             $org = \local_eduvidual\locallib::get_org('orgid', $membership->orgid);
-            if (empty($org->id))
+            if (empty($org->id)) {
                 continue;
+            }
             $link = '<a href="' . $CFG->wwwroot . '/local/eduvidual/pages/manage.php?orgid=' . $org->orgid . '">' . $org->name . ' (' . $membership->role . ')</a>';
             $node = new \core_user\output\myprofile\node('eduvidual', 'eduvidualmembership-' . $membership->orgid . '-' . $membership->role, $link);
             $category->add_node($node);
         }
     }
-
 }
 
 /**
@@ -168,7 +167,7 @@ function local_eduvidual_myprofile_navigation($tree, $user, $iscurrentuser, $cou
 // Will work since Moodle 3.6
 function local_eduvidual_override_webservice_execution($function, $params) {
     global $CFG;
-    $supported = array(
+    $supported = [
         'block_exacomp_diggr_get_students_of_cohort', 'core_calendar_external_get_calendar_action_events_by_timesort',
         'core_cohort_add_cohort_members',
         'core_cohort_search_cohorts', 'core_course_external_get_enrolled_courses_by_timeline_classification',
@@ -176,15 +175,17 @@ function local_eduvidual_override_webservice_execution($function, $params) {
         'core_message_message_search_users', 'core_message_data_for_messagearea_search_users',
         'core_message_search_contacts', 'core_search_get_relevant_users',
         'core_user_get_users', 'tool_lp_search_cohorts', 'tool_lp_search_users',
-    );
+    ];
     $func = $function->classname . '_' . $function->methodname;
-    if ($CFG->debug == 32767)
+    if ($CFG->debug == 32767) {
         error_log($func);
+    }
     if (in_array($func, $supported)) {
         global $CFG;
         require_once($CFG->dirroot . '/local/eduvidual/classes/lib_wshelper.php');
-        if ($CFG->debug == 32767)
+        if ($CFG->debug == 32767) {
             error_log('Overriding ' . $func);
+        }
         return \local_eduvidual\lib_wshelper::override($function->classname, $function->methodname, $params);
     }
     return false;
@@ -202,15 +203,15 @@ function local_eduvidual_override_webservice_execution($function, $params) {
  * @param array $options additional options affecting the file serving
  * @return bool false if the file not found, just send the file otherwise and do not return anything
  */
-function local_eduvidual_pluginfile($course, $cm, $context, $filearea, $args, $forcedownload, array $options = array()) {
-    $areas = array('backgrounds', 'backgrounds_cards', 'globalfiles', 'orgfiles', 'orglogo', 'module');
+function local_eduvidual_pluginfile($course, $cm, $context, $filearea, $args, $forcedownload, array $options = []) {
+    $areas = ['backgrounds', 'backgrounds_cards', 'globalfiles', 'orgfiles', 'orglogo', 'module'];
     if (in_array($filearea, $areas)) {
         $forcedownload = false;
         $options['embed'] = true;
     }
 
     // Check the contextlevel is as expected - if your plugin is a block, this becomes CONTEXT_BLOCK, etc.
-    $contexts = array(CONTEXT_BLOCK, CONTEXT_COURSE, CONTEXT_MODULE, CONTEXT_SYSTEM);
+    $contexts = [CONTEXT_BLOCK, CONTEXT_COURSE, CONTEXT_MODULE, CONTEXT_SYSTEM];
     if (!in_array($context->contextlevel, $contexts)) {
         return false;
     }
