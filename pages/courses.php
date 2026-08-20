@@ -40,8 +40,6 @@ if ($id == 0) {
     echo $OUTPUT->header();
     // Show overview of courses
     $courses = enrol_get_all_users_courses($USER->id, true);
-    // Create a course_in_list object to use the get_course_overviewfiles() method.
-    require_once($CFG->libdir . '/coursecatlib.php');
     ?>
     <ul id="local_eduvidual_user_courselist" data-role="listview" data-inset="true" data-split-icon="eye">
         <?php
@@ -55,17 +53,21 @@ if ($id == 0) {
             }
             // List course only if visible or we can edit
             if ($course->visible == 1 || $canviewinvisible) {
-                $_course = new course_in_list($course);
+                // Wrap in a list element to use the get_course_overviewfiles() method.
+                $_course = new \core_course_list_element($course);
 
                 $course->image = '/pix/i/course.svg';
                 foreach ($_course->get_course_overviewfiles() as $file) {
                     if ($file->is_valid_image()) {
-                        $imagepath = '/' . $file->get_contextid() .
-                            '/' . $file->get_component() .
-                            '/' . $file->get_filearea() .
-                            $file->get_filepath() .
-                            $file->get_filename();
-                        $course->image = file_encode_url($CFG->wwwroot . '/pluginfile.php', $imagepath, false);
+                        // Overviewfiles carry no itemid, therefore null is passed.
+                        $course->image = \core\url::make_pluginfile_url(
+                            $file->get_contextid(),
+                            $file->get_component(),
+                            $file->get_filearea(),
+                            null,
+                            $file->get_filepath(),
+                            $file->get_filename()
+                        )->out(false);
                         // Use the first image found.
                         break;
                     }

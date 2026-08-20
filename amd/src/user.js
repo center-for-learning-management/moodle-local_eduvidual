@@ -1,6 +1,7 @@
+/* eslint-disable max-len, no-console */
 define(
-  ['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'local_eduvidual/main', 'local_eduvidual/manager', 'local_eduvidual/teacher', 'core/modal_factory', 'core/modal_events'],
-  function ($, AJAX, NOTIFICATION, STR, URL, MAIN, MANAGER, TEACHER, ModalFactory, ModalEvents) {
+  ['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'local_eduvidual/main', 'local_eduvidual/manager', 'local_eduvidual/teacher', 'core/modal'],
+  function ($, AJAX, NOTIFICATION, STR, URL, MAIN, MANAGER, TEACHER, Modal) {
     return {
       /**
        * Allows a user to enrol to an organization using a specific access code.
@@ -34,7 +35,7 @@ define(
       },
       /**
        * Sets the default org for the current user
-       * @param orgid orgid to set
+       * @param {int} orgid orgid to set
        **/
       defaultorg: function (orgid) {
         require(['local_eduvidual/main'], function (MAIN) {
@@ -292,16 +293,12 @@ define(
         $.get(url)
           .done(function (body) {
             console.log('Got body ', body);
-            ModalFactory.create({
+            Modal.create({
               title: 'edu.IDAM',
-              //type: ModalFactory.types.OK,
               body: body,
-              //footer: 'footer',
-            }).done(function (modal) {
-              //MAIN.spinnerGrid(false);
-              console.log('Created modal');
-              modal.show();
-            });
+              show: true,
+              removeOnClose: true,
+            }).catch(NOTIFICATION.exception);
           })
           .fail(function (err) {
             console.err('Error', err);

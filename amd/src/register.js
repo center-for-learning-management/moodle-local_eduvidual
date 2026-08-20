@@ -1,6 +1,7 @@
+/* eslint-disable max-len, no-console */
 define(
-  ['jquery', 'core/ajax', 'core/modal_factory', 'core/notification', 'core/str', 'core/url', 'local_eduvidual/main'],
-  function ($, Ajax, ModalFactory, Notification, Str, Url, MAIN) {
+  ['jquery', 'core/ajax', 'core/notification', 'core/str'],
+  function ($, Ajax, Notification, Str) {
     return {
       check: function () {
         var orgid = $('#eduvidual_registration_orgid').val();

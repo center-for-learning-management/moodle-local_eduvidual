@@ -35,6 +35,7 @@ class locallib {
     const ROLE_PARENT = 'Parent';
     const ROLE_TEACHER = 'Teacher';
     const ROLE_MANAGER = 'Manager';
+    const ROLE_REMOVE = 'remove';
 
     /**
      * Method used as getter and setter for caches.
@@ -410,6 +411,17 @@ class locallib {
         }
 
         $memberships = $DB->get_records('local_eduvidual_orgid_userid', array('userid' => $userid));
+        $highest = static::find_highest_role(array_column($memberships, 'role'));
+
+        self::cache('session', "highestrole-$userid", $highest);
+        return $highest;
+    }
+
+    /**
+     * Liefert die höchste Rolle aus einer Liste von Rollen
+     * ('' bei leerer Liste, sonst Manager > Teacher > Parent > Student).
+     */
+    public static function find_highest_role(array $roles): string {
         $priority = [
             static::ROLE_STUDENT => 1,
             static::ROLE_PARENT => 2,
@@ -417,13 +429,12 @@ class locallib {
             static::ROLE_MANAGER => 4,
         ];
         $highest = '';
-        foreach ($memberships as $membership) {
-            if (($priority[$membership->role] ?? 0) > ($priority[$highest] ?? 0)) {
-                $highest = $membership->role;
+        foreach ($roles as $role) {
+            if (($priority[$role] ?? 0) > ($priority[$highest] ?? 0)) {
+                $highest = $role;
             }
         }
 
-        self::cache('session', "highestrole-$userid", $highest);
         return $highest;
     }
 

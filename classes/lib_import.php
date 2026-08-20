@@ -22,6 +22,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  **/
 
+use local_eduvidual\locallib;
+
 defined('MOODLE_INTERNAL') || die;
 
 require_once("{$CFG->libdir}/phpspreadsheet/vendor/autoload.php");

@@ -399,18 +399,20 @@ class lib_enrol {
     }
 
     public static function get_course_image($course) {
-        global $CFG;
         $course = new \core_course_list_element($course);
 
         $imageurl = '';
         foreach ($course->get_course_overviewfiles() as $file) {
             if (@$file->is_valid_image()) {
-                $imagepath = '/' . $file->get_contextid() .
-                    '/' . $file->get_component() .
-                    '/' . $file->get_filearea() .
-                    $file->get_filepath() .
-                    $file->get_filename();
-                $imageurl = file_encode_url($CFG->wwwroot . '/pluginfile.php', $imagepath, false);
+                // Overviewfiles carry no itemid, therefore null is passed.
+                $imageurl = \core\url::make_pluginfile_url(
+                    $file->get_contextid(),
+                    $file->get_component(),
+                    $file->get_filearea(),
+                    null,
+                    $file->get_filepath(),
+                    $file->get_filename()
+                )->out(false);
                 // Use the first image found.
                 break;
             }

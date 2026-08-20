@@ -16,21 +16,24 @@
 
 /**
  * @package    local_eduvidual
- * @copyright  2018 Digital Education Society (http://www.dibig.at),
- *             2020 and ongoing Center for Learning Management (http://www.lernmanagement.at)
- * @author     Robert Schrenk
+ * @copyright  2026 Center for Learning Management (www.lernmanagement.at)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+namespace local_eduvidual\task;
+
 defined('MOODLE_INTERNAL') || die;
 
-$plugin->version = 2026060601;
-$plugin->requires = 2019111803;  // Requires Moodle 3.8.3.
-$plugin->component = 'local_eduvidual';
-$plugin->release = '2.9';
-$plugin->maturity = MATURITY_STABLE;
+/**
+ * Matcht BIP-User mit Moodle-Usern (per Name + Org + Rolle) und legt fehlende
+ * auth_shibboleth_link-Einträge an.
+ */
+class bip_match_users extends \core\task\scheduled_task {
+    public function get_name() {
+        return get_string('bip_match_users:title', 'local_eduvidual');
+    }
 
-$plugin->dependencies = [
-    'local_edusupport' => 2021060200,
-    'local_table_sql' => 2025112600,
-];
+    public function execute() {
+        \local_eduvidual\bip_helper::match_users(true);
+    }
+}

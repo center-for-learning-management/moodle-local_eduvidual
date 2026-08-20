@@ -49,7 +49,6 @@ if (!empty($orgids) && !empty($manageruserid)) {
         if (!empty($org->orgid)) {
             $msgs[] = "Registering $org->orgid with name $org->name<br />";
 
-            require_once($CFG->dirroot . '/lib/coursecatlib.php');
             require_once($CFG->dirroot . '/course/externallib.php');
 
             if (empty($org->categoryid)) {
@@ -58,7 +57,7 @@ if (!empty($orgids) && !empty($manageruserid)) {
                 $data->name = $org->name;
                 $data->description = $org->name;
                 $data->idnumber = $org->orgid;
-                $category = coursecat::create($data);
+                $category = \core_course_category::create($data);
                 $org->categoryid = $category->id;
                 $msgs[] = "=> Created category $org->categoryid<br />";
                 $DB->set_field('local_eduvidual_org', 'categoryid', $org->categoryid, array('orgid' => $org->orgid));

@@ -1,6 +1,7 @@
+/* eslint-disable max-len, no-console, jsdoc/require-param, jsdoc/require-param-type */
 define(
-  ['jquery', 'core/ajax', 'core/config', 'core/notification', 'core/str', 'core/url', 'local_eduvidual/admin', 'local_eduvidual/manager', 'local_eduvidual/teacher', 'local_eduvidual/user', 'local_eduvidual/register', 'local_eduvidual/preferences', 'core/modal_factory', 'core/modal_events'],
-  function ($, AJAX, config, NOTIFICATION, STR, URL, ADMIN, MANAGER, TEACHER, USER, REGISTER, PREFERENCES, ModalFactory, ModalEvents) {
+  ['jquery', 'core/ajax', 'core/config', 'core/notification', 'core/str', 'core/url', 'local_eduvidual/admin', 'local_eduvidual/manager', 'local_eduvidual/teacher', 'local_eduvidual/user', 'local_eduvidual/register', 'local_eduvidual/preferences', 'core/modal'],
+  function ($, AJAX, config, NOTIFICATION, STR, URL, ADMIN, MANAGER, TEACHER, USER, REGISTER, PREFERENCES, Modal) {
     return {
       requestId: 0,
       debug: 3,
@@ -9,7 +10,9 @@ define(
        **/
       confirmed: function (selector, success, timeout) {
         var className = 'local_eduvidual_' + ((success) ? 'stored' : 'failed');
-        if (typeof timeout === 'undefined' || timeout == 0) timeout = 1000;
+        if (typeof timeout === 'undefined' || timeout == 0) {
+          timeout = 1000;
+        }
         console.log('MAIN.confirmed(selector, success, timeout)', selector, success, timeout);
         $(selector).addClass(className);
         setTimeout(function () {
@@ -17,7 +20,9 @@ define(
         }, timeout);
       },
       connect: function (data, payload) {
-        if (this.debug > 0) console.log('MAIN.connect(data, payload)', data, payload);
+        if (this.debug > 0) {
+          console.log('MAIN.connect(data, payload)', data, payload);
+        }
 
         // add session key to data
         if (typeof data !== 'object') {
@@ -42,12 +47,16 @@ define(
           if (typeof o.result !== 'undefined' && typeof o.result.status !== 'undefined') {
             MAIN.signal(o.payload, false, (o.result.status == 'ok'));
           }
-          if (MAIN.debug > 2) console.log('< RequestId #' + o.requestId, o);
+          if (MAIN.debug > 2) {
+            console.log('< RequestId #' + o.requestId, o);
+          }
           MAIN.result(o);
         }).fail(function (jqXHR, textStatus) {
           MAIN.signal(o.payload, false, false);
           o.textStatus = textStatus;
-          if (MAIN.debug > 2) console.error('* RequestId #' + o.requestId, o);
+          if (MAIN.debug > 2) {
+            console.error('* RequestId #' + o.requestId, o);
+          }
         }).always(function () {
           MAIN.spinnerGrid(false);
         });
@@ -57,11 +66,15 @@ define(
        **/
       doLogout: function () {
         var originallocation = localStorage.getItem('local_eduvidual_originallocation');
-        if (originallocation == null) originallocation = '';
+        if (!originallocation) {
+          originallocation = '';
+        }
         top.location.href = URL.fileUrl('/local/eduvidual/pages/login_app.php', '') + '?dologout=1&originallocation=' + encodeURI(originallocation);
       },
       navigate: function (urltogo) {
-        if (urltogo.indexOf('#') == 0) return;
+        if (urltogo.indexOf('#') == 0) {
+          return;
+        }
         var MAIN = this;
         require(['local_eduvidual/user'], function (USER) {
           USER.toggleSubmenu(false);
@@ -96,22 +109,21 @@ define(
        * Calls a page in embedded layout and displays it as modal.
        */
       popPage: function (page, params) {
-        if (typeof params === 'undefined') params = '?';
+        if (!params) {
+          params = '?';
+        }
         //params += '&embed=1';
         var url = URL.fileUrl("/local/eduvidual/pages/" + page + ".php", params);
         console.log('popPage ', url);
         $.get(url)
           .done(function (body) {
             console.log('Got body ', body);
-            ModalFactory.create({
+            Modal.create({
               title: '',
-              //type: ModalFactory.types.OK,
               body: body,
-              //footer: 'footer',
-            }).done(function (modal) {
-              console.log('Created modal');
-              modal.show();
-            });
+              show: true,
+              removeOnClose: true,
+            }).catch(NOTIFICATION.exception);
           })
           .fail(function (err) {
             console.err('Error', err);
@@ -134,7 +146,7 @@ define(
         }
       },
       spinnerGrid: function (state) {
-        if (typeof $('.spinner-grid') === 'undefined' || $('.spinner-grid') == null || $('.spinner-grid').length == 0) {
+        if ($('.spinner-grid').length == 0) {
           $('body').prepend($('<div class="spinner-grid"><div /><div /><div /><div /></div>'));
         }
         if (typeof state !== 'undefined' && (state == 'show' || state == true)) {
@@ -150,7 +162,9 @@ define(
        * @param target String id of target (without uniqid)
        */
       toggle: function (uniqid, a, target) {
-        if (this.debug > 5) console.log('local_eduvidual/main:toggle(uniqid, a, target)', uniqid, a, target);
+        if (this.debug > 5) {
+          console.log('local_eduvidual/main:toggle(uniqid, a, target)', uniqid, a, target);
+        }
         // Hide all cards of this uniqid.
         $('.' + uniqid + '-card').addClass('hidden');
         // Set all buttons to "non-pressed" state.
@@ -161,8 +175,9 @@ define(
         $(a).addClass('active');
       },
       watchValue: function (o) {
-        if (this.debug > 5) console.log('MAIN.watchValue(o)', o);
-        var self = this;
+        if (this.debug > 5) {
+          console.log('MAIN.watchValue(o)', o);
+        }
 
         if ($(o.target).attr('data-iswatched') != '1') {
           $(o.target).attr('data-iswatched', 1);

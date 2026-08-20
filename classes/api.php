@@ -16,21 +16,21 @@
 
 /**
  * @package    local_eduvidual
- * @copyright  2018 Digital Education Society (http://www.dibig.at),
- *             2020 and ongoing Center for Learning Management (http://www.lernmanagement.at)
+ * @copyright  2020 Center for Learning Management (https://www.lernmanagement.at)
  * @author     Robert Schrenk
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+namespace local_eduvidual;
+
 defined('MOODLE_INTERNAL') || die;
 
-$plugin->version = 2026060601;
-$plugin->requires = 2019111803;  // Requires Moodle 3.8.3.
-$plugin->component = 'local_eduvidual';
-$plugin->release = '2.9';
-$plugin->maturity = MATURITY_STABLE;
-
-$plugin->dependencies = [
-    'local_edusupport' => 2021060200,
-    'local_table_sql' => 2025112600,
-];
+class api {
+    /**
+     * Check if a user has at least the Teacher role in any organization.
+     * Used by exademo plugin (see the settings of exademo)
+     */
+    public static function user_is_at_least_teacher(): bool {
+        return in_array(locallib::get_highest_role(), [locallib::ROLE_TEACHER, locallib::ROLE_MANAGER]);
+    }
+}
