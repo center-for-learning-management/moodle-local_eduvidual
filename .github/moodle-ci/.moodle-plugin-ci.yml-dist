@@ -1,0 +1,21 @@
+# https://github.com/moodlehq/moodle-plugin-ci/blob/9276f968746960275b12190b4ef8e47b1e6af674/src/Bridge/MoodlePlugin.php#L259-L268
+# .moodle-plugin-ci.yml  (plugin repo root or subdirectory 
+#  * Discovers .moodle-plugin-ci.yml files in all subdirectories of the plugin
+#  * and merges their filter rules. notPaths entries are prefixed with the
+#  * relative subdirectory path so they apply correctly when Finder is rooted
+#  * at the main plugin directory.
+
+# Applies to every check (phpcs, phpmd, phpcpd, ...)
+filter:
+  notPaths:
+    - 'classes/external/legacy_bridge.php'
+    - 'thirdparty'
+  notNames:
+    - '*_generated.php'
+
+# Only applies to `moodle-plugin-ci phpmd` — overrides the generic `filter` above for this command
+filter-phpmd:
+  notPaths:
+    - 'classes/report/heavy_export.php'   # e.g. intentionally long/complex, don't want NPath/Cyclomatic noise
+  notNames:
+    - '*_test_stub.php'

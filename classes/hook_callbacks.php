@@ -78,7 +78,7 @@ class hook_callbacks {
                 $gid = optional_param('gid', '', PARAM_ALPHANUM);
                 $bbb = $DB->get_record('bigbluebuttonbn', array('guestlinkid' => $gid));
                 if ($bbb->guestlinkenabled) {
-                    list($course, $cm) = get_course_and_cm_from_instance($bbb, 'bigbluebuttonbn');
+                    [$course, $cm] = get_course_and_cm_from_instance($bbb, 'bigbluebuttonbn');
                     if (!empty($cm->id)) {
                         $cmid = $cm->id;
                     }
@@ -86,7 +86,7 @@ class hook_callbacks {
             } elseif ($script == '/mod/bigbluebuttonbn/bbb_ajax.php') {
                 $bbbtn = optional_param('bigbluebuttonbn', 0, PARAM_INT);
                 $bbb = $DB->get_record('bigbluebuttonbn', array('id' => $bbbtn));
-                list($course, $cm) = get_course_and_cm_from_instance($bbb, 'bigbluebuttonbn');
+                [$course, $cm] = get_course_and_cm_from_instance($bbb, 'bigbluebuttonbn');
                 if (!empty($cm->id)) {
                     $cmid = $cm->id;
                 }
