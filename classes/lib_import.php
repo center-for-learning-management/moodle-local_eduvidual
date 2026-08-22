@@ -26,8 +26,6 @@ use local_eduvidual\locallib;
 
 defined('MOODLE_INTERNAL') || die;
 
-require_once("{$CFG->libdir}/phpspreadsheet/vendor/autoload.php");
-
 /**
  * User Excel import für Schulmanager
  */
@@ -143,30 +141,6 @@ class local_eduvidual_lib_import {
             $obj = $this->compiler->compile($obj);
         }
         return $obj;
-    }
-
-    /**
-     * Creates an XSLX-Sheet to be downloaded.
-     **/
-    public function download($filename = 'import') {
-        $writer = \Box\Spout\Writer\WriterFactory::create(Type::XLSX); // for XLSX files
-        $writer->openToBrowser($filename . '.xlsx'); // stream data directly to the browser
-
-        $row = array();
-        for ($fieldid = 0; $fieldid < count($this->fields); $fieldid++) {
-            $row[$fieldid] = $this->fields[$fieldid];
-        }
-        $writer->addRow($row);
-
-        foreach ($this->rowobjects as $rowobject) {
-            $row = array();
-            for ($fieldid = 0; $fieldid < count($this->fields); $fieldid++) {
-                $row[$fieldid] = $rowobject->{$this->fields[$fieldid]};
-            }
-            $writer->addRow($row);
-        }
-
-        $writer->close();
     }
 
     /**
