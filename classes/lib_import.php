@@ -78,7 +78,7 @@ class local_eduvidual_lib_import {
         $maxcols = 1;
         while (true) {
             // convert Cell object to string, to get the actual value
-            $value = (string)$sheet->getCellByColumnAndRow($maxcols, 1, false);
+            $value = (string)$sheet->getCell([$maxcols, 1]);
             if (!empty($value)) {
                 $colids[$maxcols] = strtolower($value);
                 $maxcols++;
@@ -96,7 +96,7 @@ class local_eduvidual_lib_import {
             for ($col = 1; $col < $maxcols; $col++) {
                 if (!empty($colids[$col])) {
                     // convert Cell object to string, to get the actual value
-                    $obj->{$colids[$col]} = (string)$sheet->getCellByColumnAndRow($col, $row, false);
+                    $obj->{$colids[$col]} = (string)$sheet->getCell([$col, $row]);
                     if (!empty($obj->{$colids[$col]}))
                         $foundany = true;
                 }
