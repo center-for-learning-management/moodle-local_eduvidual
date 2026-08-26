@@ -5,3 +5,4 @@ node_modules
 transfer.sh
 .vscode-upload.json
 .vscode*
+.aider*
