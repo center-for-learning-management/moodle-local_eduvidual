@@ -248,6 +248,9 @@ class local_eduvidual_eduportal_widget {
             ];
         }
 
+        $time_danger_items = 2 * 24 * 60 * 60;
+        $time_warning_items = 7 * 24 * 60 * 60;
+
         foreach ($events as $event) {
             /** @var \core_calendar\local\event\entities\action_event $event */
 
@@ -274,10 +277,12 @@ class local_eduvidual_eduportal_widget {
             // }
 
             $url = $event->get_action()->get_url() ?: new \moodle_url('/calendar/view.php');
+            $startTime = $event->get_times()->get_start_time()->getTimestamp();
+            $diff = $startTime - time();
 
             $item = [
                 'label' => $event->get_name(),
-                'detailleft' => userdate($event->get_times()->get_start_time()->getTimestamp(), get_string('strftimedatetimeshort', 'core_langconfig')),
+                'detailleft' => userdate($startTime, get_string('strftimedatetimeshort', 'core_langconfig')),
                 'detailright' => '',
                 // ($data ? $data->activitystr . ' · ' : '') .
                 // $event->get_course()->get('shortname'),
@@ -286,6 +291,16 @@ class local_eduvidual_eduportal_widget {
                 'link' => $isMyself ? static::sso_url($url)->out(false) : null,
                 // , ['view' => 'month', 'course' => 1]),
             ];
+
+            if ($diff >= 0 && $diff <= $time_danger_items) {
+                $item['badge'] = '1';
+                $item['badgehidden'] = '1';
+                $item['badgetype'] = 'danger';
+            } elseif ($diff >= 0 && $diff <= $time_warning_items) {
+                $item['badge'] = '1';
+                $item['badgehidden'] = '1';
+                $item['badgetype'] = 'warning';
+            }
 
             $responseData->items[] = $item;
         }
