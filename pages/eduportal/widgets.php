@@ -248,8 +248,9 @@ class local_eduvidual_eduportal_widget {
             ];
         }
 
-        $time_danger_items = 2 * 24 * 60 * 60;
-        $time_warning_items = 7 * 24 * 60 * 60;
+        $danger_window = 2 * 24 * 60 * 60;
+        $warning_window = 7 * 24 * 60 * 60;
+        $now = time();
 
         foreach ($events as $event) {
             /** @var \core_calendar\local\event\entities\action_event $event */
@@ -278,7 +279,7 @@ class local_eduvidual_eduportal_widget {
 
             $url = $event->get_action()->get_url() ?: new \moodle_url('/calendar/view.php');
             $startTime = $event->get_times()->get_start_time()->getTimestamp();
-            $diff = $startTime - time();
+            $diff = $startTime - $now;
 
             $item = [
                 'label' => $event->get_name(),
@@ -292,13 +293,13 @@ class local_eduvidual_eduportal_widget {
                 // , ['view' => 'month', 'course' => 1]),
             ];
 
-            if ($diff >= 0 && $diff <= $time_danger_items) {
-                $item['badge'] = '1';
-                $item['badgehidden'] = '1';
+            if ($diff >= 0 && $diff <= $danger_window) {
+                $item['badge'] = true;
+                $item['badgehidden'] = true;
                 $item['badgetype'] = 'danger';
-            } elseif ($diff >= 0 && $diff <= $time_warning_items) {
-                $item['badge'] = '1';
-                $item['badgehidden'] = '1';
+            } elseif ($diff >= 0 && $diff <= $warning_window) {
+                $item['badge'] = true;
+                $item['badgehidden'] = true;
                 $item['badgetype'] = 'warning';
             }
 
