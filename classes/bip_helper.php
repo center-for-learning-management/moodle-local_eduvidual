@@ -314,17 +314,46 @@ class bip_helper {
     /**
      * Match-Key aus (orgid, BIP-Rollencode, erstes Vornamen-Wort, Nachname). Liefert null,
      * wenn nicht genügend Daten für einen sinnvollen Vergleich vorhanden sind.
+     *
+     * Namen werden für den Vergleich normalisiert (siehe normalize_name), damit
+     * Schreibvarianten wie "Müller"/"Mueller" oder "Öztürk"/"Oeztuerk" matchen.
+     * Beim Vornamen zählt nur das erste Wort; Bindestrich gilt als Worttrenner
+     * ("Ernst-Anton" -> "ernst").
      */
     private static function make_match_key($orgid, ?string $role, ?string $firstname, ?string $lastname): ?string {
         if (!$role || !$firstname || !$lastname) {
             return null;
         }
-        $first = preg_replace('!\s.*!', '', trim($firstname));
-        $last = trim($lastname);
+        $first = static::normalize_name(preg_split('![\s\-]+!', trim($firstname), 2)[0] ?? '');
+        $last = static::normalize_name($lastname);
         if ($first === '' || $last === '') {
             return null;
         }
-        return $orgid . '|' . $role . '|' . mb_strtolower($first) . '|' . mb_strtolower($last);
+        return $orgid . '|' . $role . '|' . $first . '|' . $last;
+    }
+
+    /**
+     * Normalisiert einen Namen für den Vergleich (nach eeducation-Vorbild): lowercase,
+     * Umlaute/Diakritika falten, alles außer [a-z0-9] entfernen. Kein Titel-Stripping -
+     * Schüler:innen tragen keine akademischen Titel.
+     */
+    private static function normalize_name(string $s): string {
+        $s = mb_strtolower(trim($s));
+        $s = strtr($s, [
+            'ä' => 'ae', 'ö' => 'oe', 'ü' => 'ue', 'ß' => 'ss',
+            'á' => 'a', 'à' => 'a', 'â' => 'a', 'ã' => 'a', 'å' => 'a', 'ă' => 'a', 'ą' => 'a',
+            'é' => 'e', 'è' => 'e', 'ê' => 'e', 'ě' => 'e', 'ę' => 'e',
+            'í' => 'i', 'ì' => 'i', 'î' => 'i',
+            'ó' => 'o', 'ò' => 'o', 'ô' => 'o', 'õ' => 'o', 'ő' => 'o',
+            'ú' => 'u', 'ù' => 'u', 'û' => 'u', 'ů' => 'u', 'ű' => 'u',
+            'š' => 's', 'ś' => 's', 'ş' => 's', 'ș' => 's',
+            'č' => 'c', 'ć' => 'c', 'ç' => 'c',
+            'ž' => 'z', 'ź' => 'z', 'ż' => 'z',
+            'ř' => 'r', 'ď' => 'd', 'đ' => 'd', 'ť' => 't', 'ț' => 't',
+            'ň' => 'n', 'ń' => 'n', 'ñ' => 'n', 'ľ' => 'l', 'ł' => 'l',
+            'ý' => 'y', 'ÿ' => 'y', 'ı' => 'i',
+        ]);
+        return preg_replace('![^a-z0-9]!', '', $s);
     }
 
     /**
