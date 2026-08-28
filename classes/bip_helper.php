@@ -333,6 +333,37 @@ class bip_helper {
     }
 
     /**
+     * Beste E-Mail-Adresse für eine Org (nach eeducation-Vorbild, dort bestEmailForOrg):
+     * org-eigene Adressen vor globalen (orgid=0) vor denen anderer Orgs; innerhalb einer
+     * Stufe offiziell (2) > präferiert (1) > sonstige (0). Liefert null, wenn keine da ist.
+     * Vorher wurden nur offizielle Adressen überhaupt betrachtet - User ohne offizielle
+     * Mail bekamen gar keine (und beim Anlegen dann eine Dummy-Adresse).
+     */
+    private static function best_email(array $emails, int $orgid): ?string {
+        foreach ([$orgid, 0, null] as $wantedorgid) {
+            $best = null;
+            $bestscore = -1;
+            foreach ($emails as $entry) {
+                if (empty($entry->value)) {
+                    continue;
+                }
+                if ($wantedorgid !== null && (int)($entry->orgid ?? 0) !== $wantedorgid) {
+                    continue;
+                }
+                $score = (empty($entry->official) ? 0 : 2) + (empty($entry->preferred) ? 0 : 1);
+                if ($score > $bestscore) {
+                    $bestscore = $score;
+                    $best = trim((string)$entry->value);
+                }
+            }
+            if ($best) {
+                return $best;
+            }
+        }
+        return null;
+    }
+
+    /**
      * Normalisiert einen Namen für den Vergleich (nach eeducation-Vorbild): lowercase,
      * Umlaute/Diakritika falten, alles außer [a-z0-9] entfernen. Kein Titel-Stripping -
      * Schüler:innen tragen keine akademischen Titel.
@@ -816,24 +847,7 @@ class bip_helper {
                         continue;
                     }
 
-                    // offizielle Mail bevorzugt für die aktuelle Schule, sonst irgendeine offizielle.
-                    $email = null;
-                    $emailfallback = null;
-                    foreach (($bipuser->emails ?? []) as $entry) {
-                        if (empty($entry->official) || empty($entry->value)) {
-                            continue;
-                        }
-                        if (isset($entry->orgid) && $entry->orgid == $orgid) {
-                            $email = $entry->value;
-                            break;
-                        }
-                        if ($emailfallback === null) {
-                            $emailfallback = $entry->value;
-                        }
-                    }
-                    if ($email === null) {
-                        $email = $emailfallback;
-                    }
+                    $email = static::best_email((array)($bipuser->emails ?? []), (int)$orgid);
 
                     // Pro Rolle des Users in dieser Org einen eigenen Datensatz - Unique-Key ist (bpkbf, orgid, role).
                     foreach ((array)$org->roles as $role) {
@@ -1055,8 +1069,8 @@ class bip_helper {
             return 'skip_noname';
         }
 
-        // E-Mail bevorzugt aus einer Schüler-Zeile (dort steht schon die offizielle Mail,
-        // bevorzugt für die jeweilige Schule - siehe import_users), sonst aus irgendeiner Zeile.
+        // E-Mail bevorzugt aus einer Schüler-Zeile (dort steht schon die beste Adresse
+        // für die jeweilige Schule - siehe best_email in import_users), sonst aus irgendeiner Zeile.
         $email = '';
         foreach (array_merge(array_values($stdrows), $rows) as $r) {
             if ($r->email) {
