@@ -24,24 +24,24 @@
 defined('MOODLE_INTERNAL') || die;
 
 // We define the web service functions to install.
-$functions = array(
-    'local_eduvidual_admin_org_gps' => array(
+$functions = [
+    'local_eduvidual_admin_org_gps' => [
         'classname' => 'local_eduvidual_external_admin',
         'methodname' => 'org_gps',
         'classpath' => 'local/eduvidual/externallib/admin.php',
         'description' => 'Retrieve orgs in a specific rectangle or gps coordinates.',
         'type' => 'read',
         'ajax' => 1,
-    ),
-    'local_eduvidual_manager_create_users' => array(
+    ],
+    'local_eduvidual_manager_create_users' => [
         'classname' => 'local_eduvidual_external_manager',
         'methodname' => 'create_users',
         'classpath' => 'local/eduvidual/externallib/manager.php',
         'description' => 'Asynchronously  / update users - one by one.',
         'type' => 'write',
         'ajax' => 1,
-    ),
-    'local_eduvidual_teacher_createcourse_selections' => array(
+    ],
+    'local_eduvidual_teacher_createcourse_selections' => [
         'classname' => 'local_eduvidual_external_teacher',
         'methodname' => 'createcourse_selections',
         'classpath' => 'local/eduvidual/externallib/teacher.php',
@@ -49,13 +49,13 @@ $functions = array(
         'type' => 'read',
         'ajax' => 1,
         'services' => [MOODLE_OFFICIAL_MOBILE_SERVICE, 'local_mobile'],
-    ),
-    'local_eduvidual_user_course_news' => array(
+    ],
+    'local_eduvidual_user_course_news' => [
         'classname' => 'local_eduvidual_external_user',
         'methodname' => 'course_news',
         'classpath' => 'local/eduvidual/externallib/user.php',
         'description' => 'Retrieve news from course.',
         'type' => 'read',
         'ajax' => 1,
-    ),
-);
+    ],
+];

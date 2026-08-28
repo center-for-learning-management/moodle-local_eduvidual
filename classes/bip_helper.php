@@ -882,7 +882,6 @@ class bip_helper {
                     }
                     $countdelete++;
                 }
-
             }
 
             mtrace("Seite {$pages} fertig: kumuliert {$countinsert} angelegt, {$countupdate} aktualisiert, {$countdelete} gelöscht");
