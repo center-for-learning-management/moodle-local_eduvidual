@@ -104,6 +104,10 @@ class local_eduvidual_external_manager extends external_api {
                     }
                     \update_internal_user_password($user, $obj->password, false);
                     \local_eduvidual\lib_enrol::choose_background($user->id);
+                    // Herkunft des Accounts festhalten: Excel-Import läuft per Browser-AJAX
+                    // (manager.js), externe Clients über die WS-Server - dort ist WS_SERVER gesetzt.
+                    $createdsource = (defined('WS_SERVER') && WS_SERVER) ? 'manager_webservice' : 'manager_excel_upload';
+                    \set_user_preference('local_eduvidual_created_source', $createdsource, $user->id);
                     \core\event\user_created::create_from_userid($user->id)->trigger();
                 } catch (Exception $e) {
                     throw new \moodle_exception('could not create user');

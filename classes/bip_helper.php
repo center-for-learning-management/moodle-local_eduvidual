@@ -1202,6 +1202,8 @@ class bip_helper {
         $secret = \local_eduvidual\locallib::get_user_secret($user->id);
         \update_internal_user_password($DB->get_record('user', ['id' => $user->id]), $secret, false);
         \local_eduvidual\lib_enrol::choose_background($user->id);
+        // Herkunft des Accounts festhalten: automatische Anlage durch den BIP-Sync.
+        \set_user_preference('local_eduvidual_created_source', 'bip_user_create', $user->id);
         \core\event\user_created::create_from_userid($user->id)->trigger();
 
         // Der Link stammt aus derselben Quelle wie der Account selbst - SOURCE_IMPORT ist
