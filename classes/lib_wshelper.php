@@ -26,7 +26,7 @@ namespace local_eduvidual;
 defined('MOODLE_INTERNAL') || die;
 
 class lib_wshelper {
-    public static $navbar_nodes = array();
+    public static $navbar_nodes = [];
     private static $debug = false;
 
     /**
@@ -37,13 +37,15 @@ class lib_wshelper {
         self::$debug = ($CFG->debug == 32767); // Developer debugging
         $func = str_replace('__', '_', 'buffer_' . str_replace('/', '_', str_replace('.php', '', str_replace($CFG->dirroot, '', $_SERVER["SCRIPT_FILENAME"]))));
         if (method_exists(__CLASS__, $func)) {
-            if (self::$debug)
+            if (self::$debug) {
                 error_log('Buffer function ' . $func . ' called');
+            }
             ob_start();
             register_shutdown_function('\local_eduvidual\lib_wshelper::buffer_modify');
         } else {
-            if (self::$debug)
+            if (self::$debug) {
                 error_log('Buffer function ' . $func . ' not found');
+            }
             return false;
         }
     }
@@ -59,8 +61,9 @@ class lib_wshelper {
     }
 
     public static function buffer_navbar() {
-        if (\local_eduvidual\locallib::is_moodle_4())
+        if (\local_eduvidual\locallib::is_moodle_4()) {
             return;
+        }
         global $OUTPUT;
         $buffer = ob_get_clean();
         $strstart = '<ol class="breadcrumb"';
@@ -68,13 +71,13 @@ class lib_wshelper {
         $posstart = strpos($buffer, $strstart);
         $posend = strpos($buffer, $strend, $posstart);
 
-        $parts = array(
+        $parts = [
             substr($buffer, 0, $posstart),
             substr($buffer, $posstart, $posend - $posstart + strlen($strend)),
             substr($buffer, $posend + strlen($strend)),
-        );
+        ];
         if (!empty($parts[0]) && !empty($parts[1]) && !empty($parts[2])) {
-            $parts[1] = $OUTPUT->render_from_template('core/navbar', array('get_items' => self::$navbar_nodes));
+            $parts[1] = $OUTPUT->render_from_template('core/navbar', ['get_items' => self::$navbar_nodes]);
         }
         echo implode($parts);
     }
@@ -90,13 +93,15 @@ class lib_wshelper {
         self::$debug = ($CFG->debug == 32767); // Developer debugging
         $func = 'override_' . $classname . '_' . $methodname;
         if (method_exists(__CLASS__, $func)) {
-            if (self::$debug)
+            if (self::$debug) {
                 error_log('Overide function ' . $func . ' called');
-            $result = call_user_func_array(array($classname, $methodname), $params);
+            }
+            $result = call_user_func_array([$classname, $methodname], $params);
             return call_user_func('self::' . $func, $result, $params);
         } else {
-            if (self::$debug)
+            if (self::$debug) {
                 error_log('Overide function ' . $func . ' not found');
+            }
             return false;
         }
     }
@@ -154,20 +159,20 @@ class lib_wshelper {
         global $DB, $USER;
 
         $managed_qcats = explode(",", get_config('local_eduvidual', 'questioncategories'));
-        $user_qcats = array_keys($DB->get_records('local_eduvidual_userqcats', array('userid' => $USER->id), '', 'categoryid'));
+        $user_qcats = array_keys($DB->get_records('local_eduvidual_userqcats', ['userid' => $USER->id], '', 'categoryid'));
         $orgids = array_keys(\local_eduvidual\locallib::get_organisations(locallib::ROLE_TEACHER, false));
         $strstart = '<section id="region-main"';
         $strend = '</section>';
         $posstart = strpos($buffer, $strstart);
         $posend = strpos($buffer, $strend, $posstart);
 
-        $parts = array(
+        $parts = [
             substr($buffer, 0, $posstart),
             substr($buffer, $posstart, $posend - $posstart + strlen($strend)),
             substr($buffer, $posend + strlen($strend)),
-        );
+        ];
         if (!empty($parts[1])) {
-            $removeList = array();
+            $removeList = [];
             $parts[1] = mb_convert_encoding($parts[1], 'HTML-ENTITIES', "UTF-8");
             $doc = new \DOMDocument();
             $doc->loadHTML($parts[1], LIBXML_NOWARNING | LIBXML_NOERROR);
@@ -175,25 +180,29 @@ class lib_wshelper {
             $divs = $doc->getElementsByTagName('div');
             foreach ($divs as $div) {
                 $classnames = explode(' ', $div->getAttribute('class'));
-                if (!in_array('questioncategories', $classnames) || !in_array('contextlevel10', $classnames))
+                if (!in_array('questioncategories', $classnames) || !in_array('contextlevel10', $classnames)) {
                     continue;
+                }
                 $uls = $div->childNodes;
                 foreach ($uls as $ul) {
-                    if ($ul->nodeName != 'ul')
+                    if ($ul->nodeName != 'ul') {
                         continue;
+                    }
                     $lis = $ul->childNodes;
-                    $removeList = array();
+                    $removeList = [];
 
                     foreach ($lis as $li) {
-                        if ($li->nodeName != 'li')
+                        if ($li->nodeName != 'li') {
                             continue;
+                        }
                         $break = false;
                         $as = $li->childNodes;
                         $label = "";
                         foreach ($as as $a) {
-                            if ($a->nodeName != 'a')
+                            if ($a->nodeName != 'a') {
                                 continue;
-                            $params = array();
+                            }
+                            $params = [];
 
                             $url = parse_url($a->getAttribute('href'));
                             if (!empty($a->nodeValue)) {
@@ -216,8 +225,9 @@ class lib_wshelper {
                                     $break = true;
                                 }
                             }
-                            if ($break)
+                            if ($break) {
                                 break;
+                            }
                         }
                     }
                 }
@@ -276,7 +286,7 @@ class lib_wshelper {
     }
 
     private static function buffer_user_selector_search($buffer) {
-        //die($buffer);
+        // die($buffer);
         /**
          * If we use the default buffer and only remove items, results with more than 100 users will
          * not show anything. Therefore we need to rewrite it and show our own results.
@@ -296,11 +306,11 @@ class lib_wshelper {
         $sqlsearch = '%' . $search . '%';
 
         global $DB, $USER;
-        $result = new \stdClass; // json_decode($buffer);
-        $result->results = array();
+        $result = new \stdClass(); // json_decode($buffer);
+        $result->results = [];
         $result->results[0] = (object)[];
         $result->results[0]->name = get_string('enrolcandidatesmatching', 'enrol');
-        $result->results[0]->users = array();
+        $result->results[0]->users = [];
 
         $protectedorgs = get_config('local_eduvidual', 'protectedorgs');
         $sqlfullname = $DB->sql_fullname('u.firstname', 'u.lastname');
@@ -319,10 +329,10 @@ class lib_wshelper {
                         ORDER BY $sqlfullname ASC
                         LIMIT 0,101";
 
-            $sqlparams = array($sqlsearch, $sqlsearch, $sqlsearch, $sqlsearch);
+            $sqlparams = [$sqlsearch, $sqlsearch, $sqlsearch, $sqlsearch];
         } else {
-            $myorgs = array();
-            $_myorgs = $DB->get_records('local_eduvidual_orgid_userid', array('userid' => $USER->id));
+            $myorgs = [];
+            $_myorgs = $DB->get_records('local_eduvidual_orgid_userid', ['userid' => $USER->id]);
             foreach ($_myorgs as $m) {
                 $myorgs[] = $m->orgid;
             }
@@ -341,7 +351,7 @@ class lib_wshelper {
                         ORDER BY $sqlfullname ASC
                         LIMIT 0,101";
 
-            $sqlparams = array($sqlsearch, $sqlsearch, $sqlsearch, $sqlsearch);
+            $sqlparams = [$sqlsearch, $sqlsearch, $sqlsearch, $sqlsearch];
         }
 
 
@@ -349,48 +359,48 @@ class lib_wshelper {
 
         if (count($potentialusers) == 0) {
             if (!empty($search)) {
-                $a = new \stdClass;
+                $a = new \stdClass();
                 $a->search = $search;
-                $result->results[0] = (object)array(
+                $result->results[0] = (object)[
                     'name' => get_string('nouserstoshow', 'local_eduvidual', $a),
-                    'users' => array(),
-                );
-                $result->results[1] = (object)array(
+                    'users' => [],
+                ];
+                $result->results[1] = (object)[
                     'name' => get_string('pleaseusesearch'),
-                    'users' => array(),
-                );
+                    'users' => [],
+                ];
             } else {
-                $result->results[0] = (object)array(
-                    'name' => array(
+                $result->results[0] = (object)[
+                    'name' => [
                         get_string('pleaseusesearch'),
-                    ),
-                );
+                    ],
+                ];
             }
-
         } elseif (count($potentialusers) > 100) {
             if (!empty($search)) {
-                $a = new \stdClass;
-                $a->count = '> 100'; //count($potentialusers);
+                $a = new \stdClass();
+                $a->count = '> 100'; // count($potentialusers);
                 $a->search = $search;
-                $result->results[0] = (object)array(
-                    'name' => array(
+                $result->results[0] = (object)[
+                    'name' => [
                         get_string('toomanyusersmatchsearch', '', $a),
                         get_string('pleasesearchmore'),
-                    ),
-                );
+                    ],
+                ];
             } else {
-                $count = '> 100'; //count($potentialusers);
-                $result->results[0] = (object)array(
-                    'name' => array(
+                $count = '> 100'; // count($potentialusers);
+                $result->results[0] = (object)[
+                    'name' => [
                         get_string('toomanyuserstoshow', '', $count),
                         get_string('pleaseusesearch'),
-                    ),
-                );
+                    ],
+                ];
             }
         } else {
             foreach ($potentialusers as &$potentialuser) {
-                if (empty($potentialuser->id))
+                if (empty($potentialuser->id)) {
                     continue;
+                }
                 if (is_siteadmin() && !\local_eduvidual\locallib::is_connected($potentialuser->id)) {
                     $potentialuser->name = '! ' . $potentialuser->name;
                 }
@@ -405,7 +415,7 @@ class lib_wshelper {
     private static function buffer_web_lib_ajax_getnavbranch($buffer) {
         $result = json_decode($buffer);
         $orgs = \local_eduvidual\locallib::get_organisations('*');
-        $categories = array();
+        $categories = [];
         foreach ($orgs as $org) {
             $categories[] = $org->categoryid;
         }
@@ -452,13 +462,13 @@ class lib_wshelper {
     private static function override_core_course_external_get_enrolled_courses_by_timeline_classification($result, $params) {
         global $DB;
         if (!empty($result['courses'])) {
-            $parentcoursecats = array();
+            $parentcoursecats = [];
             foreach ($result['courses'] as $id => &$course) {
                 if ($id == 0) {
                     // We attempted to inject some code that modifies the layout and functionality of the course cards.
                     // Integration of the course news turned out to be impossible since Moodle 3.7 (refer to https://github.com/moodleuulm/moodle-block_course_overview_campus/issues/35)
                     // But we may keep this for other implementations, like the "upload course image popup" or similar.
-                    //$course->fullname .= "<script> require(['local_eduvidual/jsinjector'], function(jsi) { jsi.dashboardCourseLoaded(); } ); </script>";
+                    // $course->fullname .= "<script> require(['local_eduvidual/jsinjector'], function(jsi) { jsi.dashboardCourseLoaded(); } ); </script>";
                 }
                 $course->showshortname = false;
                 // We do not want to show the progress bar.
@@ -469,7 +479,7 @@ class lib_wshelper {
                     $ccontext = \context::instance_by_id($path[2]);
                     $cname = \local_eduvidual\locallib::cache('application', 'categoryname-' . $ccontext->instanceid);
                     if (empty($cname)) {
-                        $category = $DB->get_record('course_categories', array('id' => $ccontext->instanceid));
+                        $category = $DB->get_record('course_categories', ['id' => $ccontext->instanceid]);
                         $cname = \local_eduvidual\locallib::cache('application', 'categoryname-' . $ccontext->instanceid, $category->name);
                         \local_eduvidual\locallib::cache('application', 'categoryname-' . $ccontext->instanceid, $cname);
                     }
@@ -496,7 +506,7 @@ class lib_wshelper {
 
         global $DB, $PAGE, $USER;
 
-        $result = array();
+        $result = [];
         $protectedorgs = get_config('local_eduvidual', 'protectedorgs');
         $sqlfullname = $DB->sql_fullname('u.firstname', 'u.lastname');
         $sqlfullnamerev = $DB->sql_fullname('u.lastname', 'u.firstname');
@@ -523,10 +533,10 @@ class lib_wshelper {
                             )
                         ORDER BY $sqlfullname ASC
                         LIMIT $from," . ($perpage + 1);
-            $sqlparams = array($search, $search, $search, $search);
+            $sqlparams = [$search, $search, $search, $search];
         } else {
-            $myorgs = array();
-            $_myorgs = $DB->get_records('local_eduvidual_orgid_userid', array('userid' => $USER->id));
+            $myorgs = [];
+            $_myorgs = $DB->get_records('local_eduvidual_orgid_userid', ['userid' => $USER->id]);
             foreach ($_myorgs as $m) {
                 $myorgs[] = $m->orgid;
             }
@@ -543,13 +553,14 @@ class lib_wshelper {
                             )
                         ORDER BY $sqlfullname ASC
                         LIMIT $from," . ($perpage + 1);
-            $sqlparams = array($search, $search, $search, $search);
+            $sqlparams = [$search, $search, $search, $search];
         }
 
         $potentialusers = $DB->get_records_sql($sql, $sqlparams);
         foreach ($potentialusers as &$potentialuser) {
-            if (empty($potentialuser->id))
+            if (empty($potentialuser->id)) {
                 continue;
+            }
             if (is_siteadmin() && !\local_eduvidual\locallib::is_connected($potentialuser->id)) {
                 $potentialuser->fullname = '! ' . $potentialuser->fullname;
             }
@@ -564,7 +575,7 @@ class lib_wshelper {
         }
         return $result;
 
-        //return \local_eduvidual\locallib::filter_userlist($result, 'id', 'fullname');
+        // return \local_eduvidual\locallib::filter_userlist($result, 'id', 'fullname');
     }
 
     /**
@@ -574,10 +585,10 @@ class lib_wshelper {
         global $DB, $USER;
         if (!empty($params[0]) && $params[0] == 'mod_quiz' && !empty($params[1]) && $params[1] == 'quiz_question_bank') {
             $managed_qcats = explode(",", get_config('local_eduvidual', 'questioncategories'));
-            $user_qcats = array_keys($DB->get_records('local_eduvidual_userqcats', array('userid' => $USER->id), '', 'categoryid'));
+            $user_qcats = array_keys($DB->get_records('local_eduvidual_userqcats', ['userid' => $USER->id], '', 'categoryid'));
             $orgids = array_keys(\local_eduvidual\locallib::get_organisations(locallib::ROLE_TEACHER, false));
 
-            $systemcategoryid = $DB->get_field('question_categories', 'id', array('contextid' => \context_system::instance()->id, 'parent' => 0));
+            $systemcategoryid = $DB->get_field('question_categories', 'id', ['contextid' => \context_system::instance()->id, 'parent' => 0]);
 
             $utf8converted = mb_convert_encoding($result['html'], 'HTML-ENTITIES', "UTF-8");
             $doc = new \DOMDocument();
@@ -591,7 +602,7 @@ class lib_wshelper {
 
             $options = $select->getElementsByTagName('option');
             $remove = false;
-            $removeList = array();
+            $removeList = [];
             $is_system_category = false;
             for ($a = 0; $a < $options->length; $a++) {
                 $item = $options->item($a);
@@ -674,7 +685,7 @@ class lib_wshelper {
         global $DB, $USER;
 
         $managed_qcats = explode(",", get_config('local_eduvidual', 'questioncategories'));
-        $user_qcats = array_keys($DB->get_records('local_eduvidual_userqcats', array('userid' => $USER->id), '', 'categoryid'));
+        $user_qcats = array_keys($DB->get_records('local_eduvidual_userqcats', ['userid' => $USER->id], '', 'categoryid'));
         $orgids = array_keys(\local_eduvidual\locallib::get_organisations(locallib::ROLE_TEACHER, false));
 
         $strstart = '<optgroup label="' . get_string('coresystem') . '">';
@@ -682,11 +693,11 @@ class lib_wshelper {
         $posstart = strpos($buffer, $strstart);
         $posend = strpos($buffer, $strend, $posstart);
 
-        $parts = array(
+        $parts = [
             substr($buffer, 0, $posstart),
             substr($buffer, $posstart, $posend - $posstart + strlen($strend)),
             substr($buffer, $posend + strlen($strend)),
-        );
+        ];
 
         if (!empty($parts[0]) && !empty($parts[1]) && !empty($parts[2])) {
             $parts[1] = mb_convert_encoding($parts[1], 'HTML-ENTITIES', "UTF-8");
@@ -696,7 +707,7 @@ class lib_wshelper {
             $options = $doc->getElementsByTagName('option');
 
             $remove = false;
-            $removeList = array();
+            $removeList = [];
             for ($a = 0; $a < $options->length; $a++) {
                 $label = $options->item($a)->nodeValue;
                 $label2 = ltrim($label, " \t\n\r\0\x0B\xC2\xA0");

@@ -23,14 +23,14 @@
 
 defined('MOODLE_INTERNAL') || die;
 
-$definitions = array(
-    'application' => array(
+$definitions = [
+    'application' => [
         'mode' => cache_store::MODE_APPLICATION,
-    ),
-    'request' => array(
+    ],
+    'request' => [
         'mode' => cache_store::MODE_REQUEST,
-    ),
-    'session' => array(
+    ],
+    'session' => [
         'mode' => cache_store::MODE_SESSION,
-    ),
-);
+    ],
+];

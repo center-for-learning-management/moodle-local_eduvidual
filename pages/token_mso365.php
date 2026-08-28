@@ -31,29 +31,29 @@ require_once($CFG->libdir . '/adminlib.php');
 
 $PAGE->set_context(context_system::instance());
 $PAGE->set_pagelayout('mydashboard');
-$PAGE->set_url('/local/eduvidual/pages/token_mso365.php', array());
+$PAGE->set_url('/local/eduvidual/pages/token_mso365.php', []);
 $PAGE->set_title('Moodle Office 365 Webservices');
 $PAGE->set_heading('Moodle Office 365 Webservices');
 
 echo $OUTPUT->header();
 
-$service = $DB->get_record('external_services', array('name' => 'Moodle Office 365 Webservices'));
+$service = $DB->get_record('external_services', ['name' => 'Moodle Office 365 Webservices']);
 if (empty($service->id)) {
-    echo $OUTPUT->render_from_template('local_eduvidual/alert', array(
+    echo $OUTPUT->render_from_template('local_eduvidual/alert', [
         'content' => 'No such webservice.',
         'type' => 'danger',
         'url' => $CFG->wwwroot . '/my',
-    ));
+    ]);
 } else {
     $user = $USER;
     if (is_siteadmin() && optional_param('userid', 0, PARAM_INT) > 0) {
         $user = \core_user::get_user(optional_param('userid', 0, PARAM_INT));
     }
-    $tokens = array_values($DB->get_records('external_tokens', array('externalserviceid' => $service->id, 'userid' => $user->id)));
-    echo $OUTPUT->render_from_template('local_eduvidual/token_mso365', array(
+    $tokens = array_values($DB->get_records('external_tokens', ['externalserviceid' => $service->id, 'userid' => $user->id]));
+    echo $OUTPUT->render_from_template('local_eduvidual/token_mso365', [
         'user' => $user,
         'tokens' => $tokens,
-    ));
+    ]);
 }
 
 

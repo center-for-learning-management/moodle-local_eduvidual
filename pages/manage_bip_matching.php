@@ -46,7 +46,7 @@ $PAGE->navbar->add(get_string('manage:bipmatching', 'local_eduvidual'), $PAGE->u
 $idps = explode("\n", get_config('auth_shibboleth', 'organization_selection'));
 $defaultidp = $idps ? trim(explode(',', $idps[0])[0]) : '';
 
-$table = new class($org, $defaultidp) extends local_table_sql\table_sql_form {
+$table = new class ($org, $defaultidp) extends local_table_sql\table_sql_form {
     function __construct(private object $org, public string $defaultidp) {
         parent::__construct([$org->orgid]);
     }
@@ -219,7 +219,7 @@ $table = new class($org, $defaultidp) extends local_table_sql\table_sql_form {
         );
 
         $table = $this;
-        $this->add_form_action(new class($table) extends \local_table_sql\table_sql_subform {
+        $this->add_form_action(new class ($table) extends \local_table_sql\table_sql_subform {
             public function __construct(protected $parenttable) {
                 parent::__construct();
             }
@@ -269,6 +269,7 @@ $table = new class($org, $defaultidp) extends local_table_sql\table_sql_form {
             \auth_shibboleth_link\lib::SOURCE_USER => get_string('bip_matching:source_user', 'local_eduvidual'),
             \auth_shibboleth_link\lib::SOURCE_AUTOMATCH => get_string('bip_matching:source_automatch', 'local_eduvidual'),
             \auth_shibboleth_link\lib::SOURCE_MANAGER => get_string('bip_matching:source_manager', 'local_eduvidual'),
+            \auth_shibboleth_link\lib::SOURCE_IMPORT => get_string('bip_matching:source_import', 'local_eduvidual'),
             default => (string)$row->source,
         };
     }
