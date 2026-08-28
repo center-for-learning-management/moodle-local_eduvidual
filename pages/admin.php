@@ -35,10 +35,10 @@ if (empty($act)) {
 
 $PAGE->set_context(\context_system::instance());
 $PAGE->set_pagelayout('admin');
-$PAGE->set_url('/local/eduvidual/pages/admin.php', array('act' => $act));
+$PAGE->set_url('/local/eduvidual/pages/admin.php', ['act' => $act]);
 $PAGE->set_title(get_string('Administration', 'local_eduvidual'));
 $PAGE->set_heading(get_string('Administration', 'local_eduvidual'));
-//$PAGE->set_cacheable(false);
+// $PAGE->set_cacheable(false);
 $PAGE->requires->css('/local/eduvidual/style/leaflet.css');
 $PAGE->requires->css('/local/eduvidual/style/admin.css');
 

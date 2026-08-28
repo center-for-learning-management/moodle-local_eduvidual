@@ -21,41 +21,42 @@
  */
 
 defined('MOODLE_INTERNAL') || die;
-if (!is_siteadmin())
+if (!is_siteadmin()) {
     die;
+}
 
 // Restrit
-$ROWS = array(
-    0 => array(
-        0 => array('id' => 0, 'label' => ''),
-        1 => array('id' => 1, 'label' => 'Burgenland'),
-        2 => array('id' => 2, 'label' => 'Kärnten'),
-        3 => array('id' => 3, 'label' => 'Niederösterreich'),
-        4 => array('id' => 4, 'label' => 'Oberösterreich'),
-        5 => array('id' => 5, 'label' => 'Salzburg'),
-        6 => array('id' => 6, 'label' => 'Steiermark'),
-        7 => array('id' => 7, 'label' => 'Tirol'),
-        8 => array('id' => 8, 'label' => 'Vorarlberg'),
-        9 => array('id' => 9, 'label' => 'Wien'),
-    ),
-    1 => array(
-        0 => array('id' => 0, 'label' => 'Sonstige'),
-        1 => array('id' => 1, 'label' => 'VS'),
-        2 => array('id' => 2, 'label' => 'HS/NMS/MS'),
-        3 => array('id' => 3, 'label' => 'Sonderschule'),
-        4 => array('id' => 4, 'label' => 'PTS'),
-        5 => array('id' => 5, 'label' => 'BS'),
-        6 => array('id' => 6, 'label' => 'Gymnasium'),
-        7 => array('id' => 7, 'label' => 'HTL'),
-        8 => array('id' => 8, 'label' => 'HAK'),
-        9 => array('id' => 9, 'label' => 'HUM'),
-    ),
-);
+$ROWS = [
+    0 => [
+        0 => ['id' => 0, 'label' => ''],
+        1 => ['id' => 1, 'label' => 'Burgenland'],
+        2 => ['id' => 2, 'label' => 'Kärnten'],
+        3 => ['id' => 3, 'label' => 'Niederösterreich'],
+        4 => ['id' => 4, 'label' => 'Oberösterreich'],
+        5 => ['id' => 5, 'label' => 'Salzburg'],
+        6 => ['id' => 6, 'label' => 'Steiermark'],
+        7 => ['id' => 7, 'label' => 'Tirol'],
+        8 => ['id' => 8, 'label' => 'Vorarlberg'],
+        9 => ['id' => 9, 'label' => 'Wien'],
+    ],
+    1 => [
+        0 => ['id' => 0, 'label' => 'Sonstige'],
+        1 => ['id' => 1, 'label' => 'VS'],
+        2 => ['id' => 2, 'label' => 'HS/NMS/MS'],
+        3 => ['id' => 3, 'label' => 'Sonderschule'],
+        4 => ['id' => 4, 'label' => 'PTS'],
+        5 => ['id' => 5, 'label' => 'BS'],
+        6 => ['id' => 6, 'label' => 'Gymnasium'],
+        7 => ['id' => 7, 'label' => 'HTL'],
+        8 => ['id' => 8, 'label' => 'HAK'],
+        9 => ['id' => 9, 'label' => 'HUM'],
+    ],
+];
 
-$STATS = array();
+$STATS = [];
 
 for ($z = 0; $z < 2; $z++) {
-    $STATS[$z] = array(
+    $STATS[$z] = [
         'id' => $z,
         'label' => 'n/a',
         'restrictions' => $ROWS[($z == 0) ? 1 : 0],
@@ -64,7 +65,7 @@ for ($z = 0; $z < 2; $z++) {
         'sum_lpfeduv' => 0,
         'sum_neweduv' => 0,
         'sum_reg' => 0,
-    );
+    ];
     $restriction = optional_param('restriction_' . $z, -1, PARAM_INT);
     if ($restriction > -1) {
         $STATS[$z]['restrictions'][$restriction]['selected'] = '1';
@@ -80,7 +81,7 @@ for ($z = 0; $z < 2; $z++) {
                             $rest
                         GROUP BY ord
                         ORDER BY ord ASC";
-            $all = $DB->get_records_sql($sql, array());
+            $all = $DB->get_records_sql($sql, []);
 
             $sql = "SELECT LEFT(orgid,1) AS ord, count(id) AS cnt
                         FROM {local_eduvidual_org}
@@ -89,7 +90,7 @@ for ($z = 0; $z < 2; $z++) {
                             AND authenticated>0
                         GROUP BY ord
                         ORDER BY ord ASC";
-            $registered = $DB->get_records_sql($sql, array());
+            $registered = $DB->get_records_sql($sql, []);
 
             $sql = "SELECT LEFT(orgid,1) AS ord, count(id) AS cnt
                         FROM {local_eduvidual_org}
@@ -98,7 +99,7 @@ for ($z = 0; $z < 2; $z++) {
                             AND lpf IS NOT NULL
                         GROUP BY ord
                         ORDER BY ord ASC";
-            $lpf = $DB->get_records_sql($sql, array());
+            $lpf = $DB->get_records_sql($sql, []);
 
             $sql = "SELECT LEFT(orgid,1) AS ord, count(id) AS cnt
                         FROM {local_eduvidual_org}
@@ -108,7 +109,7 @@ for ($z = 0; $z < 2; $z++) {
                             AND authenticated>0
                         GROUP BY ord
                         ORDER BY ord ASC";
-            $lpfeduv = $DB->get_records_sql($sql, array());
+            $lpfeduv = $DB->get_records_sql($sql, []);
             break;
         case 1:
             $STATS[$z]['label'] = get_string('admin:stats:types', 'local_eduvidual');
@@ -120,7 +121,7 @@ for ($z = 0; $z < 2; $z++) {
                             $rest
                         GROUP BY ord
                         ORDER BY ord ASC";
-            $all = $DB->get_records_sql($sql, array());
+            $all = $DB->get_records_sql($sql, []);
 
             $sql = "SELECT RIGHT(orgid,1) AS ord, count(id) AS cnt
                         FROM {local_eduvidual_org}
@@ -129,7 +130,7 @@ for ($z = 0; $z < 2; $z++) {
                             AND authenticated>0
                         GROUP BY ord
                         ORDER BY ord ASC";
-            $registered = $DB->get_records_sql($sql, array());
+            $registered = $DB->get_records_sql($sql, []);
 
             $sql = "SELECT RIGHT(orgid,1) AS ord, count(id) AS cnt
                         FROM {local_eduvidual_org}
@@ -138,7 +139,7 @@ for ($z = 0; $z < 2; $z++) {
                             AND lpf IS NOT NULL
                         GROUP BY ord
                         ORDER BY ord ASC";
-            $lpf = $DB->get_records_sql($sql, array());
+            $lpf = $DB->get_records_sql($sql, []);
 
             $sql = "SELECT RIGHT(orgid,1) AS ord, count(id) AS cnt
                         FROM {local_eduvidual_org}
@@ -148,13 +149,14 @@ for ($z = 0; $z < 2; $z++) {
                             AND authenticated>0
                         GROUP BY ord
                         ORDER BY ord ASC";
-            $lpfeduv = $DB->get_records_sql($sql, array());
+            $lpfeduv = $DB->get_records_sql($sql, []);
             break;
     }
 
     foreach ($STATS[$z]['rows'] as $a => $row) {
-        if (empty($row['label']))
+        if (empty($row['label'])) {
             continue;
+        }
         if (!empty($all[$a]->cnt)) {
             $rate = round(intval(@$registered[$a]->cnt) / intval(@$all[$a]->cnt) * 100, 1) . '%';
         } else {
@@ -162,14 +164,14 @@ for ($z = 0; $z < 2; $z++) {
         }
         $neweduv = number_format(@$registered[$a]->cnt, 0, ",", ".");
 
-        $STATS[$z]['states'][] = array(
+        $STATS[$z]['states'][] = [
             'cntall' => !empty(@$all[$a]->cnt) ? number_format(@$all[$a]->cnt, 0, ",", ".") : '-',
             'cntlpfeduv' => !empty(@$lpf_and_eduv) ? number_format($lpf_and_eduv, 0, ",", ".") : '-',
             'cntneweduv' => $neweduv,
             'cntreg' => !empty(@$registered[$a]->cnt) ? number_format(@$registered[$a]->cnt, 0, ",", ".") : '-',
             'name' => $row['label'],
             'rate' => $rate,
-        );
+        ];
         $STATS[$z]['sum_all'] += @$all[$a]->cnt;
         $STATS[$z]['sum_lpfeduv'] += @$lpfeduv[$a]->cnt;
         $STATS[$z]['sum_neweduv'] += $neweduv;
@@ -180,13 +182,13 @@ for ($z = 0; $z < 2; $z++) {
     $STATS[$z]['sum_neweduv'] = number_format($STATS[$z]['sum_neweduv'], 0, ",", ".");
     $STATS[$z]['sum_reg'] = number_format($STATS[$z]['sum_reg'], 0, ",", ".");
 }
-$o = array(
+$o = [
     'show_all' => optional_param('show_all', true, PARAM_BOOL),
     'show_lpfeduv' => optional_param('show_lpfeduv', true, PARAM_BOOL),
     'show_neweduv' => optional_param('show_neweduv', true, PARAM_BOOL),
     'show_rate' => optional_param('show_rate', true, PARAM_BOOL),
     'show_registered' => optional_param('show_registered', true, PARAM_BOOL),
     'stats' => $STATS,
-);
+];
 
 echo $OUTPUT->render_from_template('local_eduvidual/admin_stats', $o);

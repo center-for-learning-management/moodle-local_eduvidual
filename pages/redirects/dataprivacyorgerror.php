@@ -27,13 +27,13 @@ require_login();
 $context = \context_user::instance($USER->id);
 $PAGE->set_context($context);
 $PAGE->set_pagelayout('standard');
-$PAGE->set_url('/local/eduvidual/pages/redirects/dataprivacyorgerror.php', array());
+$PAGE->set_url('/local/eduvidual/pages/redirects/dataprivacyorgerror.php', []);
 $PAGE->set_title(get_string('dataprivacyorgerror:pagetitle', 'local_eduvidual'));
 $PAGE->set_heading(get_string('dataprivacyorgerror:pagetitle', 'local_eduvidual'));
 
 
-$PAGE->navbar->add(get_string('profile'), new \moodle_url('/user/profile.php', array('id' => $USER->id)));
-$PAGE->navbar->add(get_string('createnewdatarequest', 'tool_dataprivacy'), new \moodle_url('/admin/tool/dataprivacy/createdatarequest.php', array('type' => 2)));
+$PAGE->navbar->add(get_string('profile'), new \moodle_url('/user/profile.php', ['id' => $USER->id]));
+$PAGE->navbar->add(get_string('createnewdatarequest', 'tool_dataprivacy'), new \moodle_url('/admin/tool/dataprivacy/createdatarequest.php', ['type' => 2]));
 $PAGE->navbar->add(get_string('dataprivacyorgerror:pagetitle', 'local_eduvidual'), $PAGE->url);
 
 
@@ -50,10 +50,10 @@ foreach ($orgs as &$org) {
     $org->managers = array_values($DB->get_records_sql($sql, ['orgid' => $org->orgid]));
     foreach ($org->managers as &$manager) {
         $manager->userfullname = fullname($manager);
-        $manager->userpicture = $OUTPUT->user_picture($manager, array('size' => 30));
+        $manager->userpicture = $OUTPUT->user_picture($manager, ['size' => 30]);
     }
 }
 
-echo $OUTPUT->render_from_template('local_eduvidual/dataprivacyorgerror', array('orgs' => $orgs));
+echo $OUTPUT->render_from_template('local_eduvidual/dataprivacyorgerror', ['orgs' => $orgs]);
 
 echo $OUTPUT->footer();
