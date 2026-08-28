@@ -1,5 +1,6 @@
 <?php
-// Importiert BIP-Userdaten (vorerst nur Schüler:innen, role=std) in local_eduvidual_bip_user.
+// Importiert BIP-Userdaten (Delta) in die Spiegeltabelle local_eduvidual_bip_user und trägt
+// gelöschte Schüler:innen aus. Org-Sync und Schüler-Anlage macht danach cli/bip_sync_users.php.
 // Pro Aufruf wird genau eine Seite verarbeitet; der next_cursor wird in der Config persistiert.
 // Standardmäßig wird ein Dry-Run gemacht (nichts wird geschrieben); --execute schreibt tatsächlich.
 // Usage:

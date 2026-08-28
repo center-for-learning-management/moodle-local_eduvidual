@@ -111,19 +111,12 @@ class bip_helper {
     }
 
     /**
-     * Prüft, ob die Schule aktuell in BIP existiert. Das biporg-Flag in local_eduvidual_org
-     * wird von import_orgs() gepflegt - kein Live-Call zu BIP nötig.
+     * Schulzuordnungen werden nur bei registrierten BIP-Schulen geändert: biporg=1
+     * (Flag wird von import_orgs() gepflegt - kein Live-Call zu BIP nötig) und
+     * authenticated>0 (bei eduvidual aktiviert/registriert).
      */
-    public static function is_bip_org(int $orgid): bool {
-        $org = \local_eduvidual\locallib::get_org('orgid', $orgid);
-        return !empty($org->biporg);
-
-        // ALT: nicht 6-stellige orgids (Projektgruppen, Ressourcenkatalog, Spielwiese) stammen nie aus BIP.
-        /*
-        if (strlen((string)$orgid) != 6) {
-            return false;
-        }
-        */
+    public static function is_syncable_org(object $org): bool {
+        return $org->biporg && $org->authenticated;
     }
 
     /**
@@ -363,8 +356,8 @@ class bip_helper {
 
     /**
      * Ordnet den User der Org zu - mit der höchsten Rolle aus bestehenden + neuen Rollen.
-     * Gemeinsame Regeln für Login-Hook und BIP-Import: nur registrierte Orgs
-     * (authenticated > 0), bestehende Manager bleiben unangetastet.
+     * Gemeinsame Regeln für Login-Hook und BIP-Import: nur registrierte BIP-Schulen
+     * (biporg=1, authenticated > 0), bestehende Manager bleiben unangetastet.
      *
      * Liefert die gesetzte Rolle bzw. null, wenn nichts zu tun ist. Mit $execute=false
      * wird nur gerechnet, nicht geschrieben.
@@ -373,8 +366,8 @@ class bip_helper {
         global $DB;
 
         $org = \local_eduvidual\locallib::get_org('orgid', $orgid);
-        if (empty($org->orgid) || !$org->authenticated) {
-            // Schule nicht gefunden oder nicht registriert.
+        if (empty($org->orgid) || !static::is_syncable_org($org)) {
+            // Schule nicht gefunden, nicht registriert oder keine BIP-Schule.
             return null;
         }
 
@@ -389,6 +382,12 @@ class bip_helper {
             return null;
         }
 
+        if (count($currentroles) == 1 && $currentroles[0] == $highest) {
+            // Genau diese Rolle ist schon zugewiesen - nichts zu tun. Wichtig für den
+            // nächtlichen Voll-Pass (sync_users), der ALLE verlinkten User durchgeht.
+            return null;
+        }
+
         static::mtrace("role_set: userid={$userid}, orgid={$orgid}, role={$highest}", execute: $execute);
         if ($execute) {
             \local_eduvidual\lib_enrol::role_set($userid, $org, $highest);
@@ -398,20 +397,21 @@ class bip_helper {
     }
 
     /**
-     * Trägt den User aus der Org aus - aber nur, wenn die Schule eine BIP-Schule ist.
-     * Mitgliedschaften bei Nicht-BIP-Orgs (Projektgruppen, Ressourcenkatalog, Spielwiese, ...)
-     * bleiben unangetastet, weil BIP sie nie bestätigen kann.
+     * Trägt den User aus der Org aus - aber nur, wenn die Schule eine registrierte
+     * BIP-Schule ist. Mitgliedschaften bei Nicht-BIP-Orgs (Projektgruppen,
+     * Ressourcenkatalog, Spielwiese, ...) bleiben unangetastet, weil BIP sie nie
+     * bestätigen kann; deaktivierte Schulen werden generell nicht angefasst.
      *
      * Liefert true, wenn ausgetragen wurde (bzw. bei $execute=false: würde).
      */
     public static function unassign_user_org(int $userid, int $orgid, bool $execute = true): bool {
-        if (!static::is_bip_org($orgid)) {
+        $org = \local_eduvidual\locallib::get_org('orgid', $orgid);
+        if (empty($org->orgid) || !static::is_syncable_org($org)) {
             return false;
         }
 
         static::mtrace("role_remove:: userid={$userid} -> orgid={$orgid}", execute: $execute);
         if ($execute) {
-            $org = \local_eduvidual\locallib::get_org('orgid', $orgid);
             \local_eduvidual\lib_enrol::role_set($userid, $org, 'remove');
         }
 
@@ -421,10 +421,10 @@ class bip_helper {
     /**
      * Voll-Abgleich der Schulzuordnungen eines Users gegen die gewünschte Liste aus BIP
      * (orgid => [BIP-Rollencodes]): trägt bei allen gewünschten Orgs ein und aus allen
-     * anderen aus. Unbekannte Rollencodes und nicht registrierte Orgs werden ignoriert -
-     * aus solchen Orgs wird also auch ausgetragen. Die weiteren Regeln stecken in den
-     * Primitiven (assign_user_org/unassign_user_org): Manager bleiben Manager, ausgetragen
-     * wird nur aus BIP-Orgs.
+     * anderen aus. Unbekannte Rollencodes werden ignoriert. Die weiteren Regeln stecken
+     * in den Primitiven (assign_user_org/unassign_user_org): Manager bleiben Manager,
+     * geändert (ein- wie ausgetragen) wird nur bei registrierten BIP-Schulen
+     * (siehe is_syncable_org).
      *
      * Nur für Quellen verwenden, die ALLE Zugehörigkeiten des Users über alle Rollen
      * abbilden (Login-affiliation, readuserdata mit allen usertypes) - sonst würden
@@ -441,8 +441,8 @@ class bip_helper {
             }
 
             $org = \local_eduvidual\locallib::get_org('orgid', (int)$orgid);
-            if (empty($org->orgid) || !$org->authenticated) {
-                // schule nicht gefunden oder nicht registriert
+            if (empty($org->orgid) || !static::is_syncable_org($org)) {
+                // Schule nicht gefunden, nicht registriert oder keine BIP-Schule.
                 continue;
             }
 
@@ -469,7 +469,7 @@ class bip_helper {
      * - Registrierte Schulen (authenticated > 0, TAN bestätigt): nur Adresse, Telefon und
      *   offizielle Mailadresse updaten. Der Schulname wird nicht überschrieben.
      * - Setzt zusätzlich biporg/bipgenuine/bipoperational: biporg=1 markiert, dass die Schule
-     *   aktuell in BIP existiert (Basis für is_bip_org()); Orgs, die nicht mehr in der
+     *   aktuell in BIP existiert (Basis für is_syncable_org()); Orgs, die nicht mehr in der
      *   BIP-Antwort vorkommen, werden auf biporg=0 zurückgesetzt.
      *
      * Achtung: org->name wird bei der Registrierung in course_categories (categoryid),
@@ -598,7 +598,7 @@ class bip_helper {
         }
 
         // Orgs, die noch als BIP-Schule markiert sind, aber nicht mehr in der BIP-Antwort
-        // vorkommen: biporg=0 setzen, damit is_bip_org() sie nicht mehr als BIP-Schule wertet.
+        // vorkommen: biporg=0 setzen, damit is_syncable_org() sie nicht mehr als BIP-Schule wertet.
         if ($seenorgids) {
             [$insql, $inparams] = $DB->get_in_or_equal($seenorgids, SQL_PARAMS_QM, 'param', false);
             $gone = $DB->get_records_select('local_eduvidual_org', "biporg = 1 AND orgid {$insql}", $inparams, '', 'id, orgid, name');
@@ -624,6 +624,12 @@ class bip_helper {
      * gespiegelt werden alle usertypes (eine Zeile pro bpkbf/orgid/role), damit der
      * Org-Sync (sync_user_orgs) pro User das vollständige Userobjekt über alle Rollen
      * sieht. Pro Aufruf eine Seite via readuserdata_v3.
+     *
+     * Org-Sync und Schüler-Anlage passieren NICHT hier, sondern im Voll-Pass
+     * sync_users() auf Basis der Spiegeltabelle. Einzige Ausnahme: Beim expliziten
+     * Lösch-Signal im Delta (deleted=1 bzw. orgs leer) werden verknüpfte Schüler:innen
+     * inline ausgetragen - danach sind die Spiegelzeilen weg, und bpkbfs ohne Zeilen
+     * fasst sync_users() bewusst nicht an.
      *
      * BIPs next_cursor wird in bip_userimport_cursor persistiert; der nächste Cron-Lauf
      * macht von dort aus weiter. Auf der letzten Sweep-Seite liefert BIP has_more=false
@@ -659,13 +665,11 @@ class bip_helper {
 
         $cursor = (string)(get_config('local_eduvidual', 'bip_userimport_cursor') ?: '');
         mtrace("BIP-User-Import: starte mit cursor='{$cursor}'");
-        mtrace('Namen-Update und Org-Sync der verknüpften Moodle-User: vorerst deaktiviert');
 
         $now = time();
         $countinsert = 0;
         $countupdate = 0;
         $countdelete = 0;
-        $countuseredit = 0;
 
         $jsondata = static::call_bip_iface_one_page('local_eduportal_iface_readuserdata_v3', [
             'orgids' => join(',', $orgids),
@@ -698,39 +702,20 @@ class bip_helper {
                 $purgereason = 'BIP: orgs leer';
             }
 
-            // Verknüpften Moodle-User (via auth_shibboleth_link) mit BIP-Stammdaten aktualisieren
-            // und Schulzuordnungen per Voll-Abgleich syncen: BIP liefert im Delta immer das
-            // komplette Userobjekt mit allen aktuellen Orgs über alle usertypes - "Org fehlt in
-            // orgs" ist damit ein verlässliches Lösch-Signal, unassigned_orgs muss nicht separat
-            // ausgewertet werden. Bei Purge trägt die leere orgs-Liste aus allen BIP-Orgs aus.
-            // Eindeutig über (idp, idpusername) - ohne idp würden Zeilen anderer IdPs mit
-            // gleicher bpkbf mitmatchen (get_field wirft sonst "duplicate value").
-            $userid = $DB->get_field('auth_shibboleth_link', 'userid', ['idp' => $defaultidp, 'idpusername' => $bipuser->bpkbf]);
-            if ($userid) {
-                // Namen-Update vorerst nur im Dry-Run ("false &&").
-                if ($purgereason === null && static::update_linked_moodle_user($bipuser, (int)$userid, false && $execute)) {
-                    $countuseredit++;
-                }
-
-                $hasstd = false;
-                $wantedbiproles = [];
-                foreach (($bipuser->orgs ?? []) as $org) {
-                    if (empty($org->orgid)) {
-                        continue;
-                    }
-                    $roles = (array)($org->roles ?? []);
-                    $wantedbiproles[(int)$org->orgid] = $roles;
-                    $hasstd = $hasstd || in_array('std', $roles);
-                }
+            // Beim expliziten Lösch-Signal verknüpfte Schüler:innen sofort austragen -
+            // sync_users() sieht diese User nach dem Löschen der Spiegelzeilen nicht mehr.
+            // Link-Lookup eindeutig über (idp, idpusername) - ohne idp würden Zeilen anderer
+            // IdPs mit gleicher bpkbf mitmatchen (get_field wirft sonst "duplicate value").
+            if ($purgereason) {
+                $userid = $DB->get_field('auth_shibboleth_link', 'userid', ['idp' => $defaultidp, 'idpusername' => $bipuser->bpkbf]);
+                $wasstd = false;
                 foreach ((array)($bipuser->unassigned_orgs ?? []) as $org) {
-                    $hasstd = $hasstd || ($org->role ?? '') == 'std';
+                    $wasstd = $wasstd || ($org->role ?? '') == 'std';
                 }
-
-                // Vorerst nur User syncen, die laut BIP Schüler:in sind oder gerade waren -
-                // reine Lehrer-/Eltern-User bleiben dem Login-Hook überlassen. Und nur im
-                // Dry-Run ("false &&"), bis sich der Sync in den Cron-Logs bewährt hat.
-                if ($hasstd) {
-                    static::sync_user_orgs((int)$userid, $wantedbiproles, false && $execute);
+                // Nur Schüler:innen ("nur schüler") - die leere Wunschliste trägt aus allen
+                // registrierten BIP-Schulen aus.
+                if ($userid && $wasstd) {
+                    static::sync_user_orgs((int)$userid, [], $execute);
                 }
             }
 
@@ -740,7 +725,7 @@ class bip_helper {
                 $existingkeyed["{$r->orgid}|{$r->role}"] = $r;
             }
 
-            if ($purgereason !== null) {
+            if ($purgereason) {
                 if ($existingforuser) {
                     $details = join(', ', array_map(fn($r) => "{$r->orgid}/{$r->role}", $existingforuser));
                     static::mtrace("löscht " . count($existingforuser) . " Einträge für bpkbf={$bipuser->bpkbf} ({$purgereason}): {$details}", execute: $execute);
@@ -856,7 +841,217 @@ class bip_helper {
 
         $status = $hasmore ? 'weiter beim nächsten Lauf' : 'Sweep abgeschlossen';
         $cursorinfo = "next_cursor='{$nextcursor}'" . ($nextcursor ? '' : " (keep old cursor)");
-        static::mtrace("BIP-User-Import ({$status}): {$countinsert} angelegt, {$countupdate} aktualisiert, {$countdelete} gelöscht, {$countuseredit} Moodle-User aktualisiert, {$cursorinfo}", execute: $execute);
+        static::mtrace("BIP-User-Import ({$status}): {$countinsert} angelegt, {$countupdate} aktualisiert, {$countdelete} gelöscht, {$cursorinfo}", execute: $execute);
+    }
+
+    /**
+     * Voll-Pass über die Spiegeltabelle (local_eduvidual_bip_user): synct die
+     * Schulzuordnungen aller verlinkten Schüler:innen und legt für unverlinkte
+     * Schüler:innen neue Moodle-Accounts an (create_student).
+     *
+     * Läuft bewusst über den GESAMTEN Spiegel statt nur über das letzte Delta -
+     * dadurch ist jeder Lauf selbstheilend: nachträglich (z.B. manuell) verlinkte User,
+     * aufgelöste Namenskonflikte und nachregistrierte Schulen werden bei jedem Lauf
+     * erneut geprüft. bpkbfs ohne Spiegelzeilen werden nicht angefasst - das Austragen
+     * komplett verschwundener User macht import_users() inline beim expliziten
+     * Lösch-Signal im Delta.
+     *
+     * "Nur Schüler": gesynct werden nur User mit std-Rolle, angelegt nur std-User -
+     * reine Lehrer-/Eltern-User bleiben dem Login-Hook überlassen. Namen-Update
+     * verlinkter User: vorerst deaktiviert (Dry-Run), macht weiterhin der Login-Hook.
+     */
+    public static function sync_users(bool $execute = false): void {
+        global $DB;
+
+        if (!$execute) {
+            mtrace('*** DRY-RUN: keine Änderungen in DB, nur Ausgabe der geplanten Aktionen ***');
+        }
+
+        // Default-IdP wie in import_users/match_users - Teil des eindeutigen Schlüssels
+        // (idp, idpusername) in auth_shibboleth_link.
+        $idps = explode("\n", get_config('auth_shibboleth', 'organization_selection'));
+        $defaultidp = $idps ? trim(explode(',', $idps[0])[0]) : '';
+
+        // Schulen, an denen zugeordnet/angelegt werden darf.
+        $createorgids = array_flip($DB->get_fieldset_select('local_eduvidual_org', 'orgid', 'authenticated > 0 AND biporg = 1'));
+
+        // Index unverlinkter Moodle-Schüler:innen (Match-Key wie in match_users) für die
+        // Duplikat-Prüfung der Anlage - z.B. per Excel angelegte Bestands-Accounts.
+        $unlinkedstudents = [];
+        $unlinkedrows = $DB->get_records_sql("
+            SELECT ou.id AS ouid, u.id AS userid, u.firstname, u.lastname, ou.orgid
+            FROM {user} u
+            JOIN {local_eduvidual_orgid_userid} ou ON ou.userid = u.id AND ou.role = ?
+            LEFT JOIN {auth_shibboleth_link} ash ON ash.userid = u.id
+            WHERE u.deleted = 0 AND ash.id IS NULL
+        ", [\local_eduvidual\locallib::ROLE_STUDENT]);
+        foreach ($unlinkedrows as $c) {
+            $key = static::make_match_key($c->orgid, 'std', $c->firstname, $c->lastname);
+            if ($key) {
+                $unlinkedstudents[$key] = true;
+            }
+        }
+
+        // Links des Default-IdP: bpkbf -> userid.
+        $links = [];
+        foreach ($DB->get_records('auth_shibboleth_link', ['idp' => $defaultidp], '', 'id, idpusername, userid') as $l) {
+            $links[$l->idpusername] = (int)$l->userid;
+        }
+
+        // Spiegelzeilen pro bpkbf gruppieren.
+        $bipusers = [];
+        foreach ($DB->get_records('local_eduvidual_bip_user') as $r) {
+            $bipusers[$r->bpkbf][] = $r;
+        }
+
+        $countsync = 0;
+        $countnameedit = 0;
+        $createstats = ['created' => 0, 'skip_candidate' => 0, 'skip_email' => 0, 'skip_noname' => 0, 'noop' => 0];
+
+        foreach ($bipusers as $bpkbf => $rows) {
+            $userid = $links[$bpkbf] ?? 0;
+            if (!$userid) {
+                $createstats[static::create_student((string)$bpkbf, $rows, $createorgids, $unlinkedstudents, $defaultidp, $execute)]++;
+                continue;
+            }
+
+            $hasstd = false;
+            $wantedbiproles = [];
+            foreach ($rows as $r) {
+                $wantedbiproles[(int)$r->orgid][] = $r->role;
+                $hasstd = $hasstd || $r->role === 'std';
+            }
+            if (!$hasstd) {
+                continue;
+            }
+
+            // Namen-Update vorerst nur im Dry-Run ("false &&") - Namen updated
+            // weiterhin der Login-Hook (pages/hooks/bip.php).
+            if (static::update_linked_moodle_user($rows[0], $userid, false && $execute)) {
+                $countnameedit++;
+            }
+
+            static::sync_user_orgs($userid, $wantedbiproles, $execute);
+            $countsync++;
+        }
+
+        static::mtrace("BIP-User-Sync fertig: " . count($bipusers) . " BIP-User im Spiegel, {$countsync} verlinkte Schüler:innen gesynct, {$countnameedit} Namen-Updates (Dry-Run)", execute: $execute);
+        static::mtrace("Schüler-Accounts: {$createstats['created']} angelegt - übersprungen: {$createstats['skip_candidate']} (namensgleicher unverlinkter User), {$createstats['skip_email']} (E-Mail existiert bereits), {$createstats['skip_noname']} (Name fehlt)", execute: $execute);
+    }
+
+    /**
+     * Legt für einen unverlinkten BIP-User (Spiegelzeilen aus local_eduvidual_bip_user)
+     * einen neuen Moodle-Schüler-Account an, verlinkt ihn per auth_shibboleth_link
+     * (SOURCE_IMPORT) und ordnet ihn seinen Schüler-Schulen zu.
+     *
+     * Nur Schüler:innen (role=std) an registrierten BIP-Schulen ($createorgids) -
+     * Lehrer-/Eltern-Accounts entstehen weiterhin beim Login. Nicht angelegt wird,
+     * wenn an einer der Schulen ein unverlinkter, namensgleicher Moodle-Schüler
+     * existiert oder schon ein Account mit der BIP-Mailadresse besteht (vermutlich
+     * dieselbe Person, z.B. per Excel-Import angelegt) - solche Fälle löst die
+     * manuelle Matching-Seite bzw. der Login-Flow auf.
+     *
+     * Liefert einen Statuscode für die Statistik: created, skip_candidate, skip_email,
+     * skip_noname oder noop (kein:e Schüler:in an einer registrierten BIP-Schule).
+     */
+    private static function create_student(string $bpkbf, array $rows, array $createorgids, array $unlinkedstudents, string $defaultidp, bool $execute): string {
+        global $CFG, $DB;
+
+        $stdrows = [];
+        $hascandidate = false;
+        foreach ($rows as $r) {
+            if ($r->role !== 'std' || !isset($createorgids[$r->orgid])) {
+                continue;
+            }
+            $stdrows[(int)$r->orgid] = $r;
+            $key = static::make_match_key($r->orgid, 'std', $r->firstname, $r->lastname);
+            if ($key && isset($unlinkedstudents[$key])) {
+                $hascandidate = true;
+            }
+        }
+        if (!$stdrows) {
+            return 'noop';
+        }
+        $stdorgids = array_keys($stdrows);
+
+        $first = trim((string)($rows[0]->firstname ?? ''));
+        $last = trim((string)($rows[0]->lastname ?? ''));
+        $orgsinfo = join(',', $stdorgids);
+
+        if ($hascandidate) {
+            static::mtrace("Anlage übersprungen (unverlinkter Moodle-User mit gleichem Namen vorhanden, bitte manuell matchen): {$first} {$last} (bpkbf={$bpkbf}, Orgs: {$orgsinfo})", execute: $execute);
+            return 'skip_candidate';
+        }
+        if ($first === '' || $last === '') {
+            static::mtrace("Anlage übersprungen (Vor- oder Nachname fehlt): bpkbf={$bpkbf}, Orgs: {$orgsinfo}", execute: $execute);
+            return 'skip_noname';
+        }
+
+        // E-Mail bevorzugt aus einer Schüler-Zeile (dort steht schon die offizielle Mail,
+        // bevorzugt für die jeweilige Schule - siehe import_users), sonst aus irgendeiner Zeile.
+        $email = '';
+        foreach (array_merge(array_values($stdrows), $rows) as $r) {
+            if ($r->email) {
+                $email = mb_strtolower(trim($r->email));
+                break;
+            }
+        }
+
+        if ($email && $DB->record_exists_select('user', 'deleted = 0 AND (username = ? OR email = ?)', [$email, $email])) {
+            static::mtrace("Anlage übersprungen (Account mit E-Mail {$email} existiert bereits, bitte manuell matchen): {$first} {$last} (bpkbf={$bpkbf}, Orgs: {$orgsinfo})", execute: $execute);
+            return 'skip_email';
+        }
+
+        static::mtrace("neuer Schüler-Account: {$first} {$last} (bpkbf={$bpkbf}, E-Mail: " . ($email ?: 'Dummy-Adresse') . ", Orgs: {$orgsinfo})", execute: $execute);
+        if (!$execute) {
+            return 'created';
+        }
+
+        // Account-Anlage analog zu ajax/sub/manage.php (adduser_anonymous) bzw.
+        // externallib/manager.php: username vorerst zufällig, nach der Anlage
+        // E-Mail/username/idnumber setzen; Passwort = eduvidual-Secret.
+        require_once($CFG->dirroot . '/user/lib.php');
+        $user = (object)[
+            'confirmed' => 1,
+            'mnethostid' => 1,
+            'username' => md5('bip' . $bpkbf . microtime()),
+            'firstname' => $first,
+            'middlename' => trim((string)($rows[0]->middlename ?? '')),
+            'lastname' => $last,
+            'auth' => 'manual',
+            'lang' => 'de',
+            'calendartype' => 'gregorian',
+        ];
+        $user->id = \user_create_user($user, false, false);
+        $user->email = $email ?: 'a' . $user->id . \local_eduvidual\locallib::get_dummydomain();
+        $user->username = $user->email;
+        $user->idnumber = $user->id;
+        \user_update_user($user, false, false);
+        $secret = \local_eduvidual\locallib::get_user_secret($user->id);
+        \update_internal_user_password($DB->get_record('user', ['id' => $user->id]), $secret, false);
+        \local_eduvidual\lib_enrol::choose_background($user->id);
+        \core\event\user_created::create_from_userid($user->id)->trigger();
+
+        // Der Link stammt aus derselben Quelle wie der Account selbst - SOURCE_IMPORT ist
+        // damit (wie MANUAL/LOGIN) für den derzeit deaktivierten AutoMatcher gesperrt.
+        $DB->insert_record('auth_shibboleth_link', (object)[
+            'idp' => $defaultidp,
+            'idpusername' => $bpkbf,
+            'idpfirstname' => $first,
+            'idplastname' => $last,
+            'idpemail' => $email,
+            'userid' => $user->id,
+            'lastseen' => 0,
+            'created' => time(),
+            'source' => \auth_shibboleth_link\lib::SOURCE_IMPORT,
+            'usermodified' => 0,
+        ]);
+
+        foreach ($stdorgids as $orgid) {
+            static::assign_user_org($user->id, $orgid, [\local_eduvidual\locallib::ROLE_STUDENT]);
+        }
+
+        return 'created';
     }
 
     /**
