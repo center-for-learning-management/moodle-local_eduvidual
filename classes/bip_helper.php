@@ -754,13 +754,14 @@ class bip_helper {
         // in-memory weiter (im Dry-Run wird nichts persistiert).
         do {
             $pages++;
+            mtrace("Seite {$pages}: hole User von BIP (cursor='{$cursor}') ...");
             $jsondata = static::call_bip_iface_one_page('local_eduportal_iface_readuserdata_v3', [
                 'orgids' => join(',', $orgids),
                 // Leer = alle für den Zugang freigeschalteten usertypes (std, tch, lgn, dir, ...).
                 // 'usertypes' => '',
                 'limitnum' => 25000,
             ], $cursor);
-            mtrace('Seite ' . $pages . ': ' . count($jsondata->result) . ' User erhalten');
+            mtrace('Seite ' . $pages . ': ' . count($jsondata->result) . ' User erhalten, starte Verarbeitung ...');
 
             foreach ($jsondata->result as $bipuser) {
                 // Ohne bpkbf ist der User nicht eindeutig identifizierbar - überspringen.
@@ -894,6 +895,8 @@ class bip_helper {
                 }
 
             }
+
+            mtrace("Seite {$pages} fertig: kumuliert {$countinsert} angelegt, {$countupdate} aktualisiert, {$countdelete} gelöscht");
 
             $hasmore = !empty($jsondata->meta->has_more);
             $nextcursor = (string)($jsondata->meta->next_cursor ?? '');
