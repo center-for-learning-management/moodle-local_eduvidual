@@ -923,6 +923,10 @@ class bip_helper {
                     set_config('bip_userimport_state', json_encode(['cursor' => $nextcursor, 'orgidhash' => $orgidhash]), 'local_eduvidual');
                 }
             }
+
+            // Seite freigeben, bevor die nächste geholt wird - sonst lägen beim Fetch
+            // zwei komplette dekodierte Seiten gleichzeitig im Speicher.
+            unset($jsondata);
         } while ($hasmore);
 
         $cursorinfo = "next_cursor='{$nextcursor}'" . ($nextcursor ? '' : " (keep old cursor)");
@@ -962,58 +966,66 @@ class bip_helper {
 
         // Index unverlinkter Moodle-Schüler:innen (Match-Key wie in match_users) für die
         // Duplikat-Prüfung der Anlage - z.B. per Excel angelegte Bestands-Accounts.
+        // Recordset statt get_records: im Speicher bleibt nur der kompakte Key-Index,
+        // nicht die vollen Row-Objekte.
         $unlinkedstudents = [];
-        $unlinkedrows = $DB->get_records_sql("
+        $rs = $DB->get_recordset_sql("
             SELECT ou.id AS ouid, u.id AS userid, u.firstname, u.lastname, ou.orgid
             FROM {user} u
             JOIN {local_eduvidual_orgid_userid} ou ON ou.userid = u.id AND ou.role = ?
             LEFT JOIN {auth_shibboleth_link} ash ON ash.userid = u.id
             WHERE u.deleted = 0 AND ash.id IS NULL
         ", [\local_eduvidual\locallib::ROLE_STUDENT]);
-        foreach ($unlinkedrows as $c) {
+        foreach ($rs as $c) {
             $key = static::make_match_key($c->orgid, 'std', $c->firstname, $c->lastname);
             if ($key) {
                 $unlinkedstudents[$key] = true;
             }
         }
+        $rs->close();
 
         // Links des Default-IdP: bpkbf -> userid.
-        $links = [];
-        foreach ($DB->get_records('auth_shibboleth_link', ['idp' => $defaultidp], '', 'id, idpusername, userid') as $l) {
-            $links[$l->idpusername] = (int)$l->userid;
-        }
-
-        // Spiegelzeilen pro bpkbf gruppieren.
-        $bipusers = [];
-        foreach ($DB->get_records('local_eduvidual_bip_user') as $r) {
-            $bipusers[$r->bpkbf][] = $r;
-        }
+        $links = $DB->get_records_menu('auth_shibboleth_link', ['idp' => $defaultidp], '', 'idpusername, userid');
 
         $countsync = 0;
         $countnameedit = 0;
         $createstats = ['created' => 0, 'skip_candidate' => 0, 'skip_email' => 0, 'skip_noname' => 0, 'noop' => 0];
 
-        foreach ($bipusers as $bpkbf => $rows) {
-            $userid = $links[$bpkbf] ?? 0;
-            if (!$userid) {
-                $createstats[static::create_student((string)$bpkbf, $rows, $createorgids, $unlinkedstudents, $defaultidp, $execute)]++;
-                continue;
+        // Blockweise laden statt die ganze Tabelle gruppiert in den Speicher zu heben
+        // (kostet sonst Gigabytes) oder jeden User einzeln abzufragen (eine Query pro
+        // User). Im Speicher liegen immer nur die Zeilen eines Blocks.
+        $bpkbfs = $DB->get_fieldset_sql('SELECT DISTINCT bpkbf FROM {local_eduvidual_bip_user} ORDER BY bpkbf');
+        $chunks = array_chunk($bpkbfs, 1000);
+        foreach ($chunks as $i => $chunk) {
+            mtrace('Chunk ' . ($i + 1) . '/' . count($chunks));
+            [$insql, $inparams] = $DB->get_in_or_equal($chunk);
+            $chunkrows = [];
+            foreach ($DB->get_records_select('local_eduvidual_bip_user', "bpkbf {$insql}", $inparams) as $r) {
+                $chunkrows[$r->bpkbf][] = $r;
             }
 
-            if (!static::update_user($userid, $rows, onlystudents: true, execute: $execute)) {
-                continue;
-            }
+            foreach ($chunkrows as $bpkbf => $rows) {
+                $userid = $links[$bpkbf] ?? 0;
+                if (!$userid) {
+                    $createstats[static::create_student($bpkbf, $rows, $createorgids, $unlinkedstudents, $defaultidp, $execute)]++;
+                    continue;
+                }
 
-            // Namen-Update vorerst nur im Dry-Run ("false &&") - Namen updated
-            // weiterhin der Login-Hook (pages/hooks/bip.php).
-            if (static::update_linked_moodle_user($rows[0], $userid, false && $execute)) {
-                $countnameedit++;
-            }
+                if (!static::update_user($userid, $rows, onlystudents: true, execute: $execute)) {
+                    continue;
+                }
 
-            $countsync++;
+                // Namen-Update vorerst nur im Dry-Run ("false &&") - Namen updated
+                // weiterhin der Login-Hook (pages/hooks/bip.php).
+                if (static::update_linked_moodle_user($rows[0], $userid, false && $execute)) {
+                    $countnameedit++;
+                }
+
+                $countsync++;
+            }
         }
 
-        static::mtrace("BIP-User-Sync fertig: " . count($bipusers) . " BIP-User im Spiegel, {$countsync} verlinkte Schüler:innen gesynct, {$countnameedit} Namen-Updates (Dry-Run)", execute: $execute);
+        static::mtrace("BIP-User-Sync fertig: " . count($bpkbfs) . " BIP-User im Spiegel, {$countsync} verlinkte Schüler:innen gesynct, {$countnameedit} Namen-Updates (Dry-Run)", execute: $execute);
         static::mtrace("Schüler-Accounts: {$createstats['created']} angelegt - übersprungen: {$createstats['skip_candidate']} (namensgleicher unverlinkter User), {$createstats['skip_email']} (E-Mail existiert bereits), {$createstats['skip_noname']} (Name fehlt)", execute: $execute);
     }
 
