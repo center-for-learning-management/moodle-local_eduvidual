@@ -39,6 +39,6 @@ class bip_import extends \core\task\scheduled_task {
     public function execute() {
         \local_eduvidual\bip_helper::import_orgs(true);
         \local_eduvidual\bip_helper::import_users(true);
-        \local_eduvidual\bip_helper::sync_users(true);
+        \local_eduvidual\bip_helper::update_users(true);
     }
 }

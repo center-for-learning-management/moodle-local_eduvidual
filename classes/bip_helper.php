@@ -384,7 +384,7 @@ class bip_helper {
 
         if (count($currentroles) == 1 && $currentroles[0] == $highest) {
             // Genau diese Rolle ist schon zugewiesen - nichts zu tun. Wichtig für den
-            // nächtlichen Voll-Pass (sync_users), der ALLE verlinkten User durchgeht.
+            // nächtlichen Voll-Pass (update_users), der ALLE verlinkten User durchgeht.
             return null;
         }
 
@@ -626,10 +626,10 @@ class bip_helper {
      * sieht. Pro Aufruf eine Seite via readuserdata_v3.
      *
      * Org-Sync und Schüler-Anlage passieren NICHT hier, sondern im Voll-Pass
-     * sync_users() auf Basis der Spiegeltabelle. Einzige Ausnahme: Beim expliziten
+     * update_users() auf Basis der Spiegeltabelle. Einzige Ausnahme: Beim expliziten
      * Lösch-Signal im Delta (deleted=1 bzw. orgs leer) werden verknüpfte Schüler:innen
      * inline ausgetragen - danach sind die Spiegelzeilen weg, und bpkbfs ohne Zeilen
-     * fasst sync_users() bewusst nicht an.
+     * fasst update_users() bewusst nicht an.
      *
      * BIPs next_cursor wird in bip_userimport_cursor persistiert; der nächste Cron-Lauf
      * macht von dort aus weiter. Auf der letzten Sweep-Seite liefert BIP has_more=false
@@ -703,7 +703,7 @@ class bip_helper {
             }
 
             // Beim expliziten Lösch-Signal verknüpfte Schüler:innen sofort austragen -
-            // sync_users() sieht diese User nach dem Löschen der Spiegelzeilen nicht mehr.
+            // update_users() sieht diese User nach dem Löschen der Spiegelzeilen nicht mehr.
             // Link-Lookup eindeutig über (idp, idpusername) - ohne idp würden Zeilen anderer
             // IdPs mit gleicher bpkbf mitmatchen (get_field wirft sonst "duplicate value").
             if ($purgereason) {
@@ -860,7 +860,7 @@ class bip_helper {
      * reine Lehrer-/Eltern-User bleiben dem Login-Hook überlassen. Namen-Update
      * verlinkter User: vorerst deaktiviert (Dry-Run), macht weiterhin der Login-Hook.
      */
-    public static function sync_users(bool $execute = false): void {
+    public static function update_users(bool $execute = false): void {
         global $DB;
 
         if (!$execute) {

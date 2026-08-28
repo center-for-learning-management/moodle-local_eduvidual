@@ -3,8 +3,8 @@
 // verlinkter Schüler:innen und legt Accounts für unverlinkte Schüler:innen an.
 // Standardmäßig wird ein Dry-Run gemacht (nichts wird geschrieben); --execute schreibt tatsächlich.
 // Usage:
-//   php local/eduvidual/cli/bip_sync_users.php             (dry-run: nur Ausgabe)
-//   php local/eduvidual/cli/bip_sync_users.php --execute   (tatsächlich syncen/anlegen)
+//   php local/eduvidual/cli/bip_update_users.php             (dry-run: nur Ausgabe)
+//   php local/eduvidual/cli/bip_update_users.php --execute   (tatsächlich syncen/anlegen)
 
 define('CLI_SCRIPT', true);
 require(__DIR__ . '/../../../config.php');
@@ -20,4 +20,4 @@ if (!$execute) {
     cli_writeln('About to sync org assignments and create accounts for BIP students.');
 }
 
-\local_eduvidual\bip_helper::sync_users($execute);
+\local_eduvidual\bip_helper::update_users($execute);
