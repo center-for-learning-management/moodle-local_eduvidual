@@ -632,9 +632,9 @@ class bip_helper {
      * inline ausgetragen - danach sind die Spiegelzeilen weg, und bpkbfs ohne Zeilen
      * fasst update_users() bewusst nicht an.
      *
-     * BIPs next_cursor wird nach jeder Seite in bip_userimport_cursor persistiert; ein
-     * abgebrochener Lauf macht beim nächsten Aufruf von dort aus weiter. Auf der
-     * letzten Sweep-Seite liefert BIP has_more=false
+     * BIPs next_cursor wird nach jeder Seite persistiert (Config bip_userimport_state,
+     * JSON aus cursor + orgid-Hash); ein abgebrochener Lauf macht beim nächsten Aufruf
+     * von dort aus weiter. Auf der letzten Sweep-Seite liefert BIP has_more=false
      * mit gültigem next_cursor; erst ein Folge-Request darauf liefert next_cursor=''.
      * In diesem Fall behalten wir den bisherigen Cursor, damit der nächste Lauf wieder
      * als Delta von dort fortsetzt. Löschungen kommen alle inline aus der BIP-Antwort
@@ -643,7 +643,14 @@ class bip_helper {
      * Delta mitliefert. Voll-Resync bei Bedarf: $resync=true ignoriert den gespeicherten
      * Cursor und startet den Sweep von vorne (cli/bip_import_users.php --resync).
      *
-     * Nur Orgs mit authenticated>0 werden abgefragt.
+     * Der Cursor gilt nur für genau die abgefragte orgid-Menge: Ihr Hash steckt mit im
+     * State. Ändert sich die Menge - v.a. durch eine neu registrierte Schule, deren
+     * Bestands-User im Delta nie kämen -, wird der Cursor verworfen und automatisch
+     * ein Voll-Sweep gemacht.
+     *
+     * Abgefragt werden nur registrierte BIP-Schulen (authenticated>0, biporg=1) -
+     * Nicht-BIP-Orgs (Projektgruppen, ...) kennt BIP ohnehin nicht, und sie sollen
+     * weder den Request noch den orgid-Hash beeinflussen.
      */
     public static function import_users(bool $execute = false, bool $resync = false): void {
         global $DB;
@@ -652,12 +659,11 @@ class bip_helper {
             mtrace('*** DRY-RUN: keine Änderungen in DB, nur Ausgabe der geplanten Aktionen ***');
         }
 
-        // Nur vollständig registrierte (TAN-bestätigte) Orgs.
-        // Konsistent mit locallib::get_organisations(), das ebenfalls authenticated>0 als
-        // Filter für "registriert" verwendet. Reine BIP-Mirror-Einträge sind ausgeschlossen.
-        $orgids = $DB->get_fieldset_select('local_eduvidual_org', 'orgid', 'authenticated > 0', [], 'orgid');
+        // Nur vollständig registrierte (TAN-bestätigte) BIP-Schulen. ORDER BY orgid für
+        // einen stabilen orgid-Hash.
+        $orgids = $DB->get_fieldset_select('local_eduvidual_org', 'orgid', 'authenticated > 0 AND biporg = 1', [], 'orgid');
         if (!$orgids) {
-            mtrace('keine registrierten Orgs - nichts zu tun');
+            mtrace('keine registrierten BIP-Schulen - nichts zu tun (import_orgs schon gelaufen?)');
             return;
         }
 
@@ -666,8 +672,17 @@ class bip_helper {
         $idps = explode("\n", get_config('auth_shibboleth', 'organization_selection'));
         $defaultidp = $idps ? trim(explode(',', $idps[0])[0]) : '';
 
-        $cursor = $resync ? '' : (string)(get_config('local_eduvidual', 'bip_userimport_cursor') ?: '');
-        mtrace("BIP-User-Import: starte mit cursor='{$cursor}'" . ($resync ? ' (Resync: gespeicherter Cursor wird ignoriert)' : ''));
+        $state = json_decode((string)get_config('local_eduvidual', 'bip_userimport_state'));
+        $cursor = $resync ? '' : (string)($state->cursor ?? '');
+
+        // Der gespeicherte Cursor gilt nur für die orgid-Menge, mit der er entstanden ist.
+        $orgidhash = md5(join(',', $orgids));
+        if ($cursor && $orgidhash !== (string)($state->orgidhash ?? '')) {
+            mtrace('orgid-Menge hat sich seit dem letzten Lauf geändert (z.B. neu registrierte Schule) - Voll-Sweep statt Delta');
+            $cursor = '';
+        }
+
+        mtrace('BIP-User-Import: ' . count($orgids) . " registrierte BIP-Schulen, starte mit cursor='{$cursor}'" . ($resync ? ' (Resync: gespeicherter Cursor wird ignoriert)' : ''));
 
         $now = time();
         $countinsert = 0;
@@ -854,8 +869,12 @@ class bip_helper {
                 $cursor = $nextcursor;
                 if ($execute) {
                     // Nach jeder Seite persistieren - bricht der Lauf ab, setzt der
-                    // nächste an derselben Stelle fort.
-                    set_config('bip_userimport_cursor', $nextcursor, 'local_eduvidual');
+                    // nächste an derselben Stelle fort. Cursor und Hash stecken bewusst
+                    // in EINEM JSON-State: Der Hash gehört immer zum Cursor, mit dem er
+                    // entstanden ist - separat geschrieben könnte ein Abbruch einen alten
+                    // Delta-Cursor mit neuem Hash zurücklassen, und der fällige
+                    // Voll-Sweep unterbliebe.
+                    set_config('bip_userimport_state', json_encode(['cursor' => $nextcursor, 'orgidhash' => $orgidhash]), 'local_eduvidual');
                 }
             }
         } while ($hasmore);
