@@ -29,7 +29,7 @@ require_once('../../../../config.php');
 
 $PAGE->set_context(context_system::instance());
 $PAGE->set_pagelayout('admin');
-$PAGE->set_url('/local/eduvidual/pages/tools/admin_removemanagers.php', array());
+$PAGE->set_url('/local/eduvidual/pages/tools/admin_removemanagers.php', []);
 $PAGE->set_title('Remove Managers');
 $PAGE->set_heading('Remove Managers');
 
@@ -37,7 +37,7 @@ require_login();
 
 echo $OUTPUT->header();
 
-$assignments = $DB->get_records('role_assignments', array('roleid' => 1));
+$assignments = $DB->get_records('role_assignments', ['roleid' => 1]);
 
 echo "<ul>\n";
 foreach ($assignments as $assignment) {

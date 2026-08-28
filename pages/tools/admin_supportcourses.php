@@ -29,7 +29,7 @@ require_once('../../../../config.php');
 
 $PAGE->set_context(context_system::instance());
 $PAGE->set_pagelayout('admin');
-$PAGE->set_url('/local/eduvidual/pages/tools/admin_supportcourses.php', array());
+$PAGE->set_url('/local/eduvidual/pages/tools/admin_supportcourses.php', []);
 $PAGE->set_title(get_string('admin:supportcourses', 'local_eduvidual'));
 $PAGE->set_heading(get_string('admin:supportcourses', 'local_eduvidual'));
 
@@ -37,10 +37,10 @@ require_login();
 
 if (!is_siteadmin()) {
     echo $OUTPUT->header();
-    echo $OUTPUT->render_from_template('local_eduvidual/alert', array(
+    echo $OUTPUT->render_from_template('local_eduvidual/alert', [
         'content' => get_string('access_denied', 'local_eduvidual'),
         'type' => 'danger',
-    ));
+    ]);
     echo $OUTPUT->footer();
     die();
 }
@@ -107,16 +107,16 @@ die();
 
 $template = get_config('local_eduvidual', 'supportcourse_template');
 if (empty($template)) {
-    echo $OUTPUT->render_from_template('local_eduvidual/alert', array(
+    echo $OUTPUT->render_from_template('local_eduvidual/alert', [
         'content' => get_string('admin:supportcourse:missingsetup', 'local_eduvidual'),
         'type' => 'danger',
-    ));
+    ]);
     echo $OUTPUT->footer();
     die();
 }
 
 
-$templatecourse = $DB->get_record('course', array('id' => $template), '*', IGNORE_MISSING);
+$templatecourse = $DB->get_record('course', ['id' => $template], '*', IGNORE_MISSING);
 if (empty($templatecourse->id)) {
     echo "THERE IS NO SUPPORT TEMPLATE COURSE";
     echo $OUTPUT->footer();
@@ -176,34 +176,36 @@ foreach ($orgs AS $org) {
 echo "<ul>\n";
 require_once($CFG->dirroot . '/course/externallib.php');
 $sql = "SELECT * FROM {local_eduvidual_org} WHERE authenticated > ?";
-$orgs = $DB->get_records_sql($sql, array(0));
+$orgs = $DB->get_records_sql($sql, [0]);
 foreach ($orgs as $org) {
-    if ($org->categoryid == 0)
+    if ($org->categoryid == 0) {
         continue;
+    }
     // Reload entry, if another process created the course in the meanwhile
-    $org = $DB->get_record('local_eduvidual_org', array('orgid' => $org->orgid));
-    $course = $DB->get_record('course', array('id' => $org->supportcourseid), 'id', IGNORE_MISSING);
-    $coursen = $DB->get_record('course', array('shortname' => 'helpdesk_' . $org->orgid), 'id', IGNORE_MISSING);
+    $org = $DB->get_record('local_eduvidual_org', ['orgid' => $org->orgid]);
+    $course = $DB->get_record('course', ['id' => $org->supportcourseid], 'id', IGNORE_MISSING);
+    $coursen = $DB->get_record('course', ['shortname' => 'helpdesk_' . $org->orgid], 'id', IGNORE_MISSING);
     if (!empty($org->supportcourseid) && !empty($course->id)) {
         echo "<li>$org->name has a supportcourse with <a href=\"$CFG->wwwroot/course/view.php?id=$course->id\">#$course->id</a></li>\n";
     } elseif (!empty($coursen->id)) {
         echo "<li>$org->name is currently getting a supportcourse with <a href=\"$CFG->wwwroot/course/view.php?id=$coursen->id\">#$coursen->id</a></li>\n";
-        $DB->set_field('local_eduvidual_org', 'supportcourseid', $coursen->id, array('orgid' => $org->orgid));
+        $DB->set_field('local_eduvidual_org', 'supportcourseid', $coursen->id, ['orgid' => $org->orgid]);
         // Now enrol all users of that organisation.
-        $members = $DB->get_records('local_eduvidual_orgid_userid', array('orgid' => $org->orgid));
-        $managers = array();
-        $others = array();
+        $members = $DB->get_records('local_eduvidual_orgid_userid', ['orgid' => $org->orgid]);
+        $managers = [];
+        $others = [];
         foreach ($members as $member) {
-            if ($member->role == \local_eduvidual\locallib::ROLE_MANAGER)
+            if ($member->role == \local_eduvidual\locallib::ROLE_MANAGER) {
                 $managers[] = $member->userid;
-            else $others[] = $member->userid;
+            } else { $others[] = $member->userid;
+            }
         }
-        \local_eduvidual\lib_enrol::course_manual_enrolments(array($coursen->id), $managers, get_config('local_eduvidual', 'defaultroleteacher'));
-        \local_eduvidual\lib_enrol::course_manual_enrolments(array($coursen->id), $others, get_config('local_eduvidual', 'defaultrolestudent'));
+        \local_eduvidual\lib_enrol::course_manual_enrolments([$coursen->id], $managers, get_config('local_eduvidual', 'defaultroleteacher'));
+        \local_eduvidual\lib_enrol::course_manual_enrolments([$coursen->id], $others, get_config('local_eduvidual', 'defaultrolestudent'));
         echo "<li>Added " . count($managers) . " Managers with teacher role</li>\n";
         echo "<li>Added " . count($others) . " Users with student role</li>\n";
         $sql = "SELECT * FROM {forum} WHERE course=? AND type='general'";
-        $forums = $DB->get_records_sql($sql, array($coursen->id));
+        $forums = $DB->get_records_sql($sql, [$coursen->id]);
         if (count($forums) == 0) {
             echo "<li class='alert alert-danger'>There are no forums in supportcourse <a href=\"$CFG->wwwroot/course/view.php?id=$coursen->id\">#$coursen->id</a></li>\n";
         } else {
@@ -211,10 +213,10 @@ foreach ($orgs as $org) {
                 \local_edusupport\lib::supportforum_enable($forum->id);
                 // Add subscriptions for managers.
                 foreach ($managers as $managerid) {
-                    $chk = $DB->get_record('forum_subscriptions', array('userid' => $managerid, 'forum' => $forum->id));
+                    $chk = $DB->get_record('forum_subscriptions', ['userid' => $managerid, 'forum' => $forum->id]);
                     if (empty($chk->id)) {
                         echo "<li>Added subscription for Manager #$managerid in forum #$forum->id</li>\n";
-                        $DB->insert_record('forum_subscriptions', array('userid' => $managerid, 'forum' => $forum->id));
+                        $DB->insert_record('forum_subscriptions', ['userid' => $managerid, 'forum' => $forum->id]);
                     }
                 }
                 if ($org->orgid > 500000 && $org->orgid < 600000) {
@@ -230,26 +232,27 @@ foreach ($orgs as $org) {
         if (empty($supportcourse->id)) {
             echo "<li class='alert alert-danger'><strong>Error creating supportcourse</strong></li>\n";
         } else {
-            \local_eduvidual\lib_enrol::course_manual_enrolments(array($supportcourse->id), array($USER->id), -1);
+            \local_eduvidual\lib_enrol::course_manual_enrolments([$supportcourse->id], [$USER->id], -1);
             echo "<li class='alert alert-success'>Supportcourse created successfully <a href=\"$CFG->wwwroot/course/view.php?id=$supportcourse->id\">#$supportcourse->id</a></li>\n";
-            $DB->set_field('local_eduvidual_org', 'supportcourseid', $supportcourse->id, array('orgid' => $org->orgid));
+            $DB->set_field('local_eduvidual_org', 'supportcourseid', $supportcourse->id, ['orgid' => $org->orgid]);
             // Now enrol all users of that organisation.
-            $members = $DB->get_records('local_eduvidual_orgid_userid', array('orgid' => $org->orgid));
-            $managers = array();
-            $others = array();
+            $members = $DB->get_records('local_eduvidual_orgid_userid', ['orgid' => $org->orgid]);
+            $managers = [];
+            $others = [];
             foreach ($members as $member) {
-                if ($member->role == \local_eduvidual\locallib::ROLE_MANAGER)
+                if ($member->role == \local_eduvidual\locallib::ROLE_MANAGER) {
                     $managers[] = $member->userid;
-                else $others[] = $member->userid;
+                } else { $others[] = $member->userid;
+                }
             }
-            \local_eduvidual\lib_enrol::course_manual_enrolments(array($supportcourse->id), $managers, get_config('local_eduvidual', 'defaultroleteacher'));
-            \local_eduvidual\lib_enrol::course_manual_enrolments(array($supportcourse->id), $others, get_config('local_eduvidual', 'defaultrolestudent'));
+            \local_eduvidual\lib_enrol::course_manual_enrolments([$supportcourse->id], $managers, get_config('local_eduvidual', 'defaultroleteacher'));
+            \local_eduvidual\lib_enrol::course_manual_enrolments([$supportcourse->id], $others, get_config('local_eduvidual', 'defaultrolestudent'));
             echo "<li>Added " . count($managers) . " Managers with teacher role</li>\n";
             echo "<li>Added " . count($others) . " Users with student role</li>\n";
 
             // Retrieve all forums from course and configure as supportforum.
             $sql = "SELECT * FROM {forum} WHERE course=? AND type='general'";
-            $forums = $DB->get_records_sql($sql, array($supportcourse->id));
+            $forums = $DB->get_records_sql($sql, [$supportcourse->id]);
             if (count($forums) == 0) {
                 echo "<li class='alert alert-danger'>There are no forums in supportcourse <a href=\"$CFG->wwwroot/course/view.php?id=$supportcourse->id\">#$supportcourse->id</a></li>\n";
             } else {
@@ -257,10 +260,10 @@ foreach ($orgs as $org) {
                     \local_edusupport\lib::supportforum_enable($forum->id);
                     // Add subscriptions for managers.
                     foreach ($managers as $managerid) {
-                        $chk = $DB->get_record('forum_subscriptions', array('userid' => $managerid, 'forum' => $forum->id));
+                        $chk = $DB->get_record('forum_subscriptions', ['userid' => $managerid, 'forum' => $forum->id]);
                         if (empty($chk->id)) {
                             echo "<li>Added subscription for Manager #$managerid in forum #$forum->id</li>\n";
-                            $DB->insert_record('forum_subscriptions', array('userid' => $managerid, 'forum' => $forum->id));
+                            $DB->insert_record('forum_subscriptions', ['userid' => $managerid, 'forum' => $forum->id]);
                         }
                     }
                     if ($org->orgid > 500000 && $org->orgid < 600000) {
