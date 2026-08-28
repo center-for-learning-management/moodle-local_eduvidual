@@ -42,7 +42,8 @@ class clean_old_webservice_tokens extends \core\task\scheduled_task {
             "DELETE FROM {external_tokens} WHERE
             (validuntil > 0 AND validuntil < ?) OR
             (GREATEST(COALESCE(timecreated,0),COALESCE(lastaccess,0)) < ?)",
-            [time(), time() - 60 * 60 * 24 * 30 * $months]);
+            [time(), time() - 60 * 60 * 24 * 30 * $months]
+        );
 
         echo "Log cleaned successfully\n";
     }

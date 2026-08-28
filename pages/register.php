@@ -22,7 +22,7 @@
  */
 
 require_once('../../../config.php');
-//require_login();
+// require_login();
 
 require_once($CFG->libdir . '/adminlib.php');
 
@@ -30,33 +30,33 @@ require_once($CFG->libdir . '/adminlib.php');
 $orgid = optional_param('orgid', 0, PARAM_INT);
 
 $PAGE->set_context(context_system::instance());
-$PAGE->set_url('/local/eduvidual/pages/register.php', array());
+$PAGE->set_url('/local/eduvidual/pages/register.php', []);
 $PAGE->set_title(get_string('Registration', 'local_eduvidual'));
 $PAGE->set_heading(get_string('Registration', 'local_eduvidual'));
-//$PAGE->set_cacheable(false);
+// $PAGE->set_cacheable(false);
 
 echo $OUTPUT->header();
 
 if (isloggedin() && !isguestuser()) {
     echo $OUTPUT->render_from_template(
         'local_eduvidual/register',
-        (object)array(
+        (object)[
             'orgid' => $orgid,
             'maxlength' => 30,
             'registrationsupport' => get_config('local_eduvidual', 'registrationsupport'),
             'userid' => $USER->id,
             'wwwroot' => $CFG->wwwroot,
-        )
+        ]
     );
 } else {
     $SESSION->wantsurl = $PAGE->url->__toString();
     echo $OUTPUT->render_from_template(
         'local_eduvidual/register_requirelogin',
-        (object)array(
+        (object)[
             'registrationsupport' => get_config('local_eduvidual', 'registrationsupport'),
             'userid' => $USER->id,
             'wwwroot' => $CFG->wwwroot,
-        )
+        ]
     );
 }
 
