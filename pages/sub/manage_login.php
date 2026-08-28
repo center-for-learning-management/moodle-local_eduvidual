@@ -24,11 +24,11 @@ defined('MOODLE_INTERNAL') || die;
 
 echo $OUTPUT->render_from_template(
     'local_eduvidual/manage_login',
-    (object)array(
+    (object)[
         'is_siteadmin' => is_siteadmin(),
         'maildomain' => $org->maildomain,
         'maildomainteacher' => $org->maildomainteacher,
         'orgid' => $org->orgid,
         'wwwroot' => $CFG->wwwroot,
-    )
+    ]
 );

@@ -33,27 +33,27 @@ class local_eduvidual_manage_user_createuseranonymous_form extends moodleform {
         $mform->setType('orgid', PARAM_INT);
         $mform->addElement('hidden', 'act', 'users');
         $mform->setType('act', PARAM_TEXT);
-        $options = array(
+        $options = [
             \local_eduvidual\locallib::ROLE_PARENT => get_string('role:Parent', 'local_eduvidual'),
             \local_eduvidual\locallib::ROLE_STUDENT => get_string('role:Student', 'local_eduvidual'),
             \local_eduvidual\locallib::ROLE_TEACHER => get_string('role:Teacher', 'local_eduvidual'),
             \local_eduvidual\locallib::ROLE_MANAGER => get_string('role:Manager', 'local_eduvidual'),
-        );
+        ];
         $mform->addElement('select', 'role', get_string('manage:createuseranonymous:role', 'local_eduvidual'), $options);
         $mform->setType('role', PARAM_TEXT);
         $mform->addElement('text', 'bunch', get_string('manage:createuseranonymous:bunch', 'local_eduvidual'));
         $mform->setType('bunch', PARAM_TEXT);
-        $mform->addElement('text', 'amount', get_string('manage:createuseranonymous:amount', 'local_eduvidual'), array('type' => 'number'));
+        $mform->addElement('text', 'amount', get_string('manage:createuseranonymous:amount', 'local_eduvidual'), ['type' => 'number']);
         $mform->setType('amount', PARAM_INT);
         $mform->setDefault('amount', '10');
 
         $mform->addElement('submit', null, get_string('manage:createuseranonymous:send', 'local_eduvidual'));
-        //$this->add_action_buttons();
+        // $this->add_action_buttons();
     }
 
-    //Custom validation should be added here
+    // Custom validation should be added here
     function validation($data, $files) {
-        $errors = array();
+        $errors = [];
         if ($data['amount'] > 50) {
             $errors['amount'] = 'Maximum 50';
         }

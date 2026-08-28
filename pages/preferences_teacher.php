@@ -26,7 +26,6 @@ if (!defined('MOODLE_INTERNAL')) {
     require_once('../../../config.php');
     require_login();
     require_once($CFG->libdir . '/adminlib.php');
-
 }
 
 $context = \context_system::instance();
@@ -40,14 +39,14 @@ if (has_capability('moodle/question:viewall', $context)) {
         <?php
 
         for ($a = 0; $a < count($questioncategories); $a++) {
-            $cat = $DB->get_record('question_categories', array('id' => $questioncategories[$a]));
+            $cat = $DB->get_record('question_categories', ['id' => $questioncategories[$a]]);
             if (isset($cat->id) && $cat->id > 0) {
-                $active = $DB->get_record('local_eduvidual_userqcats', array('userid' => $USER->id, 'categoryid' => $questioncategories[$a]));
+                $active = $DB->get_record('local_eduvidual_userqcats', ['userid' => $USER->id, 'categoryid' => $questioncategories[$a]]);
                 ?>
                 <label>
                     <input type="checkbox" name="questioncategories[]" value="<?php echo $cat->id; ?>"<?php if ($active && $active->categoryid == $cat->id) {
                         echo " checked";
-                    } ?>
+                                                                              } ?>
                            onclick="var inp = this; require(['local_eduvidual/teacher'], function(TEACHER) { TEACHER.questioncategories(inp); });"/>
                     <?php echo $cat->name; ?>
                 </label>
