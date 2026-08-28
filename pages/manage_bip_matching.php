@@ -269,6 +269,7 @@ $table = new class($org, $defaultidp) extends local_table_sql\table_sql_form {
             \auth_shibboleth_link\lib::SOURCE_USER => get_string('bip_matching:source_user', 'local_eduvidual'),
             \auth_shibboleth_link\lib::SOURCE_AUTOMATCH => get_string('bip_matching:source_automatch', 'local_eduvidual'),
             \auth_shibboleth_link\lib::SOURCE_MANAGER => get_string('bip_matching:source_manager', 'local_eduvidual'),
+            \auth_shibboleth_link\lib::SOURCE_IMPORT => get_string('bip_matching:source_import', 'local_eduvidual'),
             default => (string)$row->source,
         };
     }

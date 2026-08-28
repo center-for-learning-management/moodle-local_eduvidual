@@ -270,6 +270,8 @@ switch ($act) {
 
                         \local_eduvidual\lib_enrol::role_set($u->id, $orgid, $role);
                         \local_eduvidual\lib_enrol::choose_background($u->id);
+                        // Herkunft des Accounts festhalten: anonymer Sammel-Account durch Manager:in.
+                        set_user_preference('local_eduvidual_created_source', 'manager_anonymous', $u->id);
                         // Trigger event.
                         \core\event\user_created::create_from_userid($u->id)->trigger();
 

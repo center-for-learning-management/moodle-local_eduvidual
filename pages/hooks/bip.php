@@ -103,5 +103,24 @@ if (!empty($idpparams['userinfo']['affiliation']) && isloggedin() && !isguestuse
     // Die affiliation ist der komplette Schnappschuss aller Schulzugehörigkeiten: bei allen
     // angeführten Schulen eintragen, aus allen anderen austragen (Nicht-BIP-Orgs und Manager
     // sind über die Regeln in sync_user_orgs geschützt).
-    \local_eduvidual\bip_helper::sync_user_orgs($USER->id, $wantedbiproles);
+    //
+    // Zuerst den BIP-Spiegel aktualisieren (hält Matching-Seite und Nachtlauf tagesaktuell),
+    // dann denselben per-User-Abgleich anwenden wie der nächtliche update_users-Lauf -
+    // beim Login für alle Rollen, nicht nur Schüler:innen.
+    //
+    // idpusername (= bpkbf) ist beim Shibboleth-Login immer gesetzt - der Login-Flow startet
+    // nur mit vorhandenem user_attribute. Der Guard bleibt trotzdem: Mit leerer bpkbf wären
+    // $rows leer und update_user würde den User aus allen BIP-Schulen austragen.
+    $bpkbf = trim((string)($idpparams['idpusername'] ?? ''));
+    if ($bpkbf) {
+        \local_eduvidual\bip_helper::update_bip_user_mirror(
+            $bpkbf,
+            $wantedbiproles,
+            $idpparams['userinfo']['firstname'] ?? '',
+            $idpparams['userinfo']['lastname'] ?? '',
+            $idpparams['userinfo']['email'] ?? '',
+        );
+        $rows = $DB->get_records('local_eduvidual_bip_user', ['bpkbf' => $bpkbf]);
+        \local_eduvidual\bip_helper::update_user($USER->id, array_values($rows));
+    }
 }
