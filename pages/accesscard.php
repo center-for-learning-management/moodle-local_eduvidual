@@ -28,14 +28,14 @@ require_once($CFG->libdir . '/adminlib.php');
 
 $PAGE->set_context(\context_system::instance());
 $PAGE->set_pagelayout('mydashboard');
-$PAGE->set_url('/local/eduvidual/pages/accesscard.php', array());
+$PAGE->set_url('/local/eduvidual/pages/accesscard.php', []);
 $PAGE->set_title(get_string('Accesscard', 'local_eduvidual'));
 $PAGE->set_heading(get_string('Accesscard', 'local_eduvidual'));
-//$PAGE->set_cacheable(false);
+// $PAGE->set_cacheable(false);
 
 $PAGE->requires->css('/local/eduvidual/style/manage_bunch.css');
 echo $OUTPUT->header();
-//print_r($USER);
+// print_r($USER);
 
 if ($USER->id > 1 && !isguestuser($USER)) {
     $backgroundcard = get_user_preferences('local_eduvidual_backgroundcard', $USER->id);
@@ -55,7 +55,7 @@ if ($USER->id > 1 && !isguestuser($USER)) {
                     <div class="username"><?php echo $USER->username; ?></div>
                     <div class="contact"><?php echo $USER->email; ?></div>
                     <div class="header"><?php echo get_string('Accesscard', 'local_eduvidual'); ?></div>
-                    <div class="avatar"><?php echo $OUTPUT->user_picture($USER, array('size' => 200)); ?></div>
+                    <div class="avatar"><?php echo $OUTPUT->user_picture($USER, ['size' => 200]); ?></div>
                     <div class="secret" style="display: flex; align-items: flex-end; justify-content: flex-end;">
                         <span class="uid"><?php echo $USER->id; ?></span>
                         <span class="hash">#</span>
@@ -81,7 +81,7 @@ if ($USER->id > 1 && !isguestuser($USER)) {
 } else {
     echo $OUTPUT->render_from_template(
         'local_eduvidual/alert',
-        (object)array('type' => 'warning', 'content' => get_string('accesscard:not_for_guest', 'local_eduvidual'), 'url' => $CFG->wwwroot . '/my')
+        (object)['type' => 'warning', 'content' => get_string('accesscard:not_for_guest', 'local_eduvidual'), 'url' => $CFG->wwwroot . '/my']
     );
 }
 

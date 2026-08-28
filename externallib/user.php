@@ -28,31 +28,31 @@ require_once($CFG->libdir . "/externallib.php");
 
 class local_eduvidual_external_user extends external_api {
     public static function course_news_parameters() {
-        return new external_function_parameters(array(
+        return new external_function_parameters([
             'courseid' => new external_value(PARAM_INT, 'courseid'),
-        ));
+        ]);
     }
 
     public static function course_news($userid) {
         global $CFG, $DB, $USER;
-        $params = self::validate_parameters(self::course_news_parameters(), array('courseid' => $courseid));
+        $params = self::validate_parameters(self::course_news_parameters(), ['courseid' => $courseid]);
 
         require_login($params['courseid']);
 
-        $reply = (object)array(
+        $reply = (object)[
             'label' => 'hi', // label for link, if there are no items, leave empty.
             'content' => '', // Content for div, that is shown.
-        );
+        ];
 
         return $reply;
     }
 
     public static function course_news_returns() {
         return new external_single_structure(
-            array(
+            [
                 'label' => new external_value(PARAM_TEXT, 'the label to show, if empty, no label'),
                 'content' => new external_value(PARAM_RAW, 'the content as HTML'),
-            )
+            ]
         );
     }
 }

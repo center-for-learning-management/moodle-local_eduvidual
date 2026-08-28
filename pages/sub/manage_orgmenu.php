@@ -29,15 +29,15 @@ defined('MOODLE_INTERNAL') || die;
 <?php
 require_once($CFG->dirroot . "/local/eduvidual/classes/manage_orgmenu_form.php");
 
-$form = new local_eduvidual_manage_orgmenu_form(null, null, 'post', '_self', array('data-ajax' => 'false'), true);
+$form = new local_eduvidual_manage_orgmenu_form(null, null, 'post', '_self', ['data-ajax' => 'false'], true);
 
 if ($data = $form->get_data()) {
     $org->orgmenu = $data->orgmenu;
-    $DB->set_field('local_eduvidual_org', 'orgmenu', $org->orgmenu, array('orgid' => $org->orgid));
-    echo $OUTPUT->render_from_template('local_eduvidual/alert', array(
+    $DB->set_field('local_eduvidual_org', 'orgmenu', $org->orgmenu, ['orgid' => $org->orgid]);
+    echo $OUTPUT->render_from_template('local_eduvidual/alert', [
         'content' => get_string('store:success', 'local_eduvidual'),
         'type' => 'success',
-    ));
+    ]);
     echo "<script>window.sessionStorage.clear();</script>\n";
 }
 

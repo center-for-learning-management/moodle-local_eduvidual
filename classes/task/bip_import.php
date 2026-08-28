@@ -25,14 +25,20 @@ namespace local_eduvidual\task;
 defined('MOODLE_INTERNAL') || die;
 
 /**
- * Importiert Schulen aus BIP (bildung.gv.at) in local_eduvidual_org.
+ * Kompletter BIP-Sync in einem Lauf, bewusst in dieser Reihenfolge:
+ * 1. Schulen importieren (pflegt u.a. das biporg-Flag, siehe is_syncable_org)
+ * 2. User-Delta in die Spiegeltabelle importieren (inkl. Austragen gelöschter Schüler:innen)
+ * 3. Voll-Pass über die Spiegeltabelle: Schulzuordnungen verknüpfter Schüler:innen
+ *    syncen und Accounts für neue Schüler:innen anlegen
  */
-class bip_import_orgs extends \core\task\scheduled_task {
+class bip_import extends \core\task\scheduled_task {
     public function get_name() {
-        return get_string('bip_import_orgs:title', 'local_eduvidual');
+        return get_string('bip_import:title', 'local_eduvidual');
     }
 
     public function execute() {
         \local_eduvidual\bip_helper::import_orgs(true);
+        \local_eduvidual\bip_helper::import_users(true);
+        \local_eduvidual\bip_helper::update_users(true);
     }
 }
