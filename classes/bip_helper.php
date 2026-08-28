@@ -620,10 +620,11 @@ class bip_helper {
     }
 
     /**
-     * Importiert BIP-Userdaten in die Tabelle local_eduvidual_bip_user. Geladen und
-     * gespiegelt werden alle usertypes (eine Zeile pro bpkbf/orgid/role), damit der
-     * Org-Sync (sync_user_orgs) pro User das vollständige Userobjekt über alle Rollen
-     * sieht. Pro Aufruf eine Seite via readuserdata_v3.
+     * Spiegelt BIP-Userdaten in die Tabelle local_eduvidual_bip_user (schreibt NICHT
+     * in mdl_user - das macht update_users). Geladen und gespiegelt werden alle
+     * usertypes (eine Zeile pro bpkbf/orgid/role), damit der Org-Sync (sync_user_orgs)
+     * pro User das vollständige Userobjekt über alle Rollen sieht. Verarbeitet pro
+     * Aufruf alle ausstehenden Seiten via readuserdata_v3.
      *
      * Org-Sync und Schüler-Anlage passieren NICHT hier, sondern im Voll-Pass
      * update_users() auf Basis der Spiegeltabelle. Einzige Ausnahme: Beim expliziten
@@ -631,18 +632,20 @@ class bip_helper {
      * inline ausgetragen - danach sind die Spiegelzeilen weg, und bpkbfs ohne Zeilen
      * fasst update_users() bewusst nicht an.
      *
-     * BIPs next_cursor wird in bip_userimport_cursor persistiert; der nächste Cron-Lauf
-     * macht von dort aus weiter. Auf der letzten Sweep-Seite liefert BIP has_more=false
+     * BIPs next_cursor wird nach jeder Seite in bip_userimport_cursor persistiert; ein
+     * abgebrochener Lauf macht beim nächsten Aufruf von dort aus weiter. Auf der
+     * letzten Sweep-Seite liefert BIP has_more=false
      * mit gültigem next_cursor; erst ein Folge-Request darauf liefert next_cursor=''.
      * In diesem Fall behalten wir den bisherigen Cursor, damit der nächste Lauf wieder
      * als Delta von dort fortsetzt. Löschungen kommen alle inline aus der BIP-Antwort
      * (deleted=1 oder leere orgs-Liste). Ein separater Stale-Cleanup ist nicht nötig,
      * weil BIP abgemeldete User mit reduziertem orgs und gesetztem unassigned_orgs im
-     * Delta mitliefert. Manueller Voll-Resync bei Bedarf: bip_userimport_cursor leeren.
+     * Delta mitliefert. Voll-Resync bei Bedarf: $resync=true ignoriert den gespeicherten
+     * Cursor und startet den Sweep von vorne (cli/bip_import_users.php --resync).
      *
      * Nur Orgs mit authenticated>0 werden abgefragt.
      */
-    public static function import_users(bool $execute = false): void {
+    public static function import_users(bool $execute = false, bool $resync = false): void {
         global $DB;
 
         if (!$execute) {
@@ -663,185 +666,202 @@ class bip_helper {
         $idps = explode("\n", get_config('auth_shibboleth', 'organization_selection'));
         $defaultidp = $idps ? trim(explode(',', $idps[0])[0]) : '';
 
-        $cursor = (string)(get_config('local_eduvidual', 'bip_userimport_cursor') ?: '');
-        mtrace("BIP-User-Import: starte mit cursor='{$cursor}'");
+        $cursor = $resync ? '' : (string)(get_config('local_eduvidual', 'bip_userimport_cursor') ?: '');
+        mtrace("BIP-User-Import: starte mit cursor='{$cursor}'" . ($resync ? ' (Resync: gespeicherter Cursor wird ignoriert)' : ''));
 
         $now = time();
         $countinsert = 0;
         $countupdate = 0;
         $countdelete = 0;
+        $pages = 0;
 
-        $jsondata = static::call_bip_iface_one_page('local_eduportal_iface_readuserdata_v3', [
-            'orgids' => join(',', $orgids),
-            // Leer = alle für den Zugang freigeschalteten usertypes (std, tch, lgn, dir, ...).
-            // 'usertypes' => '',
-            'limitnum' => 25000,
-        ], $cursor);
+        // Alle ausstehenden Seiten in einem Lauf verarbeiten; der Cursor wandert dabei
+        // in-memory weiter (im Dry-Run wird nichts persistiert).
+        do {
+            $pages++;
+            $jsondata = static::call_bip_iface_one_page('local_eduportal_iface_readuserdata_v3', [
+                'orgids' => join(',', $orgids),
+                // Leer = alle für den Zugang freigeschalteten usertypes (std, tch, lgn, dir, ...).
+                // 'usertypes' => '',
+                'limitnum' => 25000,
+            ], $cursor);
+            mtrace('Seite ' . $pages . ': ' . count($jsondata->result) . ' User erhalten');
 
-        foreach ($jsondata->result as $bipuser) {
-            // Ohne bpkbf ist der User nicht eindeutig identifizierbar - überspringen.
-            // Sonst würden mehrere leere bpkbf-User unter bpkbf='' kollidieren und sich
-            // gegenseitig beim Re-Insert wieder löschen.
-            if (empty($bipuser->bpkbf)) {
-                $orgsdebug = join(',', array_map(fn($o) => ($o->orgid ?? '?'), $bipuser->orgs ?? []));
-                static::mtrace("übersprungen: User ohne bpkbf (firstname='" . ($bipuser->firstname ?? '') . "', lastname='" . ($bipuser->lastname ?? '') . "', orgs=[{$orgsdebug}])", execute: $execute);
-                continue;
-            }
-
-            // Entscheiden, was mit diesem User passiert:
-            // - deleted=1: in BIP gelöscht → lokal komplett löschen, kein Re-Insert
-            // - orgs leer/fehlt: User hat keine aktive Org mehr → lokal komplett löschen, kein Re-Insert
-            // - sonst: vorhandene Einträge pro (orgid, role) updaten, fehlende anlegen, abgehängte
-            //   (z. B. via unassigned_orgs entfernte oder zu nicht getrackten Orgs gewechselte) löschen.
-            //   IDs der bestehenden Zeilen bleiben damit stabil - die Matching-Seite serialisiert
-            //   bip_user.id in ihrem Dropdown.
-            $purgereason = null;
-            if (!empty($bipuser->deleted)) {
-                $purgereason = 'BIP: deleted=1';
-            } elseif (empty($bipuser->orgs)) {
-                $purgereason = 'BIP: orgs leer';
-            }
-
-            // Beim expliziten Lösch-Signal verknüpfte Schüler:innen sofort austragen -
-            // update_users() sieht diese User nach dem Löschen der Spiegelzeilen nicht mehr.
-            // Link-Lookup eindeutig über (idp, idpusername) - ohne idp würden Zeilen anderer
-            // IdPs mit gleicher bpkbf mitmatchen (get_field wirft sonst "duplicate value").
-            if ($purgereason) {
-                $userid = $DB->get_field('auth_shibboleth_link', 'userid', ['idp' => $defaultidp, 'idpusername' => $bipuser->bpkbf]);
-                $wasstd = false;
-                foreach ((array)($bipuser->unassigned_orgs ?? []) as $org) {
-                    $wasstd = $wasstd || ($org->role ?? '') == 'std';
+            foreach ($jsondata->result as $bipuser) {
+                // Ohne bpkbf ist der User nicht eindeutig identifizierbar - überspringen.
+                // Sonst würden mehrere leere bpkbf-User unter bpkbf='' kollidieren und sich
+                // gegenseitig beim Re-Insert wieder löschen.
+                if (empty($bipuser->bpkbf)) {
+                    $orgsdebug = join(',', array_map(fn($o) => ($o->orgid ?? '?'), $bipuser->orgs ?? []));
+                    static::mtrace("übersprungen: User ohne bpkbf (firstname='" . ($bipuser->firstname ?? '') . "', lastname='" . ($bipuser->lastname ?? '') . "', orgs=[{$orgsdebug}])", execute: $execute);
+                    continue;
                 }
-                // Nur Schüler:innen ("nur schüler") - die leere Wunschliste trägt aus allen
-                // registrierten BIP-Schulen aus.
-                if ($userid && $wasstd) {
-                    static::sync_user_orgs((int)$userid, [], $execute);
+
+                // Entscheiden, was mit diesem User passiert:
+                // - deleted=1: in BIP gelöscht → lokal komplett löschen, kein Re-Insert
+                // - orgs leer/fehlt: User hat keine aktive Org mehr → lokal komplett löschen, kein Re-Insert
+                // - sonst: vorhandene Einträge pro (orgid, role) updaten, fehlende anlegen, abgehängte
+                //   (z. B. via unassigned_orgs entfernte oder zu nicht getrackten Orgs gewechselte) löschen.
+                //   IDs der bestehenden Zeilen bleiben damit stabil - die Matching-Seite serialisiert
+                //   bip_user.id in ihrem Dropdown.
+                $purgereason = null;
+                if (!empty($bipuser->deleted)) {
+                    $purgereason = 'BIP: deleted=1';
+                } elseif (empty($bipuser->orgs)) {
+                    $purgereason = 'BIP: orgs leer';
                 }
-            }
 
-            $existingforuser = $DB->get_records('local_eduvidual_bip_user', ['bpkbf' => $bipuser->bpkbf]);
-            $existingkeyed = [];
-            foreach ($existingforuser as $r) {
-                $existingkeyed["{$r->orgid}|{$r->role}"] = $r;
-            }
-
-            if ($purgereason) {
-                if ($existingforuser) {
-                    $details = join(', ', array_map(fn($r) => "{$r->orgid}/{$r->role}", $existingforuser));
-                    static::mtrace("löscht " . count($existingforuser) . " Einträge für bpkbf={$bipuser->bpkbf} ({$purgereason}): {$details}", execute: $execute);
-                    if ($execute) {
-                        $DB->delete_records('local_eduvidual_bip_user', ['bpkbf' => $bipuser->bpkbf]);
+                // Beim expliziten Lösch-Signal verknüpfte Schüler:innen sofort austragen -
+                // update_users() sieht diese User nach dem Löschen der Spiegelzeilen nicht mehr.
+                // Link-Lookup eindeutig über (idp, idpusername) - ohne idp würden Zeilen anderer
+                // IdPs mit gleicher bpkbf mitmatchen (get_field wirft sonst "duplicate value").
+                if ($purgereason) {
+                    $userid = $DB->get_field('auth_shibboleth_link', 'userid', ['idp' => $defaultidp, 'idpusername' => $bipuser->bpkbf]);
+                    $wasstd = false;
+                    foreach ((array)($bipuser->unassigned_orgs ?? []) as $org) {
+                        $wasstd = $wasstd || ($org->role ?? '') == 'std';
                     }
-                    $countdelete += count($existingforuser);
+                    // Nur Schüler:innen ("nur schüler") - die leere Wunschliste trägt aus allen
+                    // registrierten BIP-Schulen aus.
+                    if ($userid && $wasstd) {
+                        static::sync_user_orgs((int)$userid, [], $execute);
+                    }
                 }
-                continue;
-            }
 
-            // Pflichtfelder für jeden User mit aktiven Orgs prüfen.
-            // Test auf Key-Existenz - bei fehlendem Key Exception. Leere Werte sind erlaubt;
-            // sie werden im DB-Datensatz übernommen.
-            foreach (['firstname', 'middlename', 'lastname', 'dateofbirth', 'emails'] as $field) {
-                if (!property_exists($bipuser, $field)) {
-                    mtrace("FEHLER: Pflichtfeld '{$field}' fehlt - vollständiger BIP-User:");
-                    mtrace(var_export($bipuser, true));
-                    throw new \moodle_exception('bip:userfieldmissing', 'local_eduvidual', '', (object)[
-                        'field' => $field,
-                        'bpkbf' => $bipuser->bpkbf ?? 'unknown',
-                    ]);
+                $existingforuser = $DB->get_records('local_eduvidual_bip_user', ['bpkbf' => $bipuser->bpkbf]);
+                $existingkeyed = [];
+                foreach ($existingforuser as $r) {
+                    $existingkeyed["{$r->orgid}|{$r->role}"] = $r;
                 }
-            }
 
-            foreach ($bipuser->orgs as $org) {
-                if (empty($org->orgid)) {
-                    continue;
-                }
-                if (empty($org->roles)) {
-                    continue;
-                }
-                $orgid = $org->orgid;
-                if (!in_array($orgid, $orgids)) {
+                if ($purgereason) {
+                    if ($existingforuser) {
+                        $details = join(', ', array_map(fn($r) => "{$r->orgid}/{$r->role}", $existingforuser));
+                        static::mtrace("löscht " . count($existingforuser) . " Einträge für bpkbf={$bipuser->bpkbf} ({$purgereason}): {$details}", execute: $execute);
+                        if ($execute) {
+                            $DB->delete_records('local_eduvidual_bip_user', ['bpkbf' => $bipuser->bpkbf]);
+                        }
+                        $countdelete += count($existingforuser);
+                    }
                     continue;
                 }
 
-                // offizielle Mail bevorzugt für die aktuelle Schule, sonst irgendeine offizielle.
-                $email = null;
-                $emailfallback = null;
-                foreach (($bipuser->emails ?? []) as $entry) {
-                    if (empty($entry->official) || empty($entry->value)) {
+                // Pflichtfelder für jeden User mit aktiven Orgs prüfen.
+                // Test auf Key-Existenz - bei fehlendem Key Exception. Leere Werte sind erlaubt;
+                // sie werden im DB-Datensatz übernommen.
+                foreach (['firstname', 'middlename', 'lastname', 'dateofbirth', 'emails'] as $field) {
+                    if (!property_exists($bipuser, $field)) {
+                        mtrace("FEHLER: Pflichtfeld '{$field}' fehlt - vollständiger BIP-User:");
+                        mtrace(var_export($bipuser, true));
+                        throw new \moodle_exception('bip:userfieldmissing', 'local_eduvidual', '', (object)[
+                            'field' => $field,
+                            'bpkbf' => $bipuser->bpkbf ?? 'unknown',
+                        ]);
+                    }
+                }
+
+                foreach ($bipuser->orgs as $org) {
+                    if (empty($org->orgid)) {
                         continue;
                     }
-                    if (isset($entry->orgid) && $entry->orgid == $orgid) {
-                        $email = $entry->value;
-                        break;
+                    if (empty($org->roles)) {
+                        continue;
                     }
-                    if ($emailfallback === null) {
-                        $emailfallback = $entry->value;
+                    $orgid = $org->orgid;
+                    if (!in_array($orgid, $orgids)) {
+                        continue;
                     }
-                }
-                if ($email === null) {
-                    $email = $emailfallback;
-                }
 
-                // Pro Rolle des Users in dieser Org einen eigenen Datensatz - Unique-Key ist (bpkbf, orgid, role).
-                foreach ((array)$org->roles as $role) {
-                    $role = (string)$role;
-
-                    $key = "{$orgid}|{$role}";
-                    $data = (object)[
-                        'bpkbf' => $bipuser->bpkbf,
-                        'orgid' => $orgid,
-                        'role' => $role,
-                        'firstname' => $bipuser->firstname ?? null,
-                        'middlename' => $bipuser->middlename ?? null,
-                        'lastname' => $bipuser->lastname ?? null,
-                        'email' => $email,
-                        'dateofbirth' => $bipuser->dateofbirth ?? null,
-                        'timechanged' => (int)($bipuser->timechanged ?? 0),
-                        'timeimported' => $now,
-                    ];
-
-                    if (isset($existingkeyed[$key])) {
-                        $data->id = $existingkeyed[$key]->id;
-                        if ($execute) {
-                            $DB->update_record('local_eduvidual_bip_user', $data);
+                    // offizielle Mail bevorzugt für die aktuelle Schule, sonst irgendeine offizielle.
+                    $email = null;
+                    $emailfallback = null;
+                    foreach (($bipuser->emails ?? []) as $entry) {
+                        if (empty($entry->official) || empty($entry->value)) {
+                            continue;
                         }
-                        unset($existingkeyed[$key]);
-                        $countupdate++;
-                    } else {
-                        if ($execute) {
-                            $DB->insert_record('local_eduvidual_bip_user', $data);
+                        if (isset($entry->orgid) && $entry->orgid == $orgid) {
+                            $email = $entry->value;
+                            break;
                         }
-                        $countinsert++;
+                        if ($emailfallback === null) {
+                            $emailfallback = $entry->value;
+                        }
+                    }
+                    if ($email === null) {
+                        $email = $emailfallback;
+                    }
+
+                    // Pro Rolle des Users in dieser Org einen eigenen Datensatz - Unique-Key ist (bpkbf, orgid, role).
+                    foreach ((array)$org->roles as $role) {
+                        $role = (string)$role;
+
+                        $key = "{$orgid}|{$role}";
+                        $data = (object)[
+                            'bpkbf' => $bipuser->bpkbf,
+                            'orgid' => $orgid,
+                            'role' => $role,
+                            'firstname' => $bipuser->firstname ?? null,
+                            'middlename' => $bipuser->middlename ?? null,
+                            'lastname' => $bipuser->lastname ?? null,
+                            'email' => $email,
+                            'dateofbirth' => $bipuser->dateofbirth ?? null,
+                            'timechanged' => (int)($bipuser->timechanged ?? 0),
+                            'timeimported' => $now,
+                        ];
+
+                        if (isset($existingkeyed[$key])) {
+                            $data->id = $existingkeyed[$key]->id;
+                            if ($execute) {
+                                $DB->update_record('local_eduvidual_bip_user', $data);
+                            }
+                            unset($existingkeyed[$key]);
+                            $countupdate++;
+                        } else {
+                            if ($execute) {
+                                $DB->insert_record('local_eduvidual_bip_user', $data);
+                            }
+                            $countinsert++;
+                        }
                     }
                 }
+
+                // Was in $existingkeyed übrig bleibt, war nicht mehr in $bipuser->orgs (oder die Org
+                // ist nicht mehr getrackt) - jetzt entfernen.
+                foreach ($existingkeyed as $key => $r) {
+                    static::mtrace("löscht abgehängten Eintrag für bpkbf={$bipuser->bpkbf}: orgid={$r->orgid}, role={$r->role}", execute: $execute);
+                    if ($execute) {
+                        $DB->delete_records('local_eduvidual_bip_user', ['id' => $r->id]);
+                    }
+                    $countdelete++;
+                }
+
             }
 
-            // Was in $existingkeyed übrig bleibt, war nicht mehr in $bipuser->orgs (oder die Org
-            // ist nicht mehr getrackt) - jetzt entfernen.
-            foreach ($existingkeyed as $key => $r) {
-                static::mtrace("löscht abgehängten Eintrag für bpkbf={$bipuser->bpkbf}: orgid={$r->orgid}, role={$r->role}", execute: $execute);
+            $hasmore = !empty($jsondata->meta->has_more);
+            $nextcursor = (string)($jsondata->meta->next_cursor ?? '');
+
+            // Schutz gegen Endlosschleife, falls BIP has_more=true ohne neuen Cursor liefert.
+            if ($hasmore && (!$nextcursor || $nextcursor === $cursor)) {
+                mtrace("WARNUNG: has_more=true, aber kein neuer Cursor (next_cursor='{$nextcursor}') - Abbruch");
+                break;
+            }
+
+            // BIP liefert auf der letzten Seite des Sweeps noch einen gültigen Cursor mit
+            // (has_more=false, next_cursor=lastToken). Erst ein Folge-Request mit diesem Token
+            // antwortet mit next_cursor=''. In dem Fall nicht überschreiben, damit der nächste
+            // Lauf wieder als Delta vom bisherigen Cursor fortsetzt.
+            if ($nextcursor) {
+                $cursor = $nextcursor;
                 if ($execute) {
-                    $DB->delete_records('local_eduvidual_bip_user', ['id' => $r->id]);
+                    // Nach jeder Seite persistieren - bricht der Lauf ab, setzt der
+                    // nächste an derselben Stelle fort.
+                    set_config('bip_userimport_cursor', $nextcursor, 'local_eduvidual');
                 }
-                $countdelete++;
             }
+        } while ($hasmore);
 
-        }
-
-        $hasmore = !empty($jsondata->meta->has_more);
-        $nextcursor = (string)($jsondata->meta->next_cursor ?? '');
-
-        // BIP liefert auf der letzten Seite des Sweeps noch einen gültigen Cursor mit
-        // (has_more=false, next_cursor=lastToken). Erst ein Folge-Request mit diesem Token
-        // antwortet mit next_cursor=''. In dem Fall nicht überschreiben, damit der nächste
-        // Lauf wieder als Delta vom bisherigen Cursor fortsetzt.
-        if ($execute && $nextcursor) {
-            set_config('bip_userimport_cursor', $nextcursor, 'local_eduvidual');
-        }
-
-        $status = $hasmore ? 'weiter beim nächsten Lauf' : 'Sweep abgeschlossen';
         $cursorinfo = "next_cursor='{$nextcursor}'" . ($nextcursor ? '' : " (keep old cursor)");
-        static::mtrace("BIP-User-Import ({$status}): {$countinsert} angelegt, {$countupdate} aktualisiert, {$countdelete} gelöscht, {$cursorinfo}", execute: $execute);
+        static::mtrace("BIP-User-Import (Sweep abgeschlossen, {$pages} Seiten): {$countinsert} angelegt, {$countupdate} aktualisiert, {$countdelete} gelöscht, {$cursorinfo}", execute: $execute);
     }
 
     /**
