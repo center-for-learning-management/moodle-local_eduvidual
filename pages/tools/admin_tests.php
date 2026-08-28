@@ -33,7 +33,7 @@ $test = optional_param('test', '', PARAM_INT);
 
 $PAGE->set_context(context_system::instance());
 $PAGE->set_pagelayout('admin');
-$PAGE->set_url('/local/eduvidual/pages/tools/admin_tests.php', array('test' => $test));
+$PAGE->set_url('/local/eduvidual/pages/tools/admin_tests.php', ['test' => $test]);
 $PAGE->set_title('Tests');
 $PAGE->set_heading('Tests');
 
@@ -41,10 +41,10 @@ require_login();
 
 if (!is_siteadmin()) {
     echo $OUTPUT->header();
-    echo $OUTPUT->render_from_template('local_eduvidual/alert', array(
+    echo $OUTPUT->render_from_template('local_eduvidual/alert', [
         'content' => get_string('access_denied', 'local_eduvidual'),
         'type' => 'danger',
-    ));
+    ]);
     echo $OUTPUT->footer();
     die();
 }
@@ -53,7 +53,7 @@ function header_status($statusCode) {
     static $status_codes = null;
 
     if ($status_codes === null) {
-        $status_codes = array(
+        $status_codes = [
             100 => 'Continue',
             101 => 'Switching Protocols',
             102 => 'Processing',
@@ -104,7 +104,7 @@ function header_status($statusCode) {
             507 => 'Insufficient Storage',
             509 => 'Bandwidth Limit Exceeded',
             510 => 'Not Extended',
-        );
+        ];
     }
 
     if ($status_codes[$statusCode] !== null) {

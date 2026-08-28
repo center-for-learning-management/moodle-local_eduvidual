@@ -33,30 +33,30 @@ class hook_callbacks {
 
         $PAGE->add_body_class('theme-' . $CFG->theme);
         // Check for particular scripts, whose output has to be protected.
-        $scripts = array(
+        $scripts = [
             '/enrol/manual/manage.php', '/mod/jazzquiz/edit.php', '/mod/activequiz/edit.php',
             '/question/category.php', '/question/edit.php',
             '/question/export.php', '/user/selector/search.php',
-        );
+        ];
         $script = str_replace($CFG->dirroot, '', $_SERVER["SCRIPT_FILENAME"]);
         if (in_array($script, $scripts)) {
             \local_eduvidual\lib_wshelper::buffer();
         }
 
         // data privacy request for deletion only allowed when not member in any org.
-        if (strpos($_SERVER["SCRIPT_FILENAME"], '/admin/tool/dataprivacy/createdatarequest.php') > 0) {
+        if ($script == '/admin/tool/dataprivacy/createdatarequest.php') {
             $type = optional_param('type', 0, PARAM_INT);
             if ($type == 2) {
                 $orgs = \local_eduvidual\locallib::get_organisations('*', false);
                 if (count($orgs) > 0) {
-                    $url = new \moodle_url('/local/eduvidual/pages/redirects/dataprivacyorgerror.php', array());
+                    $url = new \moodle_url('/local/eduvidual/pages/redirects/dataprivacyorgerror.php', []);
                     redirect($url);
                 }
             }
         }
 
         // Protect core question bank from being exported.
-        if (strpos($_SERVER["SCRIPT_FILENAME"], '/question/export.php') > 0 && !is_siteadmin()) {
+        if ($script == '/question/export.php' && !is_siteadmin()) {
             $category = optional_param('category', 0, PARAM_RAW);
             if (!empty($category)) {
                 $category = explode(',', $category);
@@ -68,29 +68,31 @@ class hook_callbacks {
             }
         }
 
-        if (strpos($_SERVER["SCRIPT_FILENAME"], '/mod/bigbluebuttonbn/view.php') > 0
-            || strpos($_SERVER["SCRIPT_FILENAME"], '/mod/bigbluebuttonbn/guestlink.php') > 0
-            || strpos($_SERVER["SCRIPT_FILENAME"], '/mod/bigbluebuttonbn/bbb_ajax.php') > 0
-            || strpos($_SERVER["SCRIPT_FILENAME"], '/mod/bigbluebuttonbn/bbb_view.php') > 0
-            || strpos($_SERVER["SCRIPT_FILENAME"], '/webservice/rest/server.php') > 0 && optional_param('component', '', PARAM_TEXT) == 'mod_bigbluebuttonbn') {
-            if (strpos($_SERVER["SCRIPT_FILENAME"], '/mod/bigbluebuttonbn/guestlink.php') > 0) {
+        if (
+            $script == '/mod/bigbluebuttonbn/view.php'
+            || $script == '/mod/bigbluebuttonbn/guestlink.php'
+            || $script == '/mod/bigbluebuttonbn/bbb_ajax.php'
+            || $script == '/mod/bigbluebuttonbn/bbb_view.php'
+            || $script == '/webservice/rest/server.php' && optional_param('component', '', PARAM_TEXT) == 'mod_bigbluebuttonbn'
+        ) {
+            if ($script == '/mod/bigbluebuttonbn/guestlink.php') {
                 // get cmid dependent on guestlinkid (gid)
                 $gid = optional_param('gid', '', PARAM_ALPHANUM);
-                $bbb = $DB->get_record('bigbluebuttonbn', array('guestlinkid' => $gid));
+                $bbb = $DB->get_record('bigbluebuttonbn', ['guestlinkid' => $gid]);
                 if ($bbb->guestlinkenabled) {
                     [$course, $cm] = get_course_and_cm_from_instance($bbb, 'bigbluebuttonbn');
                     if (!empty($cm->id)) {
                         $cmid = $cm->id;
                     }
                 }
-            } elseif (strpos($_SERVER["SCRIPT_FILENAME"], '/mod/bigbluebuttonbn/bbb_ajax.php') > 0) {
+            } elseif ($script == '/mod/bigbluebuttonbn/bbb_ajax.php') {
                 $bbbtn = optional_param('bigbluebuttonbn', 0, PARAM_INT);
-                $bbb = $DB->get_record('bigbluebuttonbn', array('id' => $bbbtn));
+                $bbb = $DB->get_record('bigbluebuttonbn', ['id' => $bbbtn]);
                 [$course, $cm] = get_course_and_cm_from_instance($bbb, 'bigbluebuttonbn');
                 if (!empty($cm->id)) {
                     $cmid = $cm->id;
                 }
-            } elseif (strpos($_SERVER["SCRIPT_FILENAME"], '/webservice/rest/server.php') > 0) {
+            } elseif ($script == '/webservice/rest/server.php') {
                 $params = array_merge($_GET, $_POST);
                 $args = $params['args'];
                 if (!empty($args)) {
@@ -106,12 +108,12 @@ class hook_callbacks {
             if (!empty($cmid)) {
                 $cm = get_coursemodule_from_id('bigbluebuttonbn', $cmid, 0, false, IGNORE_MISSING);
                 if (!empty($cm->course)) {
-                    $course = $DB->get_record('course', array('id' => $cm->course), '*', IGNORE_MISSING);
+                    $course = $DB->get_record('course', ['id' => $cm->course], '*', IGNORE_MISSING);
                     if (!empty($course->id)) {
                         $org = \local_eduvidual\locallib::get_org_by_courseid($course->id);
                         if (!empty($org->orgid)) {
-                            $bbb_serverurl = $DB->get_record('local_eduvidual_overrides', array('orgid' => $org->orgid, 'field' => 'bigbluebuttonbn_server_url'));
-                            $bbb_sharedsecret = $DB->get_record('local_eduvidual_overrides', array('orgid' => $org->orgid, 'field' => 'bigbluebuttonbn_shared_secret'));
+                            $bbb_serverurl = $DB->get_record('local_eduvidual_overrides', ['orgid' => $org->orgid, 'field' => 'bigbluebuttonbn_server_url']);
+                            $bbb_sharedsecret = $DB->get_record('local_eduvidual_overrides', ['orgid' => $org->orgid, 'field' => 'bigbluebuttonbn_shared_secret']);
                             if (!empty($bbb_serverurl->value) && !empty($bbb_sharedsecret->value)) {
                                 $CFG->bigbluebuttonbn['server_url'] = $bbb_serverurl->value;
                                 $CFG->{'bigbluebuttonbn_server_url'} = $bbb_serverurl->value;
@@ -130,12 +132,16 @@ class hook_callbacks {
 
         $RET = [];
 
+        $script = str_replace($CFG->dirroot, '', $_SERVER["SCRIPT_FILENAME"]);
+
         // Protect question banks on course level.
         if (!empty($PAGE->context->contextlevel) && $PAGE->context->contextlevel == CONTEXT_COURSE) {
-            if (strpos($_SERVER["SCRIPT_FILENAME"], '/question/edit.php') > 0
-                || strpos($_SERVER["SCRIPT_FILENAME"], '/question/category.php') > 0
-                || strpos($_SERVER["SCRIPT_FILENAME"], '/question/import.php') > 0
-                || strpos($_SERVER["SCRIPT_FILENAME"], '/question/export.php') > 0) {
+            if (
+                $script == '/question/edit.php'
+                || $script == '/question/category.php'
+                || $script == '/question/import.php'
+                || $script == '/question/export.php'
+            ) {
                 if (!\local_eduvidual\locallib::can_access_course_questionbank($PAGE->context)) {
                     throw new \required_capability_exception($PAGE->context, 'moodle/question:viewall', get_string('access_denied', 'local_eduvidual'), '');
                 }
@@ -161,7 +167,7 @@ class hook_callbacks {
         if (!\local_eduvidual\locallib::is_moodle_4()) {
             $PAGE->requires->css('/local/eduvidual/style/main.css');
             $PAGE->requires->css('/local/eduvidual/style/spinner.css');
-            //$PAGE->requires->css('/local/eduvidual/style/ui.css');
+            // $PAGE->requires->css('/local/eduvidual/style/ui.css');
             // General boost-modifications.
             $PAGE->requires->css('/local/eduvidual/style/theme_boost.css');
 
@@ -183,32 +189,32 @@ class hook_callbacks {
 
         $org = \local_eduvidual\locallib::get_org_by_context();
 
-        if (strpos($_SERVER["SCRIPT_FILENAME"], '/enrol/otherusers.php') > 0) {
+        if ($script == '/enrol/otherusers.php') {
             redirect($CFG->wwwroot . '/user/index.php?id=' . optional_param('id', 0, PARAM_INT));
         }
-        if (strpos($_SERVER["SCRIPT_FILENAME"], '/login/signup.php') > 0) {
+        if ($script == '/login/signup.php') {
             echo $OUTPUT->render_from_template('local_eduvidual/inject', ['signupPage' => 1]);
         }
-        if (strpos($_SERVER["SCRIPT_FILENAME"], '/course/edit.php') > 0) {
+        if ($script == '/course/edit.php') {
             echo $OUTPUT->render_from_template('local_eduvidual/inject', ['courseEditPage' => 1, 'userid' => $USER->id, 'issiteadmin' => is_siteadmin()]);
         }
 
-        $data = array(
+        $data = [
             'context' => $CONTEXT,
-            'course' => (object)array(
+            'course' => (object)[
                 'id' => $COURSE->id,
                 'contextid' => $PAGE->context->id,
-            ),
-        );
-        $PAGE->requires->js_call_amd("local_eduvidual/jsinjector", "run", array($data));
+            ],
+        ];
+        $PAGE->requires->js_call_amd("local_eduvidual/jsinjector", "run", [$data]);
 
 
-        if (strpos($_SERVER["SCRIPT_FILENAME"], '/course/delete.php') > 0) {
-            $PAGE->requires->js_call_amd("local_eduvidual/jsinjector", "modifyRedirectUrl", array('coursedelete'));
+        if ($script == '/course/delete.php') {
+            $PAGE->requires->js_call_amd("local_eduvidual/jsinjector", "modifyRedirectUrl", ['coursedelete']);
         }
 
         // Now inject organisation-specific resources.
-        $inject_styles = array("<style type=\"text/css\" id=\"local_eduvidual_style_userextra\">");
+        $inject_styles = ["<style type=\"text/css\" id=\"local_eduvidual_style_userextra\">"];
         $background = get_user_preferences('local_eduvidual_background');
         if (!isguestuser($USER) && !empty($background)) {
             $inject_styles[] = "body { background: url(" . $CFG->wwwroot . $background . ") no-repeat center center fixed; background-size: cover !important; }";

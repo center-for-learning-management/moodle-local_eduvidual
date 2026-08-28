@@ -24,7 +24,7 @@ defined('MOODLE_INTERNAL') || die;
 
 require_once($CFG->dirroot . "/local/eduvidual/classes/manage_subcats_form.php");
 
-$form = new \local_eduvidual_manage_subcats_form(null, null, 'post', '_self', array('data-ajax' => 'false'), true);
+$form = new \local_eduvidual_manage_subcats_form(null, null, 'post', '_self', ['data-ajax' => 'false'], true);
 if ($data = $form->get_data()) {
     $org->subcats1 = $data->subcats1;
     $org->subcats2 = $data->subcats2;
@@ -34,8 +34,8 @@ if ($data = $form->get_data()) {
     $org->subcats3lbl = $data->subcats3lbl;
     $org->subcats4lbl = $data->subcats4lbl;
     $DB->update_record('local_eduvidual_org', $org);
-    echo $OUTPUT->render_from_template('local_eduvidual/alert', array('type' => 'success', 'content' => get_string('store:success', 'local_eduvidual')));
+    echo $OUTPUT->render_from_template('local_eduvidual/alert', ['type' => 'success', 'content' => get_string('store:success', 'local_eduvidual')]);
 }
-$form = new \local_eduvidual_manage_subcats_form(null, null, 'post', '_self', array('data-ajax' => 'false'), true);
+$form = new \local_eduvidual_manage_subcats_form(null, null, 'post', '_self', ['data-ajax' => 'false'], true);
 $form->set_data($org);
 $form->display();

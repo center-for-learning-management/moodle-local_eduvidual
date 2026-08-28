@@ -23,8 +23,8 @@
 
 defined('MOODLE_INTERNAL') || die;
 
-$tasks = array(
-    array(
+$tasks = [
+    [
         'classname' => 'local_eduvidual\task\coursetemplates',
         'blocking' => 0,
         'minute' => '*',
@@ -32,8 +32,8 @@ $tasks = array(
         'day' => '*',
         'dayofweek' => '*',
         'month' => '*',
-    ),
-    array(
+    ],
+    [
         'classname' => 'local_eduvidual\task\local_eduvidual_orgsizes',
         'blocking' => 0,
         'minute' => 0,
@@ -41,8 +41,8 @@ $tasks = array(
         'day' => '*',
         'dayofweek' => '*',
         'month' => '*',
-    ),
-    array(
+    ],
+    [
         'classname' => 'local_eduvidual\task\clean_old_logs',
         'blocking' => 0,
         'minute' => 0,
@@ -50,8 +50,8 @@ $tasks = array(
         'day' => '*',
         'dayofweek' => '*',
         'month' => '*',
-    ),
-    array(
+    ],
+    [
         'classname' => 'local_eduvidual\task\clean_old_webservice_tokens',
         'blocking' => 0,
         'minute' => 0,
@@ -59,5 +59,25 @@ $tasks = array(
         'day' => '*',
         'dayofweek' => '*',
         'month' => '*',
-    ),
-);
+    ],
+    [
+        'classname' => 'local_eduvidual\task\bip_import',
+        'blocking' => 0,
+        'minute' => 30,
+        'hour' => 4,
+        'day' => '*',
+        'dayofweek' => '*',
+        'month' => '*',
+        'disabled' => 1,
+    ],
+    [
+        'classname' => 'local_eduvidual\task\bip_match_users',
+        'blocking' => 0,
+        'minute' => 30,
+        'hour' => 5,
+        'day' => '*',
+        'dayofweek' => '*',
+        'month' => '*',
+        'disabled' => 1,
+    ],
+];
