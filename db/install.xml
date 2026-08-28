@@ -87,6 +87,9 @@
         <FIELD NAME="lpf" TYPE="char" LENGTH="30" NOTNULL="false" SEQUENCE="false" COMMENT="Instance on lernplattform.schule.at in format www3|instancename or www4|instancename"/>
         <FIELD NAME="lpfgroup" TYPE="char" LENGTH="1" NOTNULL="false" SEQUENCE="false" COMMENT="Migrationgroup from lernplattform.schule.at, A,B or C"/>
         <FIELD NAME="orgsize" TYPE="int" LENGTH="20" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Estimated filesystem usage of org"/>
+        <FIELD NAME="biporg" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="1 if this school currently exists in BIP (synced by bip_helper::import_orgs)"/>
+        <FIELD NAME="bipgenuine" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="genuine flag from the BIP readorgdata endpoint (1=real org, 0=demo org)"/>
+        <FIELD NAME="bipoperational" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="operational flag from the BIP readorgdata endpoint (1=operational, 0=not)"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
@@ -160,6 +163,28 @@
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
       </KEYS>
+    </TABLE>
+    <TABLE NAME="local_eduvidual_bip_user" COMMENT="Raw user data mirrored from the BIP (bildung.gv.at) eduportal API. Currently only students (role=std). One row per (bpkbf, orgid).">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="bpkbf" TYPE="char" LENGTH="100" NOTNULL="true" SEQUENCE="false" COMMENT="bpk verschlüsselt für Bildungswesen, BF: prefixed"/>
+        <FIELD NAME="orgid" TYPE="int" LENGTH="20" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="role" TYPE="char" LENGTH="10" NOTNULL="true" DEFAULT="std" SEQUENCE="false" COMMENT="std, lgn, tch, dir"/>
+        <FIELD NAME="firstname" TYPE="char" LENGTH="100" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="middlename" TYPE="char" LENGTH="100" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="lastname" TYPE="char" LENGTH="100" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="email" TYPE="char" LENGTH="250" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="dateofbirth" TYPE="char" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="YYYY-mm-dd"/>
+        <FIELD NAME="timechanged" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="timechanged from BIP"/>
+        <FIELD NAME="timeimported" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="our local timestamp of last import"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+      <INDEXES>
+        <INDEX NAME="bpkbf_orgid_role" UNIQUE="true" FIELDS="bpkbf, orgid, role"/>
+        <INDEX NAME="orgid_bpkbf" UNIQUE="false" FIELDS="orgid, bpkbf"/>
+      </INDEXES>
     </TABLE>
   </TABLES>
 </XMLDB>

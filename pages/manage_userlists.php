@@ -30,37 +30,28 @@ $orgid = optional_param('orgid', 0, PARAM_INT);
 $cohort = optional_param('cohort', '___all', PARAM_TEXT);
 $format = optional_param('format', 'list', PARAM_ALPHANUM);
 
-$org = $DB->get_record('local_eduvidual_org', array('orgid' => $orgid), '*', MUST_EXIST);
+$org = $DB->get_record('local_eduvidual_org', ['orgid' => $orgid], '*', MUST_EXIST);
 $context = \context_coursecat::instance($org->categoryid);
 $PAGE->set_context($context);
 
-$PAGE->set_url(new \moodle_url('/local/eduvidual/pages/manage_userlists.php', array('orgid' => $orgid, 'cohort' => $cohort, 'format' => $format)));
+$PAGE->set_url(new \moodle_url('/local/eduvidual/pages/manage_userlists.php', ['orgid' => $orgid, 'cohort' => $cohort, 'format' => $format]));
 $PAGE->set_title(get_string('manage:userlist', 'local_eduvidual', $org));
 $PAGE->set_heading(get_string('manage:userlist', 'local_eduvidual', $org));
 $PAGE->requires->css('/local/eduvidual/style/manage_bunch.css');
 
-// Only allow a certain user group access to this script
-$allow = array("Manager");
-if (!in_array(\local_eduvidual\locallib::get_orgrole($orgid), $allow) && !is_siteadmin()) {
-    echo $OUTPUT->header();
-    ?>
-    <p class="alert alert-danger"><?php get_string('access_denied', 'local_eduvidual'); ?></p>
-    <?php
-    echo $OUTPUT->footer();
-    exit;
-}
+require_capability('local/eduvidual:canmanage', $context);
 
-$PAGE->navbar->add(get_string('Management', 'local_eduvidual'), new moodle_url('/local/eduvidual/pages/manage.php', array('orgid' => $orgid)));
+$PAGE->navbar->add(get_string('Management', 'local_eduvidual'), new moodle_url('/local/eduvidual/pages/manage.php', ['orgid' => $orgid]));
 $PAGE->navbar->add(get_string('manage:userlist', 'local_eduvidual', $org), $PAGE->url);
 
-$table = new class($orgid, $cohort) extends local_table_sql\table_sql_form {
-    function __construct(private int $orgid, private string $cohort) {
-        parent::__construct([$orgid, $cohort]);
+$table = new class ($org, $cohort) extends local_table_sql\table_sql_form {
+    function __construct(private object $org, private string $cohort) {
+        parent::__construct([$org->orgid, $cohort]);
     }
 
     function define_table_configs() {
         $where = '';
-        $params = [$this->orgid];
+        $params = [$this->org->orgid];
 
         switch ($this->cohort) {
             case '___all':
@@ -89,15 +80,17 @@ $table = new class($orgid, $cohort) extends local_table_sql\table_sql_form {
             $params[] = $role;
         }
 
+        $linkedsql = "CASE WHEN EXISTS(SELECT 1 FROM {auth_shibboleth_link} ash WHERE ash.userid=u.id) THEN 1 ELSE 0 END";
         $this->set_sql_query("
-            SELECT u.*, ou.role
+            SELECT u.*, ou.role,
+                ($linkedsql) AS linked
             FROM {user} u
             JOIN {local_eduvidual_orgid_userid} ou ON u.id=ou.userid AND ou.orgid=?
             WHERE deleted=0 $where
         ", $params);
 
         if ($this->is_downloading()) {
-            $cols = array(
+            $cols = [
                 'id' => 'id',
                 'auth' => 'auth',
                 'username' => 'username',
@@ -105,13 +98,14 @@ $table = new class($orgid, $cohort) extends local_table_sql\table_sql_form {
                 'firstname' => 'firstname',
                 'lastname' => 'lastname',
                 'role' => 'role',
+                'linked' => 'linked',
                 'lastlogin' => 'lastlogin',
                 'cohorts_add' => 'cohorts_add',
                 'cohorts_remove' => 'cohorts_remove',
                 'secret' => 'secret',
                 'password' => 'password',
                 'forcechangepassword' => 'forcechangepassword',
-            );
+            ];
         } else {
             $cols = [
                 'userpic' => get_string('pictureofuser'),
@@ -119,6 +113,7 @@ $table = new class($orgid, $cohort) extends local_table_sql\table_sql_form {
                 'firstname' => get_string('firstname'),
                 'email' => get_string('email'),
                 'role' => get_string('role'),
+                'linked' => get_string('manage:userlist:linked', 'local_eduvidual'),
                 'secret' => get_string('secret', 'local_eduvidual'),
                 'auth' => get_string('manage:authtype', 'local_eduvidual'),
                 'lastlogin' => get_string('lastlogin'),
@@ -134,11 +129,31 @@ $table = new class($orgid, $cohort) extends local_table_sql\table_sql_form {
         }
         $this->set_column_options('lastlogin', data_type: static::PARAM_TIMESTAMP);
         $this->set_column_options('secret', no_sorting: true, no_filter: true);
+        $this->set_column_options(
+            'linked',
+            sql_column: 'linked',
+            select_options: [
+                '1' => get_string('manage:userlist:linked:yes', 'local_eduvidual'),
+                '0' => get_string('manage:userlist:linked:no', 'local_eduvidual'),
+            ],
+        );
+
+        if (isset($cols['cohorts_add'])) {
+            $this->set_column_options('cohorts_add', no_sorting: true, no_filter: true);
+        }
+        if (isset($cols['cohorts_remove'])) {
+            $this->set_column_options('cohorts_remove', no_sorting: true, no_filter: true);
+        }
+        if (isset($cols['forcechangepassword'])) {
+            $this->set_column_options('forcechangepassword', no_sorting: true, no_filter: true);
+        }
 
         $this->is_downloadable(true, 'users_' . date("Ymd-His"));
 
         $this->set_sql_table('user');
         $this->add_form_action(new class extends \local_table_sql\table_sql_subform {
+            private int $userid = 0;
+
             function definition() {
                 $mform = $this->_form;
 
@@ -150,27 +165,67 @@ $table = new class($orgid, $cohort) extends local_table_sql\table_sql_form {
                 $mform->setType('email', PARAM_TEXT);
             }
 
-            //Custom validation should be added here
+            function set_data($default_values) {
+                // ID merken, damit validation() den eigenen Datensatz bei der E-Mail-Prüfung ausnehmen kann.
+                $this->userid = (int)($default_values->id ?? 0);
+
+                // Bei verknüpften Konten kommen Vor-/Nachname aus dem IdP - der Manager
+                // darf sie nicht überschreiben. Hinweis als statischer Text einblenden.
+                if (!empty($default_values->linked)) {
+                    $this->_form->hardFreeze(['firstname', 'lastname']);
+                    $this->_form->addElement(
+                        'static', 'linkednote', '',
+                        get_string('manage:userlist:linked:note', 'local_eduvidual')
+                    );
+                }
+                parent::set_data($default_values);
+            }
+
+            // Custom validation should be added here
             function validation($data, $files) {
-                $errors = array();
+                global $CFG, $DB;
+
+                $errors = [];
                 if (strlen($data['firstname']) < 2) {
-                    $errors['firstname'] = get_string('manage:profile:tooshort', 'local_eduvidual', array('fieldname' => get_string('firstname'), 'minchars' => '2'));
+                    $errors['firstname'] = get_string('manage:profile:tooshort', 'local_eduvidual', ['fieldname' => get_string('firstname'), 'minchars' => '2']);
                 }
                 if (strlen($data['lastname']) < 2) {
-                    $errors['lastname'] = get_string('manage:profile:tooshort', 'local_eduvidual', array('fieldname' => get_string('lastname'), 'minchars' => '2'));
+                    $errors['lastname'] = get_string('manage:profile:tooshort', 'local_eduvidual', ['fieldname' => get_string('lastname'), 'minchars' => '2']);
                 }
                 if (!validate_email($data['email'])) {
                     $errors['email'] = get_string('manage:profile:invalidmail', 'local_eduvidual');
+                } elseif (
+                    $DB->record_exists_select(
+                        'user',
+                        "id <> :id AND mnethostid = :mnethostid AND (LOWER(email) = :email OR username = :username)",
+                        ['id' => $this->userid, 'mnethostid' => $CFG->mnet_localhost_id,
+                        'email' => \core_text::strtolower($data['email']), 'username' => \core_text::strtolower($data['email'])]
+                    )
+                ) {
+                    // E-Mail-Adressen müssen in eduvidual eindeutig sein (username = email, siehe store_row()).
+                    $errors['email'] = get_string('emailexists');
                 }
                 return $errors;
             }
         });
     }
 
+    function col_linked($row) {
+        if ($this->is_downloading()) {
+            return !empty($row->linked) ? 1 : 0;
+        }
+        if (!empty($row->linked)) {
+            return '<i class="fa fa-check text-success" aria-hidden="true" title="' .
+                s(get_string('manage:userlist:linked:yes', 'local_eduvidual')) . '"></i>';
+        }
+        return '<i class="fa fa-times text-danger" aria-hidden="true" title="' .
+            s(get_string('manage:userlist:linked:no', 'local_eduvidual')) . '"></i>';
+    }
+
     function col_userpic($row) {
         global $OUTPUT;
 
-        return $OUTPUT->user_picture($row, array('size' => 50));
+        return $OUTPUT->user_picture($row, ['size' => 50]);
     }
 
     function col_email($row) {
@@ -194,31 +249,18 @@ $table = new class($orgid, $cohort) extends local_table_sql\table_sql_form {
         return 0;
     }
 
-    /**
-     * TODO: die Logik dieser Funktion überprüfen / optimieren.
-     */
     function col_cohorts_add($row) {
         global $DB;
-        static $org;
 
-        if (!$org) {
-            $org = $DB->get_record('local_eduvidual_org', array('orgid' => $this->orgid));
-            $context = \context_coursecat::instance($org->categoryid);
-        }
-
-        if (!empty($context->id)) {
-            $sql = "SELECT c.id,c.name
-                FROM {cohort} c, {cohort_members} cm
-                WHERE c.id=cm.cohortid
-                    AND cm.userid=?
-                    AND c.contextid=?";
-            $cohorts = $DB->get_records_sql($sql, array($row->id, $context->id));
-            $cohorts_ = array();
-            foreach ($cohorts as $cohort) {
-                $cohorts_[] = $cohort->name;
-            }
-            return implode(',', $cohorts_);
-        }
+        $context = \context_coursecat::instance($this->org->categoryid);
+        $cohorts = $DB->get_records_sql_menu("
+            SELECT c.id, c.name
+            FROM {cohort} c
+            JOIN {cohort_members} cm ON c.id = cm.cohortid
+            WHERE cm.userid = ?
+                AND c.contextid = ?
+        ", [$row->id, $context->id]);
+        return implode(',', $cohorts);
     }
 
     function profile_load_data(object $row) {
@@ -230,6 +272,13 @@ $table = new class($orgid, $cohort) extends local_table_sql\table_sql_form {
 
     function store_row(object $data): void {
         global $DB;
+
+        // Bei verknüpften Konten Vor-/Nachname raus aus dem Update, selbst wenn jemand
+        // das hardFreeze im Formular umgangen hat - update_record schreibt dann diese
+        // Spalten nicht.
+        if ($DB->record_exists('auth_shibboleth_link', ['userid' => $data->id])) {
+            unset($data->firstname, $data->lastname);
+        }
 
         parent::store_row($data);
 
@@ -246,16 +295,19 @@ $table = new class($orgid, $cohort) extends local_table_sql\table_sql_form {
 
 echo $OUTPUT->header();
 
-$cohorts = [];
-$cohorts[] = (object)array('id' => '___all', 'name' => get_string('manage:bunch:all', 'local_eduvidual'));
-$cohorts[] = (object)array('id' => '___allparents', 'name' => get_string('manage:bunch:allparents', 'local_eduvidual'));
-$cohorts[] = (object)array('id' => '___allstudents', 'name' => get_string('manage:bunch:allstudents', 'local_eduvidual'));
-$cohorts[] = (object)array('id' => '___allteachers', 'name' => get_string('manage:bunch:allteachers', 'local_eduvidual'));
-$cohorts[] = (object)array('id' => '___allmanagers', 'name' => get_string('manage:bunch:allmanagers', 'local_eduvidual'));
+\local_eduvidual\output::print_manage_menu($orgid, 'users');
+\local_eduvidual\output::print_manage_users_tabs($orgid, 'list');
 
-$other_cohorts = array_values($DB->get_records_sql("SELECT id,name FROM {cohort} WHERE contextid=? ORDER BY name ASC", array($context->id)));
+$cohorts = [];
+$cohorts[] = (object)['id' => '___all', 'name' => get_string('manage:bunch:all', 'local_eduvidual')];
+$cohorts[] = (object)['id' => '___allparents', 'name' => get_string('manage:bunch:allparents', 'local_eduvidual')];
+$cohorts[] = (object)['id' => '___allstudents', 'name' => get_string('manage:bunch:allstudents', 'local_eduvidual')];
+$cohorts[] = (object)['id' => '___allteachers', 'name' => get_string('manage:bunch:allteachers', 'local_eduvidual')];
+$cohorts[] = (object)['id' => '___allmanagers', 'name' => get_string('manage:bunch:allmanagers', 'local_eduvidual')];
+
+$other_cohorts = array_values($DB->get_records_sql("SELECT id,name FROM {cohort} WHERE contextid=? ORDER BY name ASC", [$context->id]));
 if ($other_cohorts) {
-    $cohorts[] = (object)array('id' => '', 'name' => '--------------------------------');
+    $cohorts[] = (object)['id' => '', 'name' => '--------------------------------'];
     $cohorts = array_merge($cohorts, $other_cohorts);
 }
 
@@ -265,10 +317,10 @@ foreach ($cohorts as $c) {
 
 require_once($CFG->dirroot . '/user/profile/lib.php');
 
-$formats = array(
-    (object)array('format' => 'cards', 'name' => get_string('manage:user_bunches:format:cards', 'local_eduvidual')),
-    (object)array('format' => 'list', 'name' => get_string('manage:user_bunches:format:list', 'local_eduvidual')),
-);
+$formats = [
+    (object)['format' => 'cards', 'name' => get_string('manage:user_bunches:format:cards', 'local_eduvidual')],
+    (object)['format' => 'list', 'name' => get_string('manage:user_bunches:format:list', 'local_eduvidual')],
+];
 foreach ($formats as &$f) {
     $f->selected = ($format == $f->format);
 }
@@ -284,7 +336,7 @@ if ($format == 'cards') {
         if (empty($user->backgroundcard)) {
             $user->backgroundcard = \local_eduvidual\lib_enrol::choose_background($user->id);
         }
-        $user->userpicture = $OUTPUT->user_picture($user, array('size' => 200));
+        $user->userpicture = $OUTPUT->user_picture($user, ['size' => 200]);
 
         $cnt++;
         if ($cnt == 18) {
@@ -296,14 +348,14 @@ if ($format == 'cards') {
     $users = [];
 }
 
-echo $OUTPUT->render_from_template('local_eduvidual/manage_userlists', array(
+echo $OUTPUT->render_from_template('local_eduvidual/manage_userlists', [
     'cohorts' => $cohorts,
     'format_cards' => ($format == 'cards'),
     'formats' => $formats,
     'orgid' => $orgid,
     'users' => array_values($users),
     'wwwroot' => $CFG->wwwroot,
-));
+]);
 
 if ($format == 'list') {
     $table->out();
