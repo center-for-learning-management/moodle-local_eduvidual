@@ -997,13 +997,7 @@ class bip_helper {
                 continue;
             }
 
-            $hasstd = false;
-            $wantedbiproles = [];
-            foreach ($rows as $r) {
-                $wantedbiproles[(int)$r->orgid][] = $r->role;
-                $hasstd = $hasstd || $r->role === 'std';
-            }
-            if (!$hasstd) {
+            if (!static::update_user($userid, $rows, onlystudents: true, execute: $execute)) {
                 continue;
             }
 
@@ -1013,12 +1007,105 @@ class bip_helper {
                 $countnameedit++;
             }
 
-            static::sync_user_orgs($userid, $wantedbiproles, $execute);
             $countsync++;
         }
 
         static::mtrace("BIP-User-Sync fertig: " . count($bipusers) . " BIP-User im Spiegel, {$countsync} verlinkte Schüler:innen gesynct, {$countnameedit} Namen-Updates (Dry-Run)", execute: $execute);
         static::mtrace("Schüler-Accounts: {$createstats['created']} angelegt - übersprungen: {$createstats['skip_candidate']} (namensgleicher unverlinkter User), {$createstats['skip_email']} (E-Mail existiert bereits), {$createstats['skip_noname']} (Name fehlt)", execute: $execute);
+    }
+
+    /**
+     * Wendet den Spiegel-Stand EINES Users auf Moodle an: Voll-Abgleich der
+     * Schulzuordnungen (sync_user_orgs) mit der Wunschliste aus dessen Spiegelzeilen.
+     * Gemeinsamer per-User-Kern für den nächtlichen Voll-Pass (update_users,
+     * $onlystudents=true: nur Schüler:innen) und den Login-Hook (alle Rollen; die
+     * Zeilen kommen dort frisch aus update_bip_user_mirror).
+     *
+     * Leere $rows bedeuten "keine Zugehörigkeit an registrierten BIP-Schulen" und
+     * tragen entsprechend aus - der Schutz für bpkbfs ohne Spiegelzeilen liegt beim
+     * Aufrufer (update_users überspringt sie, der Login-Hook darf austragen, weil
+     * seine affiliation der komplette autoritative Schnappschuss ist).
+     *
+     * Liefert true, wenn der Abgleich gelaufen ist (false nur, wenn $onlystudents
+     * gesetzt ist und der User laut Spiegel keine std-Rolle hat).
+     */
+    public static function update_user(int $userid, array $rows, bool $onlystudents = false, bool $execute = true): bool {
+        $hasstd = false;
+        $wantedbiproles = [];
+        foreach ($rows as $r) {
+            $wantedbiproles[(int)$r->orgid][] = $r->role;
+            $hasstd = $hasstd || $r->role === 'std';
+        }
+        if ($onlystudents && !$hasstd) {
+            return false;
+        }
+
+        static::sync_user_orgs($userid, $wantedbiproles, $execute);
+        return true;
+    }
+
+    /**
+     * Spiegelt die BIP-Zugehörigkeiten EINES Users (aus der Login-affiliation) in
+     * local_eduvidual_bip_user, damit der Spiegel zwischen den nächtlichen Delta-Läufen
+     * tagesaktuell bleibt - auch für Schulen, deren Bestand noch nicht importiert ist.
+     *
+     * Diff-Upsert nach eeducation-Vorbild (updateBipUserMirror): fehlende (orgid, role)-
+     * Zeilen anlegen, abgehängte löschen, bestehende NICHT anfassen - die reichhaltigeren
+     * Import-Daten (beste E-Mail, Geburtsdatum, middlename) bleiben erhalten; die dünneren
+     * Login-Zeilen füllt das nächste BIP-Delta auf. Nur registrierte BIP-Schulen,
+     * konsistent zum Import.
+     */
+    public static function update_bip_user_mirror(string $bpkbf, array $wantedbiproles, string $firstname = '', string $lastname = '', string $email = ''): void {
+        global $DB;
+
+        $bpkbf = trim($bpkbf);
+        if (!$bpkbf) {
+            return;
+        }
+
+        $trackedorgids = array_flip($DB->get_fieldset_select('local_eduvidual_org', 'orgid', 'authenticated > 0 AND biporg = 1'));
+
+        $existing = [];
+        foreach ($DB->get_records('local_eduvidual_bip_user', ['bpkbf' => $bpkbf]) as $r) {
+            $existing["{$r->orgid}|{$r->role}"] = $r;
+        }
+
+        $now = time();
+        $keep = [];
+        foreach ($wantedbiproles as $orgid => $roles) {
+            if (!isset($trackedorgids[$orgid])) {
+                continue;
+            }
+            foreach ((array)$roles as $role) {
+                $role = trim((string)$role);
+                if (!$role) {
+                    continue;
+                }
+                $key = "{$orgid}|{$role}";
+                $keep[$key] = true;
+                if (isset($existing[$key])) {
+                    continue;
+                }
+                $DB->insert_record('local_eduvidual_bip_user', (object)[
+                    'bpkbf' => $bpkbf,
+                    'orgid' => (int)$orgid,
+                    'role' => $role,
+                    'firstname' => $firstname ?: null,
+                    'middlename' => null,
+                    'lastname' => $lastname ?: null,
+                    'email' => $email ?: null,
+                    'dateofbirth' => null,
+                    'timechanged' => 0,
+                    'timeimported' => $now,
+                ]);
+            }
+        }
+
+        foreach ($existing as $key => $r) {
+            if (!isset($keep[$key])) {
+                $DB->delete_records('local_eduvidual_bip_user', ['id' => $r->id]);
+            }
+        }
     }
 
     /**
