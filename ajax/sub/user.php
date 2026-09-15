@@ -31,7 +31,7 @@ switch ($act) {
         } else {
             $orgid = optional_param('orgid', 0, PARAM_INT);
             $code = optional_param('code', '', PARAM_TEXT);
-            $entries = $DB->get_records('local_eduvidual_org_codes', array('orgid' => $orgid, 'code' => $code));
+            $entries = $DB->get_records('local_eduvidual_org_codes', ['orgid' => $orgid, 'code' => $code]);
             if (count($entries) > 0) {
                 $role = '';
                 foreach ($entries as $entry) {
@@ -57,7 +57,7 @@ switch ($act) {
             $reply['error'] = 'guestuser:nopermission';
         } else {
             $editor = optional_param('editor', '', PARAM_TEXT);
-            $valid = array('', 'atto', 'tinymce', 'textarea');
+            $valid = ['', 'atto', 'tinymce', 'textarea'];
             if (!in_array($editor, $valid)) {
                 $reply['error'] = 'invalid choice';
             } else {
@@ -69,16 +69,16 @@ switch ($act) {
         break;
     case 'questioncategories':
         $sysctx = \context_system::instance();
-        $questioncategories = optional_param_array('questioncategories', array(), PARAM_INT);
+        $questioncategories = optional_param_array('questioncategories', [], PARAM_INT);
         if (has_capability('moodle/question:viewall', $sysctx)) {
-            $reply['acts'] = array();
-            $hascats_ = $DB->get_records('local_eduvidual_userqcats', array('userid' => $USER->id));
-            $hascats = array();
+            $reply['acts'] = [];
+            $hascats_ = $DB->get_records('local_eduvidual_userqcats', ['userid' => $USER->id]);
+            $hascats = [];
             $setrole = get_config('local_eduvidual', 'defaultrolestudent');
             foreach ($hascats_ as $hascat) {
                 if (!in_array($hascat->categoryid, $questioncategories)) {
                     $reply['acts'][] = 'Remove ' . $hascat->categoryid;
-                    $DB->delete_records('local_eduvidual_userqcats', array('userid' => $USER->id, 'categoryid' => $hascat->categoryid));
+                    $DB->delete_records('local_eduvidual_userqcats', ['userid' => $USER->id, 'categoryid' => $hascat->categoryid]);
                     $supportcourseid = get_config('local_eduvidual', 'questioncategory_' . $hascat->categoryid . '_supportcourse');
                     if (!empty($supportcourseid)) {
                         $context = \context_course::instance($supportcourseid, IGNORE_MISSING);
@@ -88,7 +88,6 @@ switch ($act) {
                             if (count($roles) == 0) {
                                 \local_eduvidual\lib_enrol::course_manual_enrolments([$supportcourseid], [$USER->id], -1);
                             }
-
                         }
                     }
                 } else {
@@ -98,8 +97,9 @@ switch ($act) {
 
             $allowed_questioncategories = explode(",", get_config('local_eduvidual', 'questioncategories'));
             foreach ($questioncategories as $cat) {
-                if (!in_array($cat, $allowed_questioncategories))
+                if (!in_array($cat, $allowed_questioncategories)) {
                     continue;
+                }
                 if (!in_array($cat, $hascats)) {
                     $entry = new stdClass();
                     $entry->userid = $USER->id;
@@ -114,7 +114,7 @@ switch ($act) {
             }
             $reply['status'] = 'ok';
         } else {
-            $DB->delete_records('local_eduvidual_userqcats', array('userid' => $USER->id));
+            $DB->delete_records('local_eduvidual_userqcats', ['userid' => $USER->id]);
             $reply['status'] = 'ok';
         }
 

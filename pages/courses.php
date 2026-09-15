@@ -31,10 +31,10 @@ $id = optional_param('id', 0, PARAM_INT);
 \local_eduvidual\locallib::set_context_auto($id);
 
 $PAGE->set_pagelayout('mydashboard');
-$PAGE->set_url('/local/eduvidual/pages/courses.php', array());
+$PAGE->set_url('/local/eduvidual/pages/courses.php', []);
 $PAGE->set_title(get_string('Courses', 'local_eduvidual'));
 $PAGE->set_heading(get_string('Courses', 'local_eduvidual'));
-//$PAGE->set_cacheable(false);
+// $PAGE->set_cacheable(false);
 
 if ($id == 0) {
     echo $OUTPUT->header();
@@ -44,7 +44,7 @@ if ($id == 0) {
     <ul id="local_eduvidual_user_courselist" data-role="listview" data-inset="true" data-split-icon="eye">
         <?php
         foreach ($courses as $course) {
-            $shown = $DB->get_record('local_eduvidual_courseshow', array('userid' => $USER->id, 'courseid' => $course->id));
+            $shown = $DB->get_record('local_eduvidual_courseshow', ['userid' => $USER->id, 'courseid' => $course->id]);
             $url = $CFG->wwwroot . "/course/view.php?id=" . $course->id;
             $context = context_course::instance($course->id);
             $canviewinvisible = has_capability('moodle/course:update', $context) || is_siteadmin() || \local_eduvidual\locallib::get('orgrole') == \local_eduvidual\locallib::ROLE_MANAGER;
@@ -75,7 +75,7 @@ if ($id == 0) {
                 ?>
                 <li<?php if ($course->visible == 0 || (isset($shown->courseid) && $shown->courseid == $course->id)) {
                     echo ' class="inactive ishidden"';
-                } ?> data-courseid="<?php echo $course->id; ?>">
+                   } ?> data-courseid="<?php echo $course->id; ?>">
                     <a href="<?php echo $url; ?>">
                         <img src="<?php echo $course->image; ?>" alt="course image"/>
                         <h3><?php echo $course->fullname; ?></h3>
@@ -100,8 +100,8 @@ if ($id == 0) {
     <?php
 } else {
     // Show course contents
-    //$PAGE->set_pagelayout('course');
-    $course = $DB->get_record('course', array('id' => $id));
+    // $PAGE->set_pagelayout('course');
+    $course = $DB->get_record('course', ['id' => $id]);
 
     $context = context_course::instance($course->id);
     $isenrolled = is_enrolled($context, $USER->id, '', true);
@@ -152,28 +152,30 @@ if ($id == 0) {
             ?>
             <ul data-role="listview" data-inset="true" class="ui-listview ui-listview-inset ui-corner-all ui-shadow fix-images" data-icon="false" data-split-icon="action">
                 <?php
-                $sections = $DB->get_records('course_sections', array('course' => $course->id));
+                $sections = $DB->get_records('course_sections', ['course' => $course->id]);
                 $sectionno = 0;
                 foreach ($sections as $section) {
                     ?>
                     <li data-role="list-divider" style="display: block !important;"><?php
-                        if ($canedit) {
-                            ?><a href="<?php echo $CFG->wwwroot . '/local/eduvidual/pages/teacher.php?act=createmodule&courseid=' . $course->id . '&sectionid=' . $sectionno++; ?>">
+                    if ($canedit) {
+                        ?><a href="<?php echo $CFG->wwwroot . '/local/eduvidual/pages/teacher.php?act=createmodule&courseid=' . $course->id . '&sectionid=' . $sectionno++; ?>">
                             <img src="/pix/t/add.svg" alt="<?php echo get_string('add'); ?>"/>
                             </a>
                             <?php
-                        }
+                    }
                         echo '<h3>' . (($section->name != "") ? $section->name : get_string('section') . ' ' . $sectionno++) . '</h3>';
                         ?></li>
                     <?php
-                    //$sequence = $DB->get_record('course_sections', array('id' => $section->id), 'sequence');
+                    // $sequence = $DB->get_record('course_sections', array('id' => $section->id), 'sequence');
                     $sequence = explode(',', $section->sequence);
 
                     foreach ($sequence as $cmid) {
-                        if ($cmid == 0)
+                        if ($cmid == 0) {
                             continue;
-                        if (!isset($cms[$cmid]))
+                        }
+                        if (!isset($cms[$cmid])) {
                             continue;
+                        }
                         $cm = $cms[$cmid];
                         if ($cm->visible == 1 || $canedit) {
                             ?>

@@ -27,7 +27,7 @@ require_login();
 
 $PAGE->set_context(context_system::instance());
 $PAGE->set_pagelayout('mydashboard');
-$PAGE->set_url('/local/eduvidual/pages/redirects/edutube.php', array());
+$PAGE->set_url('/local/eduvidual/pages/redirects/edutube.php', []);
 $PAGE->set_title(get_string('edutube:title', 'local_eduvidual'));
 $PAGE->set_heading(get_string('edutube:title', 'local_eduvidual'));
 
@@ -37,11 +37,11 @@ $authtoken = get_config('local_eduvidual', 'edutubeauthtoken');
 
 if (empty($authurl) || empty($authtoken)) {
     echo $OUTPUT->header();
-    echo $OUTPUT->render_from_template('local_eduvidual/alert', array(
+    echo $OUTPUT->render_from_template('local_eduvidual/alert', [
         'content' => get_string('edutube:missing_configuration', 'local_eduvidual'),
         'type' => 'danger',
         'url' => '/my',
-    ));
+    ]);
     echo $OUTPUT->footer();
 } else {
     if ($USER->id > 0 && !isguestuser($USER)) {
@@ -55,20 +55,20 @@ if (empty($authurl) || empty($authtoken)) {
                             OR
                             orgid LIKE '322__'
                         ) AND role IN ('" . \local_eduvidual\locallib::ROLE_STUDENT . "', '" . \local_eduvidual\locallib::ROLE_TEACHER . "', '" . \local_eduvidual\locallib::ROLE_MANAGER . "')";
-        $memberships = $DB->get_records_sql($sql, array($USER->id));
+        $memberships = $DB->get_records_sql($sql, [$USER->id]);
         if (count($memberships) == 0) {
             echo $OUTPUT->header();
-            echo $OUTPUT->render_from_template('local_eduvidual/alert', array(
-                'content' => get_string('edutube:no_org', 'local_eduvidual', array('wwwroot' => $CFG->wwwroot)),
+            echo $OUTPUT->render_from_template('local_eduvidual/alert', [
+                'content' => get_string('edutube:no_org', 'local_eduvidual', ['wwwroot' => $CFG->wwwroot]),
                 'type' => 'warning',
                 'url' => '/local/eduvidual/pages/register.php',
-            ));
+            ]);
             echo $OUTPUT->footer();
         } else {
-            $fields = array(
+            $fields = [
                 'email' => $USER->email,
                 'secret' => $authtoken,
-            );
+            ];
             $fields_string = http_build_query($fields);
 
             $ch = curl_init();
@@ -82,11 +82,11 @@ if (empty($authurl) || empty($authtoken)) {
                 exit();
             } else {
                 echo $OUTPUT->header();
-                echo $OUTPUT->render_from_template('local_eduvidual/alert', array(
-                    'content' => get_string('edutube:invalid_url', 'local_eduvidual', array('url' => $url)),
+                echo $OUTPUT->render_from_template('local_eduvidual/alert', [
+                    'content' => get_string('edutube:invalid_url', 'local_eduvidual', ['url' => $url]),
                     'type' => 'danger',
                     'url' => '/my',
-                ));
+                ]);
                 echo $OUTPUT->footer();
             }
         }
@@ -94,5 +94,4 @@ if (empty($authurl) || empty($authtoken)) {
         $SESSION->wantsurl = $PAGE->url->__toString();
         redirect($CFG->wwwroot . '/login/index.php');
     }
-
 }
