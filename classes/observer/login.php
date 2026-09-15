@@ -31,9 +31,9 @@ class login {
         global $CFG, $DB, $PAGE, $SESSION, $USER;
         $debug = false; // ($USER->id == 3707); //false;
         $data = (object)$event->get_data();
-        //error_log(json_encode($data, JSON_NUMERIC_CHECK));
+        // error_log(json_encode($data, JSON_NUMERIC_CHECK));
 
-        $user = $DB->get_record('user', array('id' => $data->userid));
+        $user = $DB->get_record('user', ['id' => $data->userid]);
         require_once($CFG->dirroot . '/user/profile/lib.php');
         profile_load_data($user);
 
@@ -42,11 +42,11 @@ class login {
         require_once __DIR__ . '/../locallib.php';
 
         \local_eduvidual\locallib::get_user_secret($user->id);
-        //error_log(json_encode($user, JSON_NUMERIC_CHECK));
+        // error_log(json_encode($user, JSON_NUMERIC_CHECK));
 
         if ($user->id != intval($user->idnumber)) {
             $user->idnumber = str_pad($user->id, 7, 0, STR_PAD_LEFT);
-            $DB->set_field('user', 'idnumber', $user->idnumber, array('id' => $user->id));
+            $DB->set_field('user', 'idnumber', $user->idnumber, ['id' => $user->id]);
         }
 
         // For all users - check maildomain
@@ -54,19 +54,21 @@ class login {
         $maildomain = explode('@', strtolower($user->email));
         $maildomain = '@' . $maildomain[1];
         if (strlen($maildomain) > 3) {
-            //error_log('SELECT * FROM oer_local_eduvidual_org WHERE maildomain="' . $maildomain . '" OR maildomainteacher="' . $maildomain . '"');
-            $chkorgs = $DB->get_records_sql('SELECT * FROM {local_eduvidual_org} WHERE maildomain LIKE ? OR maildomainteacher LIKE ?', array('%' . $maildomain . '%', '%' . $maildomain . '%'));
+            // error_log('SELECT * FROM oer_local_eduvidual_org WHERE maildomain="' . $maildomain . '" OR maildomainteacher="' . $maildomain . '"');
+            $chkorgs = $DB->get_records_sql('SELECT * FROM {local_eduvidual_org} WHERE maildomain LIKE ? OR maildomainteacher LIKE ?', ['%' . $maildomain . '%', '%' . $maildomain . '%']);
             foreach ($chkorgs as $chkorg) {
-                $member = $DB->get_record('local_eduvidual_orgid_userid', array('orgid' => $chkorg->orgid, 'userid' => $user->id));
+                $member = $DB->get_record('local_eduvidual_orgid_userid', ['orgid' => $chkorg->orgid, 'userid' => $user->id]);
                 if (!isset($member->role) || empty($member->role)) {
                     $setrole = (strpos($chkorg->maildomainteacher, $maildomain) !== false) ? \local_eduvidual\locallib::ROLE_TEACHER : \local_eduvidual\locallib::ROLE_STUDENT;
                     if (!isset($reply['enrolments'])) {
-                        $reply['enrolments'] = array();
+                        $reply['enrolments'] = [];
                     }
-                    if ($member->role == \local_eduvidual\locallib::ROLE_MANAGER)
+                    if ($member->role == \local_eduvidual\locallib::ROLE_MANAGER) {
                         $setrole = \local_eduvidual\locallib::ROLE_MANAGER;
-                    if ($debug)
+                    }
+                    if ($debug) {
                         error_log('Set role from maildomain ' . $maildomain . ': ' . $setrole . ' on user ' . $user->id . ' for org ' . $chkorg->orgid);
+                    }
                     $reply['enrolments'][] = \local_eduvidual\lib_enrol::role_set($user->id, $chkorg, $setrole);
                 }
             }

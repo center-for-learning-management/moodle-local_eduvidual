@@ -37,7 +37,7 @@ class lib_manage {
             // This context does not exist.
             return -1;
         }
-        $db_context = $DB->get_record('context', array('id' => $context->id));
+        $db_context = $DB->get_record('context', ['id' => $context->id]);
 
         $sql = "SELECT SUM(filesize) fs
                     FROM {files}
@@ -47,7 +47,7 @@ class lib_manage {
                                     WHERE `path` LIKE ?
                     )";
 
-        $sizes = $DB->get_records_sql($sql, array($db_context->path . '/%'));
+        $sizes = $DB->get_records_sql($sql, [$db_context->path . '/%']);
         foreach ($sizes as $size) {
             break;
         }
@@ -56,8 +56,9 @@ class lib_manage {
 
     public static function readable_filesize($bytes, $decimals = 2) {
         $factor = floor((strlen($bytes) - 1) / 3);
-        if ($factor > 0)
+        if ($factor > 0) {
             $sz = 'KMGT';
+        }
         return sprintf("%.{$decimals}f", $bytes / pow(1024, $factor)) . @$sz[$factor - 1] . 'B';
     }
 }
