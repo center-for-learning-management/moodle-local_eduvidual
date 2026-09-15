@@ -31,7 +31,7 @@ class course_created {
         global $CFG, $DB, $PAGE, $SESSION, $USER;
         $debug = false; // ($USER->id == 3707); //false;
         $data = (object)$event->get_data();
-        //error_log("COURSE WAS CREATED");
-        //error_log(json_encode($data, JSON_NUMERIC_CHECK));
+        // error_log("COURSE WAS CREATED");
+        // error_log(json_encode($data, JSON_NUMERIC_CHECK));
     }
 }

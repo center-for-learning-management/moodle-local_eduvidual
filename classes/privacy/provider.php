@@ -31,25 +31,25 @@ class provider implements \core_privacy\local\metadata\provider {
     public static function get_metadata(collection $collection): collection {
         $collection->add_database_table(
             'local_eduvidual_courseshow',
-            array(),
+            [],
             'privacy:metadata:privacy:metadata:local_eduvidual_courseshow'
         );
         $collection->add_database_table(
             'local_eduvidual_orgid_userid',
-            array(),
+            [],
             'privacy:metadata:privacy:metadata:local_eduvidual_orgid_userid'
         );
         $collection->add_database_table(
             'local_eduvidual_userbunch',
-            array(
+            [
                 'orgid' => 'privacy:metadata:local_eduvidual_userbunch:orgid',
                 'bunch' => 'privacy:metadata:local_eduvidual_userbunch:bunch',
-            ),
+            ],
             'privacy:metadata:privacy:metadata:local_eduvidual_userbunch'
         );
         $collection->add_database_table(
             'local_eduvidual_userqcats',
-            array(),
+            [],
             'privacy:metadata:privacy:metadata:local_eduvidual_userqcats'
         );
         return $collection;
@@ -108,5 +108,4 @@ class provider implements \core_privacy\local\metadata\provider {
     // @TODO Export user data
 
     // @TODO Delete user data (only partly - some data is managed by organizations!)
-
 }

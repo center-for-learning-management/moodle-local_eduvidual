@@ -108,29 +108,30 @@ if ($hassiteconfig) {
         return $roles;
     };
 
-    $potentialroles_course = $map_roles($DB->get_records_sql('SELECT r.* FROM {role} AS r, {role_context_levels} AS rcl WHERE r.id=rcl.roleid  AND rcl.contextlevel = ? ORDER BY r.name ASC', array(CONTEXT_COURSE)));
-    $potentialroles_org = $map_roles($DB->get_records_sql('SELECT r.* FROM {role} AS r, {role_context_levels} AS rcl WHERE r.id=rcl.roleid  AND rcl.contextlevel = ?  ORDER BY name ASC', array(CONTEXT_COURSECAT)));
-    $potentialroles_global = $map_roles($DB->get_records_sql('SELECT r.* FROM {role} AS r, {role_context_levels} AS rcl WHERE r.id=rcl.roleid  AND rcl.contextlevel = ?  ORDER BY name ASC', array(CONTEXT_SYSTEM)));
+    $potentialroles_course = $map_roles($DB->get_records_sql('SELECT r.* FROM {role} AS r, {role_context_levels} AS rcl WHERE r.id=rcl.roleid  AND rcl.contextlevel = ? ORDER BY r.name ASC', [CONTEXT_COURSE]));
+    $potentialroles_org = $map_roles($DB->get_records_sql('SELECT r.* FROM {role} AS r, {role_context_levels} AS rcl WHERE r.id=rcl.roleid  AND rcl.contextlevel = ?  ORDER BY name ASC', [CONTEXT_COURSECAT]));
+    $potentialroles_global = $map_roles($DB->get_records_sql('SELECT r.* FROM {role} AS r, {role_context_levels} AS rcl WHERE r.id=rcl.roleid  AND rcl.contextlevel = ?  ORDER BY name ASC', [CONTEXT_SYSTEM]));
 
-    $rolestoset_course = array(
-        array('roleidentifier' => 'parent'),
-        array('roleidentifier' => 'student'),
-        array('roleidentifier' => 'teacher'),
-    );
-    $rolestoset_org = array(
-        array('roleidentifier' => 'manager'),
-        array('roleidentifier' => 'parent'),
-        array('roleidentifier' => 'student'),
-        array('roleidentifier' => 'teacher'),
-    );
-    $rolestoset_global = array(
-        array('roleidentifier' => 'manager'),
-        array('roleidentifier' => 'parent'),
-        array('roleidentifier' => 'student'),
-        array('roleidentifier' => 'teacher'),
-    );
+    $rolestoset_course = [
+        ['roleidentifier' => 'parent'],
+        ['roleidentifier' => 'student'],
+        ['roleidentifier' => 'teacher'],
+    ];
+    $rolestoset_org = [
+        ['roleidentifier' => 'manager'],
+        ['roleidentifier' => 'parent'],
+        ['roleidentifier' => 'student'],
+        ['roleidentifier' => 'teacher'],
+    ];
+    $rolestoset_global = [
+        ['roleidentifier' => 'manager'],
+        ['roleidentifier' => 'parent'],
+        ['roleidentifier' => 'student'],
+        ['roleidentifier' => 'teacher'],
+    ];
 
-    $settings->add(new admin_setting_heading('local_eduvidual_defaultroles_course',
+    $settings->add(new admin_setting_heading(
+        'local_eduvidual_defaultroles_course',
         get_string('defaultroles:course:title', 'local_eduvidual'),
         get_string('defaultroles:course:description', 'local_eduvidual'),
     ));
@@ -145,7 +146,8 @@ if ($hassiteconfig) {
         ));
     }
 
-    $settings->add(new admin_setting_heading('local_eduvidual_defaultroles_orgcategory',
+    $settings->add(new admin_setting_heading(
+        'local_eduvidual_defaultroles_orgcategory',
         get_string('defaultroles:orgcategory:title', 'local_eduvidual'),
         get_string('defaultroles:orgcategory:description', 'local_eduvidual'),
     ));
@@ -160,7 +162,8 @@ if ($hassiteconfig) {
         ));
     }
 
-    $settings->add(new admin_setting_heading('local_eduvidual_defaultroles_global',
+    $settings->add(new admin_setting_heading(
+        'local_eduvidual_defaultroles_global',
         get_string('defaultroles:global:title', 'local_eduvidual'),
         get_string('defaultroles:global:description', 'local_eduvidual'),
     ));
@@ -176,7 +179,8 @@ if ($hassiteconfig) {
     }
 
 
-    $settings->add(new admin_setting_heading('local_eduvidual_coursebasements',
+    $settings->add(new admin_setting_heading(
+        'local_eduvidual_coursebasements',
         get_string('admin:coursebasements:title', 'local_eduvidual'),
         get_string('admin:coursebasements:description', 'local_eduvidual'),
     ));
@@ -205,7 +209,8 @@ if ($hassiteconfig) {
         PARAM_TEXT
     ));
 
-    $settings->add(new admin_setting_heading('local_eduvidual_course_settings',
+    $settings->add(new admin_setting_heading(
+        'local_eduvidual_course_settings',
         get_string('admin:coursestuff:title', 'local_eduvidual'),
         '',
     ));
@@ -301,7 +306,8 @@ if ($hassiteconfig) {
         '',
     ));
 
-    $settings->add(new admin_setting_heading('local_eduvidual_backgrounds_header',
+    $settings->add(new admin_setting_heading(
+        'local_eduvidual_backgrounds_header',
         get_string('admin:backgrounds:title', 'local_eduvidual'),
         '',
     ));
@@ -312,7 +318,7 @@ if ($hassiteconfig) {
         get_string('admin:backgrounds:description', 'local_eduvidual'),
         'backgrounds',
         0,
-        array('subdirs' => 0, 'maxbytes' => 1024 * 1024, 'maxfiles' => 500),
+        ['subdirs' => 0, 'maxbytes' => 1024 * 1024, 'maxfiles' => 500],
     ));
 
     $settings->add(new admin_setting_configstoredfile(
@@ -321,7 +327,7 @@ if ($hassiteconfig) {
         get_string('admin:backgrounds_cards:description', 'local_eduvidual'),
         'backgrounds_cards',
         0,
-        array('subdirs' => 0, 'maxbytes' => 1024 * 1024, 'maxfiles' => 500),
+        ['subdirs' => 0, 'maxbytes' => 1024 * 1024, 'maxfiles' => 500],
     ));
 
     $settings->add(new admin_setting_configstoredfile(
@@ -330,6 +336,6 @@ if ($hassiteconfig) {
         get_string('admin:globalfiles:description', 'local_eduvidual'),
         'globalfiles',
         0,
-        array('subdirs' => 99, 'maxbytes' => 1024 * 1024, 'maxfiles' => 500),
+        ['subdirs' => 99, 'maxbytes' => 1024 * 1024, 'maxfiles' => 500],
     ));
 }

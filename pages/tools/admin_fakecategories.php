@@ -37,9 +37,9 @@ $depth = optional_param('depth', 0, PARAM_INT);
 
 $PAGE->set_context(context_system::instance());
 $PAGE->set_pagelayout('admin');
-$PAGE->set_url('/local/eduvidual/pages/tools/admin_fakecategories.php', array(
+$PAGE->set_url('/local/eduvidual/pages/tools/admin_fakecategories.php', [
     'parent' => $parent, 'children' => $children, 'depth' => $depth,
-));
+]);
 $PAGE->set_title('Fake categories');
 $PAGE->set_heading('Fake categories');
 
@@ -47,10 +47,10 @@ require_login();
 
 if (!is_siteadmin()) {
     echo $OUTPUT->header();
-    echo $OUTPUT->render_from_template('local_eduvidual/alert', array(
+    echo $OUTPUT->render_from_template('local_eduvidual/alert', [
         'content' => get_string('access_denied', 'local_eduvidual'),
         'type' => 'danger',
-    ));
+    ]);
     echo $OUTPUT->footer();
     die();
 }
@@ -82,45 +82,45 @@ echo $OUTPUT->header();
 <?php
 
 if (!empty($parent)) {
-    $category = $DB->get_record('course_categories', array('id' => $parent));
+    $category = $DB->get_record('course_categories', ['id' => $parent]);
     if (empty($category->id)) {
-        echo $OUTPUT->render_from_template('local_eduvidual/alert', array(
+        echo $OUTPUT->render_from_template('local_eduvidual/alert', [
             'content' => 'Invalid categoryid',
             'type' => 'danger',
-        ));
+        ]);
     } else {
         echo "Create in $parent $children children with a depth of $depth";
         admin_fakecategories_create($category, $children, $depth, 'fake#' . $category->id);
     }
-
 }
 
 echo $OUTPUT->footer();
 
 function admin_fakecategories_create($parentnode, $children, $depth, $namepath) {
-    if ($depth < 1)
+    if ($depth < 1) {
         return;
+    }
     $depth--;
     global $OUTPUT;
     if (empty($parentnode->id)) {
-        echo $OUTPUT->render_from_template('local_eduvidual/alert', array(
+        echo $OUTPUT->render_from_template('local_eduvidual/alert', [
             'content' => 'Invalid categoryid for parentnode ' . $namepath,
             'type' => 'danger',
-        ));
+        ]);
     } else {
         for ($a = 1; $a <= $children; $a++) {
-            $data = (object)array(
+            $data = (object)[
                 'name' => $namepath . '/' . $a,
                 'description' => 'created by category faker',
                 'descriptionformat' => 0,
                 'parent' => $parentnode->id,
                 'visible' => 1,
-            );
+            ];
             $subnode = \core_course_category::create($data);
-            echo $OUTPUT->render_from_template('local_eduvidual/alert', array(
+            echo $OUTPUT->render_from_template('local_eduvidual/alert', [
                 'content' => 'Created subnode ' . $subnode->name,
                 'type' => 'success',
-            ));
+            ]);
             admin_fakecategories_create($subnode, $children, $depth, $namepath . '/' . $a);
         }
     }
