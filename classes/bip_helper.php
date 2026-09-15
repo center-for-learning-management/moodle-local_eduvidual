@@ -998,8 +998,18 @@ class bip_helper {
 
         // Links des Default-IdP: bpkbf -> userid.
         $links = $DB->get_records_menu('auth_shibboleth_link', ['idp' => $defaultidp], '', 'idpusername, userid');
+        // Links auf gelöschte/nicht existierende Moodle-User: role_assign() wirft dafür eine
+        // coding_exception und bricht den ganzen Task ab. Sie bleiben aber in $links, sonst
+        // würde create_student() einen zweiten Link mit gleichem (idp, idpusername) anlegen.
+        $deletedlinks = $DB->get_records_sql_menu("
+            SELECT ash.idpusername, ash.userid
+            FROM {auth_shibboleth_link} ash
+            LEFT JOIN {user} u ON u.id = ash.userid
+            WHERE ash.idp = ? AND (u.id IS NULL OR u.deleted = 1)
+        ", [$defaultidp]);
 
         $countsync = 0;
+        $countdeleted = 0;
         $countnameedit = 0;
         $createstats = ['created' => 0, 'skip_candidate' => 0, 'skip_email' => 0, 'skip_noname' => 0, 'noop' => 0];
 
@@ -1020,6 +1030,11 @@ class bip_helper {
                 $userid = $links[$bpkbf] ?? 0;
                 if (!$userid) {
                     $createstats[static::create_student($bpkbf, $rows, $createorgids, $unlinkedstudents, $defaultidp, $execute)]++;
+                    continue;
+                }
+                if (isset($deletedlinks[$bpkbf])) {
+                    static::mtrace("übersprungen: Link auf gelöschten Moodle-User userid={$userid}, bpkbf={$bpkbf}", execute: $execute);
+                    $countdeleted++;
                     continue;
                 }
 
@@ -1045,7 +1060,7 @@ class bip_helper {
         $mirrorbpkbfs = array_flip($bpkbfs);
         $countgone = 0;
         foreach ($links as $bpkbf => $userid) {
-            if (isset($mirrorbpkbfs[$bpkbf])) {
+            if (isset($mirrorbpkbfs[$bpkbf]) || isset($deletedlinks[$bpkbf])) {
                 continue;
             }
             if (!$DB->record_exists('local_eduvidual_orgid_userid', ['userid' => $userid, 'role' => \local_eduvidual\locallib::ROLE_STUDENT])) {
@@ -1056,7 +1071,7 @@ class bip_helper {
             $countgone++;
         }
 
-        static::mtrace("BIP-User-Sync fertig: " . count($bpkbfs) . " BIP-User im Spiegel, {$countsync} verlinkte Schüler:innen gesynct, {$countgone} verschwundene ausgetragen, {$countnameedit} Namen-Updates (Dry-Run)", execute: $execute);
+        static::mtrace("BIP-User-Sync fertig: " . count($bpkbfs) . " BIP-User im Spiegel, {$countsync} verlinkte Schüler:innen gesynct, {$countgone} verschwundene ausgetragen, {$countdeleted} übersprungen (Link auf gelöschten User), {$countnameedit} Namen-Updates (Dry-Run)", execute: $execute);
         static::mtrace("Schüler-Accounts: {$createstats['created']} angelegt - übersprungen: {$createstats['skip_candidate']} (namensgleicher unverlinkter User), {$createstats['skip_email']} (E-Mail existiert bereits), {$createstats['skip_noname']} (Name fehlt)", execute: $execute);
     }
 
