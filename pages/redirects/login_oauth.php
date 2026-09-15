@@ -25,26 +25,28 @@
 require_once('../../../../config.php');
 
 $issuer = required_param('issuer', PARAM_ALPHANUM);
-$oauth = $DB->get_record('oauth2_issuer', array('name' => $issuer));
+$oauth = $DB->get_record('oauth2_issuer', ['name' => $issuer]);
 
 $PAGE->set_context(\context_system::instance());
 $PAGE->set_pagelayout('redirect');
 $PAGE->set_title($issuer);
 $PAGE->set_heading($issuer);
-$PAGE->set_url(new \moodle_url('/local/eduvidual/pages/redirects/login_oauth.php', array('issuer' => $issuer)));
+$PAGE->set_url(new \moodle_url('/local/eduvidual/pages/redirects/login_oauth.php', ['issuer' => $issuer]));
 
-if (!empty($SESSION->wantsurl))
+if (!empty($SESSION->wantsurl)) {
     $wantsurl = str_replace($CFG->wwwroot, "", $SESSION->wantsurl);
-if (empty($wantsurl))
+}
+if (empty($wantsurl)) {
     $wantsurl = '/my';
+}
 
 if (empty($oauth->id)) {
     echo $OUTPUT->header();
-    echo $OUTPUT->render_from_template('local_eduvidual/alert', array(
-        'content' => get_string('oauth2:nosuchissuer', 'local_eduvidual', array('issuer' => $issuer)),
+    echo $OUTPUT->render_from_template('local_eduvidual/alert', [
+        'content' => get_string('oauth2:nosuchissuer', 'local_eduvidual', ['issuer' => $issuer]),
         'type' => 'danger',
         'url' => new \moodle_url('/login/index.php'),
-    ));
+    ]);
     echo $OUTPUT->footer();
 } else {
     redirect($CFG->wwwroot . '/auth/oauth2/login.php?id=' . $oauth->id . '&wantsurl=' . rawurlencode($wantsurl) . '&sesskey=' . sesskey());

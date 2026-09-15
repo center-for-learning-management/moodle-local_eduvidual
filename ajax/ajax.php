@@ -24,7 +24,7 @@
 header('Access-Control-Allow-Origin: *');
 
 require_once('../../../config.php');
-//$PAGE->set_context(context_system::instance());
+// $PAGE->set_context(context_system::instance());
 
 require_once($CFG->libdir . '/adminlib.php');
 
@@ -33,8 +33,8 @@ $PAGE->set_context(context_system::instance());
 require_sesskey();
 
 $module = optional_param('module', '', PARAM_TEXT);
-$reply = array('status' => 'error');
-$modules = array('admin', 'manage', 'preferences', 'register', 'teacher', 'user');
+$reply = ['status' => 'error'];
+$modules = ['admin', 'manage', 'preferences', 'register', 'teacher', 'user'];
 if (in_array($module, $modules) && file_exists($CFG->dirroot . '/local/eduvidual/ajax/sub/' . $module . '.php')) {
     require_once($CFG->dirroot . '/local/eduvidual/ajax/sub/' . $module . '.php');
 }
