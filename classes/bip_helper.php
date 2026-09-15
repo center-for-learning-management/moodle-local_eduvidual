@@ -217,7 +217,7 @@ class bip_helper {
             if (count($bipindex[$key]) > 1) {
                 $ambiguousbip++;
                 $c = $matchedusers[0];
-                $list = join(', ', array_map(fn($b) => "{$b->firstname} {$b->lastname} (bpkbf={$b->bpkbf})", $bipindex[$key]));
+                $list = join(', ', array_map(fn($b) => "{$b->firstname} {$b->lastname} (bip_user.id={$b->id})", $bipindex[$key]));
                 mtrace("MEHRDEUTIG, kein Match: Moodle-User {$c->firstname} {$c->lastname} (userid={$c->userid}) in Org {$c->orgid} (Rolle {$c->role}) passt auf mehrere BIP-User: {$list}");
                 continue;
             }
@@ -246,7 +246,7 @@ class bip_helper {
         foreach ($matched as [$c, $bu]) {
             if ($bpkbfcount[$bu->bpkbf] > 1) {
                 $crosscollision++;
-                mtrace("MEHRDEUTIG, kein Match: BIP-User (bpkbf={$bu->bpkbf}) passt auf mehrere gleichnamige Moodle-User in verschiedenen Orgs - u.a. {$c->firstname} {$c->lastname} (userid={$c->userid}, Org {$c->orgid})");
+                mtrace("MEHRDEUTIG, kein Match: BIP-User (bip_user.id={$bu->id}) passt auf mehrere gleichnamige Moodle-User in verschiedenen Orgs - u.a. {$c->firstname} {$c->lastname} (userid={$c->userid}, Org {$c->orgid})");
                 continue;
             }
             if ($useridcount[$c->userid] > 1) {
@@ -268,7 +268,7 @@ class bip_helper {
                 $countkeep++;
                 continue;
             }
-            static::mtrace("AUTOMATCH entfernt (Match nicht mehr eindeutig): userid={$rec->userid} <-> bpkbf={$rec->idpusername}", execute: $execute);
+            static::mtrace("AUTOMATCH entfernt (Match nicht mehr eindeutig): userid={$rec->userid} (linkid={$rec->id})", execute: $execute);
             if ($execute) {
                 $DB->delete_records('auth_shibboleth_link', ['id' => $rec->id]);
             }
@@ -279,7 +279,7 @@ class bip_helper {
             if (isset($existing[$compositekey])) {
                 continue;
             }
-            static::mtrace("AUTOMATCH neu: Moodle {$c->firstname} {$c->lastname} (userid={$c->userid}, Org {$c->orgid}) <-> BIP {$bu->firstname} {$bu->lastname} (bpkbf={$bu->bpkbf})", execute: $execute);
+            static::mtrace("AUTOMATCH neu: Moodle {$c->firstname} {$c->lastname} (userid={$c->userid}, Org {$c->orgid}) <-> BIP {$bu->firstname} {$bu->lastname} (bip_user.id={$bu->id})", execute: $execute);
             if ($execute) {
                 $DB->insert_record('auth_shibboleth_link', (object)[
                     'idp' => $defaultidp,
@@ -802,7 +802,7 @@ class bip_helper {
                 if ($purgereason) {
                     if ($existingforuser) {
                         $details = join(', ', array_map(fn($r) => "{$r->orgid}/{$r->role}", $existingforuser));
-                        static::mtrace("löscht " . count($existingforuser) . " Einträge für bpkbf={$bipuser->bpkbf} ({$purgereason}): {$details}", execute: $execute);
+                        static::mtrace("löscht " . count($existingforuser) . " Einträge (bip_user.id=" . static::format_ids(array_keys($existingforuser)) . ", {$purgereason}): {$details}", execute: $execute);
                         if ($execute) {
                             $DB->delete_records('local_eduvidual_bip_user', ['bpkbf' => $bipuser->bpkbf]);
                         }
@@ -816,11 +816,13 @@ class bip_helper {
                 // sie werden im DB-Datensatz übernommen.
                 foreach (['firstname', 'middlename', 'lastname', 'dateofbirth', 'emails'] as $field) {
                     if (!property_exists($bipuser, $field)) {
-                        mtrace("FEHLER: Pflichtfeld '{$field}' fehlt - vollständiger BIP-User:");
-                        mtrace(var_export($bipuser, true));
+                        // bPK ist nach E-GovG geschützt - nicht ins Task-Log.
+                        $dump = clone $bipuser;
+                        unset($dump->bpkbf);
+                        mtrace("FEHLER: Pflichtfeld '{$field}' fehlt - BIP-User (ohne bPK):");
+                        mtrace(var_export($dump, true));
                         throw new \moodle_exception('bip:userfieldmissing', 'local_eduvidual', '', (object)[
                             'field' => $field,
-                            'bpkbf' => $bipuser->bpkbf ?? 'unknown',
                         ]);
                     }
                 }
@@ -876,7 +878,7 @@ class bip_helper {
                 // Was in $existingkeyed übrig bleibt, war nicht mehr in $bipuser->orgs (oder die Org
                 // ist nicht mehr getrackt) - jetzt entfernen.
                 foreach ($existingkeyed as $key => $r) {
-                    static::mtrace("löscht abgehängten Eintrag für bpkbf={$bipuser->bpkbf}: orgid={$r->orgid}, role={$r->role}", execute: $execute);
+                    static::mtrace("löscht abgehängten Eintrag bip_user.id={$r->id}: orgid={$r->orgid}, role={$r->role}", execute: $execute);
                     if ($execute) {
                         $DB->delete_records('local_eduvidual_bip_user', ['id' => $r->id]);
                     }
@@ -932,7 +934,8 @@ class bip_helper {
                 if (isset($seenbpkbfs[$bpkbf])) {
                     continue;
                 }
-                static::mtrace("löscht Einträge für bpkbf={$bpkbf} (im Voll-Sweep nicht mehr vorgekommen)", execute: $execute);
+                $staleids = $DB->get_fieldset_select('local_eduvidual_bip_user', 'id', 'bpkbf = ?', [$bpkbf]);
+                static::mtrace("löscht Einträge bip_user.id=" . static::format_ids($staleids) . " (im Voll-Sweep nicht mehr vorgekommen)", execute: $execute);
                 if ($execute) {
                     $DB->delete_records('local_eduvidual_bip_user', ['bpkbf' => $bpkbf]);
                 }
@@ -1034,7 +1037,7 @@ class bip_helper {
                     continue;
                 }
                 if (isset($deletedlinks[$bpkbf])) {
-                    static::mtrace("übersprungen: Link auf gelöschten Moodle-User userid={$userid}, bpkbf={$bpkbf}", execute: $execute);
+                    static::mtrace("übersprungen: Link auf gelöschten Moodle-User userid={$userid}", execute: $execute);
                     $countdeleted++;
                     continue;
                 }
@@ -1071,7 +1074,7 @@ class bip_helper {
             if (!$DB->record_exists('local_eduvidual_orgid_userid', ['userid' => $userid, 'role' => \local_eduvidual\locallib::ROLE_STUDENT])) {
                 continue;
             }
-            static::mtrace("verlinkter User ohne Spiegelzeilen (aus BIP verschwunden): userid={$userid}, bpkbf={$bpkbf} - trage aus", execute: $execute);
+            static::mtrace("verlinkter User ohne Spiegelzeilen (aus BIP verschwunden): userid={$userid} - trage aus", execute: $execute);
             static::sync_user_orgs((int)$userid, [], $execute);
             $countgone++;
         }
@@ -1211,14 +1214,16 @@ class bip_helper {
 
         $first = trim((string)($rows[0]->firstname ?? ''));
         $last = trim((string)($rows[0]->lastname ?? ''));
-        $orgsinfo = join(',', $stdorgids);
+        $orgsinfo = static::format_ids($stdorgids);
+        // Spiegelzeilen-IDs statt bPK im Log - die bPK ist nach E-GovG geschützt.
+        $mirrorids = static::format_ids(array_map(fn($r) => $r->id, $rows));
 
         if ($hascandidate) {
-            static::mtrace("Anlage übersprungen (unverlinkter Moodle-User mit gleichem Namen vorhanden, bitte manuell matchen): {$first} {$last} (bpkbf={$bpkbf}, Orgs: {$orgsinfo})", execute: $execute);
+            static::mtrace("Anlage übersprungen (unverlinkter Moodle-User mit gleichem Namen vorhanden, bitte manuell matchen): {$first} {$last} (bip_user.id={$mirrorids}, Orgs: {$orgsinfo})", execute: $execute);
             return 'skip_candidate';
         }
         if ($first === '' || $last === '') {
-            static::mtrace("Anlage übersprungen (Vor- oder Nachname fehlt): bpkbf={$bpkbf}, Orgs: {$orgsinfo}", execute: $execute);
+            static::mtrace("Anlage übersprungen (Vor- oder Nachname fehlt): bip_user.id={$mirrorids}, Orgs: {$orgsinfo}", execute: $execute);
             return 'skip_noname';
         }
 
@@ -1233,11 +1238,11 @@ class bip_helper {
         }
 
         if ($email && $DB->record_exists_select('user', 'deleted = 0 AND (username = ? OR email = ?)', [$email, $email])) {
-            static::mtrace("Anlage übersprungen (Account mit E-Mail {$email} existiert bereits, bitte manuell matchen): {$first} {$last} (bpkbf={$bpkbf}, Orgs: {$orgsinfo})", execute: $execute);
+            static::mtrace("Anlage übersprungen (Account mit E-Mail {$email} existiert bereits, bitte manuell matchen): {$first} {$last} (bip_user.id={$mirrorids}, Orgs: {$orgsinfo})", execute: $execute);
             return 'skip_email';
         }
 
-        static::mtrace("neuer Schüler-Account: {$first} {$last} (bpkbf={$bpkbf}, E-Mail: " . ($email ?: 'Dummy-Adresse') . ", Orgs: {$orgsinfo})", execute: $execute);
+        static::mtrace("neuer Schüler-Account: {$first} {$last} (bip_user.id={$mirrorids}, E-Mail: " . ($email ?: 'Dummy-Adresse') . ", Orgs: {$orgsinfo})", execute: $execute);
         if (!$execute) {
             return 'created';
         }
@@ -1319,13 +1324,19 @@ class bip_helper {
             return false;
         }
 
-        static::mtrace("update Moodle-User userid={$user->id} (bpkbf={$bipuser->bpkbf}): " . json_encode($changes, JSON_UNESCAPED_UNICODE), execute: $execute);
+        static::mtrace("update Moodle-User userid={$user->id}: " . json_encode($changes, JSON_UNESCAPED_UNICODE), execute: $execute);
         if ($execute) {
             $update['id'] = $user->id;
             $DB->update_record('user', (object)$update);
         }
 
         return true;
+    }
+
+    // Mehrere IDs in Klammern - sonst sind sie im Log nicht von den übrigen, ebenfalls
+    // mit Beistrich getrennten Angaben zu unterscheiden.
+    private static function format_ids(array $ids): string {
+        return count($ids) > 1 ? '[' . join(', ', $ids) . ']' : (string)reset($ids);
     }
 
     // $execute is intentionally not a static variable, because each function has its own execute on/off.
