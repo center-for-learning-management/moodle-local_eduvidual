@@ -29,27 +29,27 @@ $orgids = optional_param('orgids', '', PARAM_TEXT);
 
 $PAGE->set_context(context_system::instance());
 $PAGE->set_pagelayout('admin');
-$PAGE->set_url('/local/eduvidual/pages/admin.php', array());
+$PAGE->set_url('/local/eduvidual/pages/admin.php', []);
 $PAGE->set_title(get_string('Administration', 'local_eduvidual'));
 $PAGE->set_heading(get_string('Administration', 'local_eduvidual'));
 
 require_login();
 
-if (!is_siteadmin())
+if (!is_siteadmin()) {
     die;
+}
 
-$msgs = array();
+$msgs = [];
 
 if (!empty($orgids) && !empty($manageruserid)) {
     $orgs = explode("\n", $orgids);
     foreach ($orgs as $orgid) {
         $orgid = trim($orgid);
-        $org = $DB->get_record('local_eduvidual_org', array('orgid' => $orgid));
+        $org = $DB->get_record('local_eduvidual_org', ['orgid' => $orgid]);
 
         if (!empty($org->orgid)) {
             $msgs[] = "Registering $org->orgid with name $org->name<br />";
 
-            require_once($CFG->dirroot . '/lib/coursecatlib.php');
             require_once($CFG->dirroot . '/course/externallib.php');
 
             if (empty($org->categoryid)) {
@@ -58,24 +58,24 @@ if (!empty($orgids) && !empty($manageruserid)) {
                 $data->name = $org->name;
                 $data->description = $org->name;
                 $data->idnumber = $org->orgid;
-                $category = coursecat::create($data);
+                $category = \core_course_category::create($data);
                 $org->categoryid = $category->id;
                 $msgs[] = "=> Created category $org->categoryid<br />";
-                $DB->set_field('local_eduvidual_org', 'categoryid', $org->categoryid, array('orgid' => $org->orgid));
+                $DB->set_field('local_eduvidual_org', 'categoryid', $org->categoryid, ['orgid' => $org->orgid]);
             }
 
             if (empty($org->courseid)) {
                 // Create an org-course for this org
                 $orgcoursebasement = get_config('local_eduvidual', 'orgcoursebasement');
-                $basement = $DB->get_record('course', array('id' => $orgcoursebasement));
+                $basement = $DB->get_record('course', ['id' => $orgcoursebasement]);
 
                 if (!empty($basement->id)) {
                     // Duplicate course
                     $course = \local_eduvidual\lib_helper::duplicate_course($basement->id, 'Digitaler Schulhof (' . $org->orgid . ')', $org->orgid, $org->categoryid, 1);
                     $org->courseid = $course->id;
-                    $DB->set_field('local_eduvidual_org', 'courseid', $org->courseid, array('orgid' => $org->orgid));
+                    $DB->set_field('local_eduvidual_org', 'courseid', $org->courseid, ['orgid' => $org->orgid]);
                     $course->summary = '<p>Digitaler Schulhof der Schule ' . $org->name . '</p>';
-                    $DB->set_field('course', 'summary', $course->summary, array('id' => $course->id));
+                    $DB->set_field('course', 'summary', $course->summary, ['id' => $course->id]);
                 }
                 $msgs[] = "=> Created course $org->courseid<br />";
             }
@@ -86,8 +86,8 @@ if (!empty($orgids) && !empty($manageruserid)) {
 
                 $org->authenticated = time();
                 $org->authtan = '';
-                $DB->set_field('local_eduvidual_org', 'authenticated', $org->authenticated, array('orgid' => $org->orgid));
-                $DB->set_field('local_eduvidual_org', 'authtan', $org->authtan, array('orgid' => $org->orgid));
+                $DB->set_field('local_eduvidual_org', 'authenticated', $org->authenticated, ['orgid' => $org->orgid]);
+                $DB->set_field('local_eduvidual_org', 'authtan', $org->authtan, ['orgid' => $org->orgid]);
             }
         }
     }
@@ -96,7 +96,7 @@ if (!empty($orgids) && !empty($manageruserid)) {
 
 echo $OUTPUT->header();
 if (count($msgs) > 0) {
-    echo $OUTPUT->render_from_template('local_eduvidual/alert', array('content' => implode('', $msgs)));
+    echo $OUTPUT->render_from_template('local_eduvidual/alert', ['content' => implode('', $msgs)]);
 }
-echo $OUTPUT->render_from_template('local_eduvidual/admin_bulkregister', array('manageruserid' => $manageruserid, 'orgids' => $orgids));
+echo $OUTPUT->render_from_template('local_eduvidual/admin_bulkregister', ['manageruserid' => $manageruserid, 'orgids' => $orgids]);
 echo $OUTPUT->footer();

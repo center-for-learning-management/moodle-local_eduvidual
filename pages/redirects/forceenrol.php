@@ -28,7 +28,7 @@ require_login();
 $courseid = required_param('courseid', PARAM_INT);
 
 $PAGE->set_context(\context_course::instance($courseid));
-$PAGE->set_url('/local/eduvidual/pages/redirects/forceenrol.php', array('courseid' => $courseid));
+$PAGE->set_url('/local/eduvidual/pages/redirects/forceenrol.php', ['courseid' => $courseid]);
 $PAGE->set_title(get_string('manage:enrolmeasteacher', 'local_eduvidual'));
 $PAGE->set_heading(get_string('manage:enrolmeasteacher', 'local_eduvidual'));
 
@@ -39,14 +39,14 @@ $org = \local_eduvidual\locallib::get_org_by_courseid($courseid);
 $is_manager = !empty($org->categoryid) && \local_eduvidual\locallib::is_manager($org->categoryid, true);
 
 if (!empty($org->orgid) && ($is_manager || is_siteadmin())) {
-    \local_eduvidual\lib_enrol::course_manual_enrolments(array($courseid), array($USER->id), get_config('local_eduvidual', 'defaultroleteacher'));
-    redirect(new \moodle_url('/course/view.php', array('id' => $courseid)));
+    \local_eduvidual\lib_enrol::course_manual_enrolments([$courseid], [$USER->id], get_config('local_eduvidual', 'defaultroleteacher'));
+    redirect(new \moodle_url('/course/view.php', ['id' => $courseid]));
 } else {
     echo $OUTPUT->header();
-    echo $OUTPUT->render_from_template('local_eduvidual/alert', array(
+    echo $OUTPUT->render_from_template('local_eduvidual/alert', [
         'content' => get_string('access_denied', 'local_eduvidual'),
         'type' => 'danger',
-        'url' => new \moodle_url('/course/view.php', array('id' => $courseid)),
-    ));
+        'url' => new \moodle_url('/course/view.php', ['id' => $courseid]),
+    ]);
     echo $OUTPUT->footer();
 }
