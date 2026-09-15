@@ -26,6 +26,6 @@ defined('MOODLE_INTERNAL') || die;
 
 $size = lib_manage::readable_filesize(lib_manage::get_category_filesize($org->categoryid));
 
-echo $OUTPUT->render_from_template('local_eduvidual/manage_stats', array(
+echo $OUTPUT->render_from_template('local_eduvidual/manage_stats', [
     'size' => $size,
-));
+]);

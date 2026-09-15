@@ -29,7 +29,7 @@ header("Expires: " . $exp_gmt);
 header("Last-Modified: " . $mod_gmt);
 header("Cache-Control: public, max-age=" . $exp);
 // For MS Internet Explorer
-header("Cache-Control: pre-check=" . $exp, FALSE);
+header("Cache-Control: pre-check=" . $exp, false);
 
 $color = explode('x', $_GET['color']);
 

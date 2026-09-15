@@ -1,14 +1,15 @@
-/* eslint-disable */
-define(['jquery', 'core/ajax', 'core/modal_events', 'core/modal_factory', 'core/notification', 'core/str', 'core/url', 'local_eduvidual/main', 'local_eduvidual/user', 'local_eduvidual/widgets'], function ($, AJAX, ModalEvents, ModalFactory, NOTIFICATION, STR, URL, MAIN, USER, WIDGETS) {
+/* eslint-disable max-len, no-console, jsdoc/require-param, jsdoc/require-param-type */
+define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'local_eduvidual/main', 'local_eduvidual/user', 'local_eduvidual/widgets'], function($, AJAX, NOTIFICATION, STR, URL, MAIN, USER, WIDGETS) {
   return {
     addParentFilterRequest: 0,
     customcsscache: '',
     debug: 1,
     sync_queue_create: [],
 
-    addParentFilter: function (type, inp) {
+    // Deprecated: addparent UI was removed from the templates, these functions are no longer invoked.
+    addParentFilter: function(type, inp) {
       console.log('local_eduvidual/main:addParentFilter(type, inp)', type, inp);
-      this.addParentFilterRequest++
+      this.addParentFilterRequest++;
       var orgid = $('#local_eduvidual_manage_addparent_studentfilter').attr('data-orgid');
       var studentid = 0;
 
@@ -22,34 +23,36 @@ define(['jquery', 'core/ajax', 'core/modal_events', 'core/modal_factory', 'core/
 
       var addParentFilterRequest = this.addParentFilterRequest;
 
-      require(['local_eduvidual/main'], function (MAIN) {
+      require(['local_eduvidual/main'], function(MAIN) {
         MAIN.connect({module: 'manage', act: 'addparent_filter', orgid: orgid, filter: $(inp).val(), studentid: studentid}, {signalItem: inp, appendItem: select, type: type, request: addParentFilterRequest});
       });
     },
-    addParentSelectStudent: function () {
+    // Deprecated: addparent UI was removed from the templates, these functions are no longer invoked.
+    addParentSelectStudent: function() {
       this.addParentFilter('parent', $('#local_eduvidual_manage_addparent_parentfilter'));
     },
-    addParent: function (inp) {
+    // Deprecated: addparent UI was removed from the templates, these functions are no longer invoked.
+    addParent: function(inp) {
       var orgid = $('#local_eduvidual_manage_addparent_studentfilter').attr('data-orgid');
       var studentid = $('#local_eduvidual_manage_addparent_student').val();
       var parentid = $('#local_eduvidual_manage_addparent_parent').val();
       if (studentid > 0 && parentid > 0) {
-        require(['local_eduvidual/main'], function (MAIN) {
+        require(['local_eduvidual/main'], function(MAIN) {
           MAIN.connect({module: 'manage', act: 'addparent', orgid: orgid, studentid: studentid, parentid: parentid}, {signalItem: inp});
         });
       }
     },
-    addUser: function (secret) {
+    addUser: function(secret) {
       if (typeof secret === 'undefined') {
         secret = $('#local_eduvidual_manage_adduser').val();
       }
       var role = $('#local_eduvidual_manage_adduser_role').val();
-      var orgid = $('#local_eduvidual_manage_adduser').attr('data-orgid');
-      require(['local_eduvidual/main'], function (MAIN) {
+      var orgid = $('#local_eduvidual_manage_users_wrapper').attr('data-orgid');
+      require(['local_eduvidual/main'], function(MAIN) {
         MAIN.connect({module: 'manage', act: 'adduser', orgid: orgid, role: role, secret: secret}, {signalItem: $('#local_eduvidual_manage_adduser')});
       });
     },
-    addUserAnonymous: function () {
+    addUserAnonymous: function() {
       var orgid = +$('#local_eduvidual_manage_createuseranonymous_orgid').val();
       var role = $('#local_eduvidual_manage_createuseranonymous_role').val();
       var amount = +$('#local_eduvidual_manage_createuseranonymous_amount').val();
@@ -59,17 +62,17 @@ define(['jquery', 'core/ajax', 'core/modal_events', 'core/modal_factory', 'core/
         STR.get_strings([
           {'key': 'manage:createuseranonymous:exceededmax:title', component: 'local_eduvidual'},
           {'key': 'manage:createuseranonymous:exceededmax:text', component: 'local_eduvidual', param: {'maximum': maximum}},
-        ]).done(function (s) {
+        ]).done(function(s) {
             NOTIFICATION.alert(s[0], s[1]);
           }
         ).fail(NOTIFICATION.exception);
       } else {
-        require(['local_eduvidual/main'], function (MAIN) {
+        require(['local_eduvidual/main'], function(MAIN) {
           MAIN.connect({module: 'manage', act: 'adduser_anonymous', orgid: orgid, role: role, amount: amount, cohorts: cohorts}, {signalItem: $('#local_eduvidual_manage_adduseranonymous_btn')});
         });
       }
     },
-    categoryAdd: function (src, orgid, parentid) {
+    categoryAdd: function(src, orgid, parentid) {
       if (typeof src !== 'undefined') {
         var li = $(src);
         while (!$(li).is('li')) {
@@ -86,34 +89,34 @@ define(['jquery', 'core/ajax', 'core/modal_events', 'core/modal_factory', 'core/
         orgid: orgid,
         li: li,
         parentid: parentid,
-        run: function (name) {
+        run: function(name) {
           var o = this;
           if (name !== null && name.length > 2) {
-            require(['local_eduvidual/main'], function (MAIN) {
+            require(['local_eduvidual/main'], function(MAIN) {
               MAIN.connect({module: 'manage', act: 'addcategory', orgid: o.orgid, parentid: o.parentid, name: name}, {parent: o.li});
             });
           } else if (name !== null) {
             STR.get_strings([
               {'key': 'categoryadd:title:length:title', component: 'local_eduvidual'},
               {'key': 'categoryadd:title:length:text', component: 'local_eduvidual'},
-            ]).done(function (s) {
+            ]).done(function(s) {
                 NOTIFICATION.alert(s[0], s[1]);
               }
             ).fail(NOTIFICATION.exception);
           }
         },
-      }
-      console.log(runnable);
+      };
+      // Console.log(runnable);
       var prompt = WIDGETS.prompt();
       STR.get_strings([
         {'key': 'categoryadd:title', component: 'local_eduvidual'},
         {'key': 'categoryadd:text', component: 'local_eduvidual'},
-      ]).done(function (s) {
+      ]).done(function(s) {
           prompt.create(s[0], s[1], '', runnable);
         }
       ).fail(NOTIFICATION.exception);
     },
-    categoryEdit: function (src, orgid, parentid, currentname) {
+    categoryEdit: function(src, orgid, parentid, currentname) {
       if (typeof src !== 'undefined') {
         var li = $(src);
         while (!$(li).is('li')) {
@@ -133,34 +136,34 @@ define(['jquery', 'core/ajax', 'core/modal_events', 'core/modal_factory', 'core/
         orgid: orgid,
         li: li,
         parentid: parentid,
-        run: function (name) {
+        run: function(name) {
           var o = this;
           if (name !== null && name.length > 2) {
-            require(['local_eduvidual/main'], function (MAIN) {
+            require(['local_eduvidual/main'], function(MAIN) {
               MAIN.connect({module: 'manage', act: 'editcategory', orgid: o.orgid, parentid: o.parentid, name: name}, {parent: o.li});
             });
           } else if (name !== null) {
             STR.get_strings([
               {'key': 'categoryedit:title:length:title', component: 'local_eduvidual'},
               {'key': 'categoryedit:title:length:text', component: 'local_eduvidual'},
-            ]).done(function (s) {
+            ]).done(function(s) {
                 NOTIFICATION.alert(s[0], s[1]);
               }
             ).fail(NOTIFICATION.exception);
           }
         },
-      }
-      console.log(runnable);
+      };
+      // Console.log(runnable);
       var prompt = WIDGETS.prompt();
       STR.get_strings([
         {'key': 'categoryadd:title', component: 'local_eduvidual'},
         {'key': 'categoryadd:text', component: 'local_eduvidual'},
-      ]).done(function (s) {
+      ]).done(function(s) {
           prompt.create(s[0], s[1], currentname, runnable);
         }
       ).fail(NOTIFICATION.exception);
     },
-    categoryRemove: function (src, confirm, orgid, parentid) {
+    categoryRemove: function(src, confirm, orgid, parentid) {
       if (typeof confirm === 'undefined' || !confirm) {
         var MANAGER = this;
         STR.get_strings([
@@ -168,9 +171,9 @@ define(['jquery', 'core/ajax', 'core/modal_events', 'core/modal_factory', 'core/
           {'key': 'categoryremove:text', component: 'local_eduvidual'},
           {'key': 'yes'},
           {'key': 'no'}
-        ]).done(function (s) {
-            NOTIFICATION.confirm(s[0], s[1], s[2], s[3], function () {
-              MANAGER.categoryRemove(src, true, orgid, parentid)
+        ]).done(function(s) {
+            NOTIFICATION.confirm(s[0], s[1], s[2], s[3], function() {
+              MANAGER.categoryRemove(src, true, orgid, parentid);
             });
           }
         ).fail(NOTIFICATION.exception);
@@ -185,17 +188,17 @@ define(['jquery', 'core/ajax', 'core/modal_events', 'core/modal_factory', 'core/
           }
           parentid = +li.attr('data-categoryid');
         }
-        require(['local_eduvidual/main'], function (MAIN) {
+        require(['local_eduvidual/main'], function(MAIN) {
           MAIN.connect({module: 'manage', act: 'removecategory', orgid: orgid, parentid: parentid}, {parent: li});
         });
       }
     },
-    createAccesscode: function () {
+    createAccesscode: function() {
       var code = $('#local_eduvidual_manage_accesscode_code').val();
-      var orgid = +$('#local_eduvidual_manage_adduser').attr('data-orgid');
+      var orgid = +$('#local_eduvidual_manage_users_wrapper').attr('data-orgid');
       var maturity = $('#local_eduvidual_manage_accesscode_maturity').val();
       var role = $('#local_eduvidual_manage_accesscode_role').val();
-      require(['local_eduvidual/main'], function (MAIN) {
+      require(['local_eduvidual/main'], function(MAIN) {
         MAIN.connect({module: 'manage', act: 'accesscode_create', orgid: orgid, code: code, role: role, maturity: maturity}, {signalItem: $('#local_eduvidual_manage_accesscode_btn')});
       });
     },
@@ -204,13 +207,15 @@ define(['jquery', 'core/ajax', 'core/modal_events', 'core/modal_factory', 'core/
      * @param uniqid of the controls.
      * @param item only execute particular item, if empty, execute all.
      */
-    createUsers: function (uniqid, item) {
-      if (this.debug > 0) console.log('local_eduvidual/manager::createUsers(uniqid, item)', uniqid, item);
+    createUsers: function(uniqid, item) {
+      if (this.debug > 0) {
+        console.log('local_eduvidual/manager::createUsers(uniqid, item)', uniqid, item);
+      }
       var MAIN = this;
       if (!item) {
         $('.import-btn-' + uniqid).addClass('disabled');
 
-        $('.' + uniqid + ' tr.user').each(function () {
+        $('.' + uniqid + ' tr.user').each(function() {
           var tr = this;
           var import_data = $(tr).data('import_data');
 
@@ -229,17 +234,17 @@ define(['jquery', 'core/ajax', 'core/modal_events', 'core/modal_factory', 'core/
         AJAX.call([{
           methodname: 'local_eduvidual_manager_create_users',
           args: import_data,
-          done: function (result) {
+          done: function(result) {
             $(tr).css('filter', 'unset');
             if (MAIN.debug > 0) {
               console.log('=> Result for ' + uniqid, result);
             }
             if (result.status == 1) {
-              //$(tr).css('background-color', 'rgba(0,255,0,0.1)');
+              // $(tr).css('background-color', 'rgba(0,255,0,0.1)');
               $(tr).find('.process-indicator').attr('src', '/pix/i/completion-auto-pass.svg');
             }
             if (result.status == 0) {
-              //$(tr).css('background-color', '');
+              // $(tr).css('background-color', '');
               $(tr).find('.process-indicator').attr('src', '/pix/i/completion-auto-y.svg');
             }
             if (result.status == -1) {
@@ -256,41 +261,43 @@ define(['jquery', 'core/ajax', 'core/modal_events', 'core/modal_factory', 'core/
               $('.import-btn-' + uniqid).removeClass('disabled');
             }
           },
-          fail: Notification.exception
+          fail: NOTIFICATION.exception
         }]);
       }
     },
-    customcss: function () {
+    customcss: function() {
       var orgid = $('#local_eduvidual_manage_customcss').attr('data-orgid');
-      require(['local_eduvidual/main'], function (MAIN) {
+      require(['local_eduvidual/main'], function(MAIN) {
         MAIN.watchValue({
           target: '#local_eduvidual_manage_customcss',
           orgid: orgid,
-          run: function () {
+          run: function() {
             MAIN.connect({module: 'manage', act: 'customcss', orgid: this.orgid, customcss: $(this.target).val()}, {signalItem: $(this.target)});
           }
         });
       });
     },
-    forceEnrol: function (courseid) {
-      require(['local_eduvidual/main'], function (MAIN) {
+    forceEnrol: function(courseid) {
+      require(['local_eduvidual/main'], function(MAIN) {
         MAIN.connect({module: 'manage', act: 'force_enrol', courseid: courseid}, {});
       });
     },
     /**
      * Sets the maildomain to auto assign users to organizations
      **/
-    maildomain: function (inp, orgid, type) {
-      if (this.debug > 0) console.log('MANAGER.maildomain(inp, orgid, type)', inp, orgid, type);
+    maildomain: function(inp, orgid, type) {
+      if (this.debug > 0) {
+        console.log('MANAGER.maildomain(inp, orgid, type)', inp, orgid, type);
+      }
 
-      require(['local_eduvidual/main'], function (MAIN) {
+      require(['local_eduvidual/main'], function(MAIN) {
         MAIN.watchValue({
           orgid: orgid,
           target: $(inp),
           type: type,
-          run: function () {
+          run: function() {
             var o = this;
-            require(['local_eduvidual/main'], function (MAIN) {
+            require(['local_eduvidual/main'], function(MAIN) {
               MAIN.connect({module: 'manage', act: 'maildomain', orgid: o.orgid, type: o.type, maildomain: $(o.target).val()}, {signalItem: $(o.target)});
             });
           }
@@ -300,9 +307,11 @@ define(['jquery', 'core/ajax', 'core/modal_events', 'core/modal_factory', 'core/
     /**
      * Searches for users matching the maildomain(s) and assigns them to the organization.
      **/
-    maildomain_apply: function (orgid, btn) {
-      if (this.debug > 0) console.log('MANAGER.maildomain_apply(orgid, btn)', orgid, btn);
-      require(['local_eduvidual/main'], function (MAIN) {
+    maildomain_apply: function(orgid, btn) {
+      if (this.debug > 0) {
+        console.log('MANAGER.maildomain_apply(orgid, btn)', orgid, btn);
+      }
+      require(['local_eduvidual/main'], function(MAIN) {
         MAIN.connect({module: 'manage', act: 'maildomain_apply', orgid: orgid}, {signalItem: $(btn)});
       });
     },
@@ -311,11 +320,11 @@ define(['jquery', 'core/ajax', 'core/modal_events', 'core/modal_factory', 'core/
      * @param uniqid of the form.
      * @param signalitem that shows success / failure.
      */
-    overrideBBB: function (uniqid, signalitem) {
+    overrideBBB: function(uniqid, signalitem) {
       var orgid = $('#orgid-' + uniqid).val();
       var bbb_serverurl = $('.bbb_serverurl-' + uniqid).val();
       var bbb_sharedsecret = $('.bbb_sharedsecret-' + uniqid).val();
-      require(['local_eduvidual/main'], function (MAIN) {
+      require(['local_eduvidual/main'], function(MAIN) {
         MAIN.connect({module: 'manage', act: 'override_bigbluebutton', orgid: orgid, bbb_serverurl: bbb_serverurl, bbb_sharedsecret: bbb_sharedsecret}, {signalItem: $(signalitem)});
       });
     },
@@ -324,74 +333,80 @@ define(['jquery', 'core/ajax', 'core/modal_events', 'core/modal_factory', 'core/
      * @param uniqid of the form.
      * @param signalitem that shows success / failure.
      */
-    overrideRolenames: function (uniqid, signalitem) {
+    overrideRolenames: function(uniqid, signalitem) {
       var orgid = $('#orgid-' + uniqid).val();
       var roles = [];
-      $('.overriderole-' + uniqid).each(function () {
+      $('.overriderole-' + uniqid).each(function() {
         roles[roles.length] = {
           roleid: $(this).attr('data-roleid'),
           override: $(this).val()
         };
       });
-      require(['local_eduvidual/main'], function (MAIN) {
+      require(['local_eduvidual/main'], function(MAIN) {
         MAIN.connect({module: 'manage', act: 'override_rolenames', orgid: orgid, roles: JSON.stringify(roles)}, {signalItem: $(signalitem)});
       });
     },
     /**
      * Reset the password of users.
      */
-    setpwforcechange: function () {
-      var orgid = $('#local_eduvidual_manage_adduser').attr('data-orgid');
-      var role = $('#local_eduvidual_manage_setuserrole_role').val();
+    setpwforcechange: function() {
+      var orgid = $('#local_eduvidual_manage_users_wrapper').attr('data-orgid');
+      // Var role = $('#local_eduvidual_manage_setuserrole_role').val();
       var secrets = [];
-      $('#local_eduvidual_manage_setuserrole_user option:selected:not([value=""])').each(function () {
+      $('#local_eduvidual_manage_setuserrole_user option:selected:not([value=""])').each(function() {
         secrets.push($(this).val());
       });
-      if (secrets.length == 0) return;
-      require(['local_eduvidual/main'], function (MAIN) {
+      if (secrets.length == 0) {
+        return;
+      }
+      require(['local_eduvidual/main'], function(MAIN) {
         MAIN.connect({module: 'manage', act: 'setpwforcechange', orgid: orgid, secrets: secrets}, {signalItem: $('#local_eduvidual_manage_setuserforcechange')});
       });
     },
     /**
      * Reset the password of users.
      */
-    setpwreset: function () {
-      var orgid = $('#local_eduvidual_manage_adduser').attr('data-orgid');
-      var role = $('#local_eduvidual_manage_setuserrole_role').val();
+    setpwreset: function() {
+      var orgid = $('#local_eduvidual_manage_users_wrapper').attr('data-orgid');
+      // Var role = $('#local_eduvidual_manage_setuserrole_role').val();
       var secrets = [];
-      $('#local_eduvidual_manage_setuserrole_user option:selected:not([value=""])').each(function () {
+      $('#local_eduvidual_manage_setuserrole_user option:selected:not([value=""])').each(function() {
         secrets.push($(this).val());
       });
-      if (secrets.length == 0) return;
-      require(['local_eduvidual/main'], function (MAIN) {
+      if (secrets.length == 0) {
+        return;
+      }
+      require(['local_eduvidual/main'], function(MAIN) {
         MAIN.connect({module: 'manage', act: 'setpwreset', orgid: orgid, secrets: secrets}, {signalItem: $('#local_eduvidual_manage_setuserrole')});
       });
     },
-    setuserrole: function () {
-      var orgid = $('#local_eduvidual_manage_adduser').attr('data-orgid');
+    setuserrole: function() {
+      var orgid = $('#local_eduvidual_manage_users_wrapper').attr('data-orgid');
       var role = $('#local_eduvidual_manage_setuserrole_role').val();
       var secrets = [];
-      $('#local_eduvidual_manage_setuserrole_user option:selected:not([value=""])').each(function () {
+      $('#local_eduvidual_manage_setuserrole_user option:selected:not([value=""])').each(function() {
         secrets.push($(this).val());
       });
-      //var secret = $('#local_eduvidual_manage_setuserrole').val();
-      if (secrets.length == 0) return;
-      require(['local_eduvidual/main'], function (MAIN) {
+      // Var secret = $('#local_eduvidual_manage_setuserrole').val();
+      if (secrets.length == 0) {
+        return;
+      }
+      require(['local_eduvidual/main'], function(MAIN) {
         MAIN.connect({module: 'manage', act: 'setuserrole', orgid: orgid, role: role, secrets: secrets}, {signalItem: $('#local_eduvidual_manage_setuserrole')});
       });
     },
-    setuserrole_search: function (marksuccess, markfailed) {
-      var orgid = $('#local_eduvidual_manage_adduser').attr('data-orgid');
+    setuserrole_search: function(marksuccess, markfailed) {
+      var orgid = $('#local_eduvidual_manage_users_wrapper').attr('data-orgid');
       var search = $('#local_eduvidual_manage_setuserrole_search').val();
       if (search.length < 2) {
         return;
       } else {
-        require(['local_eduvidual/main'], function (MAIN) {
+        require(['local_eduvidual/main'], function(MAIN) {
           MAIN.connect({module: 'manage', act: 'setuserrole_search', orgid: orgid, search: search}, {marksuccess: marksuccess, markfailed: markfailed});
         });
       }
     },
-    result: function (o) {
+    result: function(o) {
       if (o.data.act == 'accesscode_create') {
         if (o.result.status == 'ok') {
           top.location.href = URL.relativeUrl('/local/eduvidual/pages/manage.php', {orgid: o.data.orgid, act: 'users', tab: 'accesscodes'});
@@ -403,18 +418,18 @@ define(['jquery', 'core/ajax', 'core/modal_events', 'core/modal_factory', 'core/
         }
       }
       if (o.data.act == 'addcategory') {
-        require(['local_eduvidual/main'], function (MAIN) {
+        require(['local_eduvidual/main'], function(MAIN) {
           MAIN.confirmed('.ul-eduvidual-courses li[data-categoryid="' + o.data.parentid + '"]', (o.result.status == 'ok'));
         });
         if (o.result.status == 'ok') {
           if (typeof o.payload.parent === 'undefined') {
             // Called by myorgs.php and update AJAX
-            require(['local_eduvidual/user'], function (USER) {
+            require(['local_eduvidual/user'], function(USER) {
               USER.loadCategory(o.data.parentid, o.data.orgid);
             });
           } else {
             // Called by manage.php and updates tree
-            top.location.href = top.location.href;
+            top.location.reload();
           }
         }
       }
@@ -446,7 +461,7 @@ define(['jquery', 'core/ajax', 'core/modal_events', 'core/modal_factory', 'core/
       if (o.data.act == 'adduser' || o.data.act == 'setuserrole') {
         if (o.result.status == 'ok') {
           $('#local_eduvidual_manage_' + o.data.act).val('ok');
-          setTimeout(function () {
+          setTimeout(function() {
             $('#local_eduvidual_manage_' + o.data.act).val('');
           }, 500);
         }
@@ -473,18 +488,18 @@ define(['jquery', 'core/ajax', 'core/modal_events', 'core/modal_factory', 'core/
         }
       }
       if (o.data.act == 'removecategory' || o.data.act == 'editcategory') {
-        require(['local_eduvidual/main'], function (MAIN) {
+        require(['local_eduvidual/main'], function(MAIN) {
           MAIN.confirmed('.ul-eduvidual-courses li[data-categoryid="' + o.data.parentid + '"]', (o.result.status == 'ok'));
         });
         if (o.result.status == 'ok') {
           if (typeof o.payload.parent === 'undefined') {
             // Called by myorgs.php and update AJAX
-            require(['local_eduvidual/user'], function (USER) {
+            require(['local_eduvidual/user'], function(USER) {
               USER.loadCategory((typeof o.result.removedcat !== 'undefined') ? o.result.removedcat.parent : o.result.editedcat.id, o.data.orgid);
             });
           } else if (o.data.act == 'removecategory') {
             // Called by manage.php and updates tree
-            setTimeout(function () {
+            setTimeout(function() {
               $('.ul-eduvidual-courses li[data-categoryid="' + o.data.parentid + '"]').remove();
             }, 500);
           } else if (o.data.act == 'editcategory') {
@@ -496,16 +511,15 @@ define(['jquery', 'core/ajax', 'core/modal_events', 'core/modal_factory', 'core/
       if (o.data.act == 'setpwreset') {
         STR.get_strings([
           {'key': 'manage:users:setpwreset', component: 'local_eduvidual'},
-        ]).done(function (s) {
-            require(['core/modal_factory', 'core/templates'], function (ModalFactory, Templates) {
-              ModalFactory.create({
+        ]).done(function(s) {
+            require(['core/modal', 'core/templates'], function(Modal, Templates) {
+              Modal.create({
                 title: s[0],
                 body: Templates.render('local_eduvidual/manage_setpwreset_modal', {failed: o.result.failed.join(', '), hasfailed: o.result.failed.length, hasupdated: o.result.updated.length, updated: o.result.updated.join(', ')}),
                 footer: '',
-              }).done(function (modal) {
-                // Do what you want with your modal.
-                modal.show();
-              });
+                show: true,
+                removeOnClose: true,
+              }).catch(NOTIFICATION.exception);
             });
           }
         ).fail(NOTIFICATION.exception);
@@ -519,7 +533,7 @@ define(['jquery', 'core/ajax', 'core/modal_events', 'core/modal_factory', 'core/
           }
           var updated = o.payload.marksuccess;
           if (typeof updated !== 'undefined' && updated.length > 0) {
-            require(['local_eduvidual/main'], function (MAIN) {
+            require(['local_eduvidual/main'], function(MAIN) {
               for (var a = 0; a < updated.length; a++) {
                 MAIN.signal({signalItem: $('#local_eduvidual_manage_setuserrole_user option[value="' + updated[a] + '"]')}, undefined, 'success');
               }
@@ -528,7 +542,8 @@ define(['jquery', 'core/ajax', 'core/modal_events', 'core/modal_factory', 'core/
           var failed = o.payload.markfailed;
           if (typeof failed !== 'undefined' && failed.length > 0) {
             for (var a = 0; a < failed.length; a++) {
-              require(['local_eduvidual/main'], function (MAIN) {
+              /* eslint-disable no-loop-func */
+              require(['local_eduvidual/main'], function(MAIN) {
                 MAIN.signal({signalItem: $('#local_eduvidual_manage_setuserrole_user option[value="' + failed[a] + '"]')}, undefined, 'success');
               });
             }
@@ -536,9 +551,9 @@ define(['jquery', 'core/ajax', 'core/modal_events', 'core/modal_factory', 'core/
         }
       }
     },
-    revokeAccesscode: function (id) {
-      var orgid = +$('#local_eduvidual_manage_adduser').attr('data-orgid');
-      require(['local_eduvidual/main'], function (MAIN) {
+    revokeAccesscode: function(id) {
+      var orgid = +$('#local_eduvidual_manage_users_wrapper').attr('data-orgid');
+      require(['local_eduvidual/main'], function(MAIN) {
         MAIN.connect({module: 'manage', act: 'accesscode_revoke', orgid: orgid, id: id}, {});
       });
     },
