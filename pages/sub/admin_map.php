@@ -21,138 +21,139 @@
  */
 
 defined('MOODLE_INTERNAL') || die;
-if (!is_siteadmin())
+if (!is_siteadmin()) {
     die;
+}
 $updatedb = optional_param('updatedb', 0, PARAM_INT);
 if ($updatedb == 0) {
-    echo $OUTPUT->render_from_template('local_eduvidual/admin_map', array(
+    echo $OUTPUT->render_from_template('local_eduvidual/admin_map', [
         "filters_count" => 3,
-        "filters" => array(
-            array(
+        "filters" => [
+            [
                 "filterid" => "platformtypes",
-                "selections" => array(
-                    array(
+                "selections" => [
+                    [
                         "checked" => true,
                         "key" => "eduv",
                         "label" => get_string("admin:map:eduv", "local_eduvidual"),
                         "icon" => $OUTPUT->image_icon('google-maps-pin-green', 'pin', 'local_eduvidual'),
-                    ),
-                    array(
+                    ],
+                    [
                         "checked" => true,
                         "key" => "both",
                         "label" => get_string("admin:map:both", "local_eduvidual"),
                         "icon" => $OUTPUT->image_icon('google-maps-pin-orange', 'pin', 'local_eduvidual'),
-                    ),
-                    array(
+                    ],
+                    [
                         "checked" => true,
                         "key" => "none",
                         "label" => get_string("admin:map:none", "local_eduvidual"),
                         "icon" => $OUTPUT->image_icon('google-maps-pin-lightgray', 'pin', 'local_eduvidual'),
-                    ),
-                ),
-            ),
-            array(
+                    ],
+                ],
+            ],
+            [
                 "filterid" => "districttypes",
-                "selections" => array(
-                    array(
+                "selections" => [
+                    [
                         "checked" => true,
                         "key" => "Burgenland",
                         "label" => "Burgenland",
-                    ),
-                    array(
+                    ],
+                    [
                         "checked" => true,
                         "key" => "Kärnten",
                         "label" => "Kärnten",
-                    ),
-                    array(
+                    ],
+                    [
                         "checked" => true,
                         "key" => "Niederösterreich",
                         "label" => "Niederösterreich",
-                    ),
-                    array(
+                    ],
+                    [
                         "checked" => true,
                         "key" => "Oberösterreich",
                         "label" => "Oberösterreich",
-                    ),
-                    array(
+                    ],
+                    [
                         "checked" => true,
                         "key" => "Salzburg",
                         "label" => "Salzburg",
-                    ),
-                    array(
+                    ],
+                    [
                         "checked" => true,
                         "key" => "Steiermark",
                         "label" => "Steiermark",
-                    ),
-                    array(
+                    ],
+                    [
                         "checked" => true,
                         "key" => "Tirol",
                         "label" => "Tirol",
-                    ),
-                    array(
+                    ],
+                    [
                         "checked" => true,
                         "key" => "Vorarlberg",
                         "label" => "Vorarlberg",
-                    ),
-                    array(
+                    ],
+                    [
                         "checked" => true,
                         "key" => "Wien",
                         "label" => "Wien",
-                    ),
-                ),
-            ),
-            array(
+                    ],
+                ],
+            ],
+            [
                 "filterid" => "orgtypes",
-                "selections" => array(
-                    array(
+                "selections" => [
+                    [
                         "checked" => true,
                         "key" => "VS",
                         "label" => "VS",
-                    ),
-                    array(
+                    ],
+                    [
                         "checked" => true,
                         "key" => "MS",
                         "label" => "NMS/MS",
-                    ),
-                    array(
+                    ],
+                    [
                         "checked" => true,
                         "key" => "Sonderschule",
                         "label" => "Sonderschule",
-                    ),
-                    array(
+                    ],
+                    [
                         "checked" => true,
                         "key" => "PTS",
                         "label" => "PTS",
-                    ),
-                    array(
+                    ],
+                    [
                         "checked" => true,
                         "key" => "BS",
                         "label" => "BS",
-                    ),
-                    array(
+                    ],
+                    [
                         "checked" => true,
                         "key" => "Gymnasium",
                         "label" => "Gymnasium",
-                    ),
-                    array(
+                    ],
+                    [
                         "checked" => true,
                         "key" => "HTL",
                         "label" => "HTL",
-                    ),
-                    array(
+                    ],
+                    [
                         "checked" => true,
                         "key" => "HAK",
                         "label" => "HAK",
-                    ),
-                    array(
+                    ],
+                    [
                         "checked" => true,
                         "key" => "HUM",
                         "label" => "HUM",
-                    ),
-                ),
-            ),
+                    ],
+                ],
+            ],
 
-        ),
+        ],
         "timeref" => time(),
         "year" => date("Y"),
         "month" => date("m"),
@@ -160,14 +161,14 @@ if ($updatedb == 0) {
         "hour" => date("h"),
         "minute" => date("i"),
         "second" => date("s"),
-    ));
+    ]);
 } else {
     echo "<h3>Updating GPS-Data</h3><ul>\n";
     $mapquestkey = get_config('local_eduvidual', 'mapquest_apikey');
     $googlekey = get_config('local_eduvidual', 'google_apikey');
 
     if (optional_param('resetfailed', 0, PARAM_INT) == 1) {
-        $DB->execute("UPDATE {local_eduvidual_org_gps} SET failed=0", array());
+        $DB->execute("UPDATE {local_eduvidual_org_gps} SET failed=0", []);
     }
     // Only update orgs that have not been updated in the last week!
     $since = time() - 60 * 60 * 24 * 7;
@@ -179,14 +180,16 @@ if ($updatedb == 0) {
                     AND og.modified < ?
                     AND og.failed < ?
                 LIMIT 0," . $limit;
-    $orgs = $DB->get_records_sql($sql, array('______', $since, $since));
+    $orgs = $DB->get_records_sql($sql, ['______', $since, $since]);
     echo "<li>Going through " . count(array_keys($orgs)) . " orgs</li>";
     flush();
-    $services = array();
-    if (!empty($googlekey))
+    $services = [];
+    if (!empty($googlekey)) {
         $services[] = 'google';
-    if (!empty($mapquestkey))
+    }
+    if (!empty($mapquestkey)) {
         $services[] = 'mapquest';
+    }
     $services[] = 'nominatim';
     foreach ($orgs as $orgid => $org) {
         foreach ($services as $srvnr => $service) {
@@ -233,7 +236,7 @@ if ($updatedb == 0) {
             }
             echo "<li>Retrieved data from " . $service . " for <a href=\"" . $searchurl . "\" target=\"_blank\">" . $orgid . "</a></li>\n";
 
-            $testorg = $DB->get_record('local_eduvidual_org_gps', array('orgid' => $orgid));
+            $testorg = $DB->get_record('local_eduvidual_org_gps', ['orgid' => $orgid]);
             if (!empty($data->lat) && !empty($data->lon)) {
                 echo "<li>Retrieved from " . $service . " for " . $orgid . " lon " . $data->lon . " lat " . $data->lat . "</li>";
                 if (!empty($testorg->id)) {
@@ -243,13 +246,13 @@ if ($updatedb == 0) {
                     $DB->update_record('local_eduvidual_org_gps', $testorg);
                     echo "<li>Updated " . $orgid . "</li>";
                 } else {
-                    $testorg = (object)array(
+                    $testorg = (object)[
                         'orgid' => $orgid,
                         'lat' => $data->lat,
                         'lon' => $data->lon,
                         'modified' => time(),
                         'failed' => 0,
-                    );
+                    ];
                     $DB->insert_record('local_eduvidual_org_gps', $testorg);
                     echo "<li>Inserted " . $orgid . "</li>";
                 }
@@ -263,13 +266,13 @@ if ($updatedb == 0) {
                         $testorg->failed = time();
                         $DB->update_record('local_eduvidual_org_gps', $testorg);
                     } else {
-                        $testorg = (object)array(
+                        $testorg = (object)[
                             'orgid' => $orgid,
                             'lat' => 0,
                             'lon' => 0,
                             'modified' => 0,
                             'failed' => time(),
-                        );
+                        ];
                         $DB->insert_record('local_eduvidual_org_gps', $testorg);
                     }
                 }
@@ -283,18 +286,18 @@ if ($updatedb == 0) {
 }
 
 function do_curl($searchurl) {
-    $options = array(
-        CURLOPT_RETURNTRANSFER => true,   // return web page
-        CURLOPT_HEADER => false,  // don't return headers
-        CURLOPT_FOLLOWLOCATION => true,   // follow redirects
-        CURLOPT_MAXREDIRS => 10,     // stop after 10 redirects
-        CURLOPT_ENCODING => "",     // handle compressed
-        CURLOPT_USERAGENT => 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.13) Gecko/20080311 Firefox/2.0.0.13', //, id-' . time(), // name of client
-        CURLOPT_AUTOREFERER => true,   // set referrer on redirect
-        CURLOPT_CONNECTTIMEOUT => 120,    // time-out on connect
-        CURLOPT_TIMEOUT => 120,    // time-out on response
+    $options = [
+        CURLOPT_RETURNTRANSFER => true, // return web page
+        CURLOPT_HEADER => false, // don't return headers
+        CURLOPT_FOLLOWLOCATION => true, // follow redirects
+        CURLOPT_MAXREDIRS => 10, // stop after 10 redirects
+        CURLOPT_ENCODING => "", // handle compressed
+        CURLOPT_USERAGENT => 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.13) Gecko/20080311 Firefox/2.0.0.13', // , id-' . time(), // name of client
+        CURLOPT_AUTOREFERER => true, // set referrer on redirect
+        CURLOPT_CONNECTTIMEOUT => 120, // time-out on connect
+        CURLOPT_TIMEOUT => 120, // time-out on response
         CURLOPT_URL => $searchurl,
-    );
+    ];
 
     $ch = curl_init($searchurl);
     curl_setopt_array($ch, $options);

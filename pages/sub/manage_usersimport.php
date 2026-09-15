@@ -32,7 +32,7 @@ require_once($CFG->dirroot . '/local/eduvidual/classes/lib_import.php');
 $helper = new local_eduvidual_lib_import();
 $compiler = new local_eduvidual_lib_import_compiler_user();
 $helper->set_compiler($compiler);
-$helper->set_fields(array('id', 'username', 'email', 'firstname', 'lastname', 'password', 'forcechangepassword', 'cohorts_add', 'cohorts_remove', 'bunch'));
+$helper->set_fields(['id', 'username', 'email', 'firstname', 'lastname', 'password', 'forcechangepassword', 'cohorts_add', 'cohorts_remove', 'bunch']);
 
 if (isset($_FILES['local_eduvidual_manage_usersimport'])) {
     $filetype = strtolower(substr($_FILES['local_eduvidual_manage_usersimport']['name'], strpos($_FILES['local_eduvidual_manage_usersimport']['name'], '.')));
