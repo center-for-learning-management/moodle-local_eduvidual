@@ -33,13 +33,13 @@ $code = optional_param('code', '', PARAM_TEXT);
 
 $ctx = \context_user::instance($USER->id);
 $PAGE->set_context($ctx);
-//$PAGE->set_pagelayout('mydashboard');
-$PAGE->set_url('/local/eduvidual/pages/user_merge.php', array());
+// $PAGE->set_pagelayout('mydashboard');
+$PAGE->set_url('/local/eduvidual/pages/user_merge.php', []);
 $PAGE->set_title(get_string('user:merge_accounts', 'local_eduvidual'));
 $PAGE->set_heading(get_string('user:merge_accounts', 'local_eduvidual'));
-//$PAGE->set_cacheable(false);
+// $PAGE->set_cacheable(false);
 
-//$PAGE->navbar->add(get_string('user:merge_accounts', 'local_eduvidual'), $PAGE->url);
+// $PAGE->navbar->add(get_string('user:merge_accounts', 'local_eduvidual'), $PAGE->url);
 
 echo $OUTPUT->header();
 
@@ -109,7 +109,7 @@ if (!empty($mail) && !empty($code)) {
         }
 
         require_once($CFG->dirroot . '/admin/tool/mergeusers/lib/autoload.php');
-        //may abort execution if database not supported, for security
+        // may abort execution if database not supported, for security
         $mut = new MergeUserTool();
         // Search tool for searching for users and verifying them
         $mus = new MergeUserSearch();
@@ -134,7 +134,6 @@ if (!empty($mail) && !empty($code)) {
         $mail = '';
         $code = '';
     }
-
 }
 
 $params = [
