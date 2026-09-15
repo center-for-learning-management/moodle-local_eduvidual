@@ -29,7 +29,7 @@ require_once('../../../../config.php');
 
 $PAGE->set_context(context_system::instance());
 $PAGE->set_pagelayout('admin');
-$PAGE->set_url('/local/eduvidual/pages/tools/admin_block2local.php', array());
+$PAGE->set_url('/local/eduvidual/pages/tools/admin_block2local.php', []);
 $PAGE->set_title(get_string('admin:supportcourses', 'local_eduvidual'));
 $PAGE->set_heading(get_string('admin:supportcourses', 'local_eduvidual'));
 
@@ -37,10 +37,10 @@ require_login();
 
 if (!is_siteadmin()) {
     echo $OUTPUT->header();
-    echo $OUTPUT->render_from_template('local_eduvidual/alert', array(
+    echo $OUTPUT->render_from_template('local_eduvidual/alert', [
         'content' => get_string('access_denied', 'local_eduvidual'),
         'type' => 'danger',
-    ));
+    ]);
     echo $OUTPUT->footer();
     die();
 }
@@ -53,7 +53,7 @@ try {
     echo "<ul>\n";
     $sql = "SELECT userid,background,backgroundcard
                 FROM {local_eduvidual_userextra}";
-    $extras = $DB->get_records_sql($sql, array());
+    $extras = $DB->get_records_sql($sql, []);
     foreach ($extras as $extra) {
         if (!empty($extra->background)) {
             echo "    <li>Setting background $extra->background for User #$extra->userid</li>\n";
@@ -64,7 +64,6 @@ try {
             set_user_preference('local_eduvidual_backgroundcard', $extra->backgroundcard, $extra->userid);
         }
     }
-
 } catch (Exception $e) {
     echo "<li class=\"alert alert-danger\">" . $e->getMessage() . "</li>\n";
 } finally {
@@ -75,11 +74,11 @@ try {
 try {
     echo "<h3>Ensure that all userbunches are synced to cohorts</h3>\n";
     echo "<ul>\n";
-    $bunches = $DB->get_records_sql("SELECT * FROM {local_eduvidual_userbunches} ORDER BY orgid ASC", array());
+    $bunches = $DB->get_records_sql("SELECT * FROM {local_eduvidual_userbunches} ORDER BY orgid ASC", []);
     $org = "";
     foreach ($bunches as $bunch) {
         if (empty($org) || $org->orgid != $bunch->orgid) {
-            $org = $DB->get_record('local_eduvidual_org', array('orgid' => $bunch->orgid));
+            $org = $DB->get_record('local_eduvidual_org', ['orgid' => $bunch->orgid]);
         }
         if (!empty($org->categoryid)) {
             echo "<li>Add $bunch->userid to cohort $bunch->bunch of $org->orgid</li>\n";
