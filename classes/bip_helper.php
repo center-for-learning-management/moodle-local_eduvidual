@@ -1018,6 +1018,7 @@ class bip_helper {
         // User). Im Speicher liegen immer nur die Zeilen eines Blocks.
         $bpkbfs = $DB->get_fieldset_sql('SELECT DISTINCT bpkbf FROM {local_eduvidual_bip_user} ORDER BY bpkbf');
         $chunks = array_chunk($bpkbfs, 1000);
+        $starttime = time();
         foreach ($chunks as $i => $chunk) {
             mtrace('Chunk ' . ($i + 1) . '/' . count($chunks));
             [$insql, $inparams] = $DB->get_in_or_equal($chunk);
@@ -1051,7 +1052,9 @@ class bip_helper {
                 $countsync++;
             }
 
-            static::mtrace('Chunk ' . ($i + 1) . '/' . count($chunks) . " fertig: {$countsync} gesynct, {$countdeleted} übersprungen (Link auf gelöschten User), {$countnameedit} Namen-Updates, Accounts: {$createstats['created']} angelegt, {$createstats['skip_candidate']} skip_candidate, {$createstats['skip_email']} skip_email, {$createstats['skip_noname']} skip_noname", execute: $execute);
+            $elapsed = time() - $starttime;
+            $estimated = round($elapsed / ($i + 1) * count($chunks));
+            static::mtrace('Chunk ' . ($i + 1) . '/' . count($chunks) . " fertig: {$countsync} gesynct, {$countdeleted} übersprungen (Link auf gelöschten User), {$countnameedit} Namen-Updates, Accounts: {$createstats['created']} angelegt, {$createstats['skip_candidate']} skip_candidate, {$createstats['skip_email']} skip_email, {$createstats['skip_noname']} skip_noname, time: {$elapsed} sek, voraussichtlich {$estimated} sek", execute: $execute);
         }
 
         // Verlinkte User OHNE Spiegelzeilen sind aus BIP verschwunden (Purge im Delta bzw.
