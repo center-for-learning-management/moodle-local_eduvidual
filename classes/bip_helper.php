@@ -1050,6 +1050,8 @@ class bip_helper {
 
                 $countsync++;
             }
+
+            static::mtrace('Chunk ' . ($i + 1) . '/' . count($chunks) . " fertig: {$countsync} gesynct, {$countdeleted} übersprungen (Link auf gelöschten User), {$countnameedit} Namen-Updates, Accounts: {$createstats['created']} angelegt, {$createstats['skip_candidate']} skip_candidate, {$createstats['skip_email']} skip_email, {$createstats['skip_noname']} skip_noname", execute: $execute);
         }
 
         // Verlinkte User OHNE Spiegelzeilen sind aus BIP verschwunden (Purge im Delta bzw.
