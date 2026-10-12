@@ -25,11 +25,11 @@ namespace local_eduvidual;
 defined('MOODLE_INTERNAL') || die;
 
 class bip_helper {
-    public static function do_curl(string $url, ?array $headers = null, $postdata = null, string $basicauth = '', int $timeout = 60) {
+    public static function do_curl(string $url, ?array $headers = null, ?array $postdata = null, string $basicauth = '', int $timeout = 60) {
         return static::do_curl_full($url, $headers, $postdata, $basicauth, $timeout)->result;
     }
 
-    public static function do_curl_full(string $url, ?array $headers = null, $postdata = null, string $basicauth = '', int $timeout = 60): object {
+    public static function do_curl_full(string $url, ?array $headers = null, ?array $postdata = null, string $basicauth = '', int $timeout = 60): object {
         $curl = new \curl();
         $options = [
             'CURLOPT_RETURNTRANSFER' => 1,
@@ -52,11 +52,8 @@ class bip_helper {
             $curl->setHeader($strheaders);
         }
 
-        if ($postdata) {
-            if (is_array($postdata) || is_object($postdata)) {
-                $postdata = http_build_query($postdata, '', '&');
-            }
-            $result = $curl->post($url, $postdata, $options);
+        if ($postdata !== null) {
+            $result = $curl->post($url, http_build_query($postdata, '', '&'), $options);
         } else {
             $result = $curl->get($url, [], $options);
         }
@@ -91,7 +88,8 @@ class bip_helper {
     }
 
     public static function call_bip_iface(string $iface, array $params = []): mixed {
-        return static::do_curl(static::build_bip_url($iface), static::get_bip_headers(), $params ?: null);
+        // Immer POST, auch ohne Parameter.
+        return static::do_curl(static::build_bip_url($iface), static::get_bip_headers(), $params);
     }
 
     /**
@@ -103,7 +101,7 @@ class bip_helper {
         if ($cursor !== '') {
             $params['cursor'] = $cursor;
         }
-        return static::do_curl_full(static::build_bip_url($iface), static::get_bip_headers(), $params ?: null);
+        return static::do_curl_full(static::build_bip_url($iface), static::get_bip_headers(), $params);
     }
 
     public static function read_org_data(array $orgids): array {
