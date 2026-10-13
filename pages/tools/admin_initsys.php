@@ -31,7 +31,7 @@ $confirm = optional_param('confirm', 0, PARAM_INT);
 
 $PAGE->set_context(context_system::instance());
 $PAGE->set_pagelayout('admin');
-$PAGE->set_url('/local/eduvidual/pages/tools/admin_initsys.php', array('confirm' => $confirm));
+$PAGE->set_url('/local/eduvidual/pages/tools/admin_initsys.php', ['confirm' => $confirm]);
 $PAGE->set_title('Tests');
 $PAGE->set_heading('Tests');
 
@@ -40,24 +40,24 @@ require_login();
 echo $OUTPUT->header();
 
 if (!is_siteadmin()) {
-    echo $OUTPUT->render_from_template('local_eduvidual/alert', array(
+    echo $OUTPUT->render_from_template('local_eduvidual/alert', [
         'content' => get_string('access_denied', 'local_eduvidual'),
         'type' => 'danger',
-    ));
+    ]);
 } elseif (empty($confirm)) {
-    echo $OUTPUT->render_from_template('local_eduvidual/alert', array(
+    echo $OUTPUT->render_from_template('local_eduvidual/alert', [
         'content' => 'Start setting up test environment',
         'type' => 'danger',
-        'url' => new \moodle_url($PAGE->url, array('confirm' => 1)),
-    ));
+        'url' => new \moodle_url($PAGE->url, ['confirm' => 1]),
+    ]);
 } else {
     $sql = "SELECT COUNT(id) AS amount FROM {user}";
     $chk = $DB->get_record_sql($sql);
     if ($chk->amount > 2) {
-        echo $OUTPUT->render_from_template('local_eduvidual/alert', array(
+        echo $OUTPUT->render_from_template('local_eduvidual/alert', [
             'content' => 'Set up cancelled - this site has >5 users',
             'type' => 'danger',
-        ));
+        ]);
     } else {
         echo "<h3>Setting up test environment</h3>";
         $randomkey = md5($CFG->wwwroot . date("Y-m-d H:i.s"));
@@ -66,12 +66,12 @@ if (!is_siteadmin()) {
         set_config('defaultrolestudent', 5, 'local_eduvidual');
         set_config('defaultroleteacher', 3, 'local_eduvidual');
         $systemcontext = \context_system::instance();
-        $rolenames = array(
+        $rolenames = [
             'defaultroleparent', 'defaultorgrolemanager', 'defaultorgroleparent',
             'defaultorgrolestudent', 'defaultorroleteacher',
             'defaultglobalrolemanager', 'defaultglobalroleparent',
             'defaultglobalrolestudent', 'defaultglobalroleteacher',
-        );
+        ];
 
         foreach ($rolenames as $rolename) {
             $filepath = $CFG->dirroot . '/local/eduvidual/pages/tools/admin_initsys/' . $rolename . '.xml';
@@ -97,7 +97,7 @@ if (!is_siteadmin()) {
         // Create some orgs
         // Shared orgs
         // Protect shared orgs.
-        //set_config('protectedorgs', $protectedorgs, 'local_eduvidual');
+        // set_config('protectedorgs', $protectedorgs, 'local_eduvidual');
         // Create school orgs.
 
 
@@ -110,10 +110,8 @@ if (!is_siteadmin()) {
 
 
         // Create question categories on system level.
-        //set_config('questioncategories', implode(",", $questioncategories), 'local_eduvidual');
-
+        // set_config('questioncategories', implode(",", $questioncategories), 'local_eduvidual');
     }
-
 }
 
 
