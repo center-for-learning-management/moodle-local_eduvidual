@@ -36,14 +36,15 @@ if (!is_siteadmin()) {
             break;
         case 'manageorgs_search':
             $search = optional_param('search', '', PARAM_TEXT);
-            if (!empty($search))
+            if (!empty($search)) {
                 $search = '%' . $search . '%';
-            $fields = array('id', 'categoryid', 'city', 'country', 'orgid', 'name', 'mail', 'phone', 'street', 'zip');
+            }
+            $fields = ['id', 'categoryid', 'city', 'country', 'orgid', 'name', 'mail', 'phone', 'street', 'zip'];
             $sql = "SELECT o." . implode(',o.', $fields) . ",og.lon,og.lat
                         FROM {local_eduvidual_org} o
                             LEFT JOIN {local_eduvidual_org_gps} og ON o.orgid=og.orgid
                         WHERE o." . implode(' LIKE ? OR o.', $fields);
-            $params = array();
+            $params = [];
             foreach ($fields as $field) {
                 $params[] = $search;
             }
@@ -58,10 +59,10 @@ if (!is_siteadmin()) {
             $fields = array_keys($params);
             // Validate fields
             $valid = true;
-            $reply['errors'] = array();
-            $reply['errors_reasons'] = array();
+            $reply['errors'] = [];
+            $reply['errors_reasons'] = [];
             // Check if required fields are set.
-            $required = array('orgid', 'mail', 'name');
+            $required = ['orgid', 'mail', 'name'];
             foreach ($required as $_required) {
                 if (empty($params[$_required])) {
                     $valid = false;
@@ -75,7 +76,7 @@ if (!is_siteadmin()) {
                 $reply['errors_reasons'][] = 'no valid mail';
             }
 
-            $checkorg = $DB->get_record('local_eduvidual_org', array('orgid' => $params['orgid']));
+            $checkorg = $DB->get_record('local_eduvidual_org', ['orgid' => $params['orgid']]);
             if (empty($params['id']) && !empty($checkorg->orgid) && $checkorg->id != $params['id']) {
                 $valid = false;
                 $reply['errors'][] = 'orgid';
@@ -83,7 +84,7 @@ if (!is_siteadmin()) {
             }
             if ($valid) {
                 if (!empty($params['id'])) {
-                    $org = $DB->get_record('local_eduvidual_org', array('id' => $params['id']));
+                    $org = $DB->get_record('local_eduvidual_org', ['id' => $params['id']]);
                     foreach ($fields as $field) {
                         $org->{$field} = $params[$field];
                     }
@@ -96,7 +97,7 @@ if (!is_siteadmin()) {
                     }
                 }
                 if (!empty($params['lat']) && !empty($params['lon'])) {
-                    $gps = $DB->get_record('local_eduvidual_org_gps', array('orgid' => $org->orgid));
+                    $gps = $DB->get_record('local_eduvidual_org_gps', ['orgid' => $org->orgid]);
                     if (!empty($gps->id)) {
                         $gps->lat = $params['lat'];
                         $gps->lon = $params['lon'];
@@ -104,17 +105,17 @@ if (!is_siteadmin()) {
                         $gps->failed = 0;
                         $DB->update_record('local_eduvidual_org_gps', $gps);
                     } else {
-                        $gps = (object)array(
+                        $gps = (object)[
                             'orgid' => $org->orgid,
                             'lat' => $params['lat'],
                             'lon' => $params['lon'],
                             'modified' => time(),
                             'failed' => 0,
-                        );
+                        ];
                         $DB->insert_record('local_eduvidual_org_gps', $gps);
                     }
                 } else {
-                    $DB->delete_records('local_eduvidual_org_gps', array('orgid' => $params['orgid']));
+                    $DB->delete_records('local_eduvidual_org_gps', ['orgid' => $params['orgid']]);
                 }
             } else {
                 $reply['status'] = 'error';
@@ -128,8 +129,8 @@ if (!is_siteadmin()) {
             }
             break;
         case 'questioncategories':
-            $qc = optional_param_array('questioncategories', NULL, PARAM_INT);
-            $sc = optional_param_array('supportcourses', NULL, PARAM_INT);
+            $qc = optional_param_array('questioncategories', null, PARAM_INT);
+            $sc = optional_param_array('supportcourses', null, PARAM_INT);
             // Set to 0 if you require at least one!
             $setrole = get_config('local_eduvidual', 'defaultrolestudent');
             if (count($qc) > -1) {
@@ -142,7 +143,7 @@ if (!is_siteadmin()) {
                         if (!empty($ctx)) {
                             set_config('questioncategory_' . $qc[$a] . '_supportcourse', $nsc, 'local_eduvidual');
                             $sql = "SELECT userid FROM {local_eduvidual_userqcats} WHERE categoryid = :categoryid";
-                            $userids = array_keys($DB->get_records_sql($sql, array('categoryid' => $qc[$a])));
+                            $userids = array_keys($DB->get_records_sql($sql, ['categoryid' => $qc[$a]]));
                             \local_eduvidual\lib_enrol::course_manual_enrolments([$nsc], $userids, $setrole);
                             $reply['enrolled_to_' . $nsc] = count($userids);
                         }
