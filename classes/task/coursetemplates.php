@@ -43,8 +43,9 @@ class coursetemplates extends \core\task\scheduled_task {
         global $CFG, $DB;
 
         $scheduled = explode(',', get_config('local_eduvidual', 'coursebasement-scheduled'));
-        if (count($scheduled) == 0)
+        if (count($scheduled) == 0) {
             return;
+        }
 
         $admin = \get_admin();
         if (!$admin) {
@@ -62,8 +63,9 @@ class coursetemplates extends \core\task\scheduled_task {
         require_once($CFG->dirroot . '/backup/moodle2/backup_plan_builder.class.php');
 
         foreach ($scheduled as $courseid) {
-            if (empty($courseid))
+            if (empty($courseid)) {
                 continue;
+            }
             $course = \get_course($courseid);
             if (empty($course->id)) {
                 echo "ERROR: COURSE #$courseid DOES NOT EXIST<br />";
@@ -83,9 +85,9 @@ class coursetemplates extends \core\task\scheduled_task {
             $bc->get_plan()->get_setting('users')->set_value(0);
             $users = $bc->get_plan()->get_setting('users')->get_value();
             $anonymised = $bc->get_plan()->get_setting('anonymize')->get_value();
-            //$filename = \backup_plan_dbops::get_default_backup_filename($format, $type, $id, $users, $anonymised);
-            //echo "Filename $filename";die();
-            //$bc->get_plan()->get_setting('filename')->set_value($filename);
+            // $filename = \backup_plan_dbops::get_default_backup_filename($format, $type, $id, $users, $anonymised);
+            // echo "Filename $filename";die();
+            // $bc->get_plan()->get_setting('filename')->set_value($filename);
             $bc->get_plan()->get_setting('filename')->set_value($targetfilename);
 
             $bc->finish_ui();
@@ -95,10 +97,10 @@ class coursetemplates extends \core\task\scheduled_task {
 
             $ctx = \context_course::instance($course->id);
             $fs = \get_file_storage();
-            $fr = array('contextid' => $ctx->id, 'component' => 'local_eduvidual', 'filearea' => 'coursebackup',
+            $fr = ['contextid' => $ctx->id, 'component' => 'local_eduvidual', 'filearea' => 'coursebackup',
                 'itemid' => 0, 'filepath' => '/', 'filename' => $targetfilename,
                 'timecreated' => time(), 'timemodified' => time(),
-            );
+            ];
 
             $testfile = $fs->get_file($fr['contextid'], $fr['component'], $fr['filearea'], $fr['itemid'], $fr['filepath'], $fr['filename']);
             if ($testfile) {

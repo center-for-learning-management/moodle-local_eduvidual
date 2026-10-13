@@ -27,27 +27,27 @@ $sql = "SELECT r.*
             WHERE r.id=rcl.roleid
                 AND rcl.contextlevel = ?
             ORDER BY r.name ASC";
-$roles = array_values($DB->get_records_sql($sql, array(CONTEXT_COURSE)));
+$roles = array_values($DB->get_records_sql($sql, [CONTEXT_COURSE]));
 
 foreach ($roles as &$role) {
-    $override = $DB->get_record('local_eduvidual_overrides', array('orgid' => $org->orgid, 'field' => 'courserole_' . $role->id . '_name'));
-    //$role->showname = (!empty($role->name) ? $role->name : $role->shortname);
+    $override = $DB->get_record('local_eduvidual_overrides', ['orgid' => $org->orgid, 'field' => 'courserole_' . $role->id . '_name']);
+    // $role->showname = (!empty($role->name) ? $role->name : $role->shortname);
     if (!empty($override->value)) {
         $role->override = $override->value;
     }
 }
 
-$bbb_serverurl = $DB->get_record('local_eduvidual_overrides', array('orgid' => $org->orgid, 'field' => 'bigbluebuttonbn_server_url'));
-$bbb_sharedsecret = $DB->get_record('local_eduvidual_overrides', array('orgid' => $org->orgid, 'field' => 'bigbluebuttonbn_shared_secret'));
+$bbb_serverurl = $DB->get_record('local_eduvidual_overrides', ['orgid' => $org->orgid, 'field' => 'bigbluebuttonbn_server_url']);
+$bbb_sharedsecret = $DB->get_record('local_eduvidual_overrides', ['orgid' => $org->orgid, 'field' => 'bigbluebuttonbn_shared_secret']);
 
 echo $OUTPUT->render_from_template(
     'local_eduvidual/manage_coursesettings',
-    (object)array(
+    (object)[
         'bbb_serverurl' => !empty($bbb_serverurl->value) ? $bbb_serverurl->value : '',
         'bbb_sharedsecret' => !empty($bbb_sharedsecret->value) ? $bbb_sharedsecret->value : '',
         'has_bbb_installed' => file_exists($CFG->dirroot . '/mod/bigbluebuttonbn/version.php'),
         'overrideroles' => $roles,
         'orgid' => $org->orgid,
         'wwwroot' => $CFG->wwwroot,
-    )
+    ]
 );

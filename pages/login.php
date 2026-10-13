@@ -27,7 +27,7 @@ $errorcode = optional_param('errorcode', 0, PARAM_INT);
 
 $PAGE->set_context(context_system::instance());
 $PAGE->set_pagelayout('login');
-$PAGE->set_url('/local/eduvidual/pages/login.php', array());
+$PAGE->set_url('/local/eduvidual/pages/login.php', []);
 $PAGE->set_title(get_string('login'));
 $PAGE->set_heading(get_string('login'));
 
@@ -151,10 +151,10 @@ $isproductionsite = ($CFG->wwwroot == 'https://www.eduvidual.at');
                         break;
                 }
                 if (!empty($errormessage)) {
-                    echo $OUTPUT->render_from_template('local_eduvidual/alert', array(
+                    echo $OUTPUT->render_from_template('local_eduvidual/alert', [
                         'content' => $errormessage,
                         'type' => 'danger',
-                    ));
+                    ]);
                 }
             }
 
