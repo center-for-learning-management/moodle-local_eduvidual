@@ -29,22 +29,22 @@ require_once($CFG->dirroot . "/local/eduvidual/classes/locallib.php");
 
 class local_eduvidual_external_teacher extends external_api {
     public static function createcourse_selections_parameters() {
-        return new external_function_parameters(array(
+        return new external_function_parameters([
             'orgid' => new external_value(PARAM_INT, 'orgid'),
             'subcat1' => new external_value(PARAM_RAW, 'subcat1 - value'),
             'subcat2' => new external_value(PARAM_RAW, 'subcat2 - value'),
             'subcat3' => new external_value(PARAM_RAW, 'subcat3 - value'),
-        ));
+        ]);
     }
 
     public static function createcourse_selections($orgid, $subcat1, $subcat2, $subcat3) {
         global $CFG, $DB;
-        $params = self::validate_parameters(self::createcourse_selections_parameters(), array('orgid' => $orgid, 'subcat1' => $subcat1, 'subcat2' => $subcat2, 'subcat3' => $subcat3));
+        $params = self::validate_parameters(self::createcourse_selections_parameters(), ['orgid' => $orgid, 'subcat1' => $subcat1, 'subcat2' => $subcat2, 'subcat3' => $subcat3]);
 
         $orgas = \local_eduvidual\locallib::get_organisations(\local_eduvidual\locallib::ROLE_TEACHER);
         $org = \local_eduvidual\locallib::get_organisations_check($orgas, $params['orgid']);
 
-        $seltree = array(
+        $seltree = [
             'org' => $org,
             'orgid' => $org->orgid,
             'orgids' => $orgas,
@@ -53,7 +53,7 @@ class local_eduvidual_external_teacher extends external_api {
             'subcats2lbl' => $org->subcats2lbl,
             'subcats3lbl' => $org->subcats3lbl,
             'subcats4lbl' => $org->subcats4lbl,
-        );
+        ];
         if (!empty($params['subcat1'])) {
             $seltree['subcats2'] = \local_eduvidual\locallib::get_orgsubcats($org->orgid, 'subcats2', $params['subcat1']);
         }
@@ -63,12 +63,15 @@ class local_eduvidual_external_teacher extends external_api {
 
         for ($a = 1; $a <= 3; $a++) {
             $seltree['subcat' . $a] = $params['subcat' . $a];
-            if (empty($org->subcats2lbl))
+            if (empty($org->subcats2lbl)) {
                 continue;
-            if ($a > 1 && empty($seltree['subcat' . ($a - 1)]))
+            }
+            if ($a > 1 && empty($seltree['subcat' . ($a - 1)])) {
                 $seltree['subcat' . $a] = '';
-            if (is_array($seltree['subcats' . $a]) && !empty($params['subcat' . $a]) && !in_array($params['subcat' . $a], $seltree['subcats' . $a]))
+            }
+            if (is_array($seltree['subcats' . $a]) && !empty($params['subcat' . $a]) && !in_array($params['subcat' . $a], $seltree['subcats' . $a])) {
                 $seltree['subcat' . $a] = '';
+            }
         }
 
         return json_encode($seltree, JSON_NUMERIC_CHECK);
