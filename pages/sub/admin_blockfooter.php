@@ -21,13 +21,14 @@
  */
 
 defined('MOODLE_INTERNAL') || die;
-if (!is_siteadmin())
+if (!is_siteadmin()) {
     die;
+}
 
 echo $OUTPUT->render_from_template(
     'local_eduvidual/admin_blockfooter',
-    (object)array(
+    (object)[
         'navbar' => get_config('local_eduvidual', 'navbar'),
         'blockfooter' => get_config('local_eduvidual', 'blockfooter'),
-    )
+    ]
 );
