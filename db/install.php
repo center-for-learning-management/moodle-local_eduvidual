@@ -26,17 +26,17 @@ defined('MOODLE_INTERNAL') || die;
 function xmldb_local_eduvidual_install() {
     global $DB;
 
-    $obj = new \stdClass;
+    $obj = new \stdClass();
     $obj->name = 'eduvidual internal';
     $obj->sortorder = 1;
-    $chk = $DB->get_record('user_info_category', array('name' => $obj->name));
+    $chk = $DB->get_record('user_info_category', ['name' => $obj->name]);
     if (empty($chk->id)) {
         $catid = $DB->insert_record('user_info_category', $obj, true);
     } else {
         $catid = $chk->id;
     }
 
-    $obj = new \stdClass;
+    $obj = new \stdClass();
     $obj->categoryid = $catid;
     $obj->datatype = 'text';
     $obj->shortname = 'secret';
@@ -57,7 +57,7 @@ function xmldb_local_eduvidual_install() {
     $obj->param4 = '';
     $obj->param5 = '';
 
-    $chk = $DB->get_record('user_info_field', array('shortname' => $obj->shortname));
+    $chk = $DB->get_record('user_info_field', ['shortname' => $obj->shortname]);
     if (empty($chk->id)) {
         $id = $DB->insert_record('user_info_field', $obj, true);
     } else {
@@ -66,7 +66,7 @@ function xmldb_local_eduvidual_install() {
     set_config('fieldid_secret', $id, 'local_eduvidual');
 
 
-    $obj = new \stdClass;
+    $obj = new \stdClass();
     $obj->categoryid = $catid;
     $obj->datatype = 'text';
     $obj->shortname = 'supportflag';
@@ -87,7 +87,7 @@ function xmldb_local_eduvidual_install() {
     $obj->param4 = '';
     $obj->param5 = '';
 
-    $chk = $DB->get_record('user_info_field', array('shortname' => $obj->shortname));
+    $chk = $DB->get_record('user_info_field', ['shortname' => $obj->shortname]);
     if (empty($chk->id)) {
         $id = $DB->insert_record('user_info_field', $obj, true);
     } else {
