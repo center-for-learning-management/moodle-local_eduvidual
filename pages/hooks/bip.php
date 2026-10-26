@@ -80,7 +80,7 @@ if (empty($idpparams['userinfo']['email'])) {
 }
 
 
-\auth_shibboleth_link\lib::link_data_store_cache($idpparams);
+\auth_shibboleth_link\lib::idpparams_store($idpparams);
 
 
 // schulzugehörigkeit updaten
