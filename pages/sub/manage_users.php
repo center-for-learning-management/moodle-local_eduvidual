@@ -33,15 +33,15 @@ $tab = optional_param('tab', 'manageusers', PARAM_TEXT); // tab the will be show
 
 $codes = [];
 if ($tab === 'accesscodes') {
-    $_codes = $DB->get_records_sql('SELECT * FROM {local_eduvidual_org_codes} WHERE orgid=? ORDER BY maturity DESC', array($org->orgid));
+    $_codes = $DB->get_records_sql('SELECT * FROM {local_eduvidual_org_codes} WHERE orgid=? ORDER BY maturity DESC', [$org->orgid]);
     foreach ($_codes as $code) {
         $code->isvalid = ($code->maturity > time());
         $code->role_localized = get_string('role:' . $code->role, 'local_eduvidual');
 
-        $issuer = $DB->get_record('user', array('id' => $code->userid));
+        $issuer = $DB->get_record('user', ['id' => $code->userid]);
         if (!empty($issuer->id)) {
             $code->issuerid = $issuer->id;
-            $code->issuerpicture = $OUTPUT->user_picture($issuer, array('size' => 30));
+            $code->issuerpicture = $OUTPUT->user_picture($issuer, ['size' => 30]);
         }
         $codes[] = $code;
     }
@@ -49,7 +49,7 @@ if ($tab === 'accesscodes') {
 
 echo $OUTPUT->render_from_template(
     'local_eduvidual/manage_users',
-    (object)array(
+    (object)[
         'codes' => $codes,
         'codes_amount' => count($codes),
         'yyyymmddhhiiss' => date('Y-m-d H:i:s', time() + 60 * 60 * 24 * 30),
@@ -57,5 +57,5 @@ echo $OUTPUT->render_from_template(
         'tab_' . $tab . '_active' => true,
         'urlspreadsheet' => get_config('local_eduvidual', 'manage_importusers_spreadsheettemplate'),
         'wwwroot' => $CFG->wwwroot,
-    )
+    ]
 );

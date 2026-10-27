@@ -1,9 +1,9 @@
-define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'local_eduvidual/main'], function ($, AJAX, NOTIFICATION, STR, URL, MAIN) {
+define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'local_eduvidual/main'], function($, AJAX, NOTIFICATION, STR, URL, MAIN) {
   return {
     debug: false,
     dashboardEnhanceInfo: {},
-    run: function (data) {
-      STR.get_strings([{key: 'Accesscard', component: 'local_eduvidual'}]).then(function (s) {
+    run: function(data) {
+      STR.get_strings([{key: 'Accesscard', component: 'local_eduvidual'}]).then(function(s) {
         $('.usermenu .dropdown a[href$="/user/preferences.php"]').after(
           $('<a>').attr('href', URL.relativeUrl('local/eduvidual/pages/accesscard.php'))
             .addClass('dropdown-item menu-action').attr('role', 'menuitem')
@@ -21,18 +21,18 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'loc
      * Clear session cache.
      * @TODO: Not yet called by any script.
      */
-    clearSessionStorage: function () {
+    clearSessionStorage: function() {
       console.log('local_eduvidual/jsinjector:clearSessionStorage()');
       window.sessionStorage.clear();
     },
-    dashboardCourseLoaded: function () {
+    dashboardCourseLoaded: function() {
       console.log('local_eduvidual/jsinjector:dashboardCourseLoaded()');
       var JSI = this;
-      $('.dashboard-card-deck>.dashboard-card:not(.local-eduvidual-enhanced)').each(function () {
+      $('.dashboard-card-deck>.dashboard-card:not(.local-eduvidual-enhanced)').each(function() {
         JSI.dashboardEnhanceCourse($(this));
       });
     },
-    dashboardEnhanceCourse: function (card) {
+    dashboardEnhanceCourse: function(card) {
       card.addClass('local-eduvidual-enhanced local-eduvidual-transition-all');
       var JSI = this;
       var courseid = +$(card).attr('data-course-id');
@@ -62,7 +62,7 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'loc
           AJAX.call([{
             methodname: 'local_eduvidual_user_course_news',
             args: {courseid: courseid},
-            done: function (reply) {
+            done: function(reply) {
               console.log('got reply for courseid ' + courseid, reply);
               if (typeof reply.label !== 'undefined' && reply.label != '') {
                 JSI.dashboardEnhanceInfo[courseid] = reply;
@@ -79,9 +79,9 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'loc
     /**
      * If a page does not have a breadcrumb, we inject one.
      */
-    fakeBreadCrumb: function () {
+    fakeBreadCrumb: function() {
       if ($('#page #page-header .card-body .d-flex.flex-wrap #page-navbar').length == 0) {
-        STR.get_strings([{key: 'navigation', component: 'core'}, {key: 'myhome', component: 'core'}]).then(function (s) {
+        STR.get_strings([{key: 'navigation', component: 'core'}, {key: 'myhome', component: 'core'}]).then(function(s) {
           $('#page #page-header .card-body .d-flex.flex-wrap').prepend(
             $("<div id=\"page-navbar\">").append(
               $("<nav role=\"navigation\" aria-label=\"" + s[0] + "\">").append(
@@ -98,9 +98,12 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'loc
     },
     /**
      * In some cases, we want other redirections.
+     * @param type
      */
-    modifyRedirectUrl: function (type) {
-      if (this.debug) console.log('local_eduvidual/jsinjector:modifyRedirectUrl(type)', type);
+    modifyRedirectUrl: function(type) {
+      if (this.debug) {
+ console.log('local_eduvidual/jsinjector:modifyRedirectUrl(type)', type);
+}
       if (type == 'coursedelete') {
         $('#page-content .continuebutton form').attr('action', URL.relativeUrl('/my'));
         $('#page-content .continuebutton form input[name="categoryid"]').remove();
@@ -110,9 +113,11 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'loc
      * Inject org specific menu.
      * @param orgmenu the rendered menu.
      */
-    orgMenu: function (orgmenu) {
+    orgMenu: function(orgmenu) {
       // OBSOLETE SINCE 2021083000
-      if (this.debug) console.log('local_eduvidual/jsinjector:orgMenu(orgmenu)');
+      if (this.debug) {
+ console.log('local_eduvidual/jsinjector:orgMenu(orgmenu)');
+}
       $(orgmenu).insertBefore($('#page-wrapper>.navbar div.usermenu').closest('li'));
     },
   };

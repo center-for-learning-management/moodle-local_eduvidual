@@ -106,9 +106,9 @@ class lib_register {
             $orgcoursebasement = get_config('local_eduvidual', 'orgcoursebasement');
             $course = \local_eduvidual\lib_helper::duplicate_course($orgcoursebasement, 'Digitaler Schulhof (' . $org->orgid . ')', $org->orgid, $org->categoryid, 1);
             $org->courseid = $course->id;
-            $DB->set_field('local_eduvidual_org', 'courseid', $org->courseid, array('orgid' => $org->orgid));
+            $DB->set_field('local_eduvidual_org', 'courseid', $org->courseid, ['orgid' => $org->orgid]);
             $course->summary = '<p>Digitaler Schulhof der Schule ' . $org->name . '</p>';
-            $DB->set_field('course', 'summary', $course->summary, array('id' => $course->id));
+            $DB->set_field('course', 'summary', $course->summary, ['id' => $course->id]);
         }
         if (empty($org->supportcourseid) && file_exists($CFG->dirroot . '/local/edusupport/version.php')) {
             // Create a support course for this org.
@@ -117,10 +117,10 @@ class lib_register {
                 // Duplicate our template.
                 $supportcourse = \local_eduvidual\lib_helper::duplicate_course($template, 'Helpdesk (' . $org->name . ')', 'helpdesk_' . $org->orgid, $org->categoryid, 1);
                 if (!empty($supportcourse->id)) {
-                    $DB->set_field('local_eduvidual_org', 'supportcourseid', $supportcourse->id, array('orgid' => $org->orgid));
+                    $DB->set_field('local_eduvidual_org', 'supportcourseid', $supportcourse->id, ['orgid' => $org->orgid]);
                     // Remove news forum in that course.
                     $sql = "SELECT * FROM {forum} WHERE type='news')";
-                    $newsforums = $DB->get_records('forum', array('type' => 'news', 'course' => $supportcourse->id));
+                    $newsforums = $DB->get_records('forum', ['type' => 'news', 'course' => $supportcourse->id]);
                     foreach ($newsforums as $newsforum) {
                         $cm = \get_coursemodule_from_instance('forum', $newsforum->id);
                         if (!empty($cm->id)) {
@@ -128,7 +128,7 @@ class lib_register {
                         }
                     }
                     $sql = "SELECT * FROM {forum} WHERE course=? AND type='general'";
-                    $forums = $DB->get_records_sql($sql, array($supportcourse->id));
+                    $forums = $DB->get_records_sql($sql, [$supportcourse->id]);
                     foreach ($forums as $forum) {
                         \local_edusupport\lib::supportforum_enable($forum->id);
                         if ($org->orgid > 500000 && $org->orgid < 600000) {
