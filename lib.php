@@ -123,10 +123,6 @@ function local_eduvidual_extend_navigation_user_settings($nav, $user, $context, 
         $node = $nav->add_node(navigation_node::create(get_string('pluginname', 'local_eduvidual')));
 
         $node->add(get_string('preferences:selectbg:title', 'local_eduvidual'), new moodle_url('/local/eduvidual/pages/preferences.php', array('act' => 'backgrounds', 'userid' => $user->id)));
-        $sysctx = \context_system::instance();
-        if (has_capability('moodle/question:viewall', $sysctx, $user)) {
-            $node->add(get_string('preferences:questioncategories', 'local_eduvidual'), new moodle_url('/local/eduvidual/pages/preferences.php', array('act' => 'qcats', 'userid' => $user->id)));
-        }
 
         $node->add(get_string('user:merge_accounts', 'local_eduvidual'), new moodle_url('/local/eduvidual/pages/user_merge.php'));
     }
