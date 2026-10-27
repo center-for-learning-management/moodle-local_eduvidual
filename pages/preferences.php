@@ -87,7 +87,4 @@ if ($embed || $act == 'backgrounds') {
     echo $OUTPUT->render_from_template('local_eduvidual/preferences_background', $params);
 }
 
-if (has_capability('moodle/question:viewall', $context)) {
-    require_once($CFG->dirroot . '/local/eduvidual/pages/preferences_teacher.php');
-} // if is teacher
 echo $OUTPUT->footer();

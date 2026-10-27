@@ -337,15 +337,6 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/templates'
         MAIN.connect({module: 'teacher', act: 'createcourse_loadteacher', orgid: orgid, search: search}, {signalItem: {}});
       });
     },
-    questioncategories: function (sender) {
-      var questioncategories = [];
-      $.each($("input[name='questioncategories[]']:checked"), function () {
-        questioncategories.push(+$(this).val());
-      });
-      require(['local_eduvidual/main'], function (MAIN) {
-        MAIN.connect({module: 'user', act: 'questioncategories', questioncategories: questioncategories}, {signalItem: $(sender).parent()});
-      });
-    },
     result: function (o) {
       var TEACHER = this;
       if (o.data.act == 'course_hideshow') {
