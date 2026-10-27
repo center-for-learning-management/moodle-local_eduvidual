@@ -43,7 +43,7 @@ class local_eduvidual_manage_subcats_form extends moodleform {
 
         $mform->addElement('html', '<h5>' . get_string('manage:subcats:forcategories', 'local_eduvidual') . '</h5>');
 
-        $mform->addElement('text', 'subcats1lbl', $org->subcats1lbl, array('style' => 'width: 100%;'));
+        $mform->addElement('text', 'subcats1lbl', $org->subcats1lbl, ['style' => 'width: 100%;']);
         $mform->setType('subcats1lbl', PARAM_TEXT);
         $mform->setDefault('subcats1lbl', $org->subcats1lbl);
 
@@ -51,7 +51,7 @@ class local_eduvidual_manage_subcats_form extends moodleform {
         $mform->setType('subcats1', PARAM_TEXT);
         $mform->setDefault('subcats1', $org->subcats1);
 
-        $mform->addElement('text', 'subcats2lbl', get_string('manage:subcats:subcat2', 'local_eduvidual'), array('style' => 'width: 100%;'));
+        $mform->addElement('text', 'subcats2lbl', get_string('manage:subcats:subcat2', 'local_eduvidual'), ['style' => 'width: 100%;']);
         $mform->setType('subcats2lbl', PARAM_TEXT);
         $mform->setDefault('subcats2lbl', $org->subcats2lbl);
 
@@ -61,7 +61,7 @@ class local_eduvidual_manage_subcats_form extends moodleform {
 
         $mform->addElement('html', '<h5>' . get_string('manage:subcats:forcoursename', 'local_eduvidual') . '</h5>');
 
-        $mform->addElement('text', 'subcats3lbl', get_string('manage:subcats:subcat3', 'local_eduvidual'), array('style' => 'width: 100%;'));
+        $mform->addElement('text', 'subcats3lbl', get_string('manage:subcats:subcat3', 'local_eduvidual'), ['style' => 'width: 100%;']);
         $mform->setType('subcats3lbl', PARAM_TEXT);
         $mform->setDefault('subcats3lbl', $org->subcats3lbl);
 
@@ -69,15 +69,15 @@ class local_eduvidual_manage_subcats_form extends moodleform {
         $mform->setType('subcats3', PARAM_TEXT);
         $mform->setDefault('subcats3', $org->subcats3);
 
-        $mform->addElement('text', 'subcats4lbl', get_string('manage:subcats:subcat4', 'local_eduvidual'), array('style' => 'width: 100%;'));
+        $mform->addElement('text', 'subcats4lbl', get_string('manage:subcats:subcat4', 'local_eduvidual'), ['style' => 'width: 100%;']);
         $mform->setType('subcats4lbl', PARAM_TEXT);
         $mform->setDefault('subcats4lbl', $org->subcats4lbl);
 
         $this->add_action_buttons();
     }
 
-    //Custom validation should be added here
+    // Custom validation should be added here
     function validation($data, $files) {
-        return array();
+        return [];
     }
 }
