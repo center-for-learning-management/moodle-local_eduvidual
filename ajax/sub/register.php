@@ -34,7 +34,7 @@ if (isloggedin() && !isguestuser()) {
              * Should return if orgid is valid
             */
             $orgid = optional_param('orgid', -1, PARAM_INT);
-            $org = $DB->get_record('local_eduvidual_org', array('orgid' => $orgid));
+            $org = $DB->get_record('local_eduvidual_org', ['orgid' => $orgid]);
             if (isset($org->orgid) && $org->orgid == $orgid) {
                 $reply['status'] = 'ok';
                 $reply['name'] = substr($org->name, 0, 30);
@@ -50,7 +50,7 @@ if (isloggedin() && !isguestuser()) {
              * Should return if mail was sent successfully
             */
             $orgid = optional_param('orgid', -1, PARAM_INT);
-            $org = $DB->get_record('local_eduvidual_org', array('orgid' => $orgid, 'authenticated' => 0));
+            $org = $DB->get_record('local_eduvidual_org', ['orgid' => $orgid, 'authenticated' => 0]);
 
             if (isset($org->orgid) && $org->orgid == $orgid) {
                 $org->authtan = substr(md5(date('Y-m-d H:i:s') . rand(0, 99999)), 0, 10);
@@ -72,7 +72,7 @@ if (isloggedin() && !isguestuser()) {
 
                 $messagehtml = $OUTPUT->render_from_template(
                     'local_eduvidual/register_mail_authtan',
-                    (object)array(
+                    (object)[
                         'authtan' => $org->authtan,
                         'email' => $USER->email,
                         'orgid' => $org->orgid,
@@ -81,7 +81,7 @@ if (isloggedin() && !isguestuser()) {
                         'userfullname' => $USER->firstname . ' ' . $USER->lastname,
                         'userid' => $USER->id,
                         'wwwroot' => $CFG->wwwroot,
-                    )
+                    ]
                 );
 
                 $messagetext = html_to_text($messagehtml);
@@ -92,8 +92,9 @@ if (isloggedin() && !isguestuser()) {
                 $ccmails = explode(',', get_config('local_eduvidual', 'registrationcc'));
                 if (count($ccmails) > 0) {
                     foreach ($ccmails as $ccmail) {
-                        if (!filter_var($ccmail, FILTER_VALIDATE_EMAIL))
+                        if (!filter_var($ccmail, FILTER_VALIDATE_EMAIL)) {
                             continue;
+                        }
                         $touser->email = trim($ccmail);
                         email_to_user($touser, $fromuser, $subject, $messagetext, $messagehtml, "", true);
                     }
@@ -112,7 +113,7 @@ if (isloggedin() && !isguestuser()) {
             $orgid = optional_param('orgid', -1, PARAM_INT);
             $authtan = optional_param('token', '', PARAM_TEXT);
             $name = substr(optional_param('name', '', PARAM_TEXT), 0, 30);
-            $test = $DB->get_record('local_eduvidual_org', array('name' => $name));
+            $test = $DB->get_record('local_eduvidual_org', ['name' => $name]);
             if (strlen($name) <= 5) {
                 $reply['status'] = 'error';
                 $reply['error'] = 'err_name_too_short';
@@ -120,7 +121,7 @@ if (isloggedin() && !isguestuser()) {
                 $reply['status'] = 'error';
                 $reply['error'] = 'err_name_already_taken';
             } else {
-                $org = $DB->get_record('local_eduvidual_org', array('orgid' => $orgid, 'authtan' => $authtan));
+                $org = $DB->get_record('local_eduvidual_org', ['orgid' => $orgid, 'authtan' => $authtan]);
 
                 if (isset($org->orgid) && $org->orgid == $orgid) {
                     \local_eduvidual\lib_register::set_orgname($org, $name);
@@ -136,14 +137,14 @@ if (isloggedin() && !isguestuser()) {
                     if (!empty($org->courseid)) {
                         $messagehtml = $OUTPUT->render_from_template(
                             'local_eduvidual/register_mail_completed',
-                            (object)array(
+                            (object)[
                                 'categoryurl' => $CFG->wwwroot . '/course/index.php?categoryid=' . $org->categoryid,
                                 'supportcourseurl' => get_config('local_eduvidual', 'supportcourseurl'),
                                 'orgid' => $org->orgid,
                                 'orgname' => $org->name,
                                 'subject' => get_string('mailregister:2:header', 'local_eduvidual'),
                                 'wwwroot' => $CFG->wwwroot,
-                            )
+                            ]
                         );
 
                         $messagetext = html_to_text($messagehtml);
@@ -168,22 +169,22 @@ if (isloggedin() && !isguestuser()) {
                         $ccmails = explode(',', get_config('local_eduvidual', 'registrationcc'));
                         if (count($ccmails) > 0) {
                             foreach ($ccmails as $ccmail) {
-                                if (!filter_var($ccmail, FILTER_VALIDATE_EMAIL))
+                                if (!filter_var($ccmail, FILTER_VALIDATE_EMAIL)) {
                                     continue;
+                                }
                                 $touser->email = trim($ccmail);
                                 email_to_user($touser, $fromuser, $subject, $messagetext, $messagehtml, "", true);
                             }
                         }
                         $org->authenticated = time();
                         $org->authtan = '';
-                        $DB->set_field('local_eduvidual_org', 'authenticated', $org->authenticated, array('orgid' => $org->orgid));
-                        $DB->set_field('local_eduvidual_org', 'authtan', $org->authtan, array('orgid' => $org->orgid));
+                        $DB->set_field('local_eduvidual_org', 'authenticated', $org->authenticated, ['orgid' => $org->orgid]);
+                        $DB->set_field('local_eduvidual_org', 'authtan', $org->authtan, ['orgid' => $org->orgid]);
                         $reply['status'] = 'ok';
                     } else {
                         $reply['status'] = 'error';
                         $reply['error'] = 'error creating category or course';
                     }
-
                 } else {
                     $reply['status'] = 'error';
                 }
