@@ -1,7 +1,2 @@
-.remote-sync.json
-composer.*
 node_modules
-.DS_Store
-transfer.sh
-.vscode-upload.json
 .vscode*

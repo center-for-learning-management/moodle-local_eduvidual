@@ -34,10 +34,10 @@ $context = \context_system::instance();
 $PAGE->set_context($context);
 $PAGE->set_pagelayout(($embed) ? 'popup' : 'standard');
 $PAGE->set_pagetype('user-preferences');
-$PAGE->set_url('/local/eduvidual/pages/preferences.php', array('act' => $act));
+$PAGE->set_url('/local/eduvidual/pages/preferences.php', ['act' => $act]);
 $PAGE->set_title(get_string('Preferences', 'local_eduvidual'));
 $PAGE->set_heading(get_string('Preferences', 'local_eduvidual'));
-//$PAGE->set_cacheable(false);
+// $PAGE->set_cacheable(false);
 $PAGE->requires->css('/local/eduvidual/style/preferences.css');
 
 if (isguestuser($USER)) {
@@ -87,7 +87,4 @@ if ($embed || $act == 'backgrounds') {
     echo $OUTPUT->render_from_template('local_eduvidual/preferences_background', $params);
 }
 
-if (has_capability('moodle/question:viewall', $context)) {
-    require_once($CFG->dirroot . '/local/eduvidual/pages/preferences_teacher.php');
-} // if is teacher
 echo $OUTPUT->footer();

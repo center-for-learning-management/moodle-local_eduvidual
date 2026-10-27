@@ -1,3 +1,5 @@
+/* eslint-disable */
+// TODO: eslint fehler beheben
 define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/templates', 'core/url', 'local_eduvidual/main', 'local_eduvidual/user'], function ($, AJAX, NOTIFICATION, STR, TEMPLATES, URL, MAIN, USER) {
   return {
     /**
@@ -142,7 +144,7 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/templates'
           });
           // Do the coloring of our table.
           var trigger = false;
-          $('#' + uniqid + '-form table.generaltable tr').each(function (i, e) {
+          $('#' + uniqid + '-form table.table tr').each(function (i, e) {
             if ($(e).css('display') != 'none') {
               trigger = !trigger;
               $(e).css('background-color', (trigger) ? 'rgba(0,0,0,0.05)' : '#ffffff');
@@ -333,15 +335,6 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/templates'
       var search = $(inp).val();
       require(['local_eduvidual/main'], function (MAIN) {
         MAIN.connect({module: 'teacher', act: 'createcourse_loadteacher', orgid: orgid, search: search}, {signalItem: {}});
-      });
-    },
-    questioncategories: function (sender) {
-      var questioncategories = [];
-      $.each($("input[name='questioncategories[]']:checked"), function () {
-        questioncategories.push(+$(this).val());
-      });
-      require(['local_eduvidual/main'], function (MAIN) {
-        MAIN.connect({module: 'user', act: 'questioncategories', questioncategories: questioncategories}, {signalItem: $(sender).parent()});
       });
     },
     result: function (o) {
