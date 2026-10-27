@@ -1,4 +1,18 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 require_once __DIR__ . '/../../../../config.php';
 
@@ -98,15 +112,17 @@ class local_eduvidual_eduportal_widget {
 
         $idp = static::get_idp_id();
 
-        $shibboleth_link = $DB->get_record_select('auth_shibboleth_link',
+        $shibboleth_link = $DB->get_record_select(
+            'auth_shibboleth_link',
             'idp LIKE ? AND ' . $DB->sql_like('idpusername', '?'),
-            [$idp, $bpk]);
+            [$idp, $bpk]
+        );
 
         // global $data;
         // static::html_response('https://fdfdfdsfd ' . $idp . ' ' . $bpk . print_r($data, true));
 
         if ($shibboleth_link) {
-            $user = $DB->get_record('user', array('id' => $shibboleth_link->userid));
+            $user = $DB->get_record('user', ['id' => $shibboleth_link->userid]);
         } else {
             $user = null;
         }
@@ -248,6 +264,10 @@ class local_eduvidual_eduportal_widget {
             ];
         }
 
+        $danger_window = 2 * 24 * 60 * 60;
+        $warning_window = 7 * 24 * 60 * 60;
+        $now = time();
+
         foreach ($events as $event) {
             /** @var \core_calendar\local\event\entities\action_event $event */
 
@@ -274,10 +294,12 @@ class local_eduvidual_eduportal_widget {
             // }
 
             $url = $event->get_action()->get_url() ?: new \moodle_url('/calendar/view.php');
+            $startTime = $event->get_times()->get_start_time()->getTimestamp();
+            $diff = $startTime - $now;
 
             $item = [
                 'label' => $event->get_name(),
-                'detailleft' => userdate($event->get_times()->get_start_time()->getTimestamp(), get_string('strftimedatetimeshort', 'core_langconfig')),
+                'detailleft' => userdate($startTime, get_string('strftimedatetimeshort', 'core_langconfig')),
                 'detailright' => '',
                 // ($data ? $data->activitystr . ' · ' : '') .
                 // $event->get_course()->get('shortname'),
@@ -286,6 +308,16 @@ class local_eduvidual_eduportal_widget {
                 'link' => $isMyself ? static::sso_url($url)->out(false) : null,
                 // , ['view' => 'month', 'course' => 1]),
             ];
+
+            if ($diff >= 0 && $diff <= $danger_window) {
+                $item['badge'] = true;
+                $item['badgehidden'] = true;
+                $item['badgetype'] = 'danger';
+            } elseif ($diff >= 0 && $diff <= $warning_window) {
+                $item['badge'] = true;
+                $item['badgehidden'] = true;
+                $item['badgetype'] = 'warning';
+            }
 
             $responseData->items[] = $item;
         }

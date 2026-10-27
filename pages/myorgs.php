@@ -25,7 +25,7 @@
 require_once('../../../config.php');
 require_login();
 
-$PAGE->set_url('/local/eduvidual/pages/myorgs.php', array());
+$PAGE->set_url('/local/eduvidual/pages/myorgs.php', []);
 $PAGE->set_context(\context_system::instance());
 $PAGE->set_heading(get_string('categories:coursecategories', 'local_eduvidual'));
 $PAGE->set_title(get_string('categories:coursecategories', 'local_eduvidual'));
@@ -38,7 +38,7 @@ if (is_siteadmin() && optional_param('showall', 0, PARAM_INT) == 1) {
             FROM {local_eduvidual_org}
             WHERE authenticated>0
             ORDER BY orgid ASC, name ASC";
-    $params = array();
+    $params = [];
 } else {
     $sql = "SELECT ou.orgid,ou.role,o.name,o.categoryid,o.orgsize
             FROM {local_eduvidual_org} o,
@@ -46,7 +46,7 @@ if (is_siteadmin() && optional_param('showall', 0, PARAM_INT) == 1) {
             WHERE o.orgid=ou.orgid
                 AND ou.userid=?
             ORDER BY o.orgid ASC, o.name ASC";
-    $params = array($USER->id);
+    $params = [$USER->id];
 }
 
 if (!empty($favorite = optional_param('favorite', 0, PARAM_INT))) {
@@ -62,17 +62,17 @@ $memberships = array_values($DB->get_records_sql($sql, $params));
 
 foreach ($memberships as &$membership) {
     $membership->isfavorite = ($membership->orgid == $favorgid);
-    $membership->canmanage = is_siteadmin() || in_array($membership->role, array(\local_eduvidual\locallib::ROLE_MANAGER));
+    $membership->canmanage = is_siteadmin() || in_array($membership->role, [\local_eduvidual\locallib::ROLE_MANAGER]);
     if ($membership->canmanage) {
         if (empty($managersactions)) {
             $_actions = \local_eduvidual\locallib::get_actions('manage', true);
             $actions = array_keys($_actions);
-            $managersactions = array();
+            $managersactions = [];
             foreach ($actions as $action) {
-                $managersactions[] = array(
+                $managersactions[] = [
                     'name' => $_actions[$action],
                     'url' => $CFG->wwwroot . '/local/eduvidual/pages/manage.php?act=' . $action,
-                );
+                ];
             }
         }
         $membership->actions = $managersactions;
@@ -81,11 +81,11 @@ foreach ($memberships as &$membership) {
     }
     $membership->role = get_string('role:' . $membership->role, 'local_eduvidual');
 }
-echo $OUTPUT->render_from_template('local_eduvidual/user_orgs', array(
+echo $OUTPUT->render_from_template('local_eduvidual/user_orgs', [
     'hasmultiple' => count($memberships) > 1,
     'isadmin' => is_siteadmin(),
     'memberships' => $memberships,
     'wwwroot' => $CFG->wwwroot,
-));
+]);
 
 echo $OUTPUT->footer();
