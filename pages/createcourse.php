@@ -25,18 +25,18 @@ require_login();
 
 require_once($CFG->libdir . '/adminlib.php');
 
-$PAGE->set_url('/local/eduvidual/pages/createcourse.php', array());
-//$PAGE->set_cacheable(false);
+$PAGE->set_url('/local/eduvidual/pages/createcourse.php', []);
+// $PAGE->set_cacheable(false);
 $PAGE->set_context(context_system::instance());
 
 // Only allow a certain user group access to this page
-$allow = array("Manager", "Teacher");
+$allow = ["Manager", "Teacher"];
 if (!in_array(\local_eduvidual\locallib::get_highest_role(), $allow) && !is_siteadmin()) {
     echo $OUTPUT->header();
-    echo $OUTPUT->render_from_template('local_eduvidual/alert', array(
+    echo $OUTPUT->render_from_template('local_eduvidual/alert', [
         'type' => 'danger',
         'content' => get_string('access_denied', 'local_eduvidual'),
-    ));
+    ]);
     echo $OUTPUT->footer();
     exit;
 }
@@ -60,86 +60,90 @@ $subcats2 = \local_eduvidual\locallib::get_orgsubcats($orgid, 'subcats2', $subca
 $subcats3 = \local_eduvidual\locallib::get_orgsubcats($orgid, 'subcats3', $subcat2);
 
 $redirect = '';
-$msg = array();
+$msg = [];
 
 if ($formsent) {
     $org = \local_eduvidual\locallib::get_organisations_check($orgs, $orgid);
 
     if (empty($subcat1)) {
-        $msg[] = $OUTPUT->render_from_template('local_eduvidual/alert', array(
+        $msg[] = $OUTPUT->render_from_template('local_eduvidual/alert', [
             'content' => get_string('createcourse:subcat1emptyerror', 'local_eduvidual'),
             'url' => $CFG->wwwroot . '/my',
             'type' => 'error',
-        ));
-    } elseif (empty($org->id) ||
+        ]);
+    } elseif (
+        empty($org->id) ||
         !empty($subcat1) && !empty($subcats1) && !in_array($subcat1, $subcats1) ||
         !empty($subcat2) && !empty($subcats2) && !in_array($subcat2, $subcats2) ||
-        !empty($subcat3) && !empty($subcats3) && !in_array($subcat3, $subcats3)) {
-
-        $msg[] = $OUTPUT->render_from_template('local_eduvidual/alert', array(
+        !empty($subcat3) && !empty($subcats3) && !in_array($subcat3, $subcats3)
+    ) {
+        $msg[] = $OUTPUT->render_from_template('local_eduvidual/alert', [
             'content' => get_string('missing_permission', 'local_eduvidual'),
             'url' => $CFG->wwwroot . '/my',
             'type' => 'error',
-        ));
+        ]);
     } else {
         // We can create a course in that org!
-        $parts = array();
-        if (!empty($subcat2))
+        $parts = [];
+        if (!empty($subcat2)) {
             $parts[] = $subcat2;
-        if (!empty($subcat3))
+        }
+        if (!empty($subcat3)) {
             $parts[] = $subcat3;
-        if (!empty($subcat4))
+        }
+        if (!empty($subcat4)) {
             $parts[] = $subcat4;
+        }
         $coursename = implode(' ', $parts);
         if (empty(str_replace(' ', '', $coursename))) {
-            $msg[] = $OUTPUT->render_from_template('local_eduvidual/alert', array(
+            $msg[] = $OUTPUT->render_from_template('local_eduvidual/alert', [
                 'content' => get_string('createcourse:coursenameemptyerror', 'local_eduvidual'),
                 'url' => $CFG->wwwroot . '/my',
                 'type' => 'error',
-            ));
+            ]);
         } else {
             $coursename = $subcat1 . ' ' . $coursename;
-            $cat1 = $DB->get_record('course_categories', array('parent' => $org->categoryid, 'name' => $subcat1));
+            $cat1 = $DB->get_record('course_categories', ['parent' => $org->categoryid, 'name' => $subcat1]);
             if (empty($cat1->id)) {
                 // Create this category!
 
-                $cat1 = (object)array(
+                $cat1 = (object)[
                     'name' => $subcat1,
                     'description' => '',
                     'parent' => $org->categoryid,
                     'visible' => 1,
-                );
+                ];
                 $cat1 = \core_course_category::create($cat1);
             }
             // If it is still empty - error
             if (empty($cat1->id)) {
-                $msg[] = $OUTPUT->render_from_template('local_eduvidual/alert', array(
+                $msg[] = $OUTPUT->render_from_template('local_eduvidual/alert', [
                     'content' => get_string('createcourse:catcreateerror', 'local_eduvidual'),
                     'url' => $CFG->wwwroot . '/my',
                     'type' => 'error',
-                ));
+                ]);
             } else {
                 $targcat = $cat1;
                 if (!empty($subcat2)) {
-                    //print_r($cat1);
-                    $cat2 = $DB->get_record('course_categories', array('parent' => $cat1->id, 'name' => $subcat2));
+                    // print_r($cat1);
+                    $cat2 = $DB->get_record('course_categories', ['parent' => $cat1->id, 'name' => $subcat2]);
                     if (empty($cat2->id)) {
                         // Create this category!
-                        $cat2 = (object)array(
+                        $cat2 = (object)[
                             'name' => $subcat2,
                             'description' => '',
                             'parent' => $cat1->id,
                             'visible' => 1,
-                        );
+                        ];
                         $cat2 = \core_course_category::create($cat2);
                     }
                     // If it is still empty - error
                     if (empty($cat2->id)) {
-                        $msg[] = $OUTPUT->render_from_template('local_eduvidual/alert', array(
+                        $msg[] = $OUTPUT->render_from_template('local_eduvidual/alert', [
                             'content' => get_string('createcourse:catcreateerror', 'local_eduvidual'),
                             'url' => $CFG->wwwroot . '/my',
                             'type' => 'error',
-                        ));
+                        ]);
                     } else {
                         $targcat = $cat2;
                     }
@@ -164,8 +168,9 @@ if ($formsent) {
                         $fullname = $coursename;
                         $categoryid = $targcat->id;
                         $shortname = $org->orgid . '-' . $USER->id . '-' . date('YmdHis');
-                        if (strlen($shortname) > 30)
+                        if (strlen($shortname) > 30) {
                             $shortname = substr($shortname, 0, 30);
+                        }
 
                         if (strlen($fullname) > 5) {
                             // First check if the template is valid.
@@ -180,7 +185,7 @@ if ($formsent) {
 
                             // Now create a course.
                             require_once($CFG->dirroot . '/course/lib.php');
-                            $data = $DB->get_record('course', array('id' => $basementcourseid));
+                            $data = $DB->get_record('course', ['id' => $basementcourseid]);
                             $data->category = $categoryid;
                             $data->fullname = $fullname;
                             $data->shortname = $shortname;
@@ -210,8 +215,10 @@ if ($formsent) {
                             try {
                                 // Now restore the course.
                                 $target = \backup::TARGET_EXISTING_DELETING;
-                                $rc = new \restore_controller('template' . $basementcourseid, $course->id, \backup::INTERACTIVE_NO,
-                                    \backup::MODE_IMPORT, $USER->id, $target);
+                                $rc = new \restore_controller(
+                                    'template' . $basementcourseid, $course->id, \backup::INTERACTIVE_NO,
+                                    \backup::MODE_IMPORT, $USER->id, $target
+                                );
 
                                 foreach ($settings as $settingname => $value) {
                                     $plan = $rc->get_plan();
@@ -221,7 +228,6 @@ if ($formsent) {
                                             $rc->get_plan()->get_setting($settingname)->set_value($value);
                                         }
                                     }
-
                                 }
                                 $rc->execute_precheck();
                                 $rc->execute_plan();
@@ -237,14 +243,18 @@ if ($formsent) {
                                 $course->startdate = (date("m") < 6) ? strtotime((date("Y") - 1) . '0901000000') : strtotime(date("Y") . '0901000000');
                                 $course->enddate = (date("m") < 6) ? strtotime((date("Y")) . '0831000000') : strtotime((date("Y") + 1) . '0831000000');
                                 $course->summary = "";
-                                if (!empty($subcat1))
+                                if (!empty($subcat1)) {
                                     $course->summary .= $org->subcats1lbl . ': ' . $subcat1 . "<br />\n";
-                                if (!empty($subcat2))
+                                }
+                                if (!empty($subcat2)) {
                                     $course->summary .= $org->subcats2lbl . ': ' . $subcat2 . "<br />\n";
-                                if (!empty($subcat3))
+                                }
+                                if (!empty($subcat3)) {
                                     $course->summary .= $org->subcats3lbl . ': ' . $subcat3 . "<br />\n";
-                                if (!empty($subcat4))
+                                }
+                                if (!empty($subcat4)) {
                                     $course->summary .= $org->subcats4lbl . ': ' . $subcat4 . "<br />\n";
+                                }
                                 $DB->update_record('course', $course);
                                 rebuild_course_cache($course->id);
 
@@ -254,7 +264,7 @@ if ($formsent) {
                                 // Enrol user as teacher.
                                 $role = get_config('local_eduvidual', 'defaultroleteacher');
                                 $enroluser = $USER->id;
-                                \local_eduvidual\lib_enrol::course_manual_enrolments(array($course->id), array($enroluser), $role);
+                                \local_eduvidual\lib_enrol::course_manual_enrolments([$course->id], [$enroluser], $role);
 
                                 $redirect = $CFG->wwwroot . '/course/view.php?id=' . $course->id;
                                 if ($basement == 'restore') {
@@ -262,37 +272,36 @@ if ($formsent) {
                                     $redirect = $CFG->wwwroot . '/backup/restorefile.php?contextid=' . $coursectx->id;
                                 }
 
-                                $msg[] = $OUTPUT->render_from_template('local_eduvidual/alert', array(
+                                $msg[] = $OUTPUT->render_from_template('local_eduvidual/alert', [
                                     'content' => get_string('createcourse:created', 'local_eduvidual'),
                                     'url' => $redirect,
                                     'type' => 'success',
-                                ));
+                                ]);
                             }
 
                             if (empty($course->id)) {
-                                $msg[] = $OUTPUT->render_from_template('local_eduvidual/alert', array(
+                                $msg[] = $OUTPUT->render_from_template('local_eduvidual/alert', [
                                     'content' => get_string('createcourse:createerror', 'local_eduvidual'),
                                     'url' => $CFG->wwwroot . '/my',
                                     'type' => 'error',
-                                ));
+                                ]);
                             }
                         } else {
-                            $msg[] = $OUTPUT->render_from_template('local_eduvidual/alert', array(
+                            $msg[] = $OUTPUT->render_from_template('local_eduvidual/alert', [
                                 'content' => get_string('createcourse:nametooshort', 'local_eduvidual'),
                                 'url' => $CFG->wwwroot . '/my',
                                 'type' => 'error',
-                            ));
+                            ]);
                         }
                     } else {
-                        $msg[] = $OUTPUT->render_from_template('local_eduvidual/alert', array(
+                        $msg[] = $OUTPUT->render_from_template('local_eduvidual/alert', [
                             'content' => get_string('createcourse:invalidbasement', 'local_eduvidual'),
                             'url' => $CFG->wwwroot . '/my',
                             'type' => 'error',
-                        ));
+                        ]);
                     }
                 }
             }
-
         }
     }
 }
@@ -305,24 +314,24 @@ if (count($msg) > 0) {
     echo implode('', $msg);
 } else {
     if (count($orgs) == 0) {
-        echo $OUTPUT->render_from_template('local_eduvidual/alert', array(
+        echo $OUTPUT->render_from_template('local_eduvidual/alert', [
             'content' => get_string('missing_permission', 'local_eduvidual'),
             'url' => $CFG->wwwroot . '/my',
             'type' => 'error',
-        ));
+        ]);
     } else {
-        $_orgs = array();
+        $_orgs = [];
         foreach ($orgs as $_org) {
             $_orgs[] = $_org;
         }
-        $schoolyears = array('SJ 19/20', 'SJ 20/21');
+        $schoolyears = ['SJ 19/20', 'SJ 20/21'];
 
         $favorgid = \local_eduvidual\locallib::get_favorgid();
         foreach ($_orgs as &$_org) {
             $_org->isselected = ((empty($orgid) && $favorgid == $_org->orgid) || (!empty($orgid) && $orgid == $_org->orgid)) ? 1 : 0;
         }
 
-        echo $OUTPUT->render_from_template('local_eduvidual/teacher_createcourse', array(
+        echo $OUTPUT->render_from_template('local_eduvidual/teacher_createcourse', [
             'coursebasementempty' => get_config('local_eduvidual', 'coursebasementempty'),
             'coursebasementrestore' => get_config('local_eduvidual', 'coursebasementrestore'),
             'coursebasementtemplate' => get_config('local_eduvidual', 'coursebasementtemplate'),
@@ -345,7 +354,7 @@ if (count($msg) > 0) {
             'subcats3org' => '',
             'subcats4org' => '',
             'wwwroot' => $CFG->wwwroot,
-        ));
+        ]);
     }
 }
 
