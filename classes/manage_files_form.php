@@ -40,26 +40,28 @@ class local_eduvidual_manage_files_form extends moodleform {
         $mform->setType('act', PARAM_TEXT);
 
         $mform->addElement('header', 'orglogolbl', get_string('manage:style:orglogo:header', 'local_eduvidual'));
-        $mform->addElement('filemanager', 'orglogo', get_string('manage:style:orglogo:filearealabel', 'local_eduvidual'), null,
-            array(
+        $mform->addElement(
+            'filemanager', 'orglogo', get_string('manage:style:orglogo:filearealabel', 'local_eduvidual'), null,
+            [
                 'subdirs' => $this->subdirs, 'maxbytes' => $this->maxbytes, 'areamaxbytes' => $this->areamaxbytes,
-                'maxfiles' => 1, 'accepted_types' => array('image'),
-            )
+                'maxfiles' => 1, 'accepted_types' => ['image'],
+            ]
         );
 
         $mform->addElement('header', 'orgfileslbl', get_string('manage:style:orgfiles:header', 'local_eduvidual'));
-        $mform->addElement('filemanager', 'orgfiles', get_string('manage:style:orgfiles:filearealabel', 'local_eduvidual', array('url' => $_url)), null,
-            array(
+        $mform->addElement(
+            'filemanager', 'orgfiles', get_string('manage:style:orgfiles:filearealabel', 'local_eduvidual', ['url' => $_url]), null,
+            [
                 'subdirs' => $this->subdirs, 'maxbytes' => $this->maxbytes, 'areamaxbytes' => $this->areamaxbytes,
-                'maxfiles' => $this->maxfiles, 'accepted_types' => array('image') //, 'return_types'=> FILE_INTERNAL | FILE_EXTERNAL
-            )
+                'maxfiles' => $this->maxfiles, 'accepted_types' => ['image'], // , 'return_types'=> FILE_INTERNAL | FILE_EXTERNAL
+            ]
         );
 
         $this->add_action_buttons(true, get_string('manage:style:files:send', 'local_eduvidual'));
     }
 
-    //Custom validation should be added here
+    // Custom validation should be added here
     function validation($data, $files) {
-        return array();
+        return [];
     }
 }
