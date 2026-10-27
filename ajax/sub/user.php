@@ -31,7 +31,7 @@ switch ($act) {
         } else {
             $orgid = optional_param('orgid', 0, PARAM_INT);
             $code = optional_param('code', '', PARAM_TEXT);
-            $entries = $DB->get_records('local_eduvidual_org_codes', array('orgid' => $orgid, 'code' => $code));
+            $entries = $DB->get_records('local_eduvidual_org_codes', ['orgid' => $orgid, 'code' => $code]);
             if (count($entries) > 0) {
                 $role = '';
                 foreach ($entries as $entry) {
@@ -57,7 +57,7 @@ switch ($act) {
             $reply['error'] = 'guestuser:nopermission';
         } else {
             $editor = optional_param('editor', '', PARAM_TEXT);
-            $valid = array('', 'atto', 'tinymce', 'textarea');
+            $valid = ['', 'atto', 'tinymce', 'textarea'];
             if (!in_array($editor, $valid)) {
                 $reply['error'] = 'invalid choice';
             } else {
