@@ -16,54 +16,9 @@
 }}
 
 
-<div id="{{ uniqid }}-tab-container">
-    <ul role="tablist" class="nav nav-tabs">
-		{{# actions }}
-			<li class="nav-item">
-				<a class="nav-link{{#selected}} active{{/selected}}" href="{{{url}}}">{{{ localized }}}</a>
-			</li>
-		{{/ actions }}
-	</ul>
-    <ul class="nav nav-tabs mb-3 toggle-controller-{{uniqid}}">
-        <li class="nav-item">
-            <a href="#" onclick="var a = this; require(['jquery', 'local_eduvidual/main'], function($, M) { M.toggle('{{uniqid}}', a, $(a).attr('data-toggle'));} ); return false;" data-toggle="manageusers" class="nav-link">
-                {{#str}} manage:users:title, local_eduvidual {{/str}}
-            </a>
-        </li>
-        <li class="nav-item">
-            <a href="#" onclick="var a = this; require(['jquery', 'local_eduvidual/main'], function($, M) { M.toggle('{{uniqid}}', a, $(a).attr('data-toggle'));} ); return false;" data-toggle="adduserexcel" class="nav-link">
-                {{#str}} manage:createuserspreadsheet, local_eduvidual {{/str}}
-            </a>
-        </li>
-        <li class="nav-item">
-            <a href="#" onclick="var a = this; require(['jquery', 'local_eduvidual/main'], function($, M) { M.toggle('{{uniqid}}', a, $(a).attr('data-toggle'));} ); return false;" data-toggle="addusercode" class="nav-link">
-                {{#str}} manage:adduser, local_eduvidual {{/str}}
-            </a>
-        </li>
-        <li class="nav-item">
-            <a href="#" onclick="var a = this; require(['jquery', 'local_eduvidual/main'], function($, M) { M.toggle('{{uniqid}}', a, $(a).attr('data-toggle'));} ); return false;" data-toggle="adduseranonymous" class="nav-link">
-                {{#str}} manage:createuseranonymous, local_eduvidual {{/str}}
-            </a>
-        </li>
-        {{!
-        <li class="nav-item">
-            <a href="#"
-                onclick="var a = this; require(['jquery', 'local_eduvidual/main', 'local_eduvidual/manager'], function($, M, MG) { var inp = $('#local_eduvidual_manage_addparent_studentfilter'); MG.addParentFilter('student', inp); M.toggle('{{uniqid} }', a, $(a).attr('data-toggle'));} ); return false;" data-toggle="managementors" class="nav-link">
-                {{#str} } manage:addparent, local_eduvidual {{/str} }
-            </a>
-        </li>
-        }}
-        <li class="nav-item">
-            <a href="#" onclick="var a = this; require(['jquery', 'local_eduvidual/main'], function($, M) { M.toggle('{{uniqid}}', a, $(a).attr('data-toggle'));} ); return false;" data-toggle="accesscodes" class="nav-link">
-                {{#str}} manage:accesscodes, local_eduvidual {{/str}}
-            </a>
-        </li>
-    </ul>
-</div>
-
-
-<div class="ui-eduvidual__ local_eduvidual_manage_user-wrapper">
-    <div id="{{uniqid}}-manageusers" class="hidden card {{uniqid}}-card" style="padding: 12px;">
+<div id="local_eduvidual_manage_users_wrapper" class="ui-eduvidual__ local_eduvidual_manage_user-wrapper" data-orgid="{{orgid}}">
+{{#tab_manageusers_active}}
+    <div class="card" style="padding: 12px;">
         <h3>{{#str}} manage:users:title, local_eduvidual {{/str}}</h3>
         <p>{{#str}} manage:users:description, local_eduvidual, { "wwwroot": {{#quote}}{{wwwroot}}{{/quote}}, "orgid": {{#quote}}{{orgid}}{{/quote}} } {{/str}}</p>
 
@@ -108,8 +63,9 @@
             </fieldset>
         </div>
     </div>
-
-    <div id="{{uniqid}}-adduserexcel" class="hidden card {{uniqid}}-card" style="padding: 12px;">
+{{/tab_manageusers_active}}
+{{#tab_adduserexcel_active}}
+    <div class="card" style="padding: 12px;">
         <h3>{{#str}} manage:createuserspreadsheet, local_eduvidual {{/str}}</h3>
         <div class="grid-eq-2">
             <div style="border-right: 1px solid darkgray; padding-right: 2px;">
@@ -126,8 +82,9 @@
             </div>
         </div>
     </div>
-
-    <div id="{{uniqid}}-addusercode" class="hidden card {{uniqid}}-card" style="padding: 12px;">
+{{/tab_adduserexcel_active}}
+{{#tab_addusercode_active}}
+    <div class="card" style="padding: 12px;">
         <div class="grid-eq-2">
             <div style="border-right: 1px solid darkgray; padding-right: 2px;">
                 <h3>{{#str}} manage:adduser, local_eduvidual {{/str}}</h3>
@@ -142,7 +99,7 @@
                     <option value="Manager">{{#str}} role:Manager, local_eduvidual {{/str}}</option>
                 </select>
                 <label for="local_eduvidual_manage_adduser">{{#str}} manage:users:entersecrets, local_eduvidual {{/str}}</label>
-                <input type="text" id="local_eduvidual_manage_adduser" data-orgid="{{orgid}}" class="form-control"
+                <input type="text" id="local_eduvidual_manage_adduser" class="form-control"
                     placeholder="{{#str}} manage:users:entersecrets, local_eduvidual {{/str}}"/>
                 <input type="button" value="{{#str}} manage:adduser, local_eduvidual {{/str}}" class="btn btn-primary btn-block"
                     onclick="require(['local_eduvidual/manager'], function(MANAGER) { MANAGER.addUser(); });"/>
@@ -154,7 +111,9 @@
         </div>
         -->
     </div>
-    <div id="{{uniqid}}-adduseranonymous" class="hidden card {{uniqid}}-card" style="padding: 12px;">
+{{/tab_addusercode_active}}
+{{#tab_adduseranonymous_active}}
+    <div class="card" style="padding: 12px;">
         <div class="grid-eq-2">
             <div style="border-right: 1px solid darkgray; padding-right: 2px;">
                 <h3>{{#str}} manage:createuseranonymous, local_eduvidual {{/str}}</h3>
@@ -191,41 +150,15 @@
             </div>
         </div>
     </div>
-    <div id="{{uniqid}}-managementors" class="hidden card {{uniqid}}-card" style="padding: 12px;">
-        <h3>{{#str}} manage:addparent, local_eduvidual {{/str}}</h3>
-        <p>{{#str}} manage:addparent:description, local_eduvidual {{/str}}</p>
-        <p class="alert alert-info">{{#str}} manage:addparent:warning, local_eduvidual {{/str}}</p>
-        <input type="button" value="{{#str}} manage:addparent:changestate, local_eduvidual {{/str}}" class="btn btn-primary btn-block"
-            onclick="var inp = this; require(['local_eduvidual/manager'], function(MANAGER) { MANAGER.addParent(inp); });" />
-        <div class="grid-eq-2">
-            <div style="border-right: 1px solid darkgray; padding-right: 2px;">
-                <input type="text" id="local_eduvidual_manage_addparent_studentfilter"
-                    data-orgid="{{orgid}}" class="form-control"
-                    placeholder="{{#str}} manage:addparent:studentfilter, local_eduvidual {{/str}}"
-                    onkeyup="var inp = this; require(['local_eduvidual/manager'], function(MANAGER) { MANAGER.addParentFilter('student', inp); });"
-                     />
-                <select id="local_eduvidual_manage_addparent_student" style="width: 100%;" size="10" class="form-control"
-                    onchange="require(['local_eduvidual/manager'], function(MANAGER) { MANAGER.addParentSelectStudent(); });">
-                    <option value="">{{#str}} manage:addparent:studentfilter:init, local_eduvidual {{/str}}</option>
-                </select>
-            </div>
-            <div>
-                <input type="text" id="local_eduvidual_manage_addparent_parentfilter" class="form-control"
-                    placeholder="{{#str}} manage:addparent:parentfilter, local_eduvidual {{/str}}"
-                    onkeyup="var inp = this; require(['local_eduvidual/manager'], function(MANAGER) { MANAGER.addParentFilter('parent', inp); });" />
-                <select id="local_eduvidual_manage_addparent_parent" style="width: 100%;" size="10" class="form-control">
-                    <option value="">{{#str}} manage:addparent:parentfilter:init, local_eduvidual {{/str}}</option>
-                </select>
-            </div>
-        </div>
-    </div>
-    <div id="{{uniqid}}-accesscodes" class="hidden card {{uniqid}}-card" style="padding: 12px;">
+{{/tab_adduseranonymous_active}}
+{{#tab_accesscodes_active}}
+    <div class="card" style="padding: 12px;">
         <h3>{{#str}} manage:accesscodes, local_eduvidual {{/str}}</h3>
         <p>{{#str}} manage:accesscodes:description, local_eduvidual, { "wwwroot": "{{{wwwroot}}}"} {{/str}}</p>
         <div>
             <div>
                 <h4>{{#str}} manage:accesscodes:create, local_eduvidual {{/str}}</h4>
-                <table class="generaltable">
+                <table class="table table-striped">
                     <tr>
                         <th>
                             <label for="local_eduvidual_manage_accesscode_code">
@@ -277,7 +210,7 @@
                     <p class="alert alert-info">{{#str}} none {{/str}}</p>
                 {{/codes_amount}}
                 {{#codes_amount}}
-                    <table class="generaltable">
+                    <table class="table table-striped">
                         <tr>
                             <th width="30">{{#str}} manage:accesscodes:issuer:short, local_eduvidual {{/str}}</th>
                             <th>{{#str}} manage:accesscodes:code, local_eduvidual {{/str}}</th>
@@ -307,14 +240,5 @@
             </div>
         </div>
     </div>
+{{/tab_accesscodes_active}}
 </div>
-
-{{#js}}
-var tab = '{{tab}}';
-if (tab != '') {
-    require(['jquery', 'local_eduvidual/main'], function($, M) {
-        var a = $('.toggle-controller-{{uniqid}}').find('[data-toggle="{{tab}}"]');
-        M.toggle('{{uniqid}}', a, tab);
-    });
-}
-{{/js}}

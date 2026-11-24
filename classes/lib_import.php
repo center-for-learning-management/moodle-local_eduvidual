@@ -22,16 +22,16 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  **/
 
-defined('MOODLE_INTERNAL') || die;
+use local_eduvidual\locallib;
 
-require_once("{$CFG->libdir}/phpspreadsheet/vendor/autoload.php");
+defined('MOODLE_INTERNAL') || die;
 
 /**
  * User Excel import für Schulmanager
  */
 class local_eduvidual_lib_import {
-    var $fields = array();
-    var $rowobjects = array();
+    var $fields = [];
+    var $rowobjects = [];
     var $compiler;
 
     /**
@@ -39,7 +39,7 @@ class local_eduvidual_lib_import {
      **/
     public function set_fields($fields) {
         $this->fields = $fields;
-        $this->rowobjects = array();
+        $this->rowobjects = [];
     }
 
     public function set_compiler($compiler) {
@@ -64,12 +64,12 @@ class local_eduvidual_lib_import {
         if (!is_array($this->fields) || count($this->fields) == 0) {
             return;
         }
-        $colids = array();
-        $this->rowobjects = array();
+        $colids = [];
+        $this->rowobjects = [];
 
-        //$spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::createReaderForFile($filepath);
-        //$spreadsheet->setReadDataOnly(true);
-        //$spreadsheet->load($filepath);
+        // $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::createReaderForFile($filepath);
+        // $spreadsheet->setReadDataOnly(true);
+        // $spreadsheet->load($filepath);
         $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($filepath);
         $sheet = $spreadsheet->getSheet(0);
 
@@ -78,7 +78,7 @@ class local_eduvidual_lib_import {
         $maxcols = 1;
         while (true) {
             // convert Cell object to string, to get the actual value
-            $value = (string)$sheet->getCellByColumnAndRow($maxcols, 1, false);
+            $value = (string)$sheet->getCell([$maxcols, 1]);
             if (!empty($value)) {
                 $colids[$maxcols] = strtolower($value);
                 $maxcols++;
@@ -96,9 +96,10 @@ class local_eduvidual_lib_import {
             for ($col = 1; $col < $maxcols; $col++) {
                 if (!empty($colids[$col])) {
                     // convert Cell object to string, to get the actual value
-                    $obj->{$colids[$col]} = (string)$sheet->getCellByColumnAndRow($col, $row, false);
-                    if (!empty($obj->{$colids[$col]}))
+                    $obj->{$colids[$col]} = (string)$sheet->getCell([$col, $row]);
+                    if (!empty($obj->{$colids[$col]})) {
                         $foundany = true;
+                    }
                 }
             }
             if (!empty($obj->role)) {
@@ -117,7 +118,7 @@ class local_eduvidual_lib_import {
      * Returns text-areas as array to be used in a form.
      **/
     public function print_hidden_form() {
-        $form = array();
+        $form = [];
         $form[] = '<textarea style="display: none;" name="fields">' . json_encode($this->fields, JSON_NUMERIC_CHECK) . '</textarea>';
         $form[] = '<textarea style="display: none;" name="rowobjects">' . json_encode($this->rowobjects, JSON_NUMERIC_CHECK) . '</textarea>';
         return "\t\t" . implode("\n\t\t", $form);
@@ -127,10 +128,10 @@ class local_eduvidual_lib_import {
      * Returns text-areas as array to be used in a form.
      **/
     public function print_hidden_array() {
-        return array(
+        return [
             'fields' => json_encode($this->fields, JSON_NUMERIC_CHECK),
             'rowobjects' => json_encode($this->rowobjects, JSON_NUMERIC_CHECK),
-        );
+        ];
     }
 
     /**
@@ -141,30 +142,6 @@ class local_eduvidual_lib_import {
             $obj = $this->compiler->compile($obj);
         }
         return $obj;
-    }
-
-    /**
-     * Creates an XSLX-Sheet to be downloaded.
-     **/
-    public function download($filename = 'import') {
-        $writer = \Box\Spout\Writer\WriterFactory::create(Type::XLSX); // for XLSX files
-        $writer->openToBrowser($filename . '.xlsx'); // stream data directly to the browser
-
-        $row = array();
-        for ($fieldid = 0; $fieldid < count($this->fields); $fieldid++) {
-            $row[$fieldid] = $this->fields[$fieldid];
-        }
-        $writer->addRow($row);
-
-        foreach ($this->rowobjects as $rowobject) {
-            $row = array();
-            for ($fieldid = 0; $fieldid < count($this->fields); $fieldid++) {
-                $row[$fieldid] = $rowobject->{$this->fields[$fieldid]};
-            }
-            $writer->addRow($row);
-        }
-
-        $writer->close();
     }
 
     /**
@@ -197,13 +174,12 @@ class local_eduvidual_lib_import_compiler_module extends local_eduvidual_lib_imp
     public function compile($module) {
         $payload = new stdClass();
         $payload->processed = false;
-        //$payload->customize = new stdClass();
+        // $payload->customize = new stdClass();
         $payload->defaults = new stdClass();
         // Common fields
         $payload->defaults->name = $module->name;
         $payload->defaults->intro = $module->description;
         if (isset($module->ltilaunch)) {
-
         } elseif (isset($module->url)) {
             $payload->defaults->externalurl = $module->url;
             $module->type = 'url';
@@ -216,7 +192,8 @@ class local_eduvidual_lib_import_compiler_module extends local_eduvidual_lib_imp
             ||
             $module->categoryid == 0
             ||
-            empty($module->name)) {
+            empty($module->name)
+        ) {
             $payload->processed = false;
         }
         $module->payload = $payload;
@@ -248,7 +225,7 @@ class local_eduvidual_lib_import_compiler_user extends local_eduvidual_lib_impor
         if (empty($obj->email)) {
             $pattern = 'e-' . date("Ym") . '-';
             $usernameformat = $pattern . '%1$04d';
-            $lasts = $DB->get_records_sql('SELECT username FROM {user} WHERE username LIKE ? ORDER BY username DESC LIMIT 0,1', array($pattern . '%'));
+            $lasts = $DB->get_records_sql('SELECT username FROM {user} WHERE username LIKE ? ORDER BY username DESC LIMIT 0,1', [$pattern . '%']);
 
             if ((count($lasts)) > 0) {
                 foreach ($lasts as $last) {
@@ -286,7 +263,7 @@ class local_eduvidual_lib_import_compiler_user extends local_eduvidual_lib_impor
         }
 
         // Revoke processed flag if required information is missing!
-        if (!in_array($obj->role, array(locallib::ROLE_MANAGER, locallib::ROLE_TEACHER, locallib::ROLE_STUDENT, locallib::ROLE_PARENT, 'Remove'))) {
+        if (!in_array($obj->role, [locallib::ROLE_MANAGER, locallib::ROLE_TEACHER, locallib::ROLE_STUDENT, locallib::ROLE_PARENT, 'Remove'])) {
             $payload->processed = false;
             $payload->action = get_string('import:invalid_role', 'local_eduvidual');
         }
@@ -311,10 +288,10 @@ class local_eduvidual_lib_import_compiler_user extends local_eduvidual_lib_impor
                     WHERE
                         username LIKE ? ESCAPE '^' OR
                         email LIKE ? ESCAPE '^'";
-        $params = array(
+        $params = [
             str_replace('_', '^_', $obj->email),
             str_replace('_', '^_', $obj->email),
-        );
+        ];
         $ids = array_keys($DB->get_records_sql($sql, $params));
         if (count($ids) > 0) {
             if (count($ids) == 1) {
@@ -335,7 +312,7 @@ class local_eduvidual_lib_import_compiler_user extends local_eduvidual_lib_impor
         }
 
         if (!empty($obj->id)) {
-            $ismember = $DB->get_record('local_eduvidual_orgid_userid', array('orgid' => $org->orgid, 'userid' => $obj->id));
+            $ismember = $DB->get_record('local_eduvidual_orgid_userid', ['orgid' => $org->orgid, 'userid' => $obj->id]);
             if (!empty($ismember->userid) && $ismember->userid != $obj->id) {
                 $payload->processed = false;
                 $payload->action = get_string('import:invalid_org', 'local_eduvidual');
@@ -345,14 +322,13 @@ class local_eduvidual_lib_import_compiler_user extends local_eduvidual_lib_impor
                 $payload->action = get_string('import:issiteadmin', 'local_eduvidual');
             }
             if (!empty($obj->password) || !empty($obj->forcechangepassword)) {
-                $canchangepasswordsfor = array("manual", "self");
+                $canchangepasswordsfor = ["manual", "self"];
                 $usero = \core_user::get_user($obj->id, 'id,auth');
                 if (!empty($usero->id) && !in_array($usero->auth, $canchangepasswordsfor)) {
                     $payload->processed = false;
                     $payload->action = get_string('import:cannotchangepassword', 'local_eduvidual', $usero);
                 }
             }
-
         }
 
         // Test if username or email already taken.
@@ -365,12 +341,12 @@ class local_eduvidual_lib_import_compiler_user extends local_eduvidual_lib_impor
                             email LIKE ? ESCAPE '^' OR
                             email LIKE ? ESCAPE '^'
                         )";
-        $params = array(
+        $params = [
             str_replace('_', '^_', $obj->username),
             str_replace('_', '^_', $obj->email),
             str_replace('_', '^_', $obj->username),
             str_replace('_', '^_', $obj->email),
-        );
+        ];
         if (!empty($obj->id)) {
             $sql .= " AND id <> ?";
             $params[] = $obj->id;
