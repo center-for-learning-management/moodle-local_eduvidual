@@ -30,10 +30,10 @@ $camefrom = optional_param('camefrom', 0, PARAM_INT);
 
 $PAGE->set_context(context_system::instance());
 $PAGE->set_pagelayout('mydashboard');
-$PAGE->set_url('/local/eduvidual/pages/restricted.php', array('camefrom' => $camefrom));
+$PAGE->set_url('/local/eduvidual/pages/restricted.php', ['camefrom' => $camefrom]);
 $PAGE->set_title(get_string('restricted:title', 'local_eduvidual'));
 $PAGE->set_heading(get_string('restricted:title', 'local_eduvidual'));
-//$PAGE->set_cacheable(false);
+// $PAGE->set_cacheable(false);
 
 echo $OUTPUT->header();
 ?>

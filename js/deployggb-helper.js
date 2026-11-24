@@ -1,5 +1,5 @@
   // ######################################################################################################
-  // keine Änderungen nach dieser Zeile notwendig 
+  // keine Änderungen nach dieser Zeile notwendig
   // <script src="/pluginfile.php/1/local_eduvidual/globalfiles/0/_sys/geogebra/deployggb-helper.js" type="text/javascript"></script>
   // ######################################################################################################
   ggbdoinit = true;
@@ -7,8 +7,8 @@
 
   function ggbOnInit() {
     console.log("ggbOnInit " + ggbApplet.getVersion());
-    //console.log(stack2ggb);
-    //console.log(jQuery);
+    // Console.log(stack2ggb);
+    // console.log(jQuery);
 
     for (var key in stack2ggb) {
       console.log(key + " -> " + stack2ggb[key]);
@@ -42,8 +42,7 @@
       if (showfeedback == true) {
 		  try {
 			  ggbApplet.setValue("showfeedback", true);
-		  }
-		  catch (err) {
+		  } catch (err) {
 			  console.log("INFO-ERROR showfeedback: " + err);
 		  }
 
@@ -59,31 +58,33 @@
   }
 
   var GGBgetStatefromanswer = function() {
-    //console.log("GGBgetStatefromanswer");
+    // Console.log("GGBgetStatefromanswer");
     try {
       ggbState = document.querySelector("input[name*='ans_ggb_base64']").value;
-      //console.log("ggbState: " + ggbState);
-      if (!(ggbState == "" || ggbState == undefined || ggbState.length < 50)) ggbApplet.setBase64(ggbState);
+      // Console.log("ggbState: " + ggbState);
+      if (!(ggbState == "" || ggbState == undefined || ggbState.length < 50)) {
+ ggbApplet.setBase64(ggbState);
+}
     } catch (err) {
       console.log("INFO-ERROR ans_ggb_base64: " + err);
     }
     try {
       // Feedback anzeigen oder nicht?
       if (document.querySelector(".stackprtfeedback").length != 0) {
-        //console.log("CFBB: " + count_feedbackblocks);
+        // Console.log("CFBB: " + count_feedbackblocks);
         showfeedback = true;
       }
     } catch (err) {
       console.log("INFO-ERROR stackprtfeedback: " + err);
     }
 
-  }
+  };
 
   var GGBupdateAnswer = function(value) {
-    //console.log("GGBupdateAnswer");
+    // Console.log("GGBupdateAnswer");
     try {
       var ggbState = ggbApplet.getBase64();
-      //console.log(ggbState);
+      // Console.log(ggbState);
       document.querySelector("input[name*='ans_ggb_base64']").value = ggbState;
     } catch (err) {
       console.log("ggbState: " + ggbState);
@@ -96,7 +97,7 @@
         var key = ggb2stack[i];
         var value = ggbApplet.getValue(key);
         var inputname = "'ans_ggbv_" + key + "'";
-        //console.log("in: " + inputname);
+        // Console.log("in: " + inputname);
         document.querySelector("input[name*=" + inputname + "]").value = value;
 
       } catch (err1) {
@@ -105,22 +106,18 @@
     }
 
 
-
-  }
+  };
 
   var applet = new GGBApplet(ggb_parameters, true);
 
   window.addEventListener("load", function(event) {
-    //console.log("DOM fully loaded and parsed");
-	try
-	{
-	if(ggb2stack_version !== undefined)
-	{
-		//ggb2stack_version = "5.0.574.0";
-		applet.setHTML5Codebase("https://www.geogebra.org/apps/"+ggb2stack_version+"/web3d");
+    // Console.log("DOM fully loaded and parsed");
+	try {
+	if (ggb2stack_version !== undefined) {
+		// Ggb2stack_version = "5.0.574.0";
+		applet.setHTML5Codebase("https://www.geogebra.org/apps/" + ggb2stack_version + "/web3d");
 	}
-	}
-	catch (err10) {}
+	} catch (err10) {}
     applet.inject('applet_container', 'preferHTML5');
   });
 
