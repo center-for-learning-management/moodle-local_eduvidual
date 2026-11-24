@@ -43,9 +43,9 @@ function xmldb_local_eduvidual_upgrade($oldversion) {
             $dbman->add_field($table, $field);
         }
 
-        $users = $DB->get_records_sql("SELECT id,email FROM {user} WHERE email LIKE '%@doesnotexist.eduvidual.org' OR email LIKE '%@doesnotexist.eduvidual.at'", array());
+        $users = $DB->get_records_sql("SELECT id,email FROM {user} WHERE email LIKE '%@doesnotexist.eduvidual.org' OR email LIKE '%@doesnotexist.eduvidual.at'", []);
         foreach ($users as $user) {
-            $DB->set_field('user', 'email', 'a' . $user->id . '@a.eduvidual.at', array('id' => $user->id));
+            $DB->set_field('user', 'email', 'a' . $user->id . '@a.eduvidual.at', ['id' => $user->id]);
         }
 
         upgrade_plugin_savepoint(true, 2020072200, 'local', 'eduvidual');
@@ -65,11 +65,11 @@ function xmldb_local_eduvidual_upgrade($oldversion) {
     }
     if ($oldversion < 2021011100) {
         // Schedule a course backup for all template courses.
-        $courseids = array(
+        $courseids = [
             get_config('local_eduvidual', 'coursebasementempty'),
             get_config('local_eduvidual', 'coursebasementrestore'),
             get_config('local_eduvidual', 'coursebasementtemplate'),
-        );
+        ];
         set_config('coursebasement-scheduled', implode(',', $courseids), 'local_eduvidual');
         upgrade_plugin_savepoint(true, 2021011100, 'local', 'eduvidual');
     }
@@ -83,9 +83,9 @@ function xmldb_local_eduvidual_upgrade($oldversion) {
                     FROM {course} c, {local_eduvidual_org} leo
                     WHERE c.id=leo.courseid
                         AND leo.authenticated > ?";
-        $orgcourses = $DB->get_records_sql($sql, array(0));
+        $orgcourses = $DB->get_records_sql($sql, [0]);
         foreach ($orgcourses as $orgcourse) {
-            $DB->set_field('local_eduvidual_org', 'authenticated', $orgcourse->timecreated, array('courseid' => $orgcourse->id));
+            $DB->set_field('local_eduvidual_org', 'authenticated', $orgcourse->timecreated, ['courseid' => $orgcourse->id]);
         }
 
         upgrade_plugin_savepoint(true, 2021031600, 'local', 'eduvidual');
