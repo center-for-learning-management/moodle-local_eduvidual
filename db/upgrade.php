@@ -43,9 +43,9 @@ function xmldb_local_eduvidual_upgrade($oldversion) {
             $dbman->add_field($table, $field);
         }
 
-        $users = $DB->get_records_sql("SELECT id,email FROM {user} WHERE email LIKE '%@doesnotexist.eduvidual.org' OR email LIKE '%@doesnotexist.eduvidual.at'", array());
+        $users = $DB->get_records_sql("SELECT id,email FROM {user} WHERE email LIKE '%@doesnotexist.eduvidual.org' OR email LIKE '%@doesnotexist.eduvidual.at'", []);
         foreach ($users as $user) {
-            $DB->set_field('user', 'email', 'a' . $user->id . '@a.eduvidual.at', array('id' => $user->id));
+            $DB->set_field('user', 'email', 'a' . $user->id . '@a.eduvidual.at', ['id' => $user->id]);
         }
 
         upgrade_plugin_savepoint(true, 2020072200, 'local', 'eduvidual');
@@ -65,11 +65,11 @@ function xmldb_local_eduvidual_upgrade($oldversion) {
     }
     if ($oldversion < 2021011100) {
         // Schedule a course backup for all template courses.
-        $courseids = array(
+        $courseids = [
             get_config('local_eduvidual', 'coursebasementempty'),
             get_config('local_eduvidual', 'coursebasementrestore'),
             get_config('local_eduvidual', 'coursebasementtemplate'),
-        );
+        ];
         set_config('coursebasement-scheduled', implode(',', $courseids), 'local_eduvidual');
         upgrade_plugin_savepoint(true, 2021011100, 'local', 'eduvidual');
     }
@@ -83,9 +83,9 @@ function xmldb_local_eduvidual_upgrade($oldversion) {
                     FROM {course} c, {local_eduvidual_org} leo
                     WHERE c.id=leo.courseid
                         AND leo.authenticated > ?";
-        $orgcourses = $DB->get_records_sql($sql, array(0));
+        $orgcourses = $DB->get_records_sql($sql, [0]);
         foreach ($orgcourses as $orgcourse) {
-            $DB->set_field('local_eduvidual_org', 'authenticated', $orgcourse->timecreated, array('courseid' => $orgcourse->id));
+            $DB->set_field('local_eduvidual_org', 'authenticated', $orgcourse->timecreated, ['courseid' => $orgcourse->id]);
         }
 
         upgrade_plugin_savepoint(true, 2021031600, 'local', 'eduvidual');
@@ -210,6 +210,71 @@ function xmldb_local_eduvidual_upgrade($oldversion) {
             $dbman->add_field($table, $field);
         }
         upgrade_plugin_savepoint(true, 2022102500, 'local', 'eduvidual');
+    }
+
+    if ($oldversion < 2026051301) {
+        $table = new xmldb_table('local_eduvidual_bip_user');
+        if (!$dbman->table_exists($table)) {
+            $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+            $table->add_field('bpkbf', XMLDB_TYPE_CHAR, '100', null, XMLDB_NOTNULL, null, null);
+            $table->add_field('orgid', XMLDB_TYPE_INTEGER, '20', null, XMLDB_NOTNULL, null, null);
+            $table->add_field('role', XMLDB_TYPE_CHAR, '10', null, XMLDB_NOTNULL, null, 'std');
+            $table->add_field('firstname', XMLDB_TYPE_CHAR, '100', null, null, null, null);
+            $table->add_field('middlename', XMLDB_TYPE_CHAR, '100', null, null, null, null);
+            $table->add_field('lastname', XMLDB_TYPE_CHAR, '100', null, null, null, null);
+            $table->add_field('email', XMLDB_TYPE_CHAR, '250', null, null, null, null);
+            $table->add_field('dateofbirth', XMLDB_TYPE_CHAR, '10', null, null, null, null);
+            $table->add_field('timechanged', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+            $table->add_field('timeimported', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+
+            $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
+            $table->add_index('bpkbf_orgid_role', XMLDB_INDEX_UNIQUE, ['bpkbf', 'orgid', 'role']);
+            $table->add_index('orgid', XMLDB_INDEX_NOTUNIQUE, ['orgid']);
+
+            $dbman->create_table($table);
+        }
+        upgrade_plugin_savepoint(true, 2026051301, 'local', 'eduvidual');
+    }
+
+    if ($oldversion < 2026051400) {
+        $table = new xmldb_table('local_eduvidual_bip_user');
+
+        $oldindex = new xmldb_index('orgid', XMLDB_INDEX_NOTUNIQUE, ['orgid']);
+        if ($dbman->index_exists($table, $oldindex)) {
+            $dbman->drop_index($table, $oldindex);
+        }
+
+        $newindex = new xmldb_index('orgid_bpkbf', XMLDB_INDEX_NOTUNIQUE, ['orgid', 'bpkbf']);
+        if (!$dbman->index_exists($table, $newindex)) {
+            $dbman->add_index($table, $newindex);
+        }
+
+        upgrade_plugin_savepoint(true, 2026051400, 'local', 'eduvidual');
+    }
+
+    if ($oldversion < 2026060600) {
+        $table = new xmldb_table('local_eduvidual_org');
+
+        $fields = [
+            new xmldb_field('biporg', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, '0', 'orgsize'),
+            new xmldb_field('bipgenuine', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, '0', 'biporg'),
+            new xmldb_field('bipoperational', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, '0', 'bipgenuine'),
+        ];
+        foreach ($fields as $field) {
+            if (!$dbman->field_exists($table, $field)) {
+                $dbman->add_field($table, $field);
+            }
+        }
+
+        upgrade_plugin_savepoint(true, 2026060600, 'local', 'eduvidual');
+    }
+
+    if ($oldversion < 2026060601) {
+        // Voll-Resync des BIP-User-Imports erzwingen: der bisherige Delta-Cursor kennt nur
+        // std-Änderungen, ab jetzt werden alle usertypes geladen.
+        unset_config('bip_userimport_cursor', 'local_eduvidual');
+
+        upgrade_plugin_savepoint(true, 2026060601, 'local', 'eduvidual');
     }
 
 

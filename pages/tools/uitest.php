@@ -29,7 +29,7 @@ require_once('../../../../config.php');
 
 $PAGE->set_context(context_system::instance());
 $PAGE->set_pagelayout('admin');
-$PAGE->set_url('/local/eduvidual/pages/tools/uitest.php', array());
+$PAGE->set_url('/local/eduvidual/pages/tools/uitest.php', []);
 $PAGE->set_title('UI-Test');
 $PAGE->set_heading('UI-Test');
 

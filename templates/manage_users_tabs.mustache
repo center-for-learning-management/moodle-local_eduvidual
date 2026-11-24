@@ -1,0 +1,60 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+<ul class="nav nav-tabs mb-3">
+    <li class="nav-item">
+        <a href="{{wwwroot}}/local/eduvidual/pages/manage_userlists.php?orgid={{orgid}}"
+            class="nav-link{{#tab_list_active}} active{{/tab_list_active}}">
+            {{#str}} manage:userlist, local_eduvidual {{/str}}
+        </a>
+    </li>
+    <li class="nav-item">
+        <a href="{{wwwroot}}/local/eduvidual/pages/manage_bip_matching.php?orgid={{orgid}}"
+            class="nav-link{{#tab_bipmatching_active}} active{{/tab_bipmatching_active}}">
+            {{#str}} manage:bipmatching, local_eduvidual {{/str}}
+        </a>
+    </li>
+    <li class="nav-item">
+        <a href="{{wwwroot}}/local/eduvidual/pages/manage.php?orgid={{orgid}}&act=users&tab=manageusers"
+            class="nav-link{{#tab_manageusers_active}} active{{/tab_manageusers_active}}">
+            {{#str}} manage:users:tab, local_eduvidual {{/str}}
+        </a>
+    </li>
+    <li class="nav-item">
+        <a href="{{wwwroot}}/local/eduvidual/pages/manage.php?orgid={{orgid}}&act=users&tab=adduserexcel"
+            class="nav-link{{#tab_adduserexcel_active}} active{{/tab_adduserexcel_active}}">
+            {{#str}} manage:createuserspreadsheet, local_eduvidual {{/str}}
+        </a>
+    </li>
+    <li class="nav-item">
+        <a href="{{wwwroot}}/local/eduvidual/pages/manage.php?orgid={{orgid}}&act=users&tab=addusercode"
+            class="nav-link{{#tab_addusercode_active}} active{{/tab_addusercode_active}}">
+            {{#str}} manage:adduser, local_eduvidual {{/str}}
+        </a>
+    </li>
+    <li class="nav-item">
+        <a href="{{wwwroot}}/local/eduvidual/pages/manage.php?orgid={{orgid}}&act=users&tab=adduseranonymous"
+            class="nav-link{{#tab_adduseranonymous_active}} active{{/tab_adduseranonymous_active}}">
+            {{#str}} manage:createuseranonymous, local_eduvidual {{/str}}
+        </a>
+    </li>
+    <li class="nav-item">
+        <a href="{{wwwroot}}/local/eduvidual/pages/manage.php?orgid={{orgid}}&act=users&tab=accesscodes"
+            class="nav-link{{#tab_accesscodes_active}} active{{/tab_accesscodes_active}}">
+            {{#str}} manage:accesscodes, local_eduvidual {{/str}}
+        </a>
+    </li>
+</ul>
