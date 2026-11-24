@@ -315,8 +315,6 @@ $string['missing_permission'] = 'Missing Permission!';
 $string['open'] = 'open';
 
 
-$string['help_and_tutorials'] = 'Help & Tutorials';
-$string['imprint'] = 'Imprint';
 
 $string['mailregister:confirmation'] = 'Confirmation';
 $string['mailregister:confirmation:mailsent'] = 'Email was sent!';
@@ -534,7 +532,6 @@ $string['preferences:usemode:title'] = 'UI Mode';
 
 $string['print'] = 'Print';
 
-$string['privacy'] = 'Privacy';
 
 $string['privacy:metadata:privacy:metadata:local_eduvidual_courseshow'] = 'Stores for app-mode course list which courses you want to hide or show.';
 $string['privacy:metadata:privacy:metadata:local_eduvidual_orgid_userid'] = 'Stores your memberships and role in various organizations';
