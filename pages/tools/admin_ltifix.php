@@ -62,15 +62,15 @@ foreach ($packages as $dbpackage) {
             $course = $DB->get_record('course', ['id' => $package->course]);
             if (empty($course->id)) {
                 echo "=> THIS COURSE WAS REMOVED<br />";
-                $DB->delete_records('block_edupublisher_uses', array('package' => $id));
-                $DB->delete_records('block_edupublisher_rating', array('package' => $id));
-                $DB->delete_records('block_edupublisher_metadata', array('package' => $id));
+                $DB->delete_records('block_edupublisher_uses', ['package' => $id]);
+                $DB->delete_records('block_edupublisher_rating', ['package' => $id]);
+                $DB->delete_records('block_edupublisher_metadata', ['package' => $id]);
 
-                $DB->delete_records('block_edupublisher_extitem', array('packageid' => $package->id));
-                $DB->delete_records('block_edupublisher_extsect', array('packageid' => $package->id));
-                $DB->delete_records('block_edupublisher_extpack', array('packageid' => $package->id));
+                $DB->delete_records('block_edupublisher_extitem', ['packageid' => $package->id]);
+                $DB->delete_records('block_edupublisher_extsect', ['packageid' => $package->id]);
+                $DB->delete_records('block_edupublisher_extpack', ['packageid' => $package->id]);
 
-                $DB->delete_records('block_edupublisher_packages', array('id' => $package->id));
+                $DB->delete_records('block_edupublisher_packages', ['id' => $package->id]);
                 continue;
             }
 
@@ -80,7 +80,7 @@ foreach ($packages as $dbpackage) {
             if (empty($package->{$channel . '_ltisecret'})) {
                 $package->{$channel . '_ltisecret'} = substr(md5(date("Y-m-d H:i:s") . rand(0, 1000)), 0, 30);
             }
-            $lti = array(
+            $lti = [
                 'contextid' => $context->id,
                 'gradesync' => 1,
                 'gradesynccompletion' => 0,
@@ -90,11 +90,11 @@ foreach ($packages as $dbpackage) {
                 'roleinstructor' => get_config('block_edupublisher', 'defaultrolestudent'),
                 'rolelearner' => get_config('block_edupublisher', 'defaultrolestudent'),
                 'secret' => $package->{$channel . '_ltisecret'},
-            );
+            ];
             $elpinstanceid = $elp->add_instance($course, $lti);
             echo "=> ELPInstanceID $elpinstanceid<br />";
             if ($elpinstanceid) {
-                $elpinstance = $DB->get_record('enrol_lti_tools', array('enrolid' => $elpinstanceid), 'id', MUST_EXIST);
+                $elpinstance = $DB->get_record('enrol_lti_tools', ['enrolid' => $elpinstanceid], 'id', MUST_EXIST);
                 $tool = enrol_lti\helper::get_lti_tool($elpinstance->id);
                 $package->{$channel . '_ltiurl'} = '' . enrol_lti\helper::get_launch_url($elpinstance->id);
                 $package->{$channel . '_lticartridge'} = '' . enrol_lti\helper::get_cartridge_url($tool);
