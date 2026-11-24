@@ -29,7 +29,7 @@ require_once('../../../../config.php');
 
 $PAGE->set_context(context_system::instance());
 $PAGE->set_pagelayout('admin');
-$PAGE->set_url('/local/eduvidual/pages/tools/hostname.php', array());
+$PAGE->set_url('/local/eduvidual/pages/tools/hostname.php', []);
 $PAGE->set_title('Hostname');
 $PAGE->set_heading('Hostname');
 
