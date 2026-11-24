@@ -28,14 +28,14 @@ require_once($CFG->libdir . "/externallib.php");
 
 class local_eduvidual_external_admin extends external_api {
     public static function org_gps_parameters() {
-        return new external_function_parameters(array(
+        return new external_function_parameters([
             'lon1' => new external_value(PARAM_FLOAT, 'longitude to start rectangle'),
             'lon2' => new external_value(PARAM_FLOAT, 'longitude to end rectangle'),
             'lat1' => new external_value(PARAM_FLOAT, 'latitude to start rectangle'),
             'lat2' => new external_value(PARAM_FLOAT, 'latitude to end rectangle'),
             'includenonegroup' => new external_value(PARAM_INT, 'if true we will include orgs that have an unknown status.'),
             'advanceddata' => new external_value(PARAM_INT, 'if 1 we will include postal information.'),
-        ));
+        ]);
     }
 
     public static function org_gps($lon1, $lon2, $lat1, $lat2, $includenonegroup, $advanceddata = 0) {
@@ -43,9 +43,9 @@ class local_eduvidual_external_admin extends external_api {
 
 
         if (!is_siteadmin()) {
-            return json_encode(array());
+            return json_encode([]);
         }
-        $params = self::validate_parameters(self::org_gps_parameters(), array('lon1' => $lon1, 'lon2' => $lon2, 'lat1' => $lat1, 'lat2' => $lat2, 'includenonegroup' => $includenonegroup, 'advanceddata' => $advanceddata));
+        $params = self::validate_parameters(self::org_gps_parameters(), ['lon1' => $lon1, 'lon2' => $lon2, 'lat1' => $lat1, 'lat2' => $lat2, 'includenonegroup' => $includenonegroup, 'advanceddata' => $advanceddata]);
         $advanceddata = "";
         if ($params['advanceddata'] == 1) {
             $advanceddata = ",o.street,o.zip,o.city,o.district,o.country";
@@ -57,9 +57,9 @@ class local_eduvidual_external_admin extends external_api {
                     WHERE o.orgid=og.orgid
                         AND lon>? AND lon<?
                         AND lat>? AND lat<?";
-        $ps = array($params['lon1'], $params['lon2'], $params['lat1'], $params['lat2']);
+        $ps = [$params['lon1'], $params['lon2'], $params['lat1'], $params['lat2']];
         if ($params['includenonegroup'] != 1) {
-            //$sql .= " AND (authenticated > 0 OR lpf IS NOT NULL)";
+            // $sql .= " AND (authenticated > 0 OR lpf IS NOT NULL)";
         }
         $orgsinbounds = $DB->get_records_sql($sql, $ps);
         return json_encode($orgsinbounds, JSON_NUMERIC_CHECK);
@@ -68,5 +68,4 @@ class local_eduvidual_external_admin extends external_api {
     public static function org_gps_returns() {
         return new external_value(PARAM_RAW, 'Returns orgs as json encoded array.');
     }
-
 }

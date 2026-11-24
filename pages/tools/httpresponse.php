@@ -25,7 +25,7 @@
  * Just test certain http response codes
  */
 
-$http_status_codes = array(
+$http_status_codes = [
     100 => "Continue",
     101 => "Switching Protocols",
     102 => "Processing",
@@ -99,7 +99,7 @@ $http_status_codes = array(
     511 => "Network Authentication Required",
     598 => "Network read timeout error",
     599 => "Network connect timeout error",
-);
+];
 
 $code = $_GET['code'];
 

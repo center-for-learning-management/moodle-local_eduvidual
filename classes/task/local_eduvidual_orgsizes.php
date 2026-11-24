@@ -39,13 +39,13 @@ class local_eduvidual_orgsizes extends \core\task\scheduled_task {
         $sql = "SELECT id,orgid,categoryid
                     FROM {local_eduvidual_org}
                     WHERE categoryid>0";
-        $orgs = $DB->get_records_sql($sql, array());
+        $orgs = $DB->get_records_sql($sql, []);
         require_once($CFG->dirroot . '/local/eduvidual/classes/lib_manage.php');
         foreach ($orgs as $org) {
             $filesize = \local_eduvidual\lib_manage::get_category_filesize($org->categoryid);
             echo "Read $org->orgid for category $org->categoryid with size $filesize<br />\n";
             if (!empty($filesize)) {
-                $DB->set_field('local_eduvidual_org', 'orgsize', $filesize, array('categoryid' => $org->categoryid));
+                $DB->set_field('local_eduvidual_org', 'orgsize', $filesize, ['categoryid' => $org->categoryid]);
             }
         }
     }

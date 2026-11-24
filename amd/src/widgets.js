@@ -1,39 +1,39 @@
-define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'local_eduvidual/main'], function ($, AJAX, NOTIFICATION, STR, URL, MAIN) {
+define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'local_eduvidual/main'], function($, AJAX, NOTIFICATION, STR, URL, MAIN) {
   return {
     widgets: [],
     currentQRScanner: undefined,
-    fixDrawingCanvas: function () {
-      $('.drawingcanvas').each(function () {
+    fixDrawingCanvas: function() {
+      $('.drawingcanvas').each(function() {
         $(this).attr('touch-action', 'none').attr('style', $(this).attr('style') + ';touch-action: none;');
       });
     },
-    getwidgetid: function () {
-      var widgetid = ((+new Date) + Math.random() * 100).toString(32);
+    getwidgetid: function() {
+      var widgetid = ((+new Date()) + Math.random() * 100).toString(32);
       while (typeof this.widgets[widgetid] !== 'undefined') {
-        widgetid = ((+new Date) + Math.random() * 100).toString(32);
+        widgetid = ((+new Date()) + Math.random() * 100).toString(32);
       }
       return widgetid;
     },
-    jqPanel: function (id) {
+    jqPanel: function(id) {
       var widgetid = this.getwidgetid();
       var panel = $(id);
 
       this.widgets[widgetid] = {
         panel: panel,
         widgetid: widgetid,
-        run: function () {
+        run: function() {
 
         }
-      }
+      };
     },
-    switchtab: function (uniqid, id, sender) {
+    switchtab: function(uniqid, id, sender) {
       for (var a = 0; a < $('.tab-container-' + uniqid + '>*').length; a++) {
         $('#' + uniqid + '-tab-' + a).css('display', (id == a) ? 'block' : 'none');
       }
       $('.tab-container-' + uniqid + '>*').removeClass('btn-primary');
       $(sender).addClass('btn-primary');
     },
-    panel: function (panel) {
+    panel: function(panel) {
       if (typeof $(panel).attr('data-widgetid') !== 'undefined') {
         this.widgets[$(panel).attr('data-widgetid')].toggle();
       } else {
@@ -42,7 +42,7 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'loc
           widgetid: widgetid,
           runnable: undefined,
           panel: panel,
-          init: function () {
+          init: function() {
             console.log(this);
             $(this.panel).attr('data-widgetid', this.widgetid);
             this.layer = $('<div>')
@@ -50,7 +50,7 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'loc
               .addClass('eduvidual-widget-panel-layer widget-' + this.widgetid);
             $('body').append(this.layer);
             var that = this;
-            $(this.panel + ' a').each(function (i) {
+            $(this.panel + ' a').each(function(i) {
               // In this block "this" is the jquery element.
               if (!$(this).hasClass('widget-close-on-click')) {
                 $(this).addClass('widget-close-on-click');
@@ -65,7 +65,7 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'loc
             });
             this.toggle();
           },
-          toggle: function (force) {
+          toggle: function(force) {
             if (typeof force === 'undefined') {
               force = 0;
             }
@@ -79,15 +79,15 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'loc
               $(this.layer).removeClass('show');
             }
           },
-          run: function () {
+          run: function() {
             console.log('Closing panel', this.panel, ' of ', this);
             this.toggle(-1);
           },
-        }
+        };
         this.widgets[widgetid].init();
       }
     },
-    prompt: function () {
+    prompt: function() {
       var widgetid = this.getwidgetid();
       this.widgets[widgetid] = {
         widgetid: widgetid,
@@ -101,7 +101,7 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'loc
          * @param def Default value of input
          * @param runnable Object containing a 'run'-Method with 1 argument, which is called using the input value
          **/
-        create: function (title, text, def, runnable) {
+        create: function(title, text, def, runnable) {
           this.runnable = runnable;
           this.container = $('<div>').addClass('local_eduvidual_prompt prompt_' + this.widgetid);
           var div = $('<div>');
@@ -126,27 +126,28 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'loc
           $('body').append(this.container);
           $(this.input).focus();
         },
-        run: function () {
+        run: function() {
           this.runnable.run(this.input.val());
           this.destroy();
           return false;
         },
-        destroy: function () {
+        destroy: function() {
           $(this.container).remove();
         },
-      }
+      };
       return this.widgets[widgetid];
     },
-    qrscanner: function () {
+    qrscanner: function() {
       var widgetid = this.getwidgetid();
       this.widgets[widgetid] = {
         widgetid: widgetid,
         runnable: undefined,
         /**
-         * starts scanning
+         * Starts scanning
          * @param runnable Object containing a 'run'-Method with 1 argument, which is called using the input value
+         * @param endless
          **/
-        scan: function (runnable, endless) {
+        scan: function(runnable, endless) {
           if (typeof endless === 'undefined') {
             endless = false;
           }
@@ -156,10 +157,10 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'loc
 
           STR.get_strings([
             {'key': 'qrscan:cameratoobject', component: 'local_eduvidual'},
-          ]).done(function (s) {
+          ]).done(function(s) {
               cordova.plugins.barcodeScanner.scan(
-                function (result) {
-                  //alert('Adding ' + result);
+                function(result) {
+                  // Alert('Adding ' + result);
                   if (typeof result.text !== 'undefined' && result.text != '') {
                     QRScanner.runnable.run(result.text);
                   }
@@ -167,20 +168,20 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'loc
                     QRScanner.scan(QRScanner.runnable, true);
                   }
                 },
-                function (error) {
+                function(error) {
                   NOTIFICATION.alert('Scanning Error: ' + error);
                 },
                 {
-                  preferFrontCamera: false, // iOS and Android
-                  showFlipCameraButton: true, // iOS and Android
-                  showTorchButton: true, // iOS and Android
+                  preferFrontCamera: false, // IOS and Android
+                  showFlipCameraButton: true, // IOS and Android
+                  showTorchButton: true, // IOS and Android
                   torchOn: true, // Android, launch with the torch switched on (if available)
                   prompt: s[0], // Android
                   resultDisplayDuration: 500, // Android, display scanned text for X ms. 0 suppresses it entirely, default 1500
-                  formats: "QR_CODE,PDF_417", // default: all but PDF_417 and RSS_EXPANDED
-                  //orientation : "landscape", // Android only (portrait|landscape), default unset so it rotates with the device
-                  disableAnimations: true, // iOS
-                  disableSuccessBeep: false // iOS
+                  formats: "QR_CODE,PDF_417", // Default: all but PDF_417 and RSS_EXPANDED
+                  // orientation : "landscape", // Android only (portrait|landscape), default unset so it rotates with the device
+                  disableAnimations: true, // IOS
+                  disableSuccessBeep: false // IOS
                 }
               );
             }
