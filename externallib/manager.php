@@ -28,7 +28,7 @@ require_once($CFG->libdir . "/externallib.php");
 
 class local_eduvidual_external_manager extends external_api {
     public static function create_users_parameters() {
-        return new external_function_parameters(array(
+        return new external_function_parameters([
             'orgid' => new external_value(PARAM_INT, 'orgid'),
             'id' => new external_value(PARAM_INT, 'userid (if already exists)'),
             'firstname' => new external_value(PARAM_TEXT, 'firstname'),
@@ -40,7 +40,7 @@ class local_eduvidual_external_manager extends external_api {
             'password' => new external_value(PARAM_TEXT, 'password'),
             'forcechangepassword' => new external_value(PARAM_TEXT, 'forcechangepassword'),
             'secret' => new external_value(PARAM_TEXT),
-        ));
+        ]);
     }
 
     public static function create_users($orgid, $id, $firstname, $lastname, $email, $role, $cohorts_add, $cohorts_remove, $password, $forcechangepassword, $secret) {
@@ -97,7 +97,7 @@ class local_eduvidual_external_manager extends external_api {
                     $user->id = \user_create_user($user, false, false);
                     $user->idnumber = $user->id;
                     // @todo attention, possible read-after-write gap!
-                    $DB->set_field('user', 'idnumber', $user->idnumber, array('id' => $user->id));
+                    $DB->set_field('user', 'idnumber', $user->idnumber, ['id' => $user->id]);
                     $user->secret = \local_eduvidual\locallib::get_user_secret($user->id);
                     if (empty($obj->password)) {
                         $obj->password = $user->secret;
@@ -139,7 +139,7 @@ class local_eduvidual_external_manager extends external_api {
                                 FROM {user}
                                 WHERE username LIKE ?
                                     AND id <> ?";
-                    $params = array($obj->username, $user->id);
+                    $params = [$obj->username, $user->id];
                     $otheru = $DB->get_record_sql($sql, $params);
                     if (empty($otheru->id)) {
                         // Ok, we can also update the username.
@@ -173,11 +173,11 @@ class local_eduvidual_external_manager extends external_api {
                     // Set status message.
                     $ret->status = 1;
                     if (strtolower($user->role) == 'remove') {
-                        $ret->message = get_string('import:removed', 'local_eduvidual', array('id' => $user->id));
+                        $ret->message = get_string('import:removed', 'local_eduvidual', ['id' => $user->id]);
                     } else if ($action == 'update') {
-                        $ret->message = get_string('import:updated', 'local_eduvidual', array('id' => $user->id));
+                        $ret->message = get_string('import:updated', 'local_eduvidual', ['id' => $user->id]);
                     } else if ($action == 'create') {
-                        $ret->message = get_string('import:created', 'local_eduvidual', array('id' => $user->id));
+                        $ret->message = get_string('import:created', 'local_eduvidual', ['id' => $user->id]);
                     }
                 }
             }
@@ -188,10 +188,10 @@ class local_eduvidual_external_manager extends external_api {
 
     public static function create_users_returns() {
         return new external_single_structure(
-            array(
+            [
                 'status' => new external_value(PARAM_INT, '0 ... unknown, -1 ... failed, 1 ... succeeded'),
                 'message' => new external_value(PARAM_RAW, 'additional text.'),
-            )
+            ]
         );
     }
 }

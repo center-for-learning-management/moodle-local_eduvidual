@@ -1,6 +1,6 @@
-define(['jquery', 'core/ajax', 'core/config', 'core/notification', 'core/str', 'core/url', 'local_eduvidual/main'], function ($, AJAX, CFG, NOTIFICATION, STR, URL, MAIN) {
+define(['jquery', 'core/ajax', 'core/config', 'core/notification', 'core/str', 'core/url', 'local_eduvidual/main'], function($, AJAX, CFG, NOTIFICATION, STR, URL, MAIN) {
   return {
-    setBackground: function (sender) {
+    setBackground: function(sender) {
       if ($(sender).attr('data-image') == 'none') {
         var background = '';
       } else if ($(sender).is('input')) {
@@ -17,11 +17,11 @@ define(['jquery', 'core/ajax', 'core/config', 'core/notification', 'core/str', '
       }
 
       $(sender).css('filter', 'blur(1px)');
-      require(['local_eduvidual/main'], function (MAIN) {
+      require(['local_eduvidual/main'], function(MAIN) {
         MAIN.connect({module: 'preferences', act: 'background', background: background}, {sender: sender, signalItem: $(sender)});
       });
     },
-    result: function (o) {
+    result: function(o) {
       if (o.data.act == 'background') {
         $('#local_eduvidual_preferences_background').find('a, input').css('filter', 'unset');
         if (o.result.status == 'ok') {
