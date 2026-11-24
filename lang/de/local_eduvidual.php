@@ -312,8 +312,6 @@ $string['invalid_type'] = 'Ungültiger Typ!';
 $string['missing_permission'] = 'Fehlende Rechte!';
 $string['open'] = 'öffnen';
 
-$string['help_and_tutorials'] = 'Hilfe & Anleitungen';
-$string['imprint'] = 'Impressum';
 
 $string['mailregister:confirmation'] = 'Bestätigung';
 $string['mailregister:confirmation:mailsent'] = 'Die eMail wurde versendet!';
@@ -530,7 +528,6 @@ $string['preferences:usemode:title'] = 'UI Modus';
 
 $string['print'] = 'Drucken';
 
-$string['privacy'] = 'Datenschutz';
 
 $string['privacy:metadata:privacy:metadata:local_eduvidual_courseshow'] = 'Speichert für den app-Modus, welche Kurse der Kursliste angezeigt oder versteckt werden sollen.';
 $string['privacy:metadata:privacy:metadata:local_eduvidual_orgid_userid'] = 'Speichert die Zuordnung und Rolle in verschiedenen Schulen.';
