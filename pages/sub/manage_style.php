@@ -26,32 +26,36 @@ require_once($CFG->dirroot . "/local/eduvidual/classes/manage_files_form.php");
 // This variable is used within the form-object for the label text of orgfiles
 $_url = '/pluginfile.php/1/local_eduvidual/orgfiles/' . $org->orgid . '/<i>filename</i>';
 
-$form = new \local_eduvidual_manage_files_form(null, null, 'post', '_self', array('data-ajax' => 'false'), true);
+$form = new \local_eduvidual_manage_files_form(null, null, 'post', '_self', ['data-ajax' => 'false'], true);
 $context = \context_system::instance();
 if ($data = $form->get_data()) {
     file_save_draft_area_files(
         $data->orgfiles, $context->id, 'local_eduvidual', 'orgfiles', $org->orgid,
-        array('subdirs' => $form->subdirs, 'maxbytes' => $form->maxbytes, 'maxfiles' => $form->maxfiles)
+        ['subdirs' => $form->subdirs, 'maxbytes' => $form->maxbytes, 'maxfiles' => $form->maxfiles]
     );
     file_save_draft_area_files(
         $data->orglogo, $context->id, 'local_eduvidual', 'orglogo', $org->orgid,
-        array('subdirs' => $form->subdirs, 'maxbytes' => $form->maxbytes, 'maxfiles' => 1)
+        ['subdirs' => $form->subdirs, 'maxbytes' => $form->maxbytes, 'maxfiles' => 1]
     );
     echo "<p class=\"alert alert-success\">" . get_string('store:success', 'local_eduvidual') . "</p>";
 }
 
 
-$entry = new \stdClass;
+$entry = new \stdClass();
 $entry->orgid = $org->orgid;
 
 $draftitemid = file_get_submitted_draft_itemid('orgfiles');
-file_prepare_draft_area($draftitemid, $context->id, 'local_eduvidual', 'orgfiles', $org->orgid,
-    array('subdirs' => $form->subdirs, 'maxbytes' => $form->maxbytes, 'maxfiles' => $form->maxfiles));
+file_prepare_draft_area(
+    $draftitemid, $context->id, 'local_eduvidual', 'orgfiles', $org->orgid,
+    ['subdirs' => $form->subdirs, 'maxbytes' => $form->maxbytes, 'maxfiles' => $form->maxfiles]
+);
 $entry->orgfiles = $draftitemid;
 
 $draftitemid = file_get_submitted_draft_itemid('orglogo');
-file_prepare_draft_area($draftitemid, $context->id, 'local_eduvidual', 'orglogo', $org->orgid,
-    array('subdirs' => $form->subdirs, 'maxbytes' => $form->maxbytes, 'maxfiles' => 1));
+file_prepare_draft_area(
+    $draftitemid, $context->id, 'local_eduvidual', 'orglogo', $org->orgid,
+    ['subdirs' => $form->subdirs, 'maxbytes' => $form->maxbytes, 'maxfiles' => 1]
+);
 $entry->orglogo = $draftitemid;
 
 $form->set_data($entry);
@@ -64,7 +68,7 @@ $form->display();
 if (optional_param('customcssstore', 0, PARAM_INT)) {
     $org->customcss = optional_param('customcss', '', PARAM_TEXT);
 
-    if ($DB->set_field('local_eduvidual_org', 'customcss', $org->customcss, array('orgid' => $org->orgid))) {
+    if ($DB->set_field('local_eduvidual_org', 'customcss', $org->customcss, ['orgid' => $org->orgid])) {
         echo "<p class=\"alert alert-success\">" . get_string('store:success', 'local_eduvidual') . "</p>";
     } else {
         echo "<p class=\"alert alert-warning\">" . get_string('store:error', 'local_eduvidual') . "</p>";
